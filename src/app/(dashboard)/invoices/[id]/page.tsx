@@ -73,6 +73,16 @@ export default async function InvoiceDetailPage({
           >
             Download PDF
           </a>
+          <a
+            href={`https://wa.me/?text=${encodeURIComponent(
+              `Hai, berikut invoice ${invoice.number} sebesar Rp${Number(invoice.total).toLocaleString("id-ID")}.\n\nLihat detail: ${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/i/${invoice.publicId}`,
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-md bg-green-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-green-700 transition-colors"
+          >
+            Share WhatsApp
+          </a>
         </div>
       </div>
 
