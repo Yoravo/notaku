@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { InvoiceStatus } from "@/generated/prisma";
 
 async function getUser() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -93,4 +94,30 @@ export async function updateInvoice(
 
   revalidatePath("/invoices");
   redirect(`/invoices/${id}`);
+}
+
+export async function updateInvoiceStatus(
+  id: string,
+  status: InvoiceStatus | string,
+) {
+  const user = await getUser();
+
+  await prisma.invoice.update({
+    where: { id, userId: user.id },
+    data: { status: status as InvoiceStatus },
+  });
+
+  revalidatePath(`/invoices/${id}`);
+  revalidatePath("/invoices");
+}
+
+export async function deleteInvoice(id: string) {
+  const user = await getUser();
+
+  await prisma.invoice.delete({
+    where: { id, userId: user.id },
+  });
+
+  revalidatePath("/invoices");
+  redirect("/invoices");
 }
