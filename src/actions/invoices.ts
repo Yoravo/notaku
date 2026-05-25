@@ -6,6 +6,7 @@ import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { InvoiceStatus } from "@/generated/prisma";
+import { generateInvoiceNumber } from "@/lib/invoice-number";
 
 async function getUser() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -31,12 +32,13 @@ export async function createInvoice(data: {
     (sum, item) => sum + item.quantity * item.price,
     0,
   );
+  const number = await generateInvoiceNumber(user.id);
 
   const invoice = await prisma.invoice.create({
     data: {
       userId: user.id,
       customerId: data.customerId,
-      number: "", // placeholder, will be set by numbering logic later
+      number,
       dueDate: data.dueDate ? new Date(data.dueDate) : null,
       notes: data.notes || null,
       total,
