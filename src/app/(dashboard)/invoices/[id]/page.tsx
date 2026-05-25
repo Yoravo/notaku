@@ -65,6 +65,14 @@ export default async function InvoiceDetailPage({
             Edit
           </Link>
           <InvoiceActions invoiceId={invoice.id} status={invoice.status} />
+          <a
+            href={`/api/invoices/${invoice.id}/pdf`}
+            download
+            className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50
+  transition-colors"
+          >
+            Download PDF
+          </a>
         </div>
       </div>
 
@@ -74,17 +82,21 @@ export default async function InvoiceDetailPage({
           Ditagihkan kepada
         </p>
         <p className="mt-1 font-medium text-gray-900">
-          {invoice.customer.name}
+          Nama: {invoice.customer.name}
         </p>
         {invoice.customer.email && (
-          <p className="text-sm text-gray-600">{invoice.customer.email}</p>
+          <p className="text-sm text-gray-600">
+            Email: {invoice.customer.email}
+          </p>
         )}
         {invoice.customer.phone && (
-          <p className="text-sm text-gray-600">{invoice.customer.phone}</p>
+          <p className="text-sm text-gray-600">
+            Telepon: {invoice.customer.phone}
+          </p>
         )}
         {invoice.customer.address && (
           <p className="mt-1 text-sm text-gray-600">
-            {invoice.customer.address}
+            Alamat: {invoice.customer.address}
           </p>
         )}
       </div>
