@@ -5,8 +5,9 @@ import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { InvoiceStatus } from "@/generated/prisma";
+import { InvoiceStatus } from "@/generated/prisma/client";
 import { generateInvoiceNumber } from "@/lib/invoice-number";
+import { canCreateInvoice } from "@/lib/plan-limits";
 
 async function getUser() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -27,6 +28,13 @@ export async function createInvoice(data: {
   items: InvoiceItem[];
 }) {
   const user = await getUser();
+
+  const { allowed } = await canCreateInvoice(user.id);
+  if (!allowed) {
+    throw new Error(
+      "Batas invoice gratis tercapai. Upgrade ke Pro untuk unlimited.",
+    );
+  }
 
   const total = data.items.reduce(
     (sum, item) => sum + item.quantity * item.price,
@@ -115,6 +123,20 @@ export async function updateInvoiceStatus(
 
 export async function deleteInvoice(id: string) {
   const user = await getUser();
+
+  const invoice = await prisma.invoice.findUnique({
+    where: { id, userId: user.id },
+    include: { user: { select: { plan: true } } },
+  });
+
+  if (!invoice) throw new Error("Invoice tidak ditemukan");
+
+  // Free users can only delete DRAFT invoices
+  if (invoice.user.plan === "FREE" && invoice.status !== "DRAFT") {
+    throw new Error(
+      "Akun gratis hanya bisa menghapus invoice draft. Invoice yang sudah dikirim/lunas tidak bisa dihapus.",
+    );
+  }
 
   await prisma.invoice.delete({
     where: { id, userId: user.id },
