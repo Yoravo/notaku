@@ -26,6 +26,7 @@ export async function GET(
 
   const data = {
     number: invoice.number,
+    status: invoice.status,
     createdAt: invoice.createdAt.toLocaleDateString("id-ID", {
       day: "numeric",
       month: "long",
@@ -46,6 +47,7 @@ export async function GET(
     },
     user: {
       name: invoice.user.name,
+      email: invoice.user.email,
       businessName: invoice.user.businessName || undefined,
       phone: invoice.user.phone || undefined,
       address: invoice.user.address || undefined,

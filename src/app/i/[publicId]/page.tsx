@@ -23,6 +23,25 @@ export default async function PublicInvoicePage({
           <div>
             <h1 className="text-lg font-semibold text-gray-900">INVOICE</h1>
             <p className="text-sm text-gray-600">{invoice.number}</p>
+            <span
+              className={`mt-2 inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                invoice.status === "PAID"
+                  ? "bg-green-50 text-green-700"
+                  : invoice.status === "SENT"
+                    ? "bg-blue-50 text-blue-700"
+                    : invoice.status === "OVERDUE"
+                      ? "bg-red-50 text-red-700"
+                      : "bg-gray-100 text-gray-700"
+              }`}
+            >
+              {invoice.status === "PAID"
+                ? "Lunas"
+                : invoice.status === "SENT"
+                  ? "Menunggu Pembayaran"
+                  : invoice.status === "OVERDUE"
+                    ? "Jatuh Tempo"
+                    : invoice.status}
+            </span>
           </div>
           <div className="text-right">
             <p className="font-medium text-gray-900">
