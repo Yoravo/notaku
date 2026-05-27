@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { canCreateInvoice } from "@/lib/plan-limits";
 import { InvoiceForm } from "@/components/invoices/invoice-form";
-import Link from "next/link";
+import { UpgradeButton } from "@/components/upgrade-button";
 
 export default async function NewInvoicePage() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -30,13 +30,10 @@ export default async function NewInvoicePage() {
             Kamu sudah membuat {used}/{limit} invoice bulan ini. Upgrade ke Pro
             untuk invoice unlimited.
           </p>
-          <Link
-            href="/settings"
+          <UpgradeButton
             className="mt-3 inline-block rounded-md bg-amber-600 px-4 py-2 text-sm font-medium text-white
-  hover:bg-amber-700 transition-colors"
-          >
-            Upgrade ke Pro
-          </Link>
+  cursor-pointer hover:bg-amber-700 transition-colors"
+          />
         </div>
       ) : (
         <>
