@@ -13,7 +13,7 @@ export async function POST() {
   }
 
   const user = session.user;
-  const orderId = `NOTAKU-PRO-${user.id}-${Date.now()}`;
+  const orderId = `PRO-${Date.now()}`;
 
   const token = await createSnapToken({
     orderId,
