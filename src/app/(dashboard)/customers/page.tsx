@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { CustomerList } from "@/app/components/customers/customer-list";
+import { CustomerList } from "@/components/customers/customer-list";
 
 export default async function CustomerPage() {
   const session = await auth.api.getSession({ headers: await headers() });

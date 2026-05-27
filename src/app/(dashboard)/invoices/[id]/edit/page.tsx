@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { InvoiceForm } from "@/app/components/invoices/invoice-form";
+import { InvoiceForm } from "@/components/invoices/invoice-form";
 
 export default async function EditInvoicePage({
   params,

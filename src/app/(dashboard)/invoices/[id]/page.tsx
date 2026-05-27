@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { InvoiceActions } from "@/app/components/invoices/invoice-actions";
+import { InvoiceActions } from "@/components/invoices/invoice-actions";
 
 const statusLabel: Record<string, { text: string; className: string }> = {
   DRAFT: { text: "Draft", className: "bg-gray-100 text-gray-700" },
