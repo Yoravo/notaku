@@ -1,26 +1,56 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --paper: #faf7f0;
+    --paper-deep: #f2ebdd;
+    --ink: #1b1916;
+    --ink-soft: #6b6459;
+    --emerald: #0f6b4f;
+    --emerald-bright: #138a64;
+    --ochre: #b45309;
+    --line: #e7dfce;
   }
-}
+/*  */
+  @theme inline {
+    --color-paper: var(--paper);
+    --color-paper-deep: var(--paper-deep);
+    --color-ink: var(--ink);
+    --color-ink-soft: var(--ink-soft);
+    --color-emerald: var(--emerald);
+    --color-emerald-bright: var(--emerald-bright);
+    --color-ochre: var(--ochre);
+    --color-line: var(--line);
+    --font-display: var(--font-fraunces);
+    --font-sans: var(--font-jakarta);
+  }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-jakarta), system-ui, sans-serif;
+  }
+
+  /* Subtle paper grain */
+  .grain::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: none; }
+  }
+  .rise { animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+
+  @keyframes tilt-in {
+    from { opacity: 0; transform: rotate(0deg) translateY(30px); }
+    to { opacity: 1; transform: rotate(2.5deg) translateY(0); }
+  }
+  .tilt-in { animation: tilt-in 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.3s both; }
+
+  .tnum { font-variant-numeric: tabular-nums; }
