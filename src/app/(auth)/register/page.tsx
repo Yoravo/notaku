@@ -2,17 +2,16 @@
 
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
 export default function RegisterPage() {
-  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -23,14 +22,14 @@ export default function RegisterPage() {
       name,
       email,
       password,
-      callbackURL: "/dashboard",
     });
 
     if (error) {
       setError(error.message || "Registrasi gagal");
       setLoading(false);
     } else {
-      router.push("/dashboard");
+      setSuccess(true);
+      setLoading(false);
     }
   };
 
@@ -40,6 +39,27 @@ export default function RegisterPage() {
       callbackURL: "/dashboard",
     });
   };
+
+  // Success state — tampilkan pesan cek email setelah daftar
+  if (success) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md text-center">
+          <h1 className="text-2xl font-bold text-gray-900">Cek email kamu</h1>
+          <p className="mt-3 text-sm text-gray-600">
+            Kami sudah mengirim link verifikasi ke <strong>{email}</strong>.
+            Klik link tersebut untuk mengaktifkan akun NotaKu kamu.
+          </p>
+          <Link
+            href="/login"
+            className="mt-6 inline-block text-sm text-blue-600 hover:underline"
+          >
+            Kembali ke halaman masuk
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -151,6 +171,7 @@ export default function RegisterPage() {
                 )}
               </button>
             </div>
+            <p className="mt-1 text-xs text-gray-500">Minimal 8 karakter</p>
           </div>
 
           <button

@@ -25,7 +25,13 @@ export default function LoginPage() {
     });
 
     if (error) {
-      setError(error.message || "Login gagal");
+      if (error.status === 403) {
+        setError(
+          "Email kamu belum diverifikasi. Cek inbox untuk link verifikasi.",
+        );
+      } else {
+        setError(error.message || "Login gagal");
+      }
       setLoading(false);
     } else {
       router.push("/dashboard");
