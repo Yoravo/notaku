@@ -52,5 +52,8 @@ export function verifySignature(params: {
     )
     .digest("hex");
 
-  return hash === params.signatureKey;
+  const a = Buffer.from(hash);
+  const b = Buffer.from(params.signatureKey || "");
+  if (a.length !== b.length) return false;
+  return crypto.timingSafeEqual(a, b);
 }
