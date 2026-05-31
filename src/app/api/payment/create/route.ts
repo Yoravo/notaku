@@ -21,7 +21,7 @@ export async function POST() {
   }
 
   const user = session.user;
-  const orderId = `PRO-${Date.now()}`;
+  const orderId = `PRO-${user.id.slice(0, 8)}-${Date.now()}`;
 
   const token = await createSnapToken({
     orderId,

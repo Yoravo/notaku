@@ -42,13 +42,33 @@ export async function createCustomer(formData: FormData) {
 export async function updateCustomer(id: string, formData: FormData) {
   const user = await getUser();
 
+  const parsed = customerSchema.safeParse({
+    name: formData.get("name"),
+    email: formData.get("email") || "",
+    phone: formData.get("phone") || "",
+    address: formData.get("address") || "",
+  });
+
+  if (!parsed.success) {
+    throw new Error(parsed.error.issues[0].message);
+  }
+
+  // Verify ownership
+  const existing = await prisma.customer.findUnique({
+    where: { id, userId: user.id },
+    select: { id: true },
+  });
+  if (!existing) {
+    throw new Error("Pelanggan tidak ditemukan");
+  }
+
   await prisma.customer.update({
     where: { id, userId: user.id },
     data: {
-      name: formData.get("name") as string,
-      email: (formData.get("email") as string) || null,
-      phone: (formData.get("phone") as string) || null,
-      address: (formData.get("address") as string) || null,
+      name: parsed.data.name,
+      email: parsed.data.email || null,
+      phone: parsed.data.phone || null,
+      address: parsed.data.address || null,
     },
   });
 

@@ -82,12 +82,25 @@ export async function updateInvoice(
 ) {
   const user = await getUser();
 
+  const parsed = invoiceSchema.safeParse(data);
+  if (!parsed.success) {
+    throw new Error(parsed.error.issues[0].message);
+  }
+
+  // Verify ownership BEFORE any mutation
+  const existing = await prisma.invoice.findUnique({
+    where: { id, userId: user.id },
+    select: { id: true },
+  });
+  if (!existing) {
+    throw new Error("Invoice tidak ditemukan");
+  }
+
   const total = data.items.reduce(
     (sum, item) => sum + item.quantity * item.price,
     0,
   );
 
-  // Delete existing items and recreate
   await prisma.invoiceItem.deleteMany({ where: { invoiceId: id } });
 
   await prisma.invoice.update({
