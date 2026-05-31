@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import { InvoiceStatus } from "@/generated/prisma/client";
 import { generateInvoiceNumber } from "@/lib/invoice-number";
 import { canCreateInvoice } from "@/lib/plan-limits";
+import { invoiceSchema } from "@/lib/validations";
 
 async function getUser() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -25,9 +26,14 @@ export async function createInvoice(data: {
   customerId: string;
   dueDate: string | null;
   notes: string | null;
-  items: InvoiceItem[];
+  items: { description: string; quantity: number; price: number }[];
 }) {
   const user = await getUser();
+
+  const parsed = invoiceSchema.safeParse(data);
+  if (!parsed.success) {
+    throw new Error(parsed.error.issues[0].message);
+  }
 
   const { allowed } = await canCreateInvoice(user.id);
   if (!allowed) {

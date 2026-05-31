@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { customerSchema } from "@/lib/validations";
 
 async function getUser() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -14,13 +15,24 @@ async function getUser() {
 export async function createCustomer(formData: FormData) {
   const user = await getUser();
 
+  const parsed = customerSchema.safeParse({
+    name: formData.get("name"),
+    email: formData.get("email") || "",
+    phone: formData.get("phone") || "",
+    address: formData.get("address") || "",
+  });
+
+  if (!parsed.success) {
+    throw new Error(parsed.error.issues[0].message);
+  }
+
   await prisma.customer.create({
     data: {
       userId: user.id,
-      name: formData.get("name") as string,
-      email: (formData.get("email") as string) || null,
-      phone: (formData.get("phone") as string) || null,
-      address: (formData.get("address") as string) || null,
+      name: parsed.data.name,
+      email: parsed.data.email || null,
+      phone: parsed.data.phone || null,
+      address: parsed.data.address || null,
     },
   });
 

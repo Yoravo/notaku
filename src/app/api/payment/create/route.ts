@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { createSnapToken } from "@/lib/midtrans";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const PRO_PRICE = 49000;
 
@@ -10,6 +11,13 @@ export async function POST() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (!checkRateLimit(`payment:${session.user.id}`)) {
+    return NextResponse.json(
+      { error: "Terlalu banyak permintaan. Coba lagi nanti." },
+      { status: 429 },
+    );
   }
 
   const user = session.user;
