@@ -15,9 +15,43 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "NotaKu — Invoice Generator untuk UMKM",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+  ),
+  title: {
+    default: "NotaKu — Invoice Generator untuk UMKM",
+    template: "%s · NotaKu",
+  },
   description:
-    "Bikin invoice profesional dalam 30 detik. Gratis untuk UMKM Indonesia.",
+    "Bikin invoice profesional dalam 30 detik. Gratis untuk UMKM Indonesia. Buat, kirim via WhatsApp, dan download PDF.",
+  keywords: [
+    "invoice",
+    "nota",
+    "UMKM",
+    "invoice generator",
+    "faktur",
+    "tagihan",
+    "bisnis",
+  ],
+  authors: [{ name: "NotaKu" }],
+  openGraph: {
+    type: "website",
+    locale: "id_ID",
+    title: "NotaKu — Invoice Generator untuk UMKM",
+    description:
+      "Bikin invoice profesional dalam 30 detik. Gratis untuk UMKM Indonesia.",
+    siteName: "NotaKu",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "NotaKu — Invoice Generator untuk UMKM",
+    description:
+      "Bikin invoice profesional dalam 30 detik. Gratis untuk UMKM Indonesia.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
