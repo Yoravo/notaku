@@ -42,6 +42,14 @@ export async function createInvoice(data: {
     );
   }
 
+  const customer = await prisma.customer.findUnique({
+      where: { id: data.customerId, userId: user.id },
+      select: { id: true },
+    });
+    if (!customer) {
+      throw new Error("Pelanggan tidak ditemukan");
+    }
+
   const total = data.items.reduce(
     (sum, item) => sum + item.quantity * item.price,
     0,
@@ -95,6 +103,14 @@ export async function updateInvoice(
   if (!existing) {
     throw new Error("Invoice tidak ditemukan");
   }
+
+  const customer = await prisma.customer.findUnique({
+      where: { id: data.customerId, userId: user.id },
+      select: { id: true },
+    });
+    if (!customer) {
+      throw new Error("Pelanggan tidak ditemukan");
+    }
 
   const total = data.items.reduce(
     (sum, item) => sum + item.quantity * item.price,
