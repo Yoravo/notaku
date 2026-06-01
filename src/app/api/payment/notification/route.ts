@@ -2,6 +2,10 @@ import { prisma } from "@/lib/prisma";
 import { verifySignature } from "@/lib/midtrans";
 import { NextResponse } from "next/server";
 
+export async function GET() {
+  return new Response("OK", { status: 200 })
+}
+
 export async function POST(request: Request) {
   const body = await request.json();
   const {
