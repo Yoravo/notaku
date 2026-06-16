@@ -60,6 +60,10 @@ export async function GET(
     })),
     total: Number(invoice.total),
     isFree: invoice.user.plan === "FREE",
+    template: invoice.user.invoiceTemplate.toLowerCase() as
+      | "classic"
+      | "modern"
+      | "minimal",
   };
 
   const buffer = await renderInvoicePDF(data);

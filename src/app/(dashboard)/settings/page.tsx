@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { UpgradeButton } from "@/components/upgrade-button";
+import { TemplateSelector } from "@/components/template-selector";
 
 export default async function SettingsPage() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -97,6 +98,17 @@ export default async function SettingsPage() {
           )}
         </div>
       </section>
+      {isPro && (
+        <section className="mt-4 rounded-lg border border-gray-200 bg-white p-5">
+          <h2 className="text-sm font-medium uppercase tracking-wide text-gray-500">
+            Template Invoice
+          </h2>
+          <p className="mt-1 text-xs text-gray-500">
+            Pilih tampilan PDF invoice kamu
+          </p>
+          <TemplateSelector current={user.invoiceTemplate} />
+        </section>
+      )}
     </div>
   );
 }
