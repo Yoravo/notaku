@@ -26,6 +26,7 @@ model User {
   updatedAt     DateTime      @updatedAt
   sessions      Session[]
   accounts      Account[]
+  invoiceTemplate InvoiceTemplate @default(CLASSIC)
 
   @@map("user")
 }
@@ -77,6 +78,12 @@ model Subscription {
   createdAt        DateTime  @default(now())
   user             User      @relation(fields: [userId], references: [id])
 }
+
+enum InvoiceTemplate {
+    CLASSIC
+    MODERN
+    MINIMAL
+  }
 
 enum Plan {
   FREE
