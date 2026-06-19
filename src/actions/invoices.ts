@@ -143,9 +143,14 @@ export async function updateInvoice(
 
 export async function updateInvoiceStatus(
   id: string,
-  status: InvoiceStatus | string,
+  status: string,
 ) {
   const user = await getUser();
+
+  const VALID_STATUSES = new Set(["DRAFT", "SENT", "PAID", "OVERDUE", "CANCELLED"]);
+  if (!VALID_STATUSES.has(status)) {
+    throw new Error("Status invoice tidak valid");
+  }
 
   await prisma.invoice.update({
     where: { id, userId: user.id },
