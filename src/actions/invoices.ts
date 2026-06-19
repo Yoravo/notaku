@@ -9,6 +9,7 @@ import { InvoiceStatus } from "@/generated/prisma/client";
 import { generateInvoiceNumber } from "@/lib/invoice-number";
 import { canCreateInvoice } from "@/lib/plan-limits";
 import { invoiceSchema } from "@/lib/validations";
+import { auditLog } from "@/lib/audit-log";
 
 async function getUser() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -74,6 +75,8 @@ export async function createInvoice(data: {
       },
     },
   });
+
+  auditLog("invoice.created", { invoiceId: invoice.id, number }, { userId: user.id });
 
   revalidatePath("/invoices");
   redirect(`/invoices/${invoice.id}`);
@@ -157,6 +160,8 @@ export async function updateInvoiceStatus(
     data: { status: status as InvoiceStatus },
   });
 
+  auditLog("invoice.status_changed", { invoiceId: id, status }, { userId: user.id });
+
   revalidatePath(`/invoices/${id}`);
   revalidatePath("/invoices");
 }
@@ -181,6 +186,8 @@ export async function deleteInvoice(id: string) {
   await prisma.invoice.delete({
     where: { id, userId: user.id },
   });
+
+  auditLog("invoice.deleted", { invoiceId: id }, { userId: user.id });
 
   revalidatePath("/invoices");
   redirect("/invoices");

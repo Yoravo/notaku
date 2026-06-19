@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { verifySignature } from "@/lib/midtrans";
 import { NextResponse } from "next/server";
+import { auditLog } from "@/lib/audit-log";
 
 export async function GET() {
   return new Response("OK", { status: 200 })
@@ -24,6 +25,7 @@ export async function POST(request: Request) {
     signatureKey: signature_key,
   });
   if (!isValid) {
+    auditLog("payment.signature_invalid", { orderId: order_id });
     return NextResponse.json({ error: "Invalid signature" }, { status: 403 });
   }
 
@@ -31,6 +33,7 @@ export async function POST(request: Request) {
     where: { midtransOrderId: order_id },
   });
   if (!subscription) {
+    auditLog("payment.subscription_not_found", { orderId: order_id });
     return NextResponse.json(
       { error: "Subscription not found" },
       { status: 404 },
@@ -41,6 +44,7 @@ export async function POST(request: Request) {
     subscription.status === "ACTIVE" &&
     subscription.midtransOrderId === order_id
   ) {
+    auditLog("payment.already_processed", { orderId: order_id });
     return NextResponse.json({ message: "Already processed" });
   }
 
@@ -62,10 +66,22 @@ export async function POST(request: Request) {
         data: { plan: "PRO" },
       }),
     ]);
+
+    auditLog("payment.settlement", {
+      orderId: order_id,
+      userId: subscription.userId,
+      transactionStatus: transaction_status,
+    });
   } else if (["expire", "cancel", "deny"].includes(transaction_status)) {
     await prisma.subscription.update({
       where: { id: subscription.id },
       data: { status: "INACTIVE" },
+    });
+
+    auditLog("payment.failed", {
+      orderId: order_id,
+      userId: subscription.userId,
+      transactionStatus: transaction_status,
     });
   }
 

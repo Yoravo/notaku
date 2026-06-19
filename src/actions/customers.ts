@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { customerSchema } from "@/lib/validations";
+import { auditLog } from "@/lib/audit-log";
 
 async function getUser() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -35,6 +36,8 @@ export async function createCustomer(formData: FormData) {
       address: parsed.data.address || null,
     },
   });
+
+  auditLog("customer.created", { customerName: parsed.data.name }, { userId: user.id });
 
   revalidatePath("/customers");
 }
@@ -72,6 +75,8 @@ export async function updateCustomer(id: string, formData: FormData) {
     },
   });
 
+  auditLog("customer.updated", { customerId: id }, { userId: user.id });
+
   revalidatePath("/customers");
 }
 
@@ -81,6 +86,8 @@ export async function deleteCustomer(id: string) {
   await prisma.customer.delete({
     where: { id, userId: user.id },
   });
+
+  auditLog("customer.deleted", { customerId: id }, { userId: user.id });
 
   revalidatePath("/customers");
 }
