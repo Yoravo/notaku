@@ -2,7 +2,7 @@ import crypto from "crypto";
 
 const MIDTRANS_SERVER_KEY = process.env.MIDTRANS_SERVER_KEY!;
 const MIDTRANS_API_URL =
-  process.env.MIDTRANS_API_URL || "https://app.sandbox.midtrans.com/snap/v1";
+  process.env.MIDTRANS_API_URL || "https://app.midtrans.com/snap/v1";
 
 export async function createSnapToken(params: {
   orderId: string;
@@ -11,6 +11,8 @@ export async function createSnapToken(params: {
   customerEmail: string;
 }) {
   const authString = Buffer.from(`${MIDTRANS_SERVER_KEY}:`).toString("base64");
+
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
   const response = await fetch(`${MIDTRANS_API_URL}/transactions`, {
     method: "POST",
@@ -26,6 +28,9 @@ export async function createSnapToken(params: {
       customer_details: {
         first_name: params.customerName,
         email: params.customerEmail,
+      },
+      callbacks: {
+        finish: `${APP_URL}/settings`,
       },
     }),
   });

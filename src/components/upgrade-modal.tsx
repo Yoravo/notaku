@@ -22,7 +22,6 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Load Midtrans Snap script
     const script = document.createElement("script");
     script.src = "https://app.midtrans.com/snap/snap.js";
     script.setAttribute(
@@ -51,7 +50,13 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
       }
 
       window.snap.pay(token, {
-        onSuccess: () => {
+        onSuccess: async () => {
+          // Verifikasi & update subscription langsung
+          const verify = await fetch("/api/payment/verify");
+          const result = await verify.json();
+          if (result.status === "activated") {
+            alert("Pembayaran berhasil! Akun kamu sekarang Pro 🎉");
+          }
           window.location.reload();
         },
         onPending: () => {

@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { UpgradeButton } from "@/components/upgrade-button";
 import { TemplateSelector } from "@/components/template-selector";
+import { PaymentVerifier } from "@/components/payment-verifier";
 
 export default async function SettingsPage() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -27,6 +28,7 @@ export default async function SettingsPage() {
 
   return (
     <div className="max-w-2xl">
+      <PaymentVerifier />
       <h1 className="text-xl font-semibold text-gray-900">Pengaturan</h1>
 
       {/* Profile */}
