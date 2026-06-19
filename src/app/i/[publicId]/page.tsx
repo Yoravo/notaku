@@ -51,12 +51,6 @@ export default async function PublicInvoicePage({
             <p className="font-medium text-gray-900">
               {invoice.user.businessName || invoice.user.name}
             </p>
-            {invoice.user.phone && (
-              <p className="text-sm text-gray-600">{invoice.user.phone}</p>
-            )}
-            {invoice.user.address && (
-              <p className="text-sm text-gray-600">{invoice.user.address}</p>
-            )}
           </div>
         </div>
 
@@ -70,7 +64,9 @@ export default async function PublicInvoicePage({
               {invoice.customer.name}
             </p>
             {invoice.customer.email && (
-              <p className="text-sm text-gray-600">{invoice.customer.email}</p>
+              <p className="text-sm text-gray-600">
+                {invoice.customer.email.replace(/(.{2})(.*)(@.*)/, "$1****$3")}
+              </p>
             )}
             {invoice.customer.phone && (
               <p className="text-sm text-gray-600">{invoice.customer.phone}</p>
