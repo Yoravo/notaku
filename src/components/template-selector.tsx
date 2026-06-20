@@ -3,6 +3,11 @@
 import { useState } from "react";
 import { updateInvoiceTemplate } from "@/actions/settings";
 import { InvoiceTemplate } from "@/generated/prisma/client";
+import dynamic from "next/dynamic";
+
+const TemplatePreview = dynamic(() => import("@/components/template-preview"), {
+  ssr: false,
+});
 
 const templates = [
   { value: "CLASSIC", label: "Classic", desc: "Bersih dan profesional" },
@@ -22,22 +27,31 @@ export function TemplateSelector({ current }: { current: InvoiceTemplate }) {
   };
 
   return (
-    <div className="mt-3 grid grid-cols-3 gap-3">
-      {templates.map((t) => (
-        <button
-          key={t.value}
-          onClick={() => handleChange(t.value)}
-          disabled={loading}
-          className={`rounded-lg border-2 p-3 text-left transition-colors cursor-pointer ${
-            selected === t.value
-              ? "border-blue-600 bg-blue-50"
-              : "border-gray-200 hover:border-gray-300"
-          }`}
-        >
-          <p className="text-sm font-medium text-gray-900">{t.label}</p>
-          <p className="mt-0.5 text-xs text-gray-500">{t.desc}</p>
-        </button>
-      ))}
+    <div>
+      <div className="mt-3 grid grid-cols-3 gap-3">
+        {templates.map((t) => (
+          <button
+            key={t.value}
+            onClick={() => handleChange(t.value)}
+            disabled={loading}
+            className={`rounded-lg border-2 p-3 text-left transition-colors cursor-pointer ${
+              selected === t.value
+                ? "border-blue-600 bg-blue-50"
+                : "border-gray-200 hover:border-gray-300"
+            }`}
+          >
+            <p className="text-sm font-medium text-gray-900">{t.label}</p>
+            <p className="mt-0.5 text-xs text-gray-500">{t.desc}</p>
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-4">
+        <p className="mb-2 text-xs font-medium text-gray-500 uppercase tracking-wide">
+          Pratinjau
+        </p>
+        <TemplatePreview template={selected} />
+      </div>
     </div>
   );
 }
