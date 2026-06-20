@@ -22,11 +22,11 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' https://app.midtrans.com 'unsafe-inline'",
+              "script-src 'self' https://app.midtrans.com 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob:",
               "font-src 'self'",
-              "frame-src https://app.midtrans.com",
+              "frame-src 'self' blob: https://app.midtrans.com",
               "connect-src 'self' https://api.midtrans.com",
             ].join("; "),
           },
