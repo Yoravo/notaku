@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { createInvoice, updateInvoice } from "@/actions/invoices";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { CustomerModal } from "@/components/customers/customer-modal";
 
 type Customer = { id: string; name: string };
 type InvoiceItem = { description: string; quantity: number; price: number };
@@ -38,6 +40,8 @@ export function InvoiceForm({
       : [{ description: "", quantity: 1, price: 0 }],
   );
   const [loading, setLoading] = useState(false);
+  const [showCustomerModal, setShowCustomerModal] = useState(false);
+  const router = useRouter();
 
   const addItem = () => {
     setItems([...items, { description: "", quantity: 1, price: 0 }]);
@@ -90,27 +94,43 @@ export function InvoiceForm({
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Pelanggan *
+            Pelanggan &nbsp;
           </label>
-          <select
-            value={customerId}
-            onChange={(e) => setCustomerId(e.target.value)}
-            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Pilih pelanggan</option>
-            {customers.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+          <div className="flex gap-2">
+            <select
+              value={customerId}
+              onChange={(e) => setCustomerId(e.target.value)}
+              className="mt-1 flex-1 rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Pilih pelanggan</option>
+              {customers.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={() => setShowCustomerModal(true)}
+              className="mt-1 rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer whitespace-nowrap"
+            >
+              &nbsp; Baru
+            </button>
+          </div>
           {customers.length === 0 && (
             <p className="mt-1 text-xs text-gray-500">
-              Belum ada pelanggan.{" "}
-              <Link href="/customers" className="text-blue-600 hover:underline">
-                Tambah dulu
-              </Link>
+              Belum ada pelanggan. Klik <strong>+ Baru</strong> untuk
+              menambahkan.
             </p>
+          )}
+          {showCustomerModal && (
+            <CustomerModal
+              customer={null}
+              onClose={() => {
+                setShowCustomerModal(false);
+                router.refresh();
+              }}
+            />
           )}
         </div>
 
