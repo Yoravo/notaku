@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { canCreateInvoice } from "@/lib/plan-limits";
 import Link from "next/link";
+import { PlusIcon } from "@heroicons/react/24/outline";
 
 export default async function DashboardPage() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -63,7 +64,8 @@ export default async function DashboardPage() {
           className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700
   transition-colors"
         >
-          + Buat Invoice
+          <PlusIcon className="inline h-4 w-4" />
+          Buat Invoice
         </Link>
       </div>
 
@@ -108,7 +110,7 @@ export default async function DashboardPage() {
                     Pelanggan
                   </th>
                   <th className="px-4 py-3 font-medium text-gray-700">
-                      Status
+                    Status
                   </th>
                   <th className="px-4 py-3 font-medium text-gray-700 text-right">
                     Total

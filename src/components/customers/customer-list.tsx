@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { CustomerModal } from "./customer-modal";
 import { deleteCustomer } from "@/actions/customers";
+import { PlusIcon } from "@heroicons/react/24/outline";
 
 type Customer = {
   id: string;
@@ -40,7 +41,8 @@ export function CustomerList({
           }}
           className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white cursor-pointer hover:bg-blue-700 transition-colors"
         >
-          + Tambah Pelanggan
+          <PlusIcon className="inline h-4 w-4" />
+          Tambah Pelanggan
         </button>
       </div>
 

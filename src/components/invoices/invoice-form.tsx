@@ -5,6 +5,7 @@ import { createInvoice, updateInvoice } from "@/actions/invoices";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CustomerModal } from "@/components/customers/customer-modal";
+import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 type Customer = { id: string; name: string };
 type InvoiceItem = { description: string; quantity: number; price: number };
@@ -114,13 +115,18 @@ export function InvoiceForm({
               onClick={() => setShowCustomerModal(true)}
               className="mt-1 rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer whitespace-nowrap"
             >
-              &nbsp; Baru
+              <PlusIcon className="inline h-4 w-4" />
+              Baru
             </button>
           </div>
           {customers.length === 0 && (
             <p className="mt-1 text-xs text-gray-500">
-              Belum ada pelanggan. Klik <strong>+ Baru</strong> untuk
-              menambahkan.
+              Belum ada pelanggan. Klik{" "}
+              <strong>
+                <PlusIcon className="inline h-4 w-4" />
+                Baru
+              </strong>{" "}
+              untuk menambahkan.
             </p>
           )}
           {showCustomerModal && (
@@ -196,7 +202,7 @@ export function InvoiceForm({
                 className="py-2 text-red-500 cursor-pointer hover:text-red-700 disabled:opacity-30 disabled:cursor-not-allowed"
                 aria-label="Hapus item"
               >
-                ✕
+                <XMarkIcon className="h-4 w-4" />
               </button>
             </div>
           ))}
@@ -207,7 +213,8 @@ export function InvoiceForm({
           onClick={addItem}
           className="mt-3 text-sm text-blue-600 cursor-pointer hover:underline"
         >
-          + Tambah item
+          <PlusIcon className="inline h-4 w-4" />
+          Tambah item
         </button>
       </div>
 

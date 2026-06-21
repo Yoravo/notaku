@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { CheckIcon } from "@heroicons/react/24/outline";
 
 declare global {
   interface Window {
@@ -101,19 +102,19 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
 
         <ul className="mt-4 space-y-2 text-sm text-gray-600">
           <li className="flex items-center gap-2">
-            <span className="text-green-600">✓</span> Invoice unlimited
+            <span className="text-green-600"><CheckIcon className="h-4 w-4" /></span> Invoice unlimited
           </li>
           <li className="flex items-center gap-2">
-            <span className="text-green-600">✓</span> Custom logo & branding
+            <span className="text-green-600"><CheckIcon className="h-4 w-4" /></span> Custom logo & branding
           </li>
           <li className="flex items-center gap-2">
-            <span className="text-green-600">✓</span> Template premium
+            <span className="text-green-600"><CheckIcon className="h-4 w-4" /></span> Template premium
           </li>
           <li className="flex items-center gap-2">
-            <span className="text-green-600">✓</span> Tanpa watermark
+            <span className="text-green-600"><CheckIcon className="h-4 w-4" /></span> Tanpa watermark
           </li>
           <li className="flex items-center gap-2">
-            <span className="text-green-600">✓</span> Laporan bulanan
+            <span className="text-green-600"><CheckIcon className="h-4 w-4" /></span> Laporan bulanan
           </li>
         </ul>
 
