@@ -24,7 +24,15 @@ const navItems = [
   { href: "/settings", label: "Pengaturan", icon: Cog6ToothIcon },
 ];
 
-export function Sidebar({ user }: { user: User }) {
+export function Sidebar({
+  user,
+  className = "",
+  onClose,
+}: {
+  user: User;
+  className?: string;
+  onClose?: () => void;
+}) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -37,7 +45,7 @@ export function Sidebar({ user }: { user: User }) {
   };
 
   return (
-    <aside className="flex w-64 flex-col border-r border-gray-200 bg-white">
+    <aside className={`flex w-64 flex-col border-r border-gray-200 bg-white ${className}`}>
       {/* Brand */}
       <div className="flex h-14 items-center border-b border-gray-200 px-5">
         <Link
@@ -57,9 +65,10 @@ export function Sidebar({ user }: { user: User }) {
             pathname === item.href || pathname.startsWith(item.href + "/");
           return (
             <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                key={item.href}
+                href={item.href}
+                onClick={onClose}
+                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                 isActive
                   ? "bg-blue-50 text-blue-700"
                   : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"

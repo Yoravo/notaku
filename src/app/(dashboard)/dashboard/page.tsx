@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { canCreateInvoice } from "@/lib/plan-limits";
 import Link from "next/link";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import { RecentInvoices } from "@/components/recent-invoices";
 
 export default async function DashboardPage() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -51,101 +52,52 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <div>
-      <div className="flex items-center justify-between">
+    <div className="space-y-6">
+      {/* Header: Mobile-first stack, desktop row */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-gray-900">Dashboard</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+            Dashboard
+          </h1>
+          <p className="mt-1 text-sm text-gray-600">
             Selamat datang kembali, {session.user.name}.
           </p>
         </div>
         <Link
           href="/invoices/new"
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700
-  transition-colors"
+          className={`
+            flex items-center justify-center gap-2 rounded-lg
+            bg-blue-600 px-4 py-2.5 text-sm font-medium text-white
+            transition-colors hover:bg-blue-700 active:bg-blue-800
+            sm:justify-start sm:py-2
+            h-10 sm:h-auto
+            shrink-0
+          `}
         >
-          <PlusIcon className="inline h-4 w-4" />
-          Buat Invoice
+          <PlusIcon className="h-5 w-5 shrink-0" />
+          <span>Buat Invoice</span>
         </Link>
       </div>
 
-      {/* Stats */}
-      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Stats: Mobile 1-col, sm 2-col, lg 4-col */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
           <div
             key={s.label}
-            className="rounded-lg border border-gray-200 bg-white p-5"
+            className="rounded-lg border border-gray-200 bg-white p-4 sm:p-5"
           >
-            <p className="text-sm text-gray-500">{s.label}</p>
-            <p className="mt-1 text-2xl font-semibold text-gray-900 tabular-nums">
+            <p className="text-xs sm:text-sm text-gray-600 font-medium uppercase tracking-wide">
+              {s.label}
+            </p>
+            <p className="mt-2 text-2xl sm:text-3xl font-bold text-gray-900 tabular-nums">
               {s.value}
             </p>
           </div>
         ))}
       </div>
 
-      {/* Recent invoices */}
-      <div className="mt-8">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-medium text-gray-900">Invoice Terbaru</h2>
-          <Link
-            href="/invoices"
-            className="text-sm text-blue-600 hover:underline"
-          >
-            Lihat semua
-          </Link>
-        </div>
-
-        {recentInvoices.length === 0 ? (
-          <p className="mt-4 text-sm text-gray-500">Belum ada invoice.</p>
-        ) : (
-          <div className="mt-3 overflow-hidden rounded-lg border border-gray-200 bg-white">
-            <table className="w-full text-left text-sm">
-              <thead className="border-b border-gray-200 bg-gray-50">
-                <tr>
-                  <th className="px-4 py-3 font-medium text-gray-700">
-                    No. Invoice
-                  </th>
-                  <th className="px-4 py-3 font-medium text-gray-700">
-                    Pelanggan
-                  </th>
-                  <th className="px-4 py-3 font-medium text-gray-700">
-                    Status
-                  </th>
-                  <th className="px-4 py-3 font-medium text-gray-700 text-right">
-                    Total
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {recentInvoices.map((inv) => (
-                  <tr key={inv.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3">
-                      <Link
-                        href={`/invoices/${inv.id}`}
-                        className="font-medium text-blue-600 hover:underline"
-                      >
-                        {inv.number || "—"}
-                      </Link>
-                    </td>
-                    <td className="px-4 py-3 text-gray-900">
-                      {inv.customer.name}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
-                        {inv.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-right font-medium text-gray-900 tabular-nums">
-                      Rp{Number(inv.total).toLocaleString("id-ID")}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+      {/* Recent Invoices: Card view mobile, table desktop */}
+      <RecentInvoices invoices={recentInvoices} />
     </div>
   );
 }
