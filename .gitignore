@@ -46,3 +46,6 @@ AGENTS.md
 CLAUDE.md
 .hermes.md
 /src/generated
+
+# Testing
+test-dashboard-mobile.py

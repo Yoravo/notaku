@@ -41,6 +41,40 @@ export default async function Home() {
 
   return (
     <div className="grain min-h-screen bg-paper text-ink">
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: "NotaKu",
+            description:
+              "Invoice generator untuk UMKM Indonesia. Bikin invoice profesional dalam 30 detik.",
+            applicationCategory: "BusinessApplication",
+            operatingSystem: "Web",
+            offers: [
+              {
+                "@type": "Offer",
+                name: "Free",
+                price: "0",
+                priceCurrency: "IDR",
+                description:
+                  "5 invoice per bulan, pelanggan unlimited, PDF download",
+              },
+              {
+                "@type": "Offer",
+                name: "Pro",
+                price: "49000",
+                priceCurrency: "IDR",
+                priceUnit: "month",
+                description:
+                  "Invoice unlimited, tanpa watermark, custom branding",
+              },
+            ],
+          }),
+        }}
+      />
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
         <span className="font-display text-2xl font-semibold tracking-tight">
           Nota<span className="text-emerald">Ku</span>

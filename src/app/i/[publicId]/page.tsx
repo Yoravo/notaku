@@ -1,9 +1,60 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
-export const metadata = {
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ publicId: string }>;
+}): Promise<Metadata> {
+  const { publicId } = await params;
+
+  const invoice = await prisma.invoice.findUnique({
+    where: { publicId },
+    include: {
+      customer: { select: { name: true } },
+      user: { select: { businessName: true, name: true, plan: true } },
+    },
+  });
+
+  if (!invoice)
+    return { title: "Invoice Tidak Ditemukan — NotaKu" };
+
+  const businessName = invoice.user.businessName || invoice.user.name;
+  const totalFormatted = `Rp${Number(invoice.total).toLocaleString("id-ID")}`;
+
+  const statusLabel: Record<string, string> = {
+    DRAFT: "Draft",
+    SENT: "Menunggu Pembayaran",
+    PAID: "Lunas",
+    OVERDUE: "Jatuh Tempo",
+    CANCELLED: "Dibatalkan",
+  };
+
+  const title = `Invoice ${invoice.number} — ${businessName}`;
+  const description = `${statusLabel[invoice.status] || invoice.status} — ${businessName} menagih ${invoice.customer.name} sebesar ${totalFormatted}.`;
+
+  return {
+    title,
+    description,
+    robots: {
+      index: invoice.status !== "DRAFT",
+      follow: true,
+    },
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      locale: "id_ID",
+      siteName: "NotaKu",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+  };
+}
 
 export default async function PublicInvoicePage({
   params,
