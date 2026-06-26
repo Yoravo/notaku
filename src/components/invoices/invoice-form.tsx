@@ -12,7 +12,7 @@ type InvoiceItem = { description: string; quantity: number; price: number };
 type Invoice = {
   id: string;
   customerId: string;
-  dueDate: Date | null;
+  dueDate: string | null;
   notes: string | null;
   items: { description: string; quantity: number; price: number }[];
 };
@@ -28,7 +28,7 @@ export function InvoiceForm({
 
   const [customerId, setCustomerId] = useState(invoice?.customerId || "");
   const [dueDate, setDueDate] = useState(
-    invoice?.dueDate ? invoice.dueDate.toISOString().split("T")[0] : "",
+    invoice?.dueDate ? invoice.dueDate.split("T")[0] : "",
   );
   const [notes, setNotes] = useState(invoice?.notes || "");
   const [items, setItems] = useState<InvoiceItem[]>(
