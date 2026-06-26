@@ -6,6 +6,7 @@ import { canCreateInvoice } from "@/lib/plan-limits";
 import Link from "next/link";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { RecentInvoices } from "@/components/recent-invoices";
+import { SerializedInvoice } from "@/types/invoice";
 
 export default async function DashboardPage() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -98,16 +99,18 @@ export default async function DashboardPage() {
 
       {/* Recent Invoices: Card view mobile, table desktop */}
       <RecentInvoices
-        invoices={recentInvoices.map((inv) => ({
-          ...inv,
-          total: Number(inv.total),
-          dueDate: inv.dueDate ? inv.dueDate.toISOString() : null,
-          createdAt: inv.createdAt.toISOString(),
-          customer: {
-            ...inv.customer,
-            createdAt: inv.customer.createdAt.toISOString(),
-          },
-        }))}
+        invoices={recentInvoices.map(
+          (inv): SerializedInvoice => ({
+            ...inv,
+            total: Number(inv.total),
+            dueDate: inv.dueDate ? inv.dueDate.toISOString() : null,
+            createdAt: inv.createdAt.toISOString(),
+            customer: {
+              ...inv.customer,
+              createdAt: inv.customer.createdAt.toISOString(),
+            },
+          }),
+        )}
       />
     </div>
   );
