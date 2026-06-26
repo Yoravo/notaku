@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import {
   RectangleGroupIcon,
   DocumentTextIcon,
@@ -45,16 +46,19 @@ export function Sidebar({
   };
 
   return (
-    <aside className={`flex w-64 flex-col border-r border-gray-200 bg-white ${className}`}>
+    <aside
+      className={`flex w-64 flex-col border-r border-gray-200 bg-white ${className}`}
+    >
       {/* Brand */}
       <div className="flex h-14 items-center border-b border-gray-200 px-5">
-        <Link
-          href="/"
-          className="flex h-14 items-center border-b border-gray-200 px-5"
-        >
-          <span className="text-lg font-semibold tracking-tight text-gray-900">
-            NotaKu
-          </span>
+        <Link href="/">
+          <Image
+            src="/logo.svg"
+            alt="NotaKu"
+            width={200}
+            height={72}
+            priority
+          />
         </Link>
       </div>
 
@@ -65,10 +69,10 @@ export function Sidebar({
             pathname === item.href || pathname.startsWith(item.href + "/");
           return (
             <Link
-                key={item.href}
-                href={item.href}
-                onClick={onClose}
-                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+              key={item.href}
+              href={item.href}
+              onClick={onClose}
+              className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                 isActive
                   ? "bg-blue-50 text-blue-700"
                   : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"

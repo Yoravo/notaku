@@ -97,7 +97,18 @@ export default async function DashboardPage() {
       </div>
 
       {/* Recent Invoices: Card view mobile, table desktop */}
-      <RecentInvoices invoices={recentInvoices} />
+      <RecentInvoices
+        invoices={recentInvoices.map((inv) => ({
+          ...inv,
+          total: Number(inv.total),
+          dueDate: inv.dueDate ? inv.dueDate.toISOString() : null,
+          createdAt: inv.createdAt.toISOString(),
+          customer: {
+            ...inv.customer,
+            createdAt: inv.customer.createdAt.toISOString(),
+          },
+        }))}
+      />
     </div>
   );
 }
