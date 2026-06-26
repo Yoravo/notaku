@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { Invoice, Customer } from "@/generated/prisma/client";
-import { InvoiceCard } from './invoice-card';
-import { InvoiceTable } from './invoice-table';
+import Link from "next/link";
+import { SerializedInvoice } from "@/types/invoice";
+import { InvoiceCard } from "./invoice-card";
+import { InvoiceTable } from "./invoice-table";
 
 interface RecentInvoicesProps {
-  invoices: (Invoice & { customer: Customer })[];
+  invoices: SerializedInvoice[];
 }
 
 export function RecentInvoices({ invoices }: RecentInvoicesProps) {

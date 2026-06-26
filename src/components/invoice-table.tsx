@@ -1,21 +1,20 @@
-'use client';
-
-import Link from 'next/link';
-import { Invoice, Customer } from "@/generated/prisma/client";
+"use client";
+import Link from "next/link";
+import { SerializedInvoice } from "@/types/invoice";
 
 interface InvoiceTableProps {
-  invoices: (Invoice & { customer: Customer })[];
+  invoices: SerializedInvoice[];
 }
 
 function getStatusColor(status: string) {
   const colors: Record<string, string> = {
-    DRAFT: 'bg-gray-100 text-gray-800',
-    SENT: 'bg-blue-100 text-blue-800',
-    PAID: 'bg-green-100 text-green-800',
-    OVERDUE: 'bg-red-100 text-red-800',
-    CANCELLED: 'bg-gray-100 text-gray-600',
+    DRAFT: "bg-gray-100 text-gray-800",
+    SENT: "bg-blue-100 text-blue-800",
+    PAID: "bg-green-100 text-green-800",
+    OVERDUE: "bg-red-100 text-red-800",
+    CANCELLED: "bg-gray-100 text-gray-600",
   };
-  return colors[status] || 'bg-gray-100 text-gray-800';
+  return colors[status] || "bg-gray-100 text-gray-800";
 }
 
 export function InvoiceTable({ invoices }: InvoiceTableProps) {
@@ -39,22 +38,19 @@ export function InvoiceTable({ invoices }: InvoiceTableProps) {
                 href={`/invoices/${inv.id}`}
                 className="font-medium text-blue-600 hover:underline"
               >
-                {inv.number || '—'}
+                {inv.number || "—"}
               </Link>
             </td>
             <td className="px-4 py-3 text-gray-900">{inv.customer.name}</td>
             <td className="px-4 py-3">
               <span
-                className={`
-                inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium
-                ${getStatusColor(inv.status)}
-              `}
+                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusColor(inv.status)}`}
               >
                 {inv.status}
               </span>
             </td>
             <td className="px-4 py-3 text-right font-medium text-gray-900 tabular-nums">
-              Rp{Number(inv.total).toLocaleString('id-ID')}
+              Rp{inv.total.toLocaleString("id-ID")}
             </td>
           </tr>
         ))}
