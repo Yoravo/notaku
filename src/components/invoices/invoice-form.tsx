@@ -41,6 +41,7 @@ export function InvoiceForm({
       : [{ description: "", quantity: 1, price: 0 }],
   );
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [showCustomerModal, setShowCustomerModal] = useState(false);
   const router = useRouter();
 
@@ -69,9 +70,11 @@ export function InvoiceForm({
   );
 
   const handleSubmit = async () => {
-    if (!customerId) return alert("Pilih pelanggan");
+    setError(null);
+
+    if (!customerId) return setError("Pilih pelanggan");
     if (items.some((i) => !i.description || i.price <= 0)) {
-      return alert("Lengkapi semua item");
+      return setError("Lengkapi semua item");
     }
 
     setLoading(true);
@@ -82,10 +85,16 @@ export function InvoiceForm({
       items,
     };
 
-    if (isEdit) {
-      await updateInvoice(invoice.id, payload);
-    } else {
-      await createInvoice(payload);
+    try {
+      if (isEdit) {
+        await updateInvoice(invoice.id, payload);
+      } else {
+        await createInvoice(payload);
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Terjadi kesalahan";
+      setError(message);
+      setLoading(false);
     }
   };
 
@@ -233,34 +242,43 @@ export function InvoiceForm({
         />
       </div>
 
-      {/* Total & Submit */}
-      <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-        <div>
-          <span className="text-sm text-gray-500">Total</span>
-          <p className="text-xl font-semibold text-gray-900">
-            Rp{total.toLocaleString("id-ID")}
-          </p>
-        </div>
+      <div className="space-y-3">
+        {error && (
+          <div
+            role="alert"
+            className="rounded-md border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-700"
+          >
+            {error}
+          </div>
+        )}
+        <div className="flex items-center justify-between border-t border-gray-200 pt-4">
+          <div>
+            <span className="text-sm text-gray-500">Total</span>
+            <p className="text-xl font-semibold text-gray-900">
+              Rp{total.toLocaleString("id-ID")}
+            </p>
+          </div>
 
-        <div className="flex gap-3">
-          <Link
-            href="/invoices"
-            className="rounded-md px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
-          >
-            Batal
-          </Link>
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white cursor-pointer hover:bg-blue-700 disabled:opacity-50
+          <div className="flex gap-3">
+            <Link
+              href="/invoices"
+              className="rounded-md px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
+            >
+              Batal
+            </Link>
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white cursor-pointer hover:bg-blue-700 disabled:opacity-50
   transition-colors"
-          >
-            {loading
-              ? "Menyimpan..."
-              : isEdit
-                ? "Update Invoice"
-                : "Buat Invoice"}
-          </button>
+            >
+              {loading
+                ? "Menyimpan..."
+                : isEdit
+                  ? "Update Invoice"
+                  : "Buat Invoice"}
+            </button>
+          </div>
         </div>
       </div>
     </div>
