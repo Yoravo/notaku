@@ -44,12 +44,12 @@ export async function createInvoice(data: {
   }
 
   const customer = await prisma.customer.findUnique({
-      where: { id: data.customerId, userId: user.id },
-      select: { id: true },
-    });
-    if (!customer) {
-      throw new Error("Pelanggan tidak ditemukan");
-    }
+    where: { id: data.customerId, userId: user.id },
+    select: { id: true },
+  });
+  if (!customer) {
+    throw new Error("Pelanggan tidak ditemukan");
+  }
 
   const total = data.items.reduce(
     (sum, item) => sum + item.quantity * item.price,
@@ -76,7 +76,11 @@ export async function createInvoice(data: {
     },
   });
 
-  auditLog("invoice.created", { invoiceId: invoice.id, number }, { userId: user.id });
+  auditLog(
+    "invoice.created",
+    { invoiceId: invoice.id, number },
+    { userId: user.id },
+  );
 
   revalidatePath("/invoices");
   redirect(`/invoices/${invoice.id}`);
@@ -108,49 +112,53 @@ export async function updateInvoice(
   }
 
   const customer = await prisma.customer.findUnique({
-      where: { id: data.customerId, userId: user.id },
-      select: { id: true },
-    });
-    if (!customer) {
-      throw new Error("Pelanggan tidak ditemukan");
-    }
+    where: { id: data.customerId, userId: user.id },
+    select: { id: true },
+  });
+  if (!customer) {
+    throw new Error("Pelanggan tidak ditemukan");
+  }
 
   const total = data.items.reduce(
     (sum, item) => sum + item.quantity * item.price,
     0,
   );
 
-  await prisma.invoiceItem.deleteMany({ where: { invoiceId: id } });
-
-  await prisma.invoice.update({
-    where: { id, userId: user.id },
-    data: {
-      customerId: data.customerId,
-      dueDate: data.dueDate ? new Date(data.dueDate) : null,
-      notes: data.notes || null,
-      total,
-      items: {
-        create: data.items.map((item) => ({
-          description: item.description,
-          quantity: item.quantity,
-          price: item.price,
-          amount: item.quantity * item.price,
-        })),
+  await prisma.$transaction([
+    prisma.invoiceItem.deleteMany({ where: { invoiceId: id } }),
+    prisma.invoice.update({
+      where: { id, userId: user.id },
+      data: {
+        customerId: data.customerId,
+        dueDate: data.dueDate ? new Date(data.dueDate) : null,
+        notes: data.notes || null,
+        total,
+        items: {
+          create: data.items.map((item) => ({
+            description: item.description,
+            quantity: item.quantity,
+            price: item.price,
+            amount: item.quantity * item.price,
+          })),
+        },
       },
-    },
-  });
+    }),
+  ]);
 
   revalidatePath("/invoices");
   redirect(`/invoices/${id}`);
 }
 
-export async function updateInvoiceStatus(
-  id: string,
-  status: string,
-) {
+export async function updateInvoiceStatus(id: string, status: string) {
   const user = await getUser();
 
-  const VALID_STATUSES = new Set(["DRAFT", "SENT", "PAID", "OVERDUE", "CANCELLED"]);
+  const VALID_STATUSES = new Set([
+    "DRAFT",
+    "SENT",
+    "PAID",
+    "OVERDUE",
+    "CANCELLED",
+  ]);
   if (!VALID_STATUSES.has(status)) {
     throw new Error("Status invoice tidak valid");
   }
@@ -160,7 +168,11 @@ export async function updateInvoiceStatus(
     data: { status: status as InvoiceStatus },
   });
 
-  auditLog("invoice.status_changed", { invoiceId: id, status }, { userId: user.id });
+  auditLog(
+    "invoice.status_changed",
+    { invoiceId: id, status },
+    { userId: user.id },
+  );
 
   revalidatePath(`/invoices/${id}`);
   revalidatePath("/invoices");
