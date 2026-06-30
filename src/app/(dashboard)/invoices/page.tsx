@@ -4,14 +4,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { PlusIcon } from "@heroicons/react/24/outline";
-
-const statusLabel: Record<string, { text: string; className: string }> = {
-  DRAFT: { text: "Draft", className: "bg-gray-100 text-gray-700" },
-  SENT: { text: "Terkirim", className: "bg-blue-50 text-blue-700" },
-  PAID: { text: "Lunas", className: "bg-green-50 text-green-700" },
-  OVERDUE: { text: "Jatuh Tempo", className: "bg-red-50 text-red-700" },
-  CANCELLED: { text: "Dibatalkan", className: "bg-gray-100 text-gray-500" },
-};
+import { statusLabel } from "@/lib/invoice-utils";
 
 export default async function InvoicesPage() {
   const session = await auth.api.getSession({ headers: await headers() });

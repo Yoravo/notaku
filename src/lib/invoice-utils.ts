@@ -8,3 +8,12 @@ export function getStatusColor(status: string): string {
   };
   return colors[status] || "bg-gray-100 text-gray-800";
 }
+
+export const statusLabel: Record<string, { text: string; className: string }> =
+  {
+    DRAFT: { text: "Draft", className: "bg-gray-100 text-gray-700" },
+    SENT: { text: "Terkirim", className: "bg-blue-50 text-blue-700" },
+    PAID: { text: "Lunas", className: "bg-green-50 text-green-700" },
+    OVERDUE: { text: "Jatuh Tempo", className: "bg-red-50 text-red-700" },
+    CANCELLED: { text: "Dibatalkan", className: "bg-gray-100 text-gray-500" },
+  };

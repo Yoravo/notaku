@@ -4,14 +4,7 @@ import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { InvoiceActions } from "@/components/invoices/invoice-actions";
-
-const statusLabel: Record<string, { text: string; className: string }> = {
-  DRAFT: { text: "Draft", className: "bg-gray-100 text-gray-700" },
-  SENT: { text: "Terkirim", className: "bg-blue-50 text-blue-700" },
-  PAID: { text: "Lunas", className: "bg-green-50 text-green-700" },
-  OVERDUE: { text: "Jatuh Tempo", className: "bg-red-50 text-red-700" },
-  CANCELLED: { text: "Dibatalkan", className: "bg-gray-100 text-gray-500" },
-};
+import { statusLabel } from "@/lib/invoice-utils";
 
 export default async function InvoiceDetailPage({
   params,
@@ -57,13 +50,14 @@ export default async function InvoiceDetailPage({
         </div>
 
         <div className="flex gap-2">
-          <Link
-            href={`/invoices/${invoice.id}/edit`}
-            className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700
-  hover:bg-gray-50 transition-colors"
-          >
-            Edit
-          </Link>
+          {invoice.status !== "PAID" && invoice.status !== "CANCELLED" && (
+            <Link
+              href={`/invoices/${invoice.id}/edit`}
+              className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              Edit
+            </Link>
+          )}
           <InvoiceActions invoiceId={invoice.id} status={invoice.status} />
           <a
             href={`/api/invoices/${invoice.id}/pdf`}
