@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { UpgradeButton } from "@/components/upgrade-button";
 import { TemplateSelector } from "@/components/template-selector";
 import { PaymentVerifier } from "@/components/payment-verifier";
+import { ProfileForm } from "@/components/profile-form";
 
 export default async function SettingsPage() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -36,22 +37,13 @@ export default async function SettingsPage() {
         <h2 className="text-sm font-medium uppercase tracking-wide text-gray-500">
           Profil
         </h2>
-        <div className="mt-3 space-y-2 text-sm">
-          <p>
-            <span className="text-gray-500">Nama:</span>{" "}
-            <span className="text-gray-900">{user.name}</span>
-          </p>
-          <p>
-            <span className="text-gray-500">Email:</span>{" "}
-            <span className="text-gray-900">{user.email}</span>
-          </p>
-          {user.businessName && (
-            <p>
-              <span className="text-gray-500">Bisnis:</span>{" "}
-              <span className="text-gray-900">{user.businessName}</span>
-            </p>
-          )}
-        </div>
+        <p className="mt-0.5 text-xs text-gray-400">Email: {user.email}</p>
+        <ProfileForm
+          name={user.name}
+          businessName={user.businessName ?? null}
+          phone={user.phone ?? null}
+          address={user.address ?? null}
+        />
       </section>
 
       {/* Subscription */}
