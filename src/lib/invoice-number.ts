@@ -1,10 +1,15 @@
 import { prisma } from "./prisma";
+import type { PrismaClientOrTx } from "./prisma";
 
-export async function generateInvoiceNumber(userId: string): Promise<string> {
+export async function generateInvoiceNumber(
+  userId: string,
+  tx?: PrismaClientOrTx,
+): Promise<string>{
   const year = new Date().getFullYear();
   const prefix = `INV-${year}-`;
+  const client = tx ?? prisma;
 
-  const lastInvoice = await prisma.invoice.findFirst({
+  const lastInvoice = await client.invoice.findFirst({
     where: {
       userId,
       number: { startsWith: prefix },

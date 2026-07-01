@@ -57,6 +57,8 @@ model Invoice {
   createdAt  DateTime      @default(now())
   user       User          @relation(fields: [userId], references: [id])
   customer   Customer      @relation(fields: [customerId], references: [id])
+
+  @@unique([userId, number])
 }
 
 model InvoiceItem {

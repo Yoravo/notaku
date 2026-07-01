@@ -55,30 +55,33 @@ export async function createInvoice(data: {
     (sum, item) => sum + item.quantity * item.price,
     0,
   );
-  const number = await generateInvoiceNumber(user.id);
 
-  const invoice = await prisma.invoice.create({
-    data: {
-      userId: user.id,
-      customerId: data.customerId,
-      number,
-      dueDate: data.dueDate ? new Date(data.dueDate) : null,
-      notes: data.notes || null,
-      total,
-      items: {
-        create: data.items.map((item) => ({
-          description: item.description,
-          quantity: item.quantity,
-          price: item.price,
-          amount: item.quantity * item.price,
-        })),
+  const invoice = await prisma.$transaction(async (tx) => {
+    const number = await generateInvoiceNumber(user.id, tx);
+
+    return tx.invoice.create({
+      data: {
+        userId: user.id,
+        customerId: data.customerId,
+        number,
+        dueDate: data.dueDate ? new Date(data.dueDate) : null,
+        notes: data.notes || null,
+        total,
+        items: {
+          create: data.items.map((item) => ({
+            description: item.description,
+            quantity: item.quantity,
+            price: item.price,
+            amount: item.quantity * item.price,
+          })),
+        },
       },
-    },
+    });
   });
 
   auditLog(
     "invoice.created",
-    { invoiceId: invoice.id, number },
+    { invoiceId: invoice.id, number: invoice.number },
     { userId: user.id },
   );
 
