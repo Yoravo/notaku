@@ -1,14 +1,17 @@
 import { prisma } from "./prisma";
+import type { PrismaClientOrTx } from "./prisma";
 
 const FREE_INVOICE_LIMIT = 5;
 
 export async function canCreateInvoice(
   userId: string,
+  tx?: PrismaClientOrTx,
 ): Promise<{ allowed: boolean; used: number; limit: number }> {
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const client = tx ?? prisma;
 
-  const user = await prisma.user.findUnique({
+  const user = await client.user.findUnique({
     where: { id: userId },
     select: { plan: true },
   });
@@ -17,7 +20,7 @@ export async function canCreateInvoice(
     return { allowed: true, used: 0, limit: Infinity };
   }
 
-  const count = await prisma.invoice.count({
+  const count = await client.invoice.count({
     where: {
       userId,
       createdAt: { gte: startOfMonth },

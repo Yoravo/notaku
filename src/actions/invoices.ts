@@ -36,27 +36,28 @@ export async function createInvoice(data: {
     throw new Error(parsed.error.issues[0].message);
   }
 
-  const { allowed } = await canCreateInvoice(user.id);
-  if (!allowed) {
-    throw new Error(
-      "Batas invoice gratis tercapai. Upgrade ke Pro untuk unlimited.",
-    );
-  }
-
-  const customer = await prisma.customer.findUnique({
-    where: { id: data.customerId, userId: user.id },
-    select: { id: true },
-  });
-  if (!customer) {
-    throw new Error("Pelanggan tidak ditemukan");
-  }
-
   const total = data.items.reduce(
     (sum, item) => sum + item.quantity * item.price,
     0,
   );
 
   const invoice = await prisma.$transaction(async (tx) => {
+    // Atomic: count check + create dalam satu transaksi
+    const { allowed } = await canCreateInvoice(user.id, tx);
+    if (!allowed) {
+      throw new Error(
+        "Batas invoice gratis tercapai. Upgrade ke Pro untuk unlimited.",
+      );
+    }
+
+    const customer = await tx.customer.findUnique({
+      where: { id: data.customerId, userId: user.id },
+      select: { id: true },
+    });
+    if (!customer) {
+      throw new Error("Pelanggan tidak ditemukan");
+    }
+
     const number = await generateInvoiceNumber(user.id, tx);
 
     return tx.invoice.create({
@@ -127,26 +128,25 @@ export async function updateInvoice(
     0,
   );
 
-  await prisma.$transaction([
-    prisma.invoiceItem.deleteMany({ where: { invoiceId: id } }),
-    prisma.invoice.update({
-      where: { id, userId: user.id },
-      data: {
-        customerId: data.customerId,
-        dueDate: data.dueDate ? new Date(data.dueDate) : null,
-        notes: data.notes || null,
-        total,
-        items: {
-          create: data.items.map((item) => ({
-            description: item.description,
-            quantity: item.quantity,
-            price: item.price,
-            amount: item.quantity * item.price,
-          })),
-        },
+  await prisma.invoiceItem.deleteMany({ where: { invoiceId: id } });
+
+  await prisma.invoice.update({
+    where: { id, userId: user.id },
+    data: {
+      customerId: data.customerId,
+      dueDate: data.dueDate ? new Date(data.dueDate) : null,
+      notes: data.notes || null,
+      total,
+      items: {
+        create: data.items.map((item) => ({
+          description: item.description,
+          quantity: item.quantity,
+          price: item.price,
+          amount: item.quantity * item.price,
+        })),
       },
-    }),
-  ]);
+    },
+  });
 
   revalidatePath("/invoices");
   redirect(`/invoices/${id}`);
