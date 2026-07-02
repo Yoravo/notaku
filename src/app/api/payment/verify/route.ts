@@ -61,7 +61,8 @@ export async function GET() {
     const isFraudOk = data.fraud_status === "accept" || !data.fraud_status;
 
     if (isSettlement && isFraudOk) {
-      const currentPeriodEnd = new Date();
+      const base = subscription.currentPeriodEnd ?? new Date();
+      const currentPeriodEnd = new Date(base);
       currentPeriodEnd.setDate(currentPeriodEnd.getDate() + 30);
 
       await prisma.$transaction([
