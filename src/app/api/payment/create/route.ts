@@ -13,7 +13,7 @@ export async function POST() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  if (!checkRateLimit(`payment:${session.user.id}`)) {
+  if (!(await checkRateLimit(`payment:${session.user.id}`))) {
     return NextResponse.json(
       { error: "Terlalu banyak permintaan. Coba lagi nanti." },
       { status: 429 },

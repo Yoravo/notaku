@@ -1,22 +1,25 @@
-type RateLimitEntry = { count: number; resetAt: number };
+import { Redis } from "@upstash/redis";
 
-const store = new Map<string, RateLimitEntry>();
-const WINDOW_MS = 60_000; // 1 menit
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+});
+
 const MAX_REQUESTS = 60;
 
-export function checkRateLimit(identifier: string): boolean {
-  const now = Date.now();
-  const entry = store.get(identifier);
+export async function checkRateLimit(identifier: string): Promise<boolean> {
+  const key = `ratelimit:${identifier}`;
+  const current = await redis.get<number>(key);
 
-  if (!entry || now > entry.resetAt) {
-    store.set(identifier, { count: 1, resetAt: now + WINDOW_MS });
+  if (current === null) {
+    await redis.setex(key, 60, 1);
     return true;
   }
 
-  if (entry.count >= MAX_REQUESTS) {
+  if (current >= MAX_REQUESTS) {
     return false;
   }
 
-  entry.count++;
+  await redis.incr(key);
   return true;
 }
