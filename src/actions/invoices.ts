@@ -37,7 +37,7 @@ export async function createInvoice(data: {
   }
 
   const total = data.items.reduce(
-    (sum, item) => sum + item.quantity * item.price,
+    (sum, item) => sum + Math.round(item.quantity * item.price),
     0,
   );
 
@@ -73,7 +73,7 @@ export async function createInvoice(data: {
             description: item.description,
             quantity: item.quantity,
             price: item.price,
-            amount: item.quantity * item.price,
+            amount: Math.round(item.quantity * item.price),
           })),
         },
       },
@@ -124,7 +124,7 @@ export async function updateInvoice(
   }
 
   const total = data.items.reduce(
-    (sum, item) => sum + item.quantity * item.price,
+    (sum, item) => sum + Math.round(item.quantity * item.price),
     0,
   );
 
@@ -142,7 +142,7 @@ export async function updateInvoice(
           description: item.description,
           quantity: item.quantity,
           price: item.price,
-          amount: item.quantity * item.price,
+          amount: Math.round(item.quantity * item.price),
         })),
       },
     },
