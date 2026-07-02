@@ -61,22 +61,32 @@ export async function GET() {
     const isFraudOk = data.fraud_status === "accept" || !data.fraud_status;
 
     if (isSettlement && isFraudOk) {
-      const base = subscription.currentPeriodEnd ?? new Date();
-      const currentPeriodEnd = new Date(base);
-      currentPeriodEnd.setDate(currentPeriodEnd.getDate() + 30);
+      const result = await prisma.$transaction(async (tx) => {
+        const fresh = await tx.subscription.findUnique({
+          where: { id: subscription.id },
+        });
+        if (!fresh) return "not_found";
 
-      await prisma.$transaction([
-        prisma.subscription.update({
+        // Already activated by webhook — skip
+        if (fresh.status === "ACTIVE") return "already_active";
+
+        const base = fresh.currentPeriodEnd ?? new Date();
+        const currentPeriodEnd = new Date(base);
+        currentPeriodEnd.setDate(currentPeriodEnd.getDate() + 30);
+
+        await tx.subscription.update({
           where: { id: subscription.id },
           data: { status: "ACTIVE", currentPeriodEnd },
-        }),
-        prisma.user.update({
+        });
+        await tx.user.update({
           where: { id: subscription.userId },
           data: { plan: "PRO" },
-        }),
-      ]);
+        });
 
-      return NextResponse.json({ status: "activated" });
+        return "activated";
+      });
+
+      return NextResponse.json({ status: result });
     }
 
     return NextResponse.json({
