@@ -15,7 +15,7 @@ export async function POST() {
 
   if (!(await checkRateLimit(`payment:${session.user.id}`))) {
     return NextResponse.json(
-      { error: "Terlalu banyak permintaan. Coba lagi nanti." },
+      { error: "Too many requests" },
       { status: 429 },
     );
   }
@@ -23,14 +23,7 @@ export async function POST() {
   const user = session.user;
   const orderId = `PRO-${user.id.slice(0, 8)}-${Date.now()}`;
 
-  const token = await createSnapToken({
-    orderId,
-    amount: PRO_PRICE,
-    customerName: user.name,
-    customerEmail: user.email,
-  });
-
-  // Store orderId in subscription for later verification
+  // Save the orderId before calling Midtrans API
   await prisma.subscription.upsert({
     where: { userId: user.id },
     create: {
@@ -43,8 +36,24 @@ export async function POST() {
     },
   });
 
-  return NextResponse.json({
-    token,
-    clientKey: process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY,
-  });
+  // Error Handling for Midtrans API call
+  try {
+    const token = await createSnapToken({
+      orderId,
+      amount: PRO_PRICE,
+      customerName: user.name,
+      customerEmail: user.email,
+    });
+    
+    return NextResponse.json({
+      token,
+      clientKey: process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY,
+    });
+  } catch (err) {
+    console.error("Error creating Midtrans snap token:", err);
+    return NextResponse.json(
+      { error: "Failed to create payment token" },
+      { status: 502 },
+    );
+  }
 }
