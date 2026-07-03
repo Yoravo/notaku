@@ -166,6 +166,26 @@ export async function updateInvoiceStatus(id: string, status: string) {
     throw new Error("Status invoice tidak valid");
   }
 
+  const VALID_TRANSITIONS: Record<string, Set<string>> = {
+    DRAFT: new Set(["SENT", "CANCELLED"]),
+    SENT: new Set(["PAID", "OVERDUE", "CANCELLED"]),
+    PAID: new Set(["OVERDUE"]),
+    OVERDUE: new Set(["PAID", "CANCELLED"]),
+    CANCELLED: new Set(),
+  };
+
+  const invoice = await prisma.invoice.findUnique({
+    where: { id, userId: user.id },
+    select: { status: true },
+  });
+  if (!invoice) throw new Error("Invoice tidak ditemukan");
+
+  if (!VALID_TRANSITIONS[invoice.status]?.has(status)) {
+    throw new Error(
+      `Status tidak bisa diubah dari ${invoice.status} ke ${status}`,
+    );
+  }
+
   await prisma.invoice.update({
     where: { id, userId: user.id },
     data: { status: status as InvoiceStatus },
