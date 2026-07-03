@@ -18,17 +18,21 @@ export default function RegisterPage() {
     setLoading(true);
     setError("");
 
-    const { error } = await authClient.signUp.email({
-      name,
-      email,
-      password,
-    });
-
-    if (error) {
-      setError(error.message || "Registrasi gagal");
-      setLoading(false);
-    } else {
-      setSuccess(true);
+    try {
+      const { error } = await authClient.signUp.email({
+        name,
+        email,
+        password,
+        callbackURL: "/dashboard",
+      });
+      if (error) {
+        setError(error.message || "Registrasi gagal");
+      } else {
+        setSuccess(true);
+      }
+    } catch {
+      setError("Terjadi kesalahan. Coba lagi.");
+    } finally {
       setLoading(false);
     }
   };

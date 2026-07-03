@@ -27,10 +27,10 @@ export default function LoginPage() {
     if (error) {
       if (error.status === 403) {
         setError(
-          "Email kamu belum diverifikasi. Cek inbox untuk link verifikasi.",
+          "Email belum diverifikasi. Cek inbox atau coba login lagi nanti.",
         );
       } else {
-        setError(error.message || "Login gagal");
+        setError("Email atau password salah");
       }
       setLoading(false);
     } else {
