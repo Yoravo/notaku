@@ -15,7 +15,9 @@ export const invoiceItemSchema = z.object({
 
 export const invoiceSchema = z.object({
   customerId: z.string().min(1, "Pelanggan wajib dipilih"),
-  dueDate: z.string().nullable(),
+  dueDate: z.string().nullable().refine((val) => val === null || !isNaN(new Date(val).getTime()), {
+    message: "Tanggal jatuh tempo tidak valid",
+  }),
   notes: z.string().max(1000).nullable(),
   items: z.array(invoiceItemSchema).min(1, "Minimal 1 item"),
 });
