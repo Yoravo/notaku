@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { checkServerActionRateLimit } from "@/lib/rate-limit";
 
 const profileSchema = z.object({
   name: z.string().min(1, "Nama tidak boleh kosong").max(100),
@@ -21,6 +22,8 @@ export async function updateProfile(data: {
 }) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) throw new Error("Unauthorized");
+
+  await checkServerActionRateLimit(session.user.id, "write");
 
   const parsed = profileSchema.safeParse(data);
   if (!parsed.success) throw new Error(parsed.error.issues[0].message);

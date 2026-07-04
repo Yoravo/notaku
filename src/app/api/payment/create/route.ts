@@ -13,7 +13,7 @@ export async function POST() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  if (!(await checkRateLimit(`payment:${session.user.id}`))) {
+  if (!(await checkRateLimit(`payment:${session.user.id}`, 5, 60))) {
     return NextResponse.json(
       { error: "Too many requests" },
       { status: 429 },

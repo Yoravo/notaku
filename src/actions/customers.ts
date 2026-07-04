@@ -6,6 +6,7 @@ import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { customerSchema } from "@/lib/validations";
 import { auditLog } from "@/lib/audit-log";
+import { checkServerActionRateLimit } from "@/lib/rate-limit";
 
 async function getUser() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -15,6 +16,7 @@ async function getUser() {
 
 export async function createCustomer(formData: FormData) {
   const user = await getUser();
+  await checkServerActionRateLimit(user.id, "write");
 
   const parsed = customerSchema.safeParse({
     name: formData.get("name"),
@@ -44,6 +46,7 @@ export async function createCustomer(formData: FormData) {
 
 export async function updateCustomer(id: string, formData: FormData) {
   const user = await getUser();
+  await checkServerActionRateLimit(user.id, "write");
 
   const parsed = customerSchema.safeParse({
     name: formData.get("name"),
@@ -82,6 +85,7 @@ export async function updateCustomer(id: string, formData: FormData) {
 
 export async function deleteCustomer(id: string) {
   const user = await getUser();
+  await checkServerActionRateLimit(user.id, "destructive");
 
   await prisma.customer.delete({
     where: { id, userId: user.id },

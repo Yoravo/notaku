@@ -5,21 +5,35 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 });
 
-const MAX_REQUESTS = 60;
-
-export async function checkRateLimit(identifier: string): Promise<boolean> {
+export async function checkRateLimit(
+  identifier: string,
+  max: number = 60,
+  windowSeconds: number = 60,
+): Promise<boolean> {
   const key = `ratelimit:${identifier}`;
-  const current = await redis.get<number>(key);
-
-  if (current === null) {
-    await redis.setex(key, 60, 1);
-    return true;
+  const count = await redis.incr(key);
+  if (count === 1) {
+    await redis.expire(key, windowSeconds);
   }
+  return count <= max;
+}
 
-  if (current >= MAX_REQUESTS) {
-    return false;
+export async function checkServerActionRateLimit(
+  userId: string,
+  category: "write" | "destructive",
+): Promise<void> {
+  const limits = {
+    write: { max: 30, window: 60 },
+    destructive: { max: 10, window: 60 },
+  };
+  const { max, window } = limits[category];
+
+  const [globalOk, categoryOk] = await Promise.all([
+    checkRateLimit(`action:global:${userId}`, 60, 60),
+    checkRateLimit(`action:${category}:${userId}`, max, window),
+  ]);
+
+  if (!globalOk || !categoryOk) {
+    throw new Error("Terlalu banyak permintaan. Coba lagi nanti.");
   }
-
-  await redis.incr(key);
-  return true;
 }

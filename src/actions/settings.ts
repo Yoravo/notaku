@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { InvoiceTemplate } from "@/generated/prisma/client";
+import { checkServerActionRateLimit } from "@/lib/rate-limit";
 
 async function getUser() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -14,6 +15,7 @@ async function getUser() {
 
 export async function updateInvoiceTemplate(template: InvoiceTemplate) {
   const user = await getUser();
+  await checkServerActionRateLimit(user.id, "write");
 
   // Verify user is Pro
   const dbUser = await prisma.user.findUnique({

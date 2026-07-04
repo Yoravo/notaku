@@ -10,6 +10,7 @@ import { generateInvoiceNumber } from "@/lib/invoice-number";
 import { canCreateInvoice } from "@/lib/plan-limits";
 import { invoiceSchema } from "@/lib/validations";
 import { auditLog } from "@/lib/audit-log";
+import { checkServerActionRateLimit } from "@/lib/rate-limit";
 
 async function getUser() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -30,6 +31,7 @@ export async function createInvoice(data: {
   items: { description: string; quantity: number; price: number }[];
 }) {
   const user = await getUser();
+  await checkServerActionRateLimit(user.id, "write");
 
   const parsed = invoiceSchema.safeParse(data);
   if (!parsed.success) {
@@ -100,6 +102,7 @@ export async function updateInvoice(
   },
 ) {
   const user = await getUser();
+  await checkServerActionRateLimit(user.id, "write");
 
   const parsed = invoiceSchema.safeParse(data);
   if (!parsed.success) {
@@ -154,6 +157,7 @@ export async function updateInvoice(
 
 export async function updateInvoiceStatus(id: string, status: string) {
   const user = await getUser();
+  await checkServerActionRateLimit(user.id, "write");
 
   const VALID_STATUSES = new Set([
     "DRAFT",
@@ -203,6 +207,7 @@ export async function updateInvoiceStatus(id: string, status: string) {
 
 export async function deleteInvoice(id: string) {
   const user = await getUser();
+  await checkServerActionRateLimit(user.id, "destructive");
 
   const invoice = await prisma.invoice.findUnique({
     where: { id, userId: user.id },
