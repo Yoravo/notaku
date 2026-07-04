@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { customerSchema } from "@/lib/validations";
 import { auditLog } from "@/lib/audit-log";
 import { checkServerActionRateLimit } from "@/lib/rate-limit";
@@ -39,7 +40,11 @@ export async function createCustomer(formData: FormData) {
     },
   });
 
-  auditLog("customer.created", { customerName: parsed.data.name }, { userId: user.id });
+  auditLog(
+    "customer.created",
+    { customerName: parsed.data.name },
+    { userId: user.id },
+  );
 
   revalidatePath("/customers");
 }
@@ -87,11 +92,42 @@ export async function deleteCustomer(id: string) {
   const user = await getUser();
   await checkServerActionRateLimit(user.id, "destructive");
 
+  const customer = await prisma.customer.findUnique({
+    where: { id, userId: user.id },
+    include: { _count: { select: { invoices: true } } },
+  });
+  if (!customer) throw new Error("Pelanggan tidak ditemukan");
+
+  // Prevent FK error, give message if customer has invoices
+  if (customer._count.invoices > 0) {
+    // Check if there are any active invoices (SENT, PAID, OVERDUE) for this customer
+    const activeInvoice = await prisma.invoice.findFirst({
+      where: {
+        customerId: id,
+        status: { in: ["SENT", "PAID", "OVERDUE"] },
+      },
+      select: { id: true },
+    });
+
+    if (activeInvoice) {
+      redirect(
+        `/customers?error=${encodeURIComponent(
+          "Pelanggan memiliki invoice aktif. Arsipkan invoice terlebih dahulu.",
+        )}`,
+      );
+    }
+
+    // delete any DRAFT or CANCELLED invoices for this customer
+    await prisma.invoice.deleteMany({
+      where: { customerId: id, status: { in: ["DRAFT", "CANCELLED"] } },
+    });
+  }
+
   await prisma.customer.delete({
     where: { id, userId: user.id },
   });
 
   auditLog("customer.deleted", { customerId: id }, { userId: user.id });
-
   revalidatePath("/customers");
+  redirect("/customers");
 }
