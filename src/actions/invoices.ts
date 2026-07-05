@@ -109,13 +109,16 @@ export async function updateInvoice(
     throw new Error(parsed.error.issues[0].message);
   }
 
-  // Verify ownership BEFORE any mutation
-  const existing = await prisma.invoice.findUnique({
+  // Free user can only edit DRAFT invoices
+  const invoice = await prisma.invoice.findUnique({
     where: { id, userId: user.id },
-    select: { id: true },
+    select: { status: true, user: { select: { plan: true } } },
   });
-  if (!existing) {
-    throw new Error("Invoice tidak ditemukan");
+  if (!invoice) throw new Error("Invoice tidak ditemukan");
+  if (invoice.user.plan === "FREE" && invoice.status !== "DRAFT") {
+    throw new Error(
+      "Akun gratis hanya bisa mengedit invoice draft. Invoice yang sudah dikirim/lunas tidak bisa diubah.",
+    );
   }
 
   const customer = await prisma.customer.findUnique({
