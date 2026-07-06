@@ -19,5 +19,5 @@ export const invoiceSchema = z.object({
     message: "Tanggal jatuh tempo tidak valid",
   }),
   notes: z.string().max(1000).nullable(),
-  items: z.array(invoiceItemSchema).min(1, "Minimal 1 item"),
+  items: z.array(invoiceItemSchema).min(1, "Minimal 1 item").max(50, "Maksimal 50 item"),
 });

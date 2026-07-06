@@ -8,8 +8,18 @@ export async function canCreateInvoice(
   userId: string,
   tx?: PrismaClientOrTx,
 ): Promise<{ allowed: boolean; used: number; limit: number }> {
+  // Convert to Jakarta timezone and get the start of the current month
   const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const formatter = new Intl.DateTimeFormat("id-ID", {
+    timeZone: "Asia/Jakarta",
+    year: "numeric",
+    month: "numeric",
+  });
+  const [month, year] = formatter.format(now).split("/");
+  const startOfMonth = new Date(
+    `${year}-${month.padStart(2, "0")}-01T00:00:00+07:00`,
+  );
+
   const client = tx ?? prisma;
 
   const user = await client.user.findUnique({
