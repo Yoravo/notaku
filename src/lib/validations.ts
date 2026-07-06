@@ -2,9 +2,9 @@ import { z } from "zod";
 
 export const customerSchema = z.object({
   name: z.string().min(1, "Nama wajib diisi").max(100),
-  email: z.string().email("Email tidak valid").optional().or(z.literal("")),
-  phone: z.string().max(20).optional().or(z.literal("")),
-  address: z.string().max(500).optional().or(z.literal("")),
+  email: z.string().email("Email tidak valid").nullable().or(z.literal("")),
+  phone: z.string().max(20).nullable().or(z.literal("")),
+  address: z.string().max(500).nullable().or(z.literal("")),
 });
 
 export const invoiceItemSchema = z.object({
