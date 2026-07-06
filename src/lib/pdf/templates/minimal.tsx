@@ -1,6 +1,7 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import type { InvoiceData } from "../types";
 import { statusText } from "../types";
+import { formatCurrency } from "@/lib/pdf/format";
 
 const ACCENT = "#0f6b4f";
 
@@ -192,19 +193,19 @@ export function MinimalTemplate({ data }: { data: InvoiceData }) {
                 {item.quantity}
               </Text>
               <Text style={{ ...styles.colPrice, color: "#666" }}>
-                Rp{item.price.toLocaleString("id-ID")}
+                {formatCurrency(item.price)}
               </Text>
               <Text
                 style={{ ...styles.colAmount, ...styles.bold, color: "#222" }}
               >
-                Rp{item.amount.toLocaleString("id-ID")}
+                {formatCurrency(item.amount)}
               </Text>
             </View>
           ))}
           <View style={styles.totalRow}>
             <Text style={styles.totalLabel}>Total</Text>
             <Text style={styles.totalValue}>
-              Rp{data.total.toLocaleString("id-ID")}
+              {formatCurrency(data.total)}
             </Text>
           </View>
         </View>

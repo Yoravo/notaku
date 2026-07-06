@@ -1,6 +1,7 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import type { InvoiceData } from "@/lib/pdf/types";
 import { statusColors, statusText } from "@/lib/pdf/types";
+import { formatCurrency } from "@/lib/pdf/format";
 
 const styles = StyleSheet.create({
   page: { padding: 40, fontSize: 10, fontFamily: "Helvetica" },
@@ -183,19 +184,19 @@ export function ClassicTemplate({ data }: { data: InvoiceData }) {
                 {item.quantity}
               </Text>
               <Text style={{ ...styles.colPrice, color: "#555" }}>
-                Rp{item.price.toLocaleString("id-ID")}
+                {formatCurrency(item.price)}
               </Text>
               <Text
                 style={{ ...styles.colAmount, ...styles.bold, color: "#111" }}
               >
-                Rp{item.amount.toLocaleString("id-ID")}
+                {formatCurrency(item.amount)}
               </Text>
             </View>
           ))}
           <View style={styles.totalRow}>
             <Text style={styles.totalLabel}>Total</Text>
             <Text style={styles.totalValue}>
-              Rp{data.total.toLocaleString("id-ID")}
+              {formatCurrency(data.total)}
             </Text>
           </View>
         </View>
