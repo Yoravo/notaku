@@ -24,20 +24,18 @@ export async function GET(
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
+  const formatDate = (date: Date) => {
+    const d = date.getDate().toString().padStart(2, "0");
+    const m = date.toLocaleString("en-US", { month: "long" });
+    const y = date.getFullYear();
+    return `${d} ${m} ${y}`;
+  };
+
   const data = {
     number: invoice.number,
     status: invoice.status,
-    createdAt: invoice.createdAt.toLocaleDateString("id-ID", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }),
-    dueDate:
-      invoice.dueDate?.toLocaleDateString("id-ID", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      }) || null,
+    createdAt: formatDate(invoice.createdAt),
+    dueDate: invoice.dueDate ? formatDate(invoice.dueDate) : null,
     notes: invoice.notes,
     customer: {
       name: invoice.customer.name,
@@ -66,12 +64,20 @@ export async function GET(
       | "minimal",
   };
 
-  const buffer = await renderInvoicePDF(data);
+  try {
+    const buffer = await renderInvoicePDF(data);
 
-  return new NextResponse(new Uint8Array(buffer), {
-    headers: {
-      "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="${invoice.number}.pdf"`,
-    },
-  });
+    return new NextResponse(new Uint8Array(buffer), {
+      headers: {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="${invoice.number}.pdf"`,
+      },
+    });
+  } catch (err) {
+    console.error("PDF render error:", err);
+    return NextResponse.json(
+      { error: "Gagal membuat PDF. Coba lagi." },
+      { status: 500 },
+    );
+  }
 }
