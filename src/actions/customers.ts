@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import { customerSchema } from "@/lib/validations";
 import { auditLog } from "@/lib/audit-log";
 import { checkServerActionRateLimit } from "@/lib/rate-limit";
+import { canCreateCustomer } from "@/lib/plan-limits";
 
 async function getUser() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -18,6 +19,13 @@ async function getUser() {
 export async function createCustomer(formData: FormData) {
   const user = await getUser();
   await checkServerActionRateLimit(user.id, "write");
+
+  const { allowed } = await canCreateCustomer(user.id);
+  if (!allowed) {
+    throw new Error(
+      "Batas pelanggan gratis tercapai. Upgrade ke Pro untuk unlimited.",
+    );
+  }
 
   const parsed = customerSchema.safeParse({
     name: formData.get("name"),
