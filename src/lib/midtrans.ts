@@ -1,6 +1,9 @@
 import crypto from "crypto";
 
-const MIDTRANS_SERVER_KEY = process.env.MIDTRANS_SERVER_KEY!;
+const MIDTRANS_SERVER_KEY = process.env.MIDTRANS_SERVER_KEY;
+if (!MIDTRANS_SERVER_KEY) {
+  throw new Error("MIDTRANS_SERVER_KEY is not configured");
+}
 const MIDTRANS_API_URL =
   process.env.MIDTRANS_API_URL || "https://app.midtrans.com/snap/v1";
 
