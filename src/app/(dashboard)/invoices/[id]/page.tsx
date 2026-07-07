@@ -49,7 +49,7 @@ export default async function InvoiceDetailPage({
           </p>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {invoice.status !== "PAID" && invoice.status !== "CANCELLED" && (
             <Link
               href={`/invoices/${invoice.id}/edit`}
@@ -62,8 +62,7 @@ export default async function InvoiceDetailPage({
           <a
             href={`/api/invoices/${invoice.id}/pdf`}
             download
-            className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50
-  transition-colors"
+            className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
           >
             Download PDF
           </a>
