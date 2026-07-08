@@ -17,8 +17,7 @@ export async function generateMetadata({
     },
   });
 
-  if (!invoice)
-    return { title: "Invoice Tidak Ditemukan — NotaKu" };
+  if (!invoice) return { title: "Invoice Tidak Ditemukan — NotaKu" };
 
   const businessName = invoice.user.businessName || invoice.user.name;
   const totalFormatted = `Rp${Number(invoice.total).toLocaleString("id-ID")}`;
@@ -116,7 +115,7 @@ export default async function PublicInvoicePage({
             </p>
             {invoice.customer.email && (
               <p className="text-sm text-gray-600">
-                {invoice.customer.email.replace(/(.{2})(.*)(@.*)/, "$1****$3")}
+                {invoice.customer.email.replace(/^(.)(.*)(@.*)$/, "$1****$3")}
               </p>
             )}
             {invoice.customer.phone && (
@@ -176,8 +175,8 @@ export default async function PublicInvoicePage({
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {invoice.items.map((item) => (
-                <tr key={item.id}>
+              {invoice.items.map((item, index) => (
+                <tr key={index}>
                   <td className="py-3 text-gray-900">{item.description}</td>
                   <td className="py-3 text-right text-gray-600">
                     {item.quantity}
