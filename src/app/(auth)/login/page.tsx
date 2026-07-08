@@ -39,10 +39,14 @@ export default function LoginPage() {
   };
 
   const handleGoogleSignIn = async () => {
-    await authClient.signIn.social({
-      provider: "google",
-      callbackURL: "/dashboard",
-    });
+    try {
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/dashboard",
+      });
+    } catch {
+      setError("Gagal terhubung ke Google. Coba lagi.");
+    }
   };
 
   return (
