@@ -1,0 +1,237 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
+  ChartBarIcon,
+  UsersIcon,
+  DocumentTextIcon,
+  MegaphoneIcon,
+  ArrowLeftOnRectangleIcon,
+  ShieldCheckIcon,
+  Bars3Icon,
+  XMarkIcon,
+  ChevronDoubleLeftIcon,
+  ClipboardDocumentListIcon,
+  TagIcon,
+  CpuChipIcon,
+  BanknotesIcon,
+} from "@heroicons/react/24/outline";
+
+type AdminUser = {
+  id: string;
+  name: string;
+  email: string;
+  role?: string | null;
+};
+
+const adminNavItems = [
+  { href: "/admin", label: "Overview & Trafik", icon: ChartBarIcon, exact: true },
+  { href: "/admin/users", label: "Manajemen User", icon: UsersIcon },
+  { href: "/admin/invoices", label: "Semua Invoices", icon: DocumentTextIcon },
+  { href: "/admin/finance", label: "Laporan Finansial", icon: BanknotesIcon },
+  { href: "/admin/promos", label: "Voucher & Promo", icon: TagIcon },
+  { href: "/admin/announcement", label: "Pengumuman", icon: MegaphoneIcon },
+  { href: "/admin/logs", label: "Audit Logs", icon: ClipboardDocumentListIcon },
+  { href: "/admin/system", label: "System Health", icon: CpuChipIcon },
+];
+
+export function AdminLayoutClient({
+  adminUser,
+  children,
+}: {
+  adminUser: AdminUser;
+  children: React.ReactNode;
+}) {
+  // Mobile drawer state (default: hidden)
+  const [mobileOpen, setMobileOpen] = useState(false);
+  // Desktop sidebar collapse state (default: show/expanded)
+  const [desktopOpen, setDesktopOpen] = useState(true);
+  const pathname = usePathname();
+
+  return (
+    <div className="flex h-screen overflow-hidden bg-slate-900 text-slate-100">
+      {/* Mobile Backdrop */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/60 md:hidden"
+          onClick={() => setMobileOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Admin Sidebar */}
+      <aside
+        className={`
+          fixed left-0 top-0 z-50 h-screen flex flex-col bg-slate-900 border-r border-slate-800 transition-all duration-300 ease-in-out shrink-0
+          md:relative md:z-auto
+          ${
+            mobileOpen
+              ? "translate-x-0 w-64"
+              : "-translate-x-full md:translate-x-0"
+          }
+          ${desktopOpen ? "md:w-64" : "md:w-0 md:border-r-0 md:overflow-hidden"}
+        `}
+      >
+        {/* Brand Header */}
+        <div className="flex h-16 items-center justify-between border-b border-slate-800 px-5 shrink-0">
+          <Link
+            href="/"
+            className="flex items-center gap-2 transition-opacity hover:opacity-80 overflow-hidden"
+          >
+            <span className="font-display text-2xl font-bold tracking-tight text-white flex items-center whitespace-nowrap">
+              <span>Nota</span>
+              <span className="text-emerald-400">Ku</span>
+              <span className="ml-2.5 rounded-md bg-rose-500/20 text-rose-400 text-xs font-semibold px-2 py-0.5 border border-rose-500/30 font-sans flex items-center gap-1">
+                <ShieldCheckIcon className="w-3.5 h-3.5" />
+                ADMIN
+              </span>
+            </span>
+          </Link>
+
+          {/* Close button on Mobile only */}
+          <button
+            onClick={() => setMobileOpen(false)}
+            className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+            aria-label="Tutup Menu"
+          >
+            <XMarkIcon className="w-6 h-6" />
+          </button>
+        </div>
+
+        {/* Navigation Menu */}
+        <nav className="flex-1 space-y-1.5 px-3 py-4 overflow-y-auto">
+          <p className="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2 whitespace-nowrap">
+            Menu Utama
+          </p>
+          {adminNavItems.map((item) => {
+            const isActive = item.exact
+              ? pathname === item.href
+              : pathname === item.href || pathname.startsWith(item.href + "/");
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setMobileOpen(false)}
+                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors whitespace-nowrap ${
+                  isActive
+                    ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold"
+                    : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+                }`}
+              >
+                <item.icon className="h-5 w-5 shrink-0" />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Footer Admin info & back button */}
+        <div className="border-t border-slate-800 p-4 space-y-3 shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-rose-500/20 border border-rose-500/30 text-rose-400 font-bold flex items-center justify-center text-xs shrink-0">
+              A
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="truncate text-xs font-semibold text-slate-200">
+                {adminUser.name || "Admin"}
+              </p>
+              <p className="truncate text-[11px] text-slate-400 font-mono">
+                {adminUser.email}
+              </p>
+            </div>
+          </div>
+
+          <Link
+            href="/dashboard"
+            className="flex items-center justify-center gap-2 w-full py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors whitespace-nowrap"
+          >
+            <ArrowLeftOnRectangleIcon className="w-4 h-4 text-slate-400" />
+            <span>Kembali ke App User</span>
+          </Link>
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      <div className="flex flex-1 flex-col overflow-hidden bg-gray-50 text-slate-900">
+        {/* Top Navbar Header with Sidebar Toggle (Both Desktop & Mobile) */}
+        <header className="flex h-14 items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-6 shadow-xs shrink-0">
+          <div className="flex items-center gap-3">
+            {/* Desktop Toggle Button (Icon 3 baris / collapse) */}
+            <button
+              onClick={() => setDesktopOpen(!desktopOpen)}
+              className="hidden md:inline-flex items-center justify-center p-1.5 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer border border-slate-200"
+              title={desktopOpen ? "Sembunyikan Sidebar" : "Tampilkan Sidebar"}
+              aria-label="Toggle Desktop Sidebar"
+            >
+              {desktopOpen ? (
+                <ChevronDoubleLeftIcon className="w-5 h-5 text-slate-600" />
+              ) : (
+                <Bars3Icon className="w-5 h-5 text-slate-900" />
+              )}
+            </button>
+
+            {/* Mobile Toggle Button */}
+            <button
+              onClick={() => setMobileOpen(true)}
+              className="md:hidden p-1.5 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+              aria-label="Buka menu"
+            >
+              <Bars3Icon className="w-6 h-6" />
+            </button>
+
+            {/* Brand indicator if desktop sidebar is closed */}
+            {!desktopOpen && (
+              <Link
+                href="/"
+                className="hidden md:flex items-center gap-1.5 font-display text-xl font-bold tracking-tight text-slate-900 transition-opacity hover:opacity-80 ml-1"
+              >
+                <span>Nota</span>
+                <span className="text-[#0f6b4f]">Ku</span>
+                <span className="text-[10px] bg-rose-500/10 text-rose-600 border border-rose-500/20 px-1.5 py-0.5 rounded font-sans font-bold ml-1">
+                  ADMIN
+                </span>
+              </Link>
+            )}
+
+            {/* Mobile Brand */}
+            <Link
+              href="/"
+              className="md:hidden font-display text-lg font-bold tracking-tight text-slate-900 flex items-center gap-1"
+            >
+              <span>Nota</span>
+              <span className="text-[#0f6b4f]">Ku</span>
+              <span className="text-[10px] bg-rose-500/10 text-rose-600 border border-rose-500/20 px-1.5 py-0.2 rounded font-sans font-bold">
+                ADMIN
+              </span>
+            </Link>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="text-right hidden sm:block">
+              <span className="text-xs text-slate-400">Logged in as: </span>
+              <span className="text-xs font-mono font-semibold text-slate-700">
+                {adminUser.email}
+              </span>
+            </div>
+
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg transition-colors shadow-xs"
+            >
+              <ArrowLeftOnRectangleIcon className="w-4 h-4 text-slate-400" />
+              <span>Ke App User</span>
+            </Link>
+          </div>
+        </header>
+
+        {/* Scrollable Main Content */}
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+          <div className="max-w-7xl mx-auto">{children}</div>
+        </main>
+      </div>
+    </div>
+  );
+}

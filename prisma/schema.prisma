@@ -17,6 +17,7 @@ model User {
   address       String?
   logoUrl       String?
   plan          Plan          @default(FREE)
+  role          Role          @default(USER)
   createdAt     DateTime      @default(now())
   customers     Customer[]
   invoices      Invoice[]
@@ -166,4 +167,22 @@ model AuditLog {
   @@index([event])
   @@index([createdAt])
   @@map("audit_log")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model PageView {
+  id        String   @id @default(cuid())
+  path      String
+  referrer  String?
+  userAgent String?
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  @@index([path])
+  @@index([createdAt])
+  @@map("page_view")
 }
