@@ -12,6 +12,7 @@ const profileSchema = z.object({
   businessName: z.string().max(100).nullable(),
   phone: z.string().max(20).nullable(),
   address: z.string().max(300).nullable(),
+  logoUrl: z.string().max(3000000).nullable().optional(),
 });
 
 export async function updateProfile(data: {
@@ -19,6 +20,7 @@ export async function updateProfile(data: {
   businessName: string | null;
   phone: string | null;
   address: string | null;
+  logoUrl?: string | null;
 }) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) throw new Error("Unauthorized");
@@ -35,6 +37,7 @@ export async function updateProfile(data: {
       businessName: parsed.data.businessName || null,
       phone: parsed.data.phone || null,
       address: parsed.data.address || null,
+      logoUrl: parsed.data.logoUrl || null,
     },
   });
 

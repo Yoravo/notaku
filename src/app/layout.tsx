@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import { TrafficTracker } from "@/components/traffic-tracker";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -62,7 +63,10 @@ export default function RootLayout({
       lang="id"
       className={`${fraunces.variable} ${jakarta.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <TrafficTracker />
+        {children}
+      </body>
     </html>
   );
 }

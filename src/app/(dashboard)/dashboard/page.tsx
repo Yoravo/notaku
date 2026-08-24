@@ -7,6 +7,7 @@ import Link from "next/link";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { RecentInvoices } from "@/components/recent-invoices";
 import { SerializedInvoice } from "@/types/invoice";
+import { AnnouncementBanner } from "@/components/announcement-banner";
 
 export default async function DashboardPage() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -54,6 +55,9 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      {/* Global Broadcast Announcement */}
+      <AnnouncementBanner />
+
       {/* Header: Mobile-first stack, desktop row */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>

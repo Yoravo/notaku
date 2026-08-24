@@ -76,9 +76,12 @@ export default async function Home() {
         }}
       />
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
-        <span className="font-display text-2xl font-semibold tracking-tight">
+        <Link
+          href="/"
+          className="font-display text-2xl font-semibold tracking-tight text-ink transition-opacity hover:opacity-80"
+        >
           Nota<span className="text-emerald">Ku</span>
-        </span>
+        </Link>
         <nav className="flex items-center gap-5">
           {session ? (
             <Link

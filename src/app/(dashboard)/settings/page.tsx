@@ -2,10 +2,10 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { UpgradeButton } from "@/components/upgrade-button";
-import { TemplateSelector } from "@/components/template-selector";
 import { PaymentVerifier } from "@/components/payment-verifier";
-import { ProfileForm } from "@/components/profile-form";
+import { SettingsTabsClient } from "./settings-tabs-client";
+
+export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -24,85 +24,38 @@ export default async function SettingsPage() {
     redirect("/login");
   }
 
-  const isPro = user.plan === "PRO";
-  const subscription = user.subscription;
-
   return (
-    <div className="max-w-2xl">
+    <div className="space-y-6 max-w-4xl mx-auto">
       <PaymentVerifier />
-      <h1 className="text-xl font-semibold text-gray-900">Pengaturan</h1>
 
-      {/* Profile */}
-      <section className="mt-6 rounded-lg border border-gray-200 bg-white p-5">
-        <h2 className="text-sm font-medium uppercase tracking-wide text-gray-500">
-          Profil
-        </h2>
-        <p className="mt-0.5 text-xs text-gray-400">Email: {user.email}</p>
-        <ProfileForm
-          name={user.name}
-          businessName={user.businessName ?? null}
-          phone={user.phone ?? null}
-          address={user.address ?? null}
-        />
-      </section>
+      <div>
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900 font-display">
+          Pengaturan Akun & Profil
+        </h1>
+        <p className="text-xs sm:text-sm text-gray-500 mt-1">
+          Kelola profil bisnis, logo invoice, preferensi template, keamanan kata sandi, dan paket langganan.
+        </p>
+      </div>
 
-      {/* Subscription */}
-      <section className="mt-4 rounded-lg border border-gray-200 bg-white p-5">
-        <h2 className="text-sm font-medium uppercase tracking-wide text-gray-500">
-          Langganan
-        </h2>
-
-        <div className="mt-3">
-          <div className="flex items-center gap-3">
-            <span
-              className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                isPro ? "bg-blue-50 text-blue-700" : "bg-gray-100 text-gray-700"
-              }`}
-            >
-              {isPro ? "Pro" : "Free"}
-            </span>
-            {isPro && subscription?.currentPeriodEnd && (
-              <span className="text-sm text-gray-500">
-                Berlaku hingga{" "}
-                {subscription.currentPeriodEnd.toLocaleDateString("id-ID", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}
-              </span>
-            )}
-          </div>
-
-          {isPro ? (
-            <div className="mt-3 text-sm text-gray-600">
-              <p>
-                Kamu sedang menggunakan plan Pro. Nikmati invoice unlimited dan
-                fitur premium.
-              </p>
-            </div>
-          ) : (
-            <div className="mt-3">
-              <p className="text-sm text-gray-600">
-                Plan gratis: 5 invoice/bulan dengan watermark NotaKu.
-              </p>
-              <div className="mt-3">
-                <UpgradeButton />
-              </div>
-            </div>
-          )}
-        </div>
-      </section>
-      {isPro && (
-        <section className="mt-4 rounded-lg border border-gray-200 bg-white p-5">
-          <h2 className="text-sm font-medium uppercase tracking-wide text-gray-500">
-            Template Invoice
-          </h2>
-          <p className="mt-1 text-xs text-gray-500">
-            Pilih tampilan PDF invoice kamu
-          </p>
-          <TemplateSelector current={user.invoiceTemplate} />
-        </section>
-      )}
+      <SettingsTabsClient
+        user={{
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          businessName: user.businessName,
+          phone: user.phone,
+          address: user.address,
+          logoUrl: user.logoUrl,
+          plan: user.plan,
+          invoiceTemplate: user.invoiceTemplate,
+          subscription: user.subscription
+            ? {
+                currentPeriodEnd: user.subscription.currentPeriodEnd,
+                status: user.subscription.status,
+              }
+            : null,
+        }}
+      />
     </div>
   );
 }
