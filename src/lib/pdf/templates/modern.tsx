@@ -1,4 +1,4 @@
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
 import type { InvoiceData } from "../types";
 import { statusText } from "../types";
 import { formatCurrency } from "@/lib/pdf/format";
@@ -6,6 +6,15 @@ import { formatCurrency } from "@/lib/pdf/format";
 const styles = StyleSheet.create({
   page: { padding: 0, fontSize: 10, fontFamily: "Helvetica" },
   header: { backgroundColor: "#1b1916", padding: 40, paddingBottom: 32 },
+  logoWrapper: {
+    width: "100%",
+    alignItems: "flex-end",
+    marginBottom: 6,
+  },
+  logo: {
+    height: 42,
+    objectFit: "contain",
+  },
   headerTitle: {
     fontSize: 28,
     fontFamily: "Helvetica-Bold",
@@ -13,7 +22,7 @@ const styles = StyleSheet.create({
     letterSpacing: 3,
   },
   headerNumber: { fontSize: 10, color: "#9ca3af", marginTop: 4 },
-  headerBusiness: { textAlign: "right", maxWidth: 200 },
+  headerBusiness: { width: 220, alignItems: "flex-end" },
   headerBusinessName: {
     fontFamily: "Helvetica-Bold",
     color: "#ffffff",
@@ -123,21 +132,26 @@ export function ModernTemplate({ data }: { data: InvoiceData }) {
               </View>
             </View>
             <View style={styles.headerBusiness}>
-              <Text style={styles.headerBusinessName}>
+              {data.user.logoUrl && (
+                <View style={styles.logoWrapper}>
+                  <Image src={data.user.logoUrl} style={styles.logo} />
+                </View>
+              )}
+              <Text style={[styles.headerBusinessName, { textAlign: "right", width: "100%" }]}>
                 {data.user.businessName || data.user.name}
               </Text>
               {data.user.email && (
-                <Text style={styles.headerBusinessDetail}>
+                <Text style={[styles.headerBusinessDetail, { textAlign: "right", width: "100%" }]}>
                   {data.user.email}
                 </Text>
               )}
               {data.user.phone && (
-                <Text style={styles.headerBusinessDetail}>
+                <Text style={[styles.headerBusinessDetail, { textAlign: "right", width: "100%" }]}>
                   {data.user.phone}
                 </Text>
               )}
               {data.user.address && (
-                <Text style={[styles.headerBusinessDetail, { marginTop: 4 }]}>
+                <Text style={[styles.headerBusinessDetail, { marginTop: 4, textAlign: "right", width: "100%" }]}>
                   {data.user.address}
                 </Text>
               )}

@@ -97,7 +97,14 @@ export default async function PublicInvoicePage({
                     : invoice.status}
             </span>
           </div>
-          <div className="text-right">
+          <div className="text-right flex flex-col items-end">
+            {invoice.user.logoUrl && (
+              <img
+                src={invoice.user.logoUrl}
+                alt="Logo Bisnis"
+                className="h-10 max-w-[120px] object-contain mb-1.5"
+              />
+            )}
             <p className="font-medium text-gray-900">
               {invoice.user.businessName || invoice.user.name}
             </p>

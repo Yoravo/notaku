@@ -7,6 +7,7 @@ import {
   PlusIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  ArrowDownTrayIcon,
 } from "@heroicons/react/24/outline";
 import { statusLabel } from "@/lib/invoice-utils";
 import { InvoiceStatus } from "@/generated/prisma/client";
@@ -69,18 +70,30 @@ export default async function InvoicesPage({
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold text-gray-900">Invoice</h1>
           <p className="mt-1 text-sm text-gray-500">{totalAll} invoice</p>
         </div>
-        <Link
-          href="/invoices/new"
-          className="flex items-center gap-1 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
-        >
-          <PlusIcon className="h-4 w-4" />
-          Buat Invoice
-        </Link>
+        <div className="flex items-center gap-2">
+          {total > 0 && (
+            <a
+              href={`/api/invoices/export${activeStatus ? `?status=${activeStatus}` : ""}`}
+              download
+              className="flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-xs"
+            >
+              <ArrowDownTrayIcon className="h-4 w-4 text-gray-500" />
+              <span>Ekspor CSV</span>
+            </a>
+          )}
+          <Link
+            href="/invoices/new"
+            className="flex items-center gap-1 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors shadow-xs"
+          >
+            <PlusIcon className="h-4 w-4" />
+            Buat Invoice
+          </Link>
+        </div>
       </div>
 
       {/* Filter tabs */}

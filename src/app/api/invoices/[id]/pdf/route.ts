@@ -5,10 +5,12 @@ import { NextResponse } from "next/server";
 import { renderInvoicePDF } from "@/lib/pdf/invoice-template";
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
+  const { searchParams } = new URL(request.url);
+  const isPreview = searchParams.get("preview") === "true";
   const session = await auth.api.getSession({ headers: await headers() });
 
   if (!session) {
@@ -49,6 +51,7 @@ export async function GET(
       businessName: invoice.user.businessName || undefined,
       phone: invoice.user.phone || undefined,
       address: invoice.user.address || undefined,
+      logoUrl: invoice.user.logoUrl || undefined,
     },
     items: invoice.items.map((item) => ({
       description: item.description,
@@ -67,10 +70,14 @@ export async function GET(
   try {
     const buffer = await renderInvoicePDF(data);
 
+    const disposition = isPreview
+      ? `inline; filename="${invoice.number}.pdf"`
+      : `attachment; filename="${invoice.number}.pdf"`;
+
     return new NextResponse(new Uint8Array(buffer), {
       headers: {
         "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="${invoice.number}.pdf"`,
+        "Content-Disposition": disposition,
       },
     });
   } catch (err) {

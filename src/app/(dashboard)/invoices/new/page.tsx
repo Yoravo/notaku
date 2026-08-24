@@ -6,9 +6,14 @@ import { canCreateInvoice } from "@/lib/plan-limits";
 import { InvoiceForm } from "@/components/invoices/invoice-form";
 import { UpgradeButton } from "@/components/upgrade-button";
 
-export default async function NewInvoicePage() {
+export default async function NewInvoicePage(props: {
+  searchParams?: Promise<{ customerId?: string }>;
+}) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/login");
+
+  const searchParams = await props.searchParams;
+  const initialCustomerId = searchParams?.customerId;
 
   const customers = await prisma.customer.findMany({
     where: { userId: session.user.id },
@@ -41,7 +46,10 @@ export default async function NewInvoicePage() {
             {used}/{limit} invoice bulan ini
           </p>
           <div className="mt-6">
-            <InvoiceForm customers={customers} />
+            <InvoiceForm
+              customers={customers}
+              defaultCustomerId={initialCustomerId}
+            />
           </div>
         </>
       )}

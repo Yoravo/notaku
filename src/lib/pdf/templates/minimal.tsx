@@ -1,4 +1,4 @@
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
 import type { InvoiceData } from "../types";
 import { statusText } from "../types";
 import { formatCurrency } from "@/lib/pdf/format";
@@ -13,6 +13,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
   },
   accentLine: { height: 4, backgroundColor: ACCENT, marginBottom: 36 },
+  logo: {
+    height: 50,
+    objectFit: "contain",
+    marginBottom: 6,
+  },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -115,6 +120,9 @@ export function MinimalTemplate({ data }: { data: InvoiceData }) {
         {/* Header */}
         <View style={styles.header}>
           <View>
+            {data.user.logoUrl && (
+              <Image src={data.user.logoUrl} style={styles.logo} />
+            )}
             <Text style={styles.brand}>
               {data.user.businessName || data.user.name}
             </Text>

@@ -4,6 +4,7 @@ import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { InvoiceActions } from "@/components/invoices/invoice-actions";
+import { WhatsAppShareModal } from "@/components/invoices/whatsapp-share-modal";
 import { statusLabel } from "@/lib/invoice-utils";
 
 export default async function InvoiceDetailPage({
@@ -17,7 +18,7 @@ export default async function InvoiceDetailPage({
 
   const invoice = await prisma.invoice.findUnique({
     where: { id, userId: session.user.id },
-    include: { items: true, customer: true },
+    include: { items: true, customer: true, user: { select: { businessName: true, name: true } } },
   });
 
   if (!invoice) notFound();
@@ -60,22 +61,38 @@ export default async function InvoiceDetailPage({
           )}
           <InvoiceActions invoiceId={invoice.id} status={invoice.status} />
           <a
+            href={`/api/invoices/${invoice.id}/pdf?preview=true`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            Lihat PDF
+          </a>
+          <a
             href={`/api/invoices/${invoice.id}/pdf`}
             download
             className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
           >
             Download PDF
           </a>
-          <a
-            href={`https://wa.me/?text=${encodeURIComponent(
-              `Hai, berikut invoice ${invoice.number} sebesar Rp${Number(invoice.total).toLocaleString("id-ID")}.\n\nLihat detail: ${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/i/${invoice.publicId}`,
-            )}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-md bg-green-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-green-700 transition-colors"
-          >
-            Share WhatsApp
-          </a>
+          <WhatsAppShareModal
+            invoiceNumber={invoice.number || "Draft"}
+            customerName={invoice.customer.name}
+            customerPhone={invoice.customer.phone}
+            total={Number(invoice.total)}
+            dueDate={
+              invoice.dueDate
+                ? invoice.dueDate.toLocaleDateString("id-ID", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })
+                : null
+            }
+            publicId={invoice.publicId}
+            businessName={invoice.user.businessName || invoice.user.name}
+            status={invoice.status}
+          />
         </div>
       </div>
 

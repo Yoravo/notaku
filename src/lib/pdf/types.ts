@@ -16,6 +16,7 @@ export type InvoiceData = {
     email?: string;
     phone?: string;
     address?: string;
+    logoUrl?: string;
   };
   items: {
     description: string;

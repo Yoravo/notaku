@@ -1,4 +1,4 @@
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
 import type { InvoiceData } from "@/lib/pdf/types";
 import { statusColors, statusText } from "@/lib/pdf/types";
 import { formatCurrency } from "@/lib/pdf/format";
@@ -8,7 +8,21 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "flex-start",
     marginBottom: 24,
+  },
+  headerRight: {
+    width: 220,
+    alignItems: "flex-end",
+  },
+  logoWrapper: {
+    width: "100%",
+    alignItems: "flex-end",
+    marginBottom: 6,
+  },
+  logo: {
+    height: 42,
+    objectFit: "contain",
   },
   title: { fontSize: 22, fontFamily: "Helvetica-Bold", color: "#111" },
   invoiceNumber: { fontSize: 10, color: "#555", marginTop: 4 },
@@ -106,18 +120,29 @@ export function ClassicTemplate({ data }: { data: InvoiceData }) {
               </Text>
             </View>
           </View>
-          <View style={{ textAlign: "right", maxWidth: 200 }}>
-            <Text style={styles.bold}>
+          <View style={styles.headerRight}>
+            {data.user.logoUrl && (
+              <View style={styles.logoWrapper}>
+                <Image src={data.user.logoUrl} style={styles.logo} />
+              </View>
+            )}
+            <Text style={[styles.bold, { textAlign: "right", width: "100%" }]}>
               {data.user.businessName || data.user.name}
             </Text>
             {data.user.email && (
-              <Text style={styles.text}>{data.user.email}</Text>
+              <Text style={[styles.text, { textAlign: "right", width: "100%" }]}>
+                {data.user.email}
+              </Text>
             )}
             {data.user.phone && (
-              <Text style={styles.text}>{data.user.phone}</Text>
+              <Text style={[styles.text, { textAlign: "right", width: "100%" }]}>
+                {data.user.phone}
+              </Text>
             )}
             {data.user.address && (
-              <Text style={styles.text}>{data.user.address}</Text>
+              <Text style={[styles.text, { textAlign: "right", width: "100%" }]}>
+                {data.user.address}
+              </Text>
             )}
           </View>
         </View>

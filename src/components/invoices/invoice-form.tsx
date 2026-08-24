@@ -20,13 +20,17 @@ type Invoice = {
 export function InvoiceForm({
   customers,
   invoice,
+  defaultCustomerId,
 }: {
   customers: Customer[];
   invoice?: Invoice;
+  defaultCustomerId?: string;
 }) {
   const isEdit = !!invoice;
 
-  const [customerId, setCustomerId] = useState(invoice?.customerId || "");
+  const [customerId, setCustomerId] = useState(
+    invoice?.customerId || defaultCustomerId || "",
+  );
   const [dueDate, setDueDate] = useState(
     invoice?.dueDate ? invoice.dueDate.split("T")[0] : "",
   );
