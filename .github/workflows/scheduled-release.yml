@@ -27,13 +27,13 @@ jobs:
 
       - name: Check and Advance Main by 1 Commit from Queue
         run: |
-          # Fetch semua branches dan update tracking remote
-          git fetch --all --prune
-
-          # Pastikan berada di branch main
           git checkout main
 
-          # Cari commit berikutnya di queue yang belum ada di main
+          if ! git rev-parse --verify origin/queue >/dev/null 2>&1; then
+            echo "::error::Branch 'queue' tidak ditemukan di origin."
+            exit 1
+          fi
+
           COMMITS=$(git log --reverse --format="%H" origin/main..origin/queue)
           NEXT_COMMIT=$(echo "$COMMITS" | head -n 1)
 
@@ -43,5 +43,5 @@ jobs:
           fi
 
           echo "Menerapkan commit: $NEXT_COMMIT ke branch main"
-          git cherry-pick --allow-empty $NEXT_COMMIT
+          git cherry-pick --allow-empty "$NEXT_COMMIT"
           git push origin main
