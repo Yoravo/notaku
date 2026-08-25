@@ -2,9 +2,8 @@ name: Scheduled Commit Releaser
 
 on:
   schedule:
-    # Berjalan setiap hari jam 02:00 UTC (09:00 WIB)
     - cron: '0 2 * * *'
-  workflow_dispatch: # Memungkinkan trigger manual dari tab Actions di GitHub
+  workflow_dispatch:
 
 jobs:
   release-next-commit:
@@ -27,20 +26,19 @@ jobs:
 
       - name: Check and Advance Main by 1 Commit from Queue
         run: |
-          # Refresh referensi remote-tracking (BUKAN ke refs/heads langsung,
+          # Refresh referensi remote-tracking (bukan ke refs/heads langsung,
           # supaya tidak konflik dengan branch 'main' yang sedang checkout)
-          # Ambil referensi branch terbaru
           git fetch origin main:refs/remotes/origin/main
           git fetch origin queue:refs/remotes/origin/queue
-          
+
           # Cari commit berikutnya di queue yang belum ada di main
           NEXT_COMMIT=$(git log --reverse --format="%H" origin/main..origin/queue | head -n 1)
-          
+
           if [ -z "$NEXT_COMMIT" ]; then
             echo "Semua commit dari branch 'queue' sudah berada di 'main'. Tidak ada rilis baru."
             exit 0
           fi
-          
-          echo "Memajukan branch main ke commit: $NEXT_COMMIT"
-          git merge --ff-only "$NEXT_COMMIT"
+
+          echo "Menerapkan commit: $NEXT_COMMIT ke branch main"
+          git cherry-pick --allow-empty "$NEXT_COMMIT"
           git push origin main
