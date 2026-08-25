@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { formatDateWIB } from "@/lib/invoice-utils";
 import type { Metadata } from "next";
 
 export async function generateMetadata({
@@ -139,7 +140,7 @@ export default async function PublicInvoicePage({
               Tanggal
             </p>
             <p className="mt-1 text-sm text-gray-900">
-              {invoice.createdAt.toLocaleDateString("id-ID", {
+              {formatDateWIB(invoice.createdAt, {
                 day: "numeric",
                 month: "long",
                 year: "numeric",
@@ -151,7 +152,7 @@ export default async function PublicInvoicePage({
                   Jatuh Tempo
                 </p>
                 <p className="mt-1 text-sm text-gray-900">
-                  {invoice.dueDate.toLocaleDateString("id-ID", {
+                  {formatDateWIB(invoice.dueDate, {
                     day: "numeric",
                     month: "long",
                     year: "numeric",

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { formatCurrency } from "@/lib/pdf/format";
+import { formatDateWIB, formatTimeWIB } from "@/lib/invoice-utils";
 import {
   ArrowLeftIcon,
   UserIcon,
@@ -196,18 +197,14 @@ export default async function AdminUserDetailPage(props: {
             </div>
           </div>
           <p className="text-lg font-bold text-slate-900 mt-2">
-            {new Date(targetUser.createdAt).toLocaleDateString("id-ID", {
+            {formatDateWIB(targetUser.createdAt, {
               day: "numeric",
               month: "short",
               year: "numeric",
             })}
           </p>
           <p className="text-xs text-slate-400 mt-1 font-mono">
-            {new Date(targetUser.createdAt).toLocaleTimeString("id-ID", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}{" "}
-            WIB
+            {formatTimeWIB(targetUser.createdAt)} WIB
           </p>
         </div>
       </div>
@@ -374,12 +371,12 @@ export default async function AdminUserDetailPage(props: {
                   )}
                 </div>
                 <div className="text-slate-400 font-mono text-[11px] shrink-0">
-                  {new Date(log.createdAt).toLocaleDateString("id-ID", {
+                  {formatDateWIB(log.createdAt, {
                     day: "2-digit",
                     month: "short",
                     year: "numeric",
                   })}{" "}
-                  {new Date(log.createdAt).toLocaleTimeString("id-ID", {
+                  {formatTimeWIB(log.createdAt, {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}

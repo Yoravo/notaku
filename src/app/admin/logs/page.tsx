@@ -1,6 +1,7 @@
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import { formatDateWIB, formatTimeWIB } from "@/lib/invoice-utils";
 import {
   ClipboardDocumentListIcon,
   FunnelIcon,
@@ -223,12 +224,12 @@ export default async function AdminLogsPage(props: {
                         <div className="flex items-center gap-1.5">
                           <ClockIcon className="w-3.5 h-3.5 text-slate-400" />
                           <span>
-                            {new Date(log.createdAt).toLocaleDateString("id-ID", {
+                            {formatDateWIB(log.createdAt, {
                               day: "2-digit",
                               month: "short",
                               year: "numeric",
                             })}{" "}
-                            {new Date(log.createdAt).toLocaleTimeString("id-ID", {
+                            {formatTimeWIB(log.createdAt, {
                               hour: "2-digit",
                               minute: "2-digit",
                               second: "2-digit",

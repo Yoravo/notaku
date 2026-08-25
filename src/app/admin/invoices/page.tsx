@@ -1,6 +1,7 @@
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/pdf/format";
+import { formatDateWIB } from "@/lib/invoice-utils";
 import Link from "next/link";
 import {
   DocumentTextIcon,
@@ -283,7 +284,7 @@ export default async function AdminInvoicesPage(props: {
 
                       {/* Created At */}
                       <td className="px-4 py-3.5 text-xs text-slate-500">
-                        {new Date(inv.createdAt).toLocaleDateString("id-ID", {
+                        {formatDateWIB(inv.createdAt, {
                           day: "numeric",
                           month: "short",
                           year: "numeric",

@@ -1,6 +1,7 @@
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import { formatDateWIB } from "@/lib/invoice-utils";
 import {
   UsersIcon,
   MagnifyingGlassIcon,
@@ -262,7 +263,7 @@ export default async function AdminUsersPage(props: {
 
                       {/* Joined Date */}
                       <td className="px-4 py-3.5 text-xs text-slate-500">
-                        {new Date(u.createdAt).toLocaleDateString("id-ID", {
+                        {formatDateWIB(u.createdAt, {
                           day: "numeric",
                           month: "short",
                           year: "numeric",

@@ -6,6 +6,7 @@ import { SecurityForm } from "@/components/security-form";
 import { TemplateSelector } from "@/components/template-selector";
 import { UpgradeButton } from "@/components/upgrade-button";
 import { InvoiceTemplate } from "@/generated/prisma/client";
+import { formatDateWIB } from "@/lib/invoice-utils";
 import {
   UserIcon,
   ShieldCheckIcon,
@@ -176,7 +177,7 @@ export function SettingsTabsClient({ user }: { user: UserData }) {
                   <div className="text-right text-xs text-gray-500">
                     <p>Aktif Hingga:</p>
                     <p className="font-bold text-gray-800 font-mono">
-                      {new Date(user.subscription.currentPeriodEnd).toLocaleDateString("id-ID", {
+                      {formatDateWIB(user.subscription.currentPeriodEnd, {
                         day: "numeric",
                         month: "long",
                         year: "numeric",

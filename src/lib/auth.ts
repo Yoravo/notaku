@@ -9,6 +9,15 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  baseURL:
+    process.env.BETTER_AUTH_URL ||
+    process.env.NEXT_PUBLIC_APP_URL ||
+    "https://www.notaku.store",
+  trustedOrigins: [
+    "https://www.notaku.store",
+    "https://notaku.store",
+    "http://localhost:3000",
+  ],
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,

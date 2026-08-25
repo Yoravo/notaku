@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { savePromoCode, type PromoData } from "@/actions/admin";
+import { formatDateWIB } from "@/lib/invoice-utils";
 import {
   TagIcon,
   SparklesIcon,
@@ -264,7 +265,7 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
                       {p.expiresAt && (
                         <div className="text-slate-400 flex items-center gap-1 mt-0.5">
                           <ClockIcon className="w-3 h-3" />
-                          {new Date(p.expiresAt).toLocaleDateString("id-ID")}
+                          {formatDateWIB(p.expiresAt)}
                         </div>
                       )}
                     </td>

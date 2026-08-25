@@ -6,7 +6,7 @@ import Link from "next/link";
 import { InvoiceActions } from "@/components/invoices/invoice-actions";
 import { WhatsAppShareModal } from "@/components/invoices/whatsapp-share-modal";
 import { EmailShareModal } from "@/components/invoices/email-share-modal";
-import { statusLabel } from "@/lib/invoice-utils";
+import { statusLabel, formatDateWIB } from "@/lib/invoice-utils";
 
 export default async function InvoiceDetailPage({
   params,
@@ -43,7 +43,7 @@ export default async function InvoiceDetailPage({
           </div>
           <p className="mt-1 text-sm text-gray-500">
             Dibuat{" "}
-            {invoice.createdAt.toLocaleDateString("id-ID", {
+            {formatDateWIB(invoice.createdAt, {
               day: "numeric",
               month: "long",
               year: "numeric",
@@ -84,7 +84,7 @@ export default async function InvoiceDetailPage({
             total={Number(invoice.total)}
             dueDate={
               invoice.dueDate
-                ? invoice.dueDate.toLocaleDateString("id-ID", {
+                ? formatDateWIB(invoice.dueDate, {
                     day: "numeric",
                     month: "long",
                     year: "numeric",
@@ -100,7 +100,7 @@ export default async function InvoiceDetailPage({
             total={Number(invoice.total)}
             dueDate={
               invoice.dueDate
-                ? invoice.dueDate.toLocaleDateString("id-ID", {
+                ? formatDateWIB(invoice.dueDate, {
                     day: "numeric",
                     month: "long",
                     year: "numeric",
@@ -196,7 +196,7 @@ export default async function InvoiceDetailPage({
           {invoice.dueDate && (
             <p className="text-sm text-gray-600">
               <span className="font-medium text-gray-700">Jatuh tempo:</span>{" "}
-              {invoice.dueDate.toLocaleDateString("id-ID", {
+              {formatDateWIB(invoice.dueDate, {
                 day: "numeric",
                 month: "long",
                 year: "numeric",

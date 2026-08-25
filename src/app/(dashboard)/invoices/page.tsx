@@ -9,7 +9,7 @@ import {
   ChevronRightIcon,
   ArrowDownTrayIcon,
 } from "@heroicons/react/24/outline";
-import { statusLabel } from "@/lib/invoice-utils";
+import { statusLabel, formatDateWIB } from "@/lib/invoice-utils";
 import { InvoiceStatus } from "@/generated/prisma/client";
 
 const PER_PAGE = 10;
@@ -172,7 +172,7 @@ export default async function InvoicesPage({
                         {invoice.customer.name}
                       </td>
                       <td className="px-4 py-3 text-gray-600">
-                        {invoice.createdAt.toLocaleDateString("id-ID", {
+                        {formatDateWIB(invoice.createdAt, {
                           day: "numeric",
                           month: "short",
                           year: "numeric",

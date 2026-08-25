@@ -13,6 +13,7 @@ import { auditLog } from "@/lib/audit-log";
 import { checkServerActionRateLimit } from "@/lib/rate-limit";
 import { sendEmail } from "@/lib/email";
 import { renderInvoiceEmailHtml } from "@/lib/email-templates";
+import { formatDateWIB } from "@/lib/invoice-utils";
 
 async function getUser() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -284,7 +285,7 @@ export async function sendInvoiceEmail(data: {
     const invoiceUrl = `${baseUrl}/i/${invoice.publicId}`;
     const businessName = invoice.user.businessName || invoice.user.name || "NotaKu";
     const formattedDueDate = invoice.dueDate
-      ? invoice.dueDate.toLocaleDateString("id-ID", {
+      ? formatDateWIB(invoice.dueDate, {
           day: "numeric",
           month: "long",
           year: "numeric",
