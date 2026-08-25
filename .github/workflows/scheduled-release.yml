@@ -26,17 +26,17 @@ jobs:
 
       - name: Check and Advance Main by 1 Commit from Queue
         run: |
-          # Fetch semua branch dari remote
-          git fetch origin queue:queue
+          # Fetch riwayat queue dari remote
+          git fetch origin queue
 
           # Cari commit berikutnya di queue yang belum ada di main
-          NEXT_COMMIT=$(git log --reverse --format="%H" main..queue | head -n 1)
+          NEXT_COMMIT=$(git log --reverse --format="%H" origin/main..origin/queue | head -n 1)
 
           if [ -z "$NEXT_COMMIT" ]; then
             echo "Semua commit dari branch 'queue' sudah berada di 'main'. Tidak ada rilis baru."
             exit 0
           fi
 
-          echo "Memajukan branch main ke commit: $NEXT_COMMIT"
-          git cherry-pick $NEXT_COMMIT || git merge --ff-only $NEXT_COMMIT
+          echo "Menerapkan commit: $NEXT_COMMIT ke branch main"
+          git cherry-pick --allow-empty $NEXT_COMMIT
           git push origin main
