@@ -1,0 +1,44 @@
+name: Scheduled Commit Releaser
+
+on:
+  schedule:
+    # Berjalan setiap hari jam 02:00 UTC (09:00 WIB)
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Memungkinkan trigger manual dari tab Actions di GitHub
+
+jobs:
+  release-next-commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Git User
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Check and Advance Main by 1 Commit from Queue
+        run: |
+          # Ambil referensi branch terbaru
+          git fetch origin main:main
+          git fetch origin queue:queue
+
+          # Cari commit berikutnya di queue yang belum ada di main
+          NEXT_COMMIT=$(git log --reverse --format="%H" main..queue | head -n 1)
+
+          if [ -z "$NEXT_COMMIT" ]; then
+            echo "Semua commit dari branch 'queue' sudah berada di 'main'. Tidak ada rilis baru."
+            exit 0
+          fi
+
+          echo "Memajukan branch main ke commit: $NEXT_COMMIT"
+          git checkout main
+          git merge --ff-only $NEXT_COMMIT
+          git push origin main
