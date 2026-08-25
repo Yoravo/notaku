@@ -16,6 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -26,11 +27,15 @@ jobs:
 
       - name: Check and Advance Main by 1 Commit from Queue
         run: |
-          # Fetch riwayat queue dari remote
-          git fetch origin queue
+          # Fetch semua branches dan update tracking remote
+          git fetch --all --prune
+
+          # Pastikan berada di branch main
+          git checkout main
 
           # Cari commit berikutnya di queue yang belum ada di main
-          NEXT_COMMIT=$(git log --reverse --format="%H" origin/main..origin/queue | head -n 1)
+          COMMITS=$(git log --reverse --format="%H" origin/main..origin/queue)
+          NEXT_COMMIT=$(echo "$COMMITS" | head -n 1)
 
           if [ -z "$NEXT_COMMIT" ]; then
             echo "Semua commit dari branch 'queue' sudah berada di 'main'. Tidak ada rilis baru."
