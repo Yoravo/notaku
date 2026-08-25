@@ -72,6 +72,11 @@ export function EmailShareModal({
         customMessage: customMessage.trim() || undefined,
       });
 
+      if (!res.success) {
+        setError(res.error || "Gagal mengirim email tagihan");
+        return;
+      }
+
       setSuccess(`Faktur berhasil dikirim ke ${res.recipient}!`);
       router.refresh();
       setTimeout(() => {
