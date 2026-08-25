@@ -74,7 +74,7 @@ export function SettingsTabsClient({ user }: { user: UserData }) {
         {activeTab === "profile" && (
           <div className="space-y-6 max-w-2xl">
             <div>
-              <h2 className="text-base sm:text-lg font-bold text-gray-900 font-display">
+              <h2 className="text-base sm:text-lg font-bold text-gray-900">
                 Profil & Identitas Bisnis
               </h2>
               <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
@@ -97,7 +97,7 @@ export function SettingsTabsClient({ user }: { user: UserData }) {
         {activeTab === "template" && (
           <div className="space-y-6 max-w-2xl">
             <div>
-              <h2 className="text-base sm:text-lg font-bold text-gray-900 font-display">
+              <h2 className="text-base sm:text-lg font-bold text-gray-900">
                 Template & Desain PDF Invoice
               </h2>
               <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
@@ -129,7 +129,7 @@ export function SettingsTabsClient({ user }: { user: UserData }) {
         {activeTab === "security" && (
           <div className="space-y-6 max-w-2xl">
             <div>
-              <h2 className="text-base sm:text-lg font-bold text-gray-900 font-display">
+              <h2 className="text-base sm:text-lg font-bold text-gray-900">
                 Keamanan & Kata Sandi Akun
               </h2>
               <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
@@ -145,7 +145,7 @@ export function SettingsTabsClient({ user }: { user: UserData }) {
         {activeTab === "plan" && (
           <div className="space-y-6 max-w-2xl">
             <div>
-              <h2 className="text-base sm:text-lg font-bold text-gray-900 font-display">
+              <h2 className="text-base sm:text-lg font-bold text-gray-900">
                 Paket Langganan & Batasan Kuota
               </h2>
               <p className="text-xs sm:text-sm text-gray-500 mt-0.5">

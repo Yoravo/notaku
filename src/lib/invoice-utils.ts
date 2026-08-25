@@ -9,14 +9,36 @@ export function getStatusColor(status: string): string {
   return colors[status] || "bg-gray-100 text-gray-800";
 }
 
-export const statusLabel: Record<string, { text: string; className: string }> =
-  {
-    DRAFT: { text: "Draft", className: "bg-gray-100 text-gray-700" },
-    SENT: { text: "Terkirim", className: "bg-blue-50 text-blue-700" },
-    PAID: { text: "Lunas", className: "bg-green-50 text-green-700" },
-    OVERDUE: { text: "Jatuh Tempo", className: "bg-red-50 text-red-700" },
-    CANCELLED: { text: "Dibatalkan", className: "bg-gray-100 text-gray-500" },
-  };
+export const statusLabel: Record<
+  string,
+  { text: string; className: string; dotClassName: string }
+> = {
+  DRAFT: {
+    text: "Draft",
+    className: "bg-gray-100 text-gray-700 border border-gray-200",
+    dotClassName: "bg-gray-400",
+  },
+  SENT: {
+    text: "Terkirim",
+    className: "bg-blue-50 text-blue-700 border border-blue-200/60",
+    dotClassName: "bg-blue-500",
+  },
+  PAID: {
+    text: "Lunas",
+    className: "bg-emerald-50 text-emerald-700 border border-emerald-200/60",
+    dotClassName: "bg-emerald-500",
+  },
+  OVERDUE: {
+    text: "Jatuh Tempo",
+    className: "bg-rose-50 text-rose-700 border border-rose-200/60",
+    dotClassName: "bg-rose-500",
+  },
+  CANCELLED: {
+    text: "Dibatalkan",
+    className: "bg-gray-100 text-gray-500 border border-gray-200",
+    dotClassName: "bg-gray-400",
+  },
+};
 
 export const JAKARTA_TZ = "Asia/Jakarta";
 

@@ -29,7 +29,7 @@ export default async function SettingsPage() {
       <PaymentVerifier />
 
       <div>
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900 font-display">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900">
           Pengaturan Akun & Profil
         </h1>
         <p className="text-xs sm:text-sm text-gray-500 mt-1">

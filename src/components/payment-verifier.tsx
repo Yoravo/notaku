@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { CheckCircleIcon } from "@heroicons/react/24/outline";
 
 const MAX_ATTEMPTS = 8;
 const POLL_INTERVAL_MS = 2000;
@@ -75,9 +76,10 @@ export function PaymentVerifier() {
 
   if (status === "success") {
     return (
-      <div className="mt-4 rounded-lg border border-green-200 bg-green-50 p-4 text-center">
-        <p className="text-sm font-medium text-green-800">
-          ✅ Pembayaran berhasil! Akun kamu sekarang Pro 🎉
+      <div className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-center">
+        <p className="text-sm font-semibold text-emerald-800 flex items-center justify-center gap-2">
+          <CheckCircleIcon className="w-5 h-5 text-emerald-600 shrink-0" />
+          <span>Pembayaran berhasil! Akun kamu sekarang Pro</span>
         </p>
       </div>
     );

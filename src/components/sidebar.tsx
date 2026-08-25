@@ -10,7 +10,6 @@ import {
   UsersIcon,
   Cog6ToothIcon,
   ShieldCheckIcon,
-  ChevronDoubleLeftIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 

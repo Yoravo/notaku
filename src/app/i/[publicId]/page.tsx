@@ -79,16 +79,27 @@ export default async function PublicInvoicePage({
             <h1 className="text-lg font-semibold text-gray-900">INVOICE</h1>
             <p className="text-sm text-gray-600">{invoice.number}</p>
             <span
-              className={`mt-2 inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${
+              className={`mt-2 inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
                 invoice.status === "PAID"
-                  ? "bg-green-50 text-green-700"
+                  ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60"
                   : invoice.status === "SENT"
-                    ? "bg-blue-50 text-blue-700"
+                    ? "bg-blue-50 text-blue-700 border border-blue-200/60"
                     : invoice.status === "OVERDUE"
-                      ? "bg-red-50 text-red-700"
-                      : "bg-gray-100 text-gray-700"
+                      ? "bg-rose-50 text-rose-700 border border-rose-200/60"
+                      : "bg-gray-100 text-gray-700 border border-gray-200"
               }`}
             >
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${
+                  invoice.status === "PAID"
+                    ? "bg-emerald-500"
+                    : invoice.status === "SENT"
+                      ? "bg-blue-500"
+                      : invoice.status === "OVERDUE"
+                        ? "bg-rose-500"
+                        : "bg-gray-400"
+                }`}
+              />
               {invoice.status === "PAID"
                 ? "Lunas"
                 : invoice.status === "SENT"

@@ -219,8 +219,9 @@ export default async function AdminUsersPage(props: {
                               {u.email}
                             </p>
                             {u.businessName && (
-                              <p className="text-[11px] text-emerald-700 font-medium truncate max-w-xs">
-                                🏢 {u.businessName}
+                              <p className="text-[11px] text-emerald-700 font-medium truncate max-w-xs flex items-center gap-1 mt-0.5">
+                                <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                <span>{u.businessName}</span>
                               </p>
                             )}
                           </div>

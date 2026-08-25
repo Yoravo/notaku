@@ -285,18 +285,18 @@ export default async function Home() {
                 <span className="text-base font-normal opacity-60">/bln</span>
               </p>
               <ul className="mt-7 space-y-3 text-sm opacity-90">
-                <li className="flex gap-2">
-                  <span className="text-emerald-bright">✓</span> Invoice
+                <li className="flex items-center gap-2">
+                  <CheckIcon className="h-4 w-4 text-emerald-bright" /> Invoice
                   unlimited
                 </li>
-                <li className="flex gap-2">
-                  <span className="text-emerald-bright">✓</span> Tanpa watermark
+                <li className="flex items-center gap-2">
+                  <CheckIcon className="h-4 w-4 text-emerald-bright" /> Tanpa watermark
                 </li>
-                <li className="flex gap-2">
-                  <span className="text-emerald-bright">✓</span> Custom branding
+                <li className="flex items-center gap-2">
+                  <CheckIcon className="h-4 w-4 text-emerald-bright" /> Custom branding
                 </li>
-                <li className="flex gap-2">
-                  <span className="text-emerald-bright">✓</span> Laporan bulanan
+                <li className="flex items-center gap-2">
+                  <CheckIcon className="h-4 w-4 text-emerald-bright" /> Laporan bulanan
                 </li>
               </ul>
               <Link

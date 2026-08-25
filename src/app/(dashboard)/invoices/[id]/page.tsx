@@ -7,6 +7,14 @@ import { InvoiceActions } from "@/components/invoices/invoice-actions";
 import { WhatsAppShareModal } from "@/components/invoices/whatsapp-share-modal";
 import { EmailShareModal } from "@/components/invoices/email-share-modal";
 import { statusLabel, formatDateWIB } from "@/lib/invoice-utils";
+import {
+  PencilSquareIcon,
+  EyeIcon,
+  ArrowDownTrayIcon,
+  ArrowLeftIcon,
+  CalendarDaysIcon,
+  UserIcon,
+} from "@heroicons/react/24/outline";
 
 export default async function InvoiceDetailPage({
   params,
@@ -19,7 +27,11 @@ export default async function InvoiceDetailPage({
 
   const invoice = await prisma.invoice.findUnique({
     where: { id, userId: session.user.id },
-    include: { items: true, customer: true, user: { select: { businessName: true, name: true } } },
+    include: {
+      items: true,
+      customer: true,
+      user: { select: { businessName: true, name: true } },
+    },
   });
 
   if (!invoice) notFound();
@@ -27,55 +39,81 @@ export default async function InvoiceDetailPage({
   const status = statusLabel[invoice.status] || statusLabel.DRAFT;
 
   return (
-    <div className="max-w-3xl">
-      {/* Header */}
-      <div className="flex items-start justify-between">
+    <div className="max-w-4xl space-y-6">
+      {/* Top Navigation & Action Toolbar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* Invoice Identification with Status under Date */}
         <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-xl font-semibold text-gray-900">
-              {invoice.number || "Draft"}
-            </h1>
+          <Link
+            href="/invoices"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-gray-500 hover:text-gray-900 transition-colors mb-2"
+          >
+            <ArrowLeftIcon className="w-3.5 h-3.5" />
+            <span>Kembali ke Daftar Invoice</span>
+          </Link>
+          <h1 className="text-xl font-bold tracking-tight text-gray-900">
+            {invoice.number || "Draft Invoice"}
+          </h1>
+          <p className="mt-1 text-xs text-gray-500 flex items-center gap-1.5 font-medium">
+            <CalendarDaysIcon className="w-3.5 h-3.5 text-gray-400" />
+            <span>
+              Dibuat{" "}
+              {formatDateWIB(invoice.createdAt, {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+            </span>
+          </p>
+          {/* Status badge placed neatly under the date */}
+          <div className="mt-2">
             <span
-              className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${status.className}`}
+              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${status.className}`}
             >
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${status.dotClassName}`}
+              />
               {status.text}
             </span>
           </div>
-          <p className="mt-1 text-sm text-gray-500">
-            Dibuat{" "}
-            {formatDateWIB(invoice.createdAt, {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}
-          </p>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        {/* Action Buttons Group */}
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Quick PDF Action Group */}
+          <div className="inline-flex items-center rounded-lg border border-gray-300 bg-white shadow-xs overflow-hidden">
+            <a
+              href={`/api/invoices/${invoice.id}/pdf?preview=true`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs sm:text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors border-r border-gray-200"
+              title="Lihat Pratinjau PDF"
+            >
+              <EyeIcon className="w-4 h-4 text-gray-500" />
+              <span>Lihat PDF</span>
+            </a>
+            <a
+              href={`/api/invoices/${invoice.id}/pdf`}
+              download
+              className="inline-flex items-center p-2 text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+              title="Unduh File PDF"
+            >
+              <ArrowDownTrayIcon className="w-4 h-4" />
+            </a>
+          </div>
+
+          {/* Edit Button (jika belum lunas/batal) */}
           {invoice.status !== "PAID" && invoice.status !== "CANCELLED" && (
             <Link
               href={`/invoices/${invoice.id}/edit`}
-              className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-xs sm:text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-xs"
             >
-              Edit
+              <PencilSquareIcon className="w-4 h-4 text-gray-500" />
+              <span>Edit</span>
             </Link>
           )}
-          <InvoiceActions invoiceId={invoice.id} status={invoice.status} />
-          <a
-            href={`/api/invoices/${invoice.id}/pdf?preview=true`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-          >
-            Lihat PDF
-          </a>
-          <a
-            href={`/api/invoices/${invoice.id}/pdf`}
-            download
-            className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-          >
-            Download PDF
-          </a>
+
+          {/* Email Share Modal */}
           <EmailShareModal
             invoiceId={invoice.id}
             invoiceNumber={invoice.number || "Draft"}
@@ -93,6 +131,8 @@ export default async function InvoiceDetailPage({
             }
             status={invoice.status}
           />
+
+          {/* WhatsApp Share Modal */}
           <WhatsAppShareModal
             invoiceNumber={invoice.number || "Draft"}
             customerName={invoice.customer.name}
@@ -111,106 +151,112 @@ export default async function InvoiceDetailPage({
             businessName={invoice.user.businessName || invoice.user.name}
             status={invoice.status}
           />
+
+          {/* Status Lifecycle & Delete Dropdown */}
+          <InvoiceActions invoiceId={invoice.id} status={invoice.status} />
         </div>
       </div>
 
-      {/* Customer info */}
-      <div className="mt-6 rounded-lg border border-gray-200 bg-white p-5">
-        <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-          Ditagihkan kepada
-        </p>
-        <p className="mt-1 font-medium text-gray-900">
-          Nama: {invoice.customer.name}
-        </p>
-        {invoice.customer.email && (
-          <p className="text-sm text-gray-600">
-            Email: {invoice.customer.email}
-          </p>
-        )}
-        {invoice.customer.phone && (
-          <p className="text-sm text-gray-600">
-            Telepon: {invoice.customer.phone}
-          </p>
-        )}
-        {invoice.customer.address && (
-          <p className="mt-1 text-sm text-gray-600">
-            Alamat: {invoice.customer.address}
-          </p>
-        )}
-      </div>
+      {/* Main Invoice Card Preview */}
+      <div className="rounded-2xl border border-gray-200 bg-white shadow-xs overflow-hidden">
+        {/* Customer & Due Date Section */}
+        <div className="p-6 border-b border-gray-100 bg-gray-50/50 grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1">
+              <UserIcon className="w-3.5 h-3.5" />
+              Ditagihkan Kepada
+            </span>
+            <p className="mt-1.5 font-bold text-gray-900 text-base">
+              {invoice.customer.name}
+            </p>
+            {invoice.customer.email && (
+              <p className="text-xs text-gray-600 font-mono mt-0.5">
+                {invoice.customer.email}
+              </p>
+            )}
+            {invoice.customer.phone && (
+              <p className="text-xs text-gray-600 font-mono mt-0.5">
+                {invoice.customer.phone}
+              </p>
+            )}
+            {invoice.customer.address && (
+              <p className="mt-1 text-xs text-gray-500 leading-relaxed">
+                {invoice.customer.address}
+              </p>
+            )}
+          </div>
 
-      {/* Items table */}
-      <div className="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white">
-        <table className="w-full text-sm">
-          <thead className="border-b border-gray-200 bg-gray-50">
-            <tr>
-              <th className="px-4 py-3 text-left font-medium text-gray-700">
-                Deskripsi
-              </th>
-              <th className="px-4 py-3 text-right font-medium text-gray-700">
-                Qty
-              </th>
-              <th className="px-4 py-3 text-right font-medium text-gray-700">
-                Harga
-              </th>
-              <th className="px-4 py-3 text-right font-medium text-gray-700">
-                Jumlah
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {invoice.items.map((item) => (
-              <tr key={item.id}>
-                <td className="px-4 py-3 text-gray-900">{item.description}</td>
-                <td className="px-4 py-3 text-right text-gray-600">
-                  {item.quantity}
+          <div className="sm:text-right flex flex-col justify-start sm:items-end">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
+              Jatuh Tempo Pembayaran
+            </span>
+            <p className="mt-1.5 font-semibold text-gray-900 text-sm">
+              {invoice.dueDate
+                ? formatDateWIB(invoice.dueDate, {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })
+                : "Tidak ditentukan (Langsung)"}
+            </p>
+            {invoice.notes && (
+              <div className="mt-3 text-left sm:text-right max-w-xs">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">
+                  Catatan
+                </span>
+                <p className="text-xs text-gray-600 italic mt-0.5">
+                  &quot;{invoice.notes}&quot;
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Line Items Table */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs sm:text-sm">
+            <thead className="border-b border-gray-200 bg-gray-50/80 text-gray-600 text-xs uppercase font-semibold">
+              <tr>
+                <th className="px-6 py-3.5">Deskripsi Item</th>
+                <th className="px-4 py-3.5 text-center">Qty</th>
+                <th className="px-4 py-3.5 text-right">Harga Satuan</th>
+                <th className="px-6 py-3.5 text-right">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {invoice.items.map((item) => (
+                <tr key={item.id} className="hover:bg-gray-50/50">
+                  <td className="px-6 py-3.5 font-medium text-gray-900">
+                    {item.description}
+                  </td>
+                  <td className="px-4 py-3.5 text-center text-gray-600 font-mono">
+                    {item.quantity}
+                  </td>
+                  <td className="px-4 py-3.5 text-right text-gray-600 tabular-nums">
+                    Rp{Number(item.price).toLocaleString("id-ID")}
+                  </td>
+                  <td className="px-6 py-3.5 text-right font-semibold text-gray-900 tabular-nums">
+                    Rp{Number(item.amount).toLocaleString("id-ID")}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot className="border-t-2 border-gray-200 bg-gray-50/40">
+              <tr>
+                <td
+                  colSpan={3}
+                  className="px-6 py-4 text-right font-bold text-gray-700 uppercase tracking-wider text-xs"
+                >
+                  Total Tagihan
                 </td>
-                <td className="px-4 py-3 text-right text-gray-600">
-                  Rp{Number(item.price).toLocaleString("id-ID")}
-                </td>
-                <td className="px-4 py-3 text-right font-medium text-gray-900">
-                  Rp{Number(item.amount).toLocaleString("id-ID")}
+                <td className="px-6 py-4 text-right font-bold text-gray-900 text-base sm:text-lg tabular-nums">
+                  Rp{Number(invoice.total).toLocaleString("id-ID")}
                 </td>
               </tr>
-            ))}
-          </tbody>
-          <tfoot className="border-t border-gray-200">
-            <tr>
-              <td
-                colSpan={3}
-                className="px-4 py-3 text-right font-medium text-gray-700"
-              >
-                Total
-              </td>
-              <td className="px-4 py-3 text-right text-lg font-semibold text-gray-900">
-                Rp{Number(invoice.total).toLocaleString("id-ID")}
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-
-      {/* Notes & Due date */}
-      {(invoice.notes || invoice.dueDate) && (
-        <div className="mt-4 rounded-lg border border-gray-200 bg-white p-5 space-y-2">
-          {invoice.dueDate && (
-            <p className="text-sm text-gray-600">
-              <span className="font-medium text-gray-700">Jatuh tempo:</span>{" "}
-              {formatDateWIB(invoice.dueDate, {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-            </p>
-          )}
-          {invoice.notes && (
-            <p className="text-sm text-gray-600">
-              <span className="font-medium text-gray-700">Catatan:</span>{" "}
-              {invoice.notes}
-            </p>
-          )}
+            </tfoot>
+          </table>
         </div>
-      )}
+      </div>
     </div>
   );
 }

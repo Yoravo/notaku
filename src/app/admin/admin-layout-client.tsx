@@ -160,18 +160,14 @@ export function AdminLayoutClient({
         {/* Top Navbar Header with Sidebar Toggle (Both Desktop & Mobile) */}
         <header className="flex h-14 items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-6 shadow-xs shrink-0">
           <div className="flex items-center gap-3">
-            {/* Desktop Toggle Button (Icon 3 baris / collapse) */}
+            {/* Desktop Toggle Button (Icon 3 baris konsisten) */}
             <button
               onClick={() => setDesktopOpen(!desktopOpen)}
-              className="hidden md:inline-flex items-center justify-center p-1.5 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer border border-slate-200"
+              className="hidden md:inline-flex items-center justify-center p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer border border-slate-200 shadow-xs"
               title={desktopOpen ? "Sembunyikan Sidebar" : "Tampilkan Sidebar"}
               aria-label="Toggle Desktop Sidebar"
             >
-              {desktopOpen ? (
-                <ChevronDoubleLeftIcon className="w-5 h-5 text-slate-600" />
-              ) : (
-                <Bars3Icon className="w-5 h-5 text-slate-900" />
-              )}
+              <Bars3Icon className="w-5 h-5" />
             </button>
 
             {/* Mobile Toggle Button */}

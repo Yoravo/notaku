@@ -72,18 +72,14 @@ export function DashboardLayoutClient({
         {/* Top Header Bar (Desktop & Mobile) */}
         <header className="flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4 shrink-0">
           <div className="flex items-center gap-2.5">
-            {/* Desktop 3-Bar / Chevron Toggle Button */}
+            {/* Desktop 3-Bar Toggle Button */}
             <button
               onClick={() => setDesktopOpen(!desktopOpen)}
-              className="hidden md:inline-flex items-center justify-center rounded-md p-1.5 text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer border border-gray-200"
+              className="hidden md:inline-flex items-center justify-center rounded-lg p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors cursor-pointer border border-gray-200 shadow-xs"
               title={desktopOpen ? "Sembunyikan Sidebar" : "Tampilkan Sidebar"}
               aria-label="Toggle Sidebar"
             >
-              {desktopOpen ? (
-                <ChevronDoubleLeftIcon className="h-5 w-5 text-gray-600" />
-              ) : (
-                <Bars3Icon className="h-5 w-5 text-gray-900" />
-              )}
+              <Bars3Icon className="h-5 w-5" />
             </button>
 
             {/* Mobile Toggle Button */}

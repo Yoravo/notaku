@@ -56,7 +56,7 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
           const verify = await fetch("/api/payment/verify");
           const result = await verify.json();
           if (result.status === "activated") {
-            alert("Pembayaran berhasil! Akun kamu sekarang Pro 🎉");
+            alert("Pembayaran berhasil! Akun kamu sekarang Pro");
           }
           window.location.reload();
         },

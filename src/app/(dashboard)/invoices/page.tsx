@@ -134,23 +134,67 @@ export default async function InvoicesPage({
         </div>
       ) : (
         <>
-          <div className="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white">
+          {/* Card View: Mobile only (md:hidden) */}
+          <div className="mt-4 space-y-2.5 md:hidden">
+            {invoices.map((invoice) => {
+              const s = statusLabel[invoice.status] || statusLabel.DRAFT;
+              return (
+                <Link
+                  key={invoice.id}
+                  href={`/invoices/${invoice.id}`}
+                  className="block rounded-xl border border-gray-200 bg-white p-4 shadow-xs active:bg-gray-50 transition-colors hover:border-gray-300"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-bold text-gray-900 text-sm truncate">
+                        {invoice.number || "—"}
+                      </p>
+                      <p className="mt-1 text-xs text-gray-600 font-medium truncate">
+                        {invoice.customer.name}
+                      </p>
+                      <p className="mt-1 text-[11px] text-gray-400">
+                        {formatDateWIB(invoice.createdAt, {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="font-bold text-gray-900 text-sm tabular-nums">
+                        Rp{Number(invoice.total).toLocaleString("id-ID")}
+                      </p>
+                      <span
+                        className={`mt-1.5 inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${s.className}`}
+                      >
+                        <span className={`h-1.5 w-1.5 rounded-full ${s.dotClassName}`} />
+                        {s.text}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Table View: Desktop only (hidden md:block) */}
+          <div className="mt-4 hidden md:block overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xs">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-gray-200 bg-gray-50">
+              <thead className="border-b border-gray-200 bg-gray-50/80">
                 <tr>
-                  <th className="px-4 py-3 font-medium text-gray-700">
+                  <th className="px-4 py-3 font-semibold text-gray-700">
                     No. Invoice
                   </th>
-                  <th className="px-4 py-3 font-medium text-gray-700">
+                  <th className="px-4 py-3 font-semibold text-gray-700">
                     Pelanggan
                   </th>
-                  <th className="px-4 py-3 font-medium text-gray-700">
+                  <th className="px-4 py-3 font-semibold text-gray-700">
                     Tanggal
                   </th>
-                  <th className="px-4 py-3 font-medium text-gray-700">
+                  <th className="px-4 py-3 font-semibold text-gray-700">
                     Status
                   </th>
-                  <th className="px-4 py-3 font-medium text-gray-700 text-right">
+                  <th className="px-4 py-3 font-semibold text-gray-700 text-right">
                     Total
                   </th>
                 </tr>
@@ -159,16 +203,16 @@ export default async function InvoicesPage({
                 {invoices.map((invoice) => {
                   const s = statusLabel[invoice.status] || statusLabel.DRAFT;
                   return (
-                    <tr key={invoice.id} className="hover:bg-gray-50">
+                    <tr key={invoice.id} className="hover:bg-gray-50/80 transition-colors">
                       <td className="px-4 py-3">
                         <Link
                           href={`/invoices/${invoice.id}`}
-                          className="font-medium text-blue-600 hover:underline"
+                          className="font-semibold text-blue-600 hover:underline"
                         >
                           {invoice.number || "—"}
                         </Link>
                       </td>
-                      <td className="px-4 py-3 text-gray-900">
+                      <td className="px-4 py-3 text-gray-900 font-medium">
                         {invoice.customer.name}
                       </td>
                       <td className="px-4 py-3 text-gray-600">
@@ -180,12 +224,13 @@ export default async function InvoicesPage({
                       </td>
                       <td className="px-4 py-3">
                         <span
-                          className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${s.className}`}
+                          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${s.className}`}
                         >
+                          <span className={`h-1.5 w-1.5 rounded-full ${s.dotClassName}`} />
                           {s.text}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-right font-medium text-gray-900">
+                      <td className="px-4 py-3 text-right font-bold text-gray-900 tabular-nums">
                         Rp{Number(invoice.total).toLocaleString("id-ID")}
                       </td>
                     </tr>
