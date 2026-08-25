@@ -353,7 +353,7 @@ export default async function AdminDashboardPage() {
                       key={p.path}
                       className="flex items-center justify-between text-xs sm:text-sm py-1.5 border-b border-slate-100 last:border-0"
                     >
-                      <span className="font-mono text-slate-700 truncate max-w-[200px] sm:max-w-xs">
+                      <span className="font-mono text-slate-700 truncate max-w-50 sm:max-w-xs">
                         {p.path}
                       </span>
                       <div className="flex items-center gap-3 shrink-0">
@@ -388,7 +388,7 @@ export default async function AdminDashboardPage() {
                     key={r.referrer || "direct"}
                     className="flex items-center justify-between text-xs sm:text-sm py-1.5 border-b border-slate-100 last:border-0"
                   >
-                    <span className="text-slate-700 truncate max-w-[200px] sm:max-w-xs font-mono">
+                    <span className="text-slate-700 truncate max-w-50 sm:max-w-xs font-mono">
                       {r.referrer || "Direct / Bookmark"}
                     </span>
                     <span className="font-semibold text-slate-900">
@@ -430,10 +430,10 @@ export default async function AdminDashboardPage() {
                 {recentUsers.map((u) => (
                   <tr key={u.id} className="hover:bg-slate-50">
                     <td className="py-2.5 pr-2">
-                      <p className="font-medium text-slate-900 truncate max-w-[140px]">
+                      <p className="font-medium text-slate-900 truncate max-w-35">
                         {u.name}
                       </p>
-                      <p className="text-slate-400 truncate max-w-[140px]">
+                      <p className="text-slate-400 truncate max-w-35">
                         {u.email}
                       </p>
                     </td>
