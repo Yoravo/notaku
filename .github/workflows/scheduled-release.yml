@@ -26,8 +26,7 @@ jobs:
 
       - name: Check and Advance Main by 1 Commit from Queue
         run: |
-          # Ambil referensi branch terbaru
-          git fetch origin main:main
+          # Fetch semua branch dari remote
           git fetch origin queue:queue
 
           # Cari commit berikutnya di queue yang belum ada di main
@@ -39,6 +38,5 @@ jobs:
           fi
 
           echo "Memajukan branch main ke commit: $NEXT_COMMIT"
-          git checkout main
-          git merge --ff-only $NEXT_COMMIT
+          git cherry-pick $NEXT_COMMIT || git merge --ff-only $NEXT_COMMIT
           git push origin main
