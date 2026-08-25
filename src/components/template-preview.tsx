@@ -8,6 +8,12 @@ import { ModernTemplate } from "@/lib/pdf/templates/modern";
 const dummyData = {
   number: "INV-2026-001",
   status: "PAID",
+  subtotal: 1500000,
+  discountType: "PERCENTAGE",
+  discountValue: 0,
+  discountAmount: 0,
+  taxRate: 0,
+  taxAmount: 0,
   total: 1500000,
   createdAt: "20 Juni 2026",
   dueDate: "20 Juli 2026",
