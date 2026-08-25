@@ -2,8 +2,9 @@ name: Scheduled Commit Releaser
 
 on:
   schedule:
+    # Berjalan setiap hari jam 02:00 UTC (09:00 WIB)
     - cron: '0 2 * * *'
-  workflow_dispatch:
+  workflow_dispatch: # Memungkinkan trigger manual dari tab Actions di GitHub
 
 jobs:
   release-next-commit:
@@ -31,8 +32,10 @@ jobs:
           git fetch origin main:refs/remotes/origin/main
           git fetch origin queue:refs/remotes/origin/queue
 
-          # Cari commit berikutnya di queue yang belum ada di main
-          NEXT_COMMIT=$(git log --reverse --format="%H" origin/main..origin/queue | head -n 1)
+          # Cari commit di queue yang PATCH-nya belum ada di main
+          # (pakai git cherry, bukan git log, supaya tahan terhadap
+          # SHA yang berubah akibat cherry-pick sebelumnya)
+          NEXT_COMMIT=$(git cherry origin/main origin/queue | awk '/^\+/ {print $2; exit}')
 
           if [ -z "$NEXT_COMMIT" ]; then
             echo "Semua commit dari branch 'queue' sudah berada di 'main'. Tidak ada rilis baru."
