@@ -16,6 +16,8 @@ model User {
   phone         String?
   address       String?
   logoUrl       String?
+  signatureUrl  String?
+  stampUrl      String?
   plan          Plan          @default(FREE)
   role          Role          @default(USER)
   createdAt     DateTime      @default(now())
@@ -45,19 +47,25 @@ model Customer {
 }
 
 model Invoice {
-  id         String        @id @default(cuid())
-  publicId   String        @unique @default(cuid())
-  userId     String
-  customerId String
-  number     String
-  status     InvoiceStatus @default(DRAFT)
-  dueDate    DateTime?
-  notes      String?
-  items      InvoiceItem[]
-  total      Decimal
-  createdAt  DateTime      @default(now())
-  user       User          @relation(fields: [userId], references: [id])
-  customer   Customer      @relation(fields: [customerId], references: [id])
+  id             String        @id @default(cuid())
+  publicId       String        @unique @default(cuid())
+  userId         String
+  customerId     String
+  number         String
+  status         InvoiceStatus @default(DRAFT)
+  dueDate        DateTime?
+  notes          String?
+  items          InvoiceItem[]
+  subtotal       Decimal       @default(0)
+  discountType   String        @default("FIXED")
+  discountValue  Decimal       @default(0)
+  discountAmount Decimal       @default(0)
+  taxRate        Decimal       @default(0)
+  taxAmount      Decimal       @default(0)
+  total          Decimal       @default(0)
+  createdAt      DateTime      @default(now())
+  user           User          @relation(fields: [userId], references: [id])
+  customer       Customer      @relation(fields: [customerId], references: [id])
 
   @@unique([userId, number])
 }

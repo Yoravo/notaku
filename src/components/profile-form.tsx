@@ -23,6 +23,8 @@ type Props = {
   phone: string | null;
   address: string | null;
   logoUrl?: string | null;
+  signatureUrl?: string | null;
+  stampUrl?: string | null;
   email: string;
 };
 
@@ -32,6 +34,8 @@ export function ProfileForm({
   phone,
   address,
   logoUrl,
+  signatureUrl,
+  stampUrl,
   email,
 }: Props) {
   const [form, setForm] = useState({
@@ -40,12 +44,15 @@ export function ProfileForm({
     phone: phone ?? "",
     address: address ?? "",
     logoUrl: logoUrl ?? "",
+    signatureUrl: signatureUrl ?? "",
+    stampUrl: stampUrl ?? "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  // State untuk modal crop / custom resize
+  // State untuk modal crop / custom resize (target: logo | signature | stamp)
+  const [cropTarget, setCropTarget] = useState<"logo" | "signature" | "stamp">("logo");
   const [tempImage, setTempImage] = useState<string | null>(null);
   const [scale, setScale] = useState(1);
   const [offsetX, setOffsetX] = useState(0);
@@ -61,17 +68,21 @@ export function ProfileForm({
     setSuccess(false);
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    target: "logo" | "signature" | "stamp",
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     if (file.size > 5 * 1024 * 1024) {
-      setError("Ukuran logo maksimal 5MB");
+      setError(`Ukuran file ${target} maksimal 5MB`);
       return;
     }
 
     const reader = new FileReader();
     reader.onload = (event) => {
+      setCropTarget(target);
       setTempImage(event.target?.result as string);
       setScale(1);
       setOffsetX(0);
@@ -84,10 +95,8 @@ export function ProfileForm({
   const handleApplyCrop = () => {
     if (!tempImage) return;
 
-    // Bersihkan dan potong gambar pas tanpa padding transparan
     const img = new Image();
     img.onload = () => {
-      // Jika scale 1 dan tidak ada offset, simpan langsung gambar asli terkompresi
       const canvas = document.createElement("canvas");
       let width = img.width;
       let height = img.height;
@@ -111,7 +120,13 @@ export function ProfileForm({
         ctx.clearRect(0, 0, width, height);
         ctx.drawImage(img, 0, 0, width, height);
         const finalDataUrl = canvas.toDataURL("image/png");
-        setForm((prev) => ({ ...prev, logoUrl: finalDataUrl }));
+        if (cropTarget === "logo") {
+          setForm((prev) => ({ ...prev, logoUrl: finalDataUrl }));
+        } else if (cropTarget === "signature") {
+          setForm((prev) => ({ ...prev, signatureUrl: finalDataUrl }));
+        } else if (cropTarget === "stamp") {
+          setForm((prev) => ({ ...prev, stampUrl: finalDataUrl }));
+        }
         setTempImage(null);
         setError(null);
       }
@@ -132,6 +147,8 @@ export function ProfileForm({
         phone: form.phone.trim() || null,
         address: form.address.trim() || null,
         logoUrl: form.logoUrl.trim() || null,
+        signatureUrl: form.signatureUrl.trim() || null,
+        stampUrl: form.stampUrl.trim() || null,
       });
       setSuccess(true);
       setTimeout(() => setSuccess(false), 4000);
@@ -164,7 +181,7 @@ export function ProfileForm({
       {/* Logo Bisnis Section */}
       <div className="rounded-xl border border-gray-200 bg-gray-50/60 p-4">
         <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">
-          Logo Bisnis / Toko (Untuk PDF Invoice)
+          Logo Bisnis / Toko (Untuk Header Invoice)
         </label>
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -187,7 +204,7 @@ export function ProfileForm({
                 <input
                   type="file"
                   accept="image/png, image/jpeg, image/webp"
-                  onChange={handleFileUpload}
+                  onChange={(e) => handleFileUpload(e, "logo")}
                   className="hidden"
                 />
               </label>
@@ -197,6 +214,7 @@ export function ProfileForm({
                   <button
                     type="button"
                     onClick={() => {
+                      setCropTarget("logo");
                       setTempImage(form.logoUrl);
                       setScale(1);
                       setOffsetX(0);
@@ -220,9 +238,98 @@ export function ProfileForm({
             </div>
 
             <p className="text-[11px] text-gray-500">
-              Format PNG/JPG/WebP, maks 5MB. Anda bisa zoom dan mengatur posisi sebelum menyimpan.
+              Format PNG/JPG/WebP, maks 5MB. Ditampilkan di header/kop faktur.
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* Tanda Tangan & Stempel Digital Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Tanda Tangan Digital */}
+        <div className="rounded-xl border border-gray-200 bg-gray-50/60 p-4 space-y-3">
+          <label className="block text-xs font-bold uppercase tracking-wider text-gray-700">
+            Tanda Tangan Digital (Bawah PDF)
+          </label>
+          <div className="flex items-center gap-3">
+            <div className="w-24 h-16 rounded-lg border-2 border-dashed border-gray-300 bg-white flex items-center justify-center overflow-hidden shrink-0">
+              {form.signatureUrl ? (
+                <img
+                  src={form.signatureUrl}
+                  alt="Tanda Tangan"
+                  className="w-full h-full object-contain p-1"
+                />
+              ) : (
+                <span className="text-[10px] text-gray-400 font-medium text-center px-1">Tanpa TTD</span>
+              )}
+            </div>
+            <div className="space-y-1.5 flex-1">
+              <label className="cursor-pointer inline-flex items-center justify-center px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-xs">
+                <span>{form.signatureUrl ? "Ganti TTD" : "Unggah TTD"}</span>
+                <input
+                  type="file"
+                  accept="image/png, image/jpeg, image/webp"
+                  onChange={(e) => handleFileUpload(e, "signature")}
+                  className="hidden"
+                />
+              </label>
+              {form.signatureUrl && (
+                <button
+                  type="button"
+                  onClick={() => setForm((prev) => ({ ...prev, signatureUrl: "" }))}
+                  className="block text-xs text-rose-600 hover:underline cursor-pointer"
+                >
+                  Hapus TTD
+                </button>
+              )}
+            </div>
+          </div>
+          <p className="text-[10px] text-gray-500">
+            Unggah foto/scan tanda tangan berlatar transparan/putih.
+          </p>
+        </div>
+
+        {/* Stempel Bisnis Digital */}
+        <div className="rounded-xl border border-gray-200 bg-gray-50/60 p-4 space-y-3">
+          <label className="block text-xs font-bold uppercase tracking-wider text-gray-700">
+            Stempel Toko / Bisnis (Cap PDF)
+          </label>
+          <div className="flex items-center gap-3">
+            <div className="w-24 h-16 rounded-lg border-2 border-dashed border-gray-300 bg-white flex items-center justify-center overflow-hidden shrink-0">
+              {form.stampUrl ? (
+                <img
+                  src={form.stampUrl}
+                  alt="Stempel Toko"
+                  className="w-full h-full object-contain p-1"
+                />
+              ) : (
+                <span className="text-[10px] text-gray-400 font-medium text-center px-1">Tanpa Cap</span>
+              )}
+            </div>
+            <div className="space-y-1.5 flex-1">
+              <label className="cursor-pointer inline-flex items-center justify-center px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-xs">
+                <span>{form.stampUrl ? "Ganti Cap" : "Unggah Cap"}</span>
+                <input
+                  type="file"
+                  accept="image/png, image/jpeg, image/webp"
+                  onChange={(e) => handleFileUpload(e, "stamp")}
+                  className="hidden"
+                />
+              </label>
+              {form.stampUrl && (
+                <button
+                  type="button"
+                  onClick={() => setForm((prev) => ({ ...prev, stampUrl: "" }))}
+                  className="block text-xs text-rose-600 hover:underline cursor-pointer"
+                >
+                  Hapus Cap
+                </button>
+              )}
+            </div>
+          </div>
+          <p className="text-[10px] text-gray-500">
+            Unggah stempel cap digital untuk dicetak menimpa area tanda tangan.
+          </p>
         </div>
       </div>
 
@@ -233,10 +340,10 @@ export function ProfileForm({
             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
               <div>
                 <h3 className="text-base font-bold text-gray-900">
-                  Sesuaikan & Resize Logo
+                  Sesuaikan & Resize {cropTarget === "logo" ? "Logo" : cropTarget === "signature" ? "Tanda Tangan" : "Stempel Cap"}
                 </h3>
                 <p className="text-xs text-gray-500">
-                  Geser dan atur perbesaran gambar agar pas di kop invoice
+                  Geser dan atur perbesaran gambar agar pas dicetak pada faktur
                 </p>
               </div>
               <button
@@ -294,7 +401,7 @@ export function ProfileForm({
               {/* Target Overlay Guide */}
               <div className="absolute inset-4 pointer-events-none border border-emerald-500/40 rounded-lg flex items-center justify-center">
                 <span className="text-[10px] uppercase font-bold tracking-widest text-emerald-700/60 bg-white/80 px-2 py-0.5 rounded shadow-xs">
-                  Area Kop Invoice
+                  Area Cetak PDF
                 </span>
               </div>
             </div>
@@ -348,7 +455,7 @@ export function ProfileForm({
                 onClick={handleApplyCrop}
                 className="px-5 py-2 text-xs font-semibold text-white bg-[#0f6b4f] hover:bg-[#0c5740] rounded-lg transition-colors cursor-pointer shadow-xs"
               >
-                Terapkan Logo
+                Terapkan Gambar
               </button>
             </div>
           </div>

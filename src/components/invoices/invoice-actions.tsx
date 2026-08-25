@@ -2,13 +2,14 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { updateInvoiceStatus, deleteInvoice } from "@/actions/invoices";
+import { updateInvoiceStatus, deleteInvoice, cloneInvoice } from "@/actions/invoices";
 import {
   EllipsisVerticalIcon,
   CheckIcon,
   PaperAirplaneIcon,
   XCircleIcon,
   TrashIcon,
+  DocumentDuplicateIcon,
 } from "@heroicons/react/24/outline";
 
 export function InvoiceActions({
@@ -70,6 +71,10 @@ export function InvoiceActions({
     handleAction("delete", () => deleteInvoice(invoiceId));
   };
 
+  const handleClone = () => {
+    handleAction("clone", () => cloneInvoice(invoiceId));
+  };
+
   const isLoading = (action: string) => loading === action;
   const busy = loading !== null;
 
@@ -111,6 +116,14 @@ export function InvoiceActions({
 
       {dropdownOpen && (
         <div className="absolute right-0 top-full mt-1.5 w-48 rounded-xl bg-white p-1.5 shadow-xl border border-gray-200 z-30 animate-in fade-in zoom-in-95 duration-100">
+          <button
+            onClick={handleClone}
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-blue-700 hover:bg-blue-50 transition-colors cursor-pointer"
+          >
+            <DocumentDuplicateIcon className="w-4 h-4 text-blue-600" />
+            <span>Duplikasi Invoice (1-Click)</span>
+          </button>
+
           {status === "DRAFT" && (
             <button
               onClick={handleMarkPaid}

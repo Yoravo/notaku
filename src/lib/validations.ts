@@ -19,5 +19,8 @@ export const invoiceSchema = z.object({
     message: "Tanggal jatuh tempo tidak valid",
   }),
   notes: z.string().max(1000).nullable(),
+  discountType: z.enum(["FIXED", "PERCENTAGE"]).default("FIXED"),
+  discountValue: z.number().min(0, "Nilai diskon tidak boleh negatif").default(0),
+  taxRate: z.number().min(0, "Tarif pajak minimal 0%").max(100, "Tarif pajak maksimal 100%").default(0),
   items: z.array(invoiceItemSchema).min(1, "Minimal 1 item").max(50, "Maksimal 50 item"),
 });

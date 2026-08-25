@@ -15,6 +15,8 @@ import { sendEmail } from "@/lib/email";
 import { renderInvoiceEmailHtml } from "@/lib/email-templates";
 import { formatDateWIB } from "@/lib/invoice-utils";
 
+import { calculateInvoiceTotals, DiscountType } from "@/lib/invoice-calculations";
+
 async function getUser() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) throw new Error("Unauthorized");
@@ -31,6 +33,9 @@ export async function createInvoice(data: {
   customerId: string;
   dueDate: string | null;
   notes: string | null;
+  discountType?: DiscountType | string;
+  discountValue?: number;
+  taxRate?: number;
   items: { description: string; quantity: number; price: number }[];
 }) {
   const user = await getUser();
@@ -41,10 +46,12 @@ export async function createInvoice(data: {
     throw new Error(parsed.error.issues[0].message);
   }
 
-  const total = data.items.reduce(
-    (sum, item) => sum + Math.round(item.quantity * item.price),
-    0,
-  );
+  const totals = calculateInvoiceTotals({
+    items: parsed.data.items,
+    discountType: parsed.data.discountType,
+    discountValue: parsed.data.discountValue,
+    taxRate: parsed.data.taxRate,
+  });
 
   const invoice = await prisma.$transaction(async (tx) => {
     // Atomic: count check + create dalam satu transaksi
@@ -56,7 +63,7 @@ export async function createInvoice(data: {
     }
 
     const customer = await tx.customer.findUnique({
-      where: { id: data.customerId, userId: user.id },
+      where: { id: parsed.data.customerId, userId: user.id },
       select: { id: true },
     });
     if (!customer) {
@@ -68,13 +75,19 @@ export async function createInvoice(data: {
     return tx.invoice.create({
       data: {
         userId: user.id,
-        customerId: data.customerId,
+        customerId: parsed.data.customerId,
         number,
-        dueDate: data.dueDate ? new Date(data.dueDate) : null,
-        notes: data.notes || null,
-        total,
+        dueDate: parsed.data.dueDate ? new Date(parsed.data.dueDate) : null,
+        notes: parsed.data.notes || null,
+        subtotal: totals.subtotal,
+        discountType: totals.discountType,
+        discountValue: totals.discountValue,
+        discountAmount: totals.discountAmount,
+        taxRate: totals.taxRate,
+        taxAmount: totals.taxAmount,
+        total: totals.total,
         items: {
-          create: data.items.map((item) => ({
+          create: parsed.data.items.map((item) => ({
             description: item.description,
             quantity: item.quantity,
             price: item.price,
@@ -101,6 +114,9 @@ export async function updateInvoice(
     customerId: string;
     dueDate: string | null;
     notes: string | null;
+    discountType?: DiscountType | string;
+    discountValue?: number;
+    taxRate?: number;
     items: InvoiceItem[];
   },
 ) {
@@ -125,29 +141,37 @@ export async function updateInvoice(
   }
 
   const customer = await prisma.customer.findUnique({
-    where: { id: data.customerId, userId: user.id },
+    where: { id: parsed.data.customerId, userId: user.id },
     select: { id: true },
   });
   if (!customer) {
     throw new Error("Pelanggan tidak ditemukan");
   }
 
-  const total = data.items.reduce(
-    (sum, item) => sum + Math.round(item.quantity * item.price),
-    0,
-  );
+  const totals = calculateInvoiceTotals({
+    items: parsed.data.items,
+    discountType: parsed.data.discountType,
+    discountValue: parsed.data.discountValue,
+    taxRate: parsed.data.taxRate,
+  });
 
   await prisma.invoiceItem.deleteMany({ where: { invoiceId: id } });
 
   await prisma.invoice.update({
     where: { id, userId: user.id },
     data: {
-      customerId: data.customerId,
-      dueDate: data.dueDate ? new Date(data.dueDate) : null,
-      notes: data.notes || null,
-      total,
+      customerId: parsed.data.customerId,
+      dueDate: parsed.data.dueDate ? new Date(parsed.data.dueDate) : null,
+      notes: parsed.data.notes || null,
+      subtotal: totals.subtotal,
+      discountType: totals.discountType,
+      discountValue: totals.discountValue,
+      discountAmount: totals.discountAmount,
+      taxRate: totals.taxRate,
+      taxAmount: totals.taxAmount,
+      total: totals.total,
       items: {
-        create: data.items.map((item) => ({
+        create: parsed.data.items.map((item) => ({
           description: item.description,
           quantity: item.quantity,
           price: item.price,
@@ -239,6 +263,67 @@ export async function deleteInvoice(id: string) {
   redirect("/invoices");
 }
 
+export async function cloneInvoice(id: string) {
+  const user = await getUser();
+  await checkServerActionRateLimit(user.id, "write");
+
+  // Atomic limit check + copy
+  const newInvoice = await prisma.$transaction(async (tx) => {
+    const { allowed } = await canCreateInvoice(user.id, tx);
+    if (!allowed) {
+      throw new Error(
+        "Batas invoice gratis tercapai. Upgrade ke Pro untuk unlimited invoice.",
+      );
+    }
+
+    const source = await tx.invoice.findUnique({
+      where: { id, userId: user.id },
+      include: { items: true },
+    });
+
+    if (!source) {
+      throw new Error("Invoice asal tidak ditemukan");
+    }
+
+    const number = await generateInvoiceNumber(user.id, tx);
+
+    return tx.invoice.create({
+      data: {
+        userId: user.id,
+        customerId: source.customerId,
+        number,
+        status: "DRAFT",
+        dueDate: null, // Reset jatuh tempo agar diatur ulang
+        notes: source.notes,
+        subtotal: source.subtotal,
+        discountType: source.discountType,
+        discountValue: source.discountValue,
+        discountAmount: source.discountAmount,
+        taxRate: source.taxRate,
+        taxAmount: source.taxAmount,
+        total: source.total,
+        items: {
+          create: source.items.map((it) => ({
+            description: it.description,
+            quantity: it.quantity,
+            price: it.price,
+            amount: it.amount,
+          })),
+        },
+      },
+    });
+  });
+
+  auditLog(
+    "invoice.cloned",
+    { sourceInvoiceId: id, newInvoiceId: newInvoice.id, number: newInvoice.number },
+    { userId: user.id },
+  );
+
+  revalidatePath("/invoices");
+  redirect(`/invoices/${newInvoice.id}`);
+}
+
 export async function sendInvoiceEmail(data: {
   invoiceId: string;
   recipientEmail?: string;
@@ -298,6 +383,12 @@ export async function sendInvoiceEmail(data: {
       invoiceNumber: invoice.number || "Draft",
       customerName: invoice.customer.name,
       businessName,
+      subtotal: Number(invoice.subtotal || invoice.total),
+      discountType: invoice.discountType,
+      discountValue: Number(invoice.discountValue || 0),
+      discountAmount: Number(invoice.discountAmount || 0),
+      taxRate: Number(invoice.taxRate || 0),
+      taxAmount: Number(invoice.taxAmount || 0),
       total: Number(invoice.total),
       dueDate: formattedDueDate,
       publicId: invoice.publicId,

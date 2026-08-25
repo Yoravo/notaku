@@ -17,6 +17,8 @@ export type InvoiceData = {
     phone?: string;
     address?: string;
     logoUrl?: string;
+    signatureUrl?: string;
+    stampUrl?: string;
   };
   items: {
     description: string;
@@ -24,6 +26,12 @@ export type InvoiceData = {
     price: number;
     amount: number;
   }[];
+  subtotal: number;
+  discountType?: string;
+  discountValue?: number;
+  discountAmount?: number;
+  taxRate?: number;
+  taxAmount?: number;
   total: number;
   isFree: boolean;
   template?: "classic" | "modern" | "minimal";

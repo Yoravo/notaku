@@ -72,11 +72,29 @@ const styles = StyleSheet.create({
   colQty: { width: 40, textAlign: "right" },
   colPrice: { width: 90, textAlign: "right" },
   colAmount: { width: 90, textAlign: "right" },
+  summaryRow: {
+    flexDirection: "row",
+    paddingVertical: 3,
+  },
+  summaryLabel: {
+    flex: 1,
+    textAlign: "right",
+    fontFamily: "Helvetica",
+    fontSize: 9,
+    color: "#666",
+  },
+  summaryValue: {
+    width: 90,
+    textAlign: "right",
+    fontFamily: "Helvetica-Bold",
+    fontSize: 9,
+    color: "#222",
+  },
   totalRow: {
     flexDirection: "row",
-    marginTop: 16,
-    paddingTop: 16,
-    borderTopWidth: 2,
+    marginTop: 10,
+    paddingTop: 10,
+    borderTopWidth: 1.5,
     borderTopColor: ACCENT,
   },
   totalLabel: {
@@ -91,8 +109,55 @@ const styles = StyleSheet.create({
     width: 90,
     textAlign: "right",
     fontFamily: "Helvetica-Bold",
-    fontSize: 14,
+    fontSize: 12,
     color: "#111",
+  },
+  signatureContainer: {
+    marginTop: 24,
+    flexDirection: "row",
+    justifyContent: "flex-end",
+  },
+  signatureBox: {
+    width: 170,
+    alignItems: "center",
+    textAlign: "center",
+  },
+  signatureImageWrapper: {
+    height: 55,
+    width: "100%",
+    position: "relative",
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 4,
+  },
+  signatureImg: {
+    maxHeight: 50,
+    maxWidth: 130,
+    objectFit: "contain",
+  },
+  stampImg: {
+    position: "absolute",
+    height: 55,
+    width: 55,
+    right: 15,
+    top: -2,
+    opacity: 0.85,
+    objectFit: "contain",
+  },
+  signatureName: {
+    fontSize: 9,
+    fontFamily: "Helvetica-Bold",
+    color: "#222",
+    borderTopWidth: 1,
+    borderTopColor: "#333",
+    paddingTop: 4,
+    width: "100%",
+    textAlign: "center",
+  },
+  signatureTitle: {
+    fontSize: 8,
+    color: "#666",
+    marginTop: 2,
   },
   footer: {
     position: "absolute",
@@ -210,21 +275,80 @@ export function MinimalTemplate({ data }: { data: InvoiceData }) {
               </Text>
             </View>
           ))}
-          <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>Total</Text>
-            <Text style={styles.totalValue}>
-              {formatCurrency(data.total)}
-            </Text>
+          {/* Summary Breakdown */}
+          <View style={{ marginTop: 10 }}>
+            <View style={styles.summaryRow}>
+              <Text style={styles.summaryLabel}>Subtotal</Text>
+              <Text style={styles.summaryValue}>
+                {formatCurrency(data.subtotal || data.total)}
+              </Text>
+            </View>
+
+            {Boolean(data.discountAmount && data.discountAmount > 0) && (
+              <View style={styles.summaryRow}>
+                <Text style={{ ...styles.summaryLabel, color: "#0f6b4f" }}>
+                  Diskon {data.discountType === "PERCENTAGE" ? `(${data.discountValue}%)` : ""}
+                </Text>
+                <Text style={{ ...styles.summaryValue, color: "#0f6b4f" }}>
+                  -{formatCurrency(data.discountAmount || 0)}
+                </Text>
+              </View>
+            )}
+
+            {Boolean(data.taxAmount && data.taxAmount > 0) && (
+              <View style={styles.summaryRow}>
+                <Text style={styles.summaryLabel}>
+                  Pajak (PPN {data.taxRate || 0}%)
+                </Text>
+                <Text style={styles.summaryValue}>
+                  +{formatCurrency(data.taxAmount || 0)}
+                </Text>
+              </View>
+            )}
+
+            <View style={styles.totalRow}>
+              <Text style={styles.totalLabel}>Total Tagihan</Text>
+              <Text style={styles.totalValue}>
+                {formatCurrency(data.total)}
+              </Text>
+            </View>
           </View>
         </View>
 
-        {/* Notes */}
-        {data.notes && (
-          <View style={{ marginTop: 24 }}>
-            <Text style={styles.label}>Catatan</Text>
-            <Text style={styles.text}>{data.notes}</Text>
+        {/* Notes & Signature Row */}
+        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginTop: 24 }}>
+          <View style={{ flex: 1, paddingRight: 20 }}>
+            {data.notes && (
+              <View>
+                <Text style={styles.label}>Catatan</Text>
+                <Text style={styles.text}>{data.notes}</Text>
+              </View>
+            )}
           </View>
-        )}
+
+          {/* Signature & Stamp Section (Jika ada) */}
+          {(data.user.signatureUrl || data.user.stampUrl) && (
+            <View style={styles.signatureBox}>
+              <Text style={{ fontSize: 8, color: "#666", marginBottom: 2 }}>
+                Hormat Kami,
+              </Text>
+              <View style={styles.signatureImageWrapper}>
+                {data.user.signatureUrl && (
+                  <Image src={data.user.signatureUrl} style={styles.signatureImg} />
+                )}
+                {data.user.stampUrl && (
+                  <Image src={data.user.stampUrl} style={styles.stampImg} />
+                )}
+              </View>
+              <Text style={styles.signatureName}>
+                {data.user.name}
+              </Text>
+              <Text style={styles.signatureTitle}>
+                {data.user.businessName || "Otorisasi Pembayaran"}
+              </Text>
+            </View>
+          )}
+        </View>
 
         {/* Footer */}
         <View style={styles.footer}>

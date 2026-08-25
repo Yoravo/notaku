@@ -34,11 +34,14 @@ export default async function EditInvoicePage({
           invoice={{
             id: invoice.id,
             customerId: invoice.customerId,
-            dueDate: invoice.dueDate ? invoice.dueDate.toISOString() : null, // fix
+            dueDate: invoice.dueDate ? invoice.dueDate.toISOString() : null,
             notes: invoice.notes,
+            discountType: invoice.discountType,
+            discountValue: Number(invoice.discountValue || 0),
+            taxRate: Number(invoice.taxRate || 0),
             items: invoice.items.map((i) => ({
               description: i.description,
-              quantity: Number(i.quantity), // fix
+              quantity: Number(i.quantity),
               price: Number(i.price),
             })),
           }}

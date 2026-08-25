@@ -26,12 +26,12 @@ const filterTabs: { label: string; value: string }[] = [
 export default async function InvoicesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; status?: string }>;
+  searchParams: Promise<{ page?: string; status?: string; from?: string; to?: string }>;
 }) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/login");
 
-  const { page, status } = await searchParams;
+  const { page, status, from, to } = await searchParams;
   const currentPage = Math.max(1, parseInt(page || "1", 10));
   const skip = (currentPage - 1) * PER_PAGE;
 
@@ -45,9 +45,20 @@ export default async function InvoicesPage({
   const activeStatus =
     status && validStatuses.has(status) ? (status as InvoiceStatus) : undefined;
 
+  const dateFilter: { gte?: Date; lte?: Date } = {};
+  if (from) {
+    const fromDate = new Date(`${from}T00:00:00.000+07:00`);
+    if (!isNaN(fromDate.getTime())) dateFilter.gte = fromDate;
+  }
+  if (to) {
+    const toDate = new Date(`${to}T23:59:59.999+07:00`);
+    if (!isNaN(toDate.getTime())) dateFilter.lte = toDate;
+  }
+
   const where = {
     userId: session.user.id,
     ...(activeStatus ? { status: activeStatus } : {}),
+    ...(Object.keys(dateFilter).length > 0 ? { createdAt: dateFilter } : {}),
   };
 
   const [invoices, total, totalAll] = await Promise.all([
@@ -64,8 +75,21 @@ export default async function InvoicesPage({
 
   const totalPages = Math.ceil(total / PER_PAGE);
 
-  const buildHref = (s: string, p = 1) =>
-    `/invoices?${s ? `status=${s}&` : ""}page=${p}`;
+  const buildHref = (s: string, p = 1) => {
+    const params = new URLSearchParams();
+    if (s) params.set("status", s);
+    if (from) params.set("from", from);
+    if (to) params.set("to", to);
+    if (p > 1) params.set("page", String(p));
+    const qs = params.toString();
+    return `/invoices${qs ? `?${qs}` : ""}`;
+  };
+
+  const exportUrl = `/api/invoices/export?${new URLSearchParams({
+    ...(activeStatus ? { status: activeStatus } : {}),
+    ...(from ? { from } : {}),
+    ...(to ? { to } : {}),
+  }).toString()}`;
 
   return (
     <div>
@@ -78,7 +102,7 @@ export default async function InvoicesPage({
         <div className="flex items-center gap-2">
           {total > 0 && (
             <a
-              href={`/api/invoices/export${activeStatus ? `?status=${activeStatus}` : ""}`}
+              href={exportUrl}
               download
               className="flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-xs"
             >

@@ -23,6 +23,8 @@ type UserData = {
   phone: string | null;
   address: string | null;
   logoUrl: string | null;
+  signatureUrl?: string | null;
+  stampUrl?: string | null;
   plan: string;
   invoiceTemplate: InvoiceTemplate;
   subscription: {
@@ -88,6 +90,8 @@ export function SettingsTabsClient({ user }: { user: UserData }) {
               phone={user.phone}
               address={user.address}
               logoUrl={user.logoUrl}
+              signatureUrl={user.signatureUrl}
+              stampUrl={user.stampUrl}
               email={user.email}
             />
           </div>

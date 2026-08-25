@@ -52,6 +52,8 @@ export async function GET(
       phone: invoice.user.phone || undefined,
       address: invoice.user.address || undefined,
       logoUrl: invoice.user.logoUrl || undefined,
+      signatureUrl: invoice.user.signatureUrl || undefined,
+      stampUrl: invoice.user.stampUrl || undefined,
     },
     items: invoice.items.map((item) => ({
       description: item.description,
@@ -59,6 +61,12 @@ export async function GET(
       price: Number(item.price),
       amount: Number(item.amount),
     })),
+    subtotal: Number(invoice.subtotal || invoice.total),
+    discountType: invoice.discountType,
+    discountValue: Number(invoice.discountValue || 0),
+    discountAmount: Number(invoice.discountAmount || 0),
+    taxRate: Number(invoice.taxRate || 0),
+    taxAmount: Number(invoice.taxAmount || 0),
     total: Number(invoice.total),
     isFree: invoice.user.plan === "FREE",
     template: invoice.user.invoiceTemplate.toLowerCase() as

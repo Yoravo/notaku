@@ -56,10 +56,22 @@ export function WhatsAppShareModal({
       text: `Halo Kak ${customerName},\n\nTerima kasih atas kerja samanya. Berikut rincian invoice ${invoiceNumber} dari ${sender}:\n\n💰 *Total Tagihan:* ${totalFormatted}${dueDate ? `\n📅 *Jatuh Tempo:* ${dueDate}` : ""}\n\nSilakan cek rincian dan pembayaran melalui link resmi berikut:\n👉 ${invoiceUrl}\n\nTerima kasih!`,
     },
     {
-      id: "reminder",
-      title: "Pengingat Jatuh Tempo",
-      desc: "Untuk mengingatkan tagihan yang mendekati/lewat jatuh tempo",
-      text: `Halo Kak ${customerName},\n\nSemoga sehat selalu. Kami ingin menginformasikan tagihan invoice ${invoiceNumber} dari ${sender} sebesar ${totalFormatted}${dueDate ? ` dengan jatuh tempo *${dueDate}*` : ""}.\n\nMohon untuk dapat melakukan pembayaran melalui link berikut:\n👉 ${invoiceUrl}\n\nJika sudah melakukan pembayaran, silakan abaikan pesan ini. Terima kasih!`,
+      id: "reminder_h3",
+      title: "Pengingat (H-3)",
+      desc: "Pengingat ramah 3 hari sebelum jatuh tempo",
+      text: `Halo Kak ${customerName},\n\nSemoga hari Anda menyenangkan. Sekadar pengingat ramah bahwa tagihan invoice ${invoiceNumber} dari ${sender} sebesar ${totalFormatted} akan jatuh tempo dalam *3 hari lagi* (${dueDate || "segera"}).\n\nUntuk rincian dan pembayaran dapat diakses melalui link berikut:\n👉 ${invoiceUrl}\n\nTerima kasih banyak!`,
+    },
+    {
+      id: "reminder_today",
+      title: "Hari H Jatuh Tempo",
+      desc: "Pengingat tepat pada tanggal jatuh tempo",
+      text: `Halo Kak ${customerName},\n\nKami ingin menginformasikan bahwa tagihan invoice ${invoiceNumber} dari ${sender} sebesar ${totalFormatted} jatuh tempo *HARI INI* (${dueDate || "hari ini"}).\n\nMohon bantuannya untuk dapat menyelesaikan pembayaran melalui tautan berikut:\n👉 ${invoiceUrl}\n\nJika sudah melakukan pembayaran, silakan abaikan pesan ini. Terima kasih!`,
+    },
+    {
+      id: "reminder_overdue",
+      title: "Lewat Jatuh Tempo (Overdue)",
+      desc: "Pemberitahuan tagihan yang telah melewati jatuh tempo",
+      text: `Halo Kak ${customerName},\n\nKami menginformasikan bahwa tagihan invoice ${invoiceNumber} dari ${sender} sebesar ${totalFormatted} saat ini telah *MELEWATI JATUH TEMPO* (${dueDate || "sudah lewat"}).\n\nMohon kesediaannya untuk segera melakukan konfirmasi dan pembayaran melalui link resmi berikut:\n👉 ${invoiceUrl}\n\nTerima kasih atas perhatian dan kerja samanya.`,
     },
     {
       id: "paid",
@@ -70,7 +82,12 @@ export function WhatsAppShareModal({
   ];
 
   // Default template berdasarkan status invoice
-  const defaultTemplateId = status === "PAID" ? "paid" : status === "OVERDUE" ? "reminder" : "new";
+  const defaultTemplateId =
+    status === "PAID"
+      ? "paid"
+      : status === "OVERDUE"
+        ? "reminder_overdue"
+        : "new";
   const [selectedTemplateId, setSelectedTemplateId] = useState(defaultTemplateId);
 
   const currentTemplate =
@@ -139,9 +156,9 @@ export function WhatsAppShareModal({
             {/* Template Selector */}
             <div>
               <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                Pilih Template Pesan
+                Pilih Skenario Pesan
               </label>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {templates.map((tmpl) => {
                   const isSelected = selectedTemplateId === tmpl.id;
                   return (

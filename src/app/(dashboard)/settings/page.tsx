@@ -46,6 +46,8 @@ export default async function SettingsPage() {
           phone: user.phone,
           address: user.address,
           logoUrl: user.logoUrl,
+          signatureUrl: user.signatureUrl,
+          stampUrl: user.stampUrl,
           plan: user.plan,
           invoiceTemplate: user.invoiceTemplate,
           subscription: user.subscription

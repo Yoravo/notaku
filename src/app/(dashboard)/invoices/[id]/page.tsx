@@ -241,11 +241,51 @@ export default async function InvoiceDetailPage({
                 </tr>
               ))}
             </tbody>
-            <tfoot className="border-t-2 border-gray-200 bg-gray-50/40">
+            <tfoot className="border-t-2 border-gray-200 bg-gray-50/40 divide-y divide-gray-200/60">
               <tr>
                 <td
                   colSpan={3}
-                  className="px-6 py-4 text-right font-bold text-gray-700 uppercase tracking-wider text-xs"
+                  className="px-6 py-3 text-right font-semibold text-gray-600 text-xs"
+                >
+                  Subtotal
+                </td>
+                <td className="px-6 py-3 text-right font-semibold text-gray-900 text-sm tabular-nums">
+                  Rp{Number(invoice.subtotal || invoice.total).toLocaleString("id-ID")}
+                </td>
+              </tr>
+
+              {Number(invoice.discountAmount) > 0 && (
+                <tr className="text-emerald-700">
+                  <td
+                    colSpan={3}
+                    className="px-6 py-2.5 text-right font-semibold text-xs"
+                  >
+                    Diskon {invoice.discountType === "PERCENTAGE" ? `(${Number(invoice.discountValue)}%)` : ""}
+                  </td>
+                  <td className="px-6 py-2.5 text-right font-semibold text-sm tabular-nums">
+                    -Rp{Number(invoice.discountAmount).toLocaleString("id-ID")}
+                  </td>
+                </tr>
+              )}
+
+              {Number(invoice.taxAmount) > 0 && (
+                <tr>
+                  <td
+                    colSpan={3}
+                    className="px-6 py-2.5 text-right font-semibold text-gray-600 text-xs"
+                  >
+                    Pajak (PPN {Number(invoice.taxRate)}%)
+                  </td>
+                  <td className="px-6 py-2.5 text-right font-semibold text-gray-900 text-sm tabular-nums">
+                    +Rp{Number(invoice.taxAmount).toLocaleString("id-ID")}
+                  </td>
+                </tr>
+              )}
+
+              <tr className="bg-gray-100/60">
+                <td
+                  colSpan={3}
+                  className="px-6 py-4 text-right font-bold text-gray-800 uppercase tracking-wider text-xs sm:text-sm"
                 >
                   Total Tagihan
                 </td>

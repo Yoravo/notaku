@@ -2,6 +2,12 @@ export type InvoiceEmailTemplateProps = {
   invoiceNumber: string;
   customerName: string;
   businessName: string;
+  subtotal?: number;
+  discountAmount?: number;
+  discountType?: string;
+  discountValue?: number;
+  taxRate?: number;
+  taxAmount?: number;
   total: number;
   dueDate: string | null;
   publicId: string;
@@ -20,6 +26,12 @@ export function renderInvoiceEmailHtml({
   invoiceNumber,
   customerName,
   businessName,
+  subtotal,
+  discountAmount = 0,
+  discountType = "FIXED",
+  discountValue = 0,
+  taxRate = 0,
+  taxAmount = 0,
   total,
   dueDate,
   invoiceUrl,
@@ -28,6 +40,7 @@ export function renderInvoiceEmailHtml({
   items = [],
 }: InvoiceEmailTemplateProps): string {
   const formattedTotal = `Rp${Number(total).toLocaleString("id-ID")}`;
+  const computedSubtotal = subtotal ? Number(subtotal) : Number(total);
 
   const typeConfig = {
     new: {
@@ -158,6 +171,36 @@ export function renderInvoiceEmailHtml({
                       <tr>
                         <td style="padding-bottom: 8px; font-size: 12px; color: #64748b; text-transform: uppercase; font-weight: 600;">Jatuh Tempo</td>
                         <td align="right" style="padding-bottom: 8px; font-size: 13px; font-weight: 600; color: #e11d48;">${dueDate}</td>
+                      </tr>
+                      `
+                          : ""
+                      }
+                      ${
+                        discountAmount > 0 || taxAmount > 0
+                          ? `
+                      <tr>
+                        <td style="padding-top: 6px; padding-bottom: 6px; font-size: 12px; color: #64748b;">Subtotal</td>
+                        <td align="right" style="padding-top: 6px; padding-bottom: 6px; font-size: 13px; font-weight: 600; color: #334155;">Rp${computedSubtotal.toLocaleString("id-ID")}</td>
+                      </tr>
+                      `
+                          : ""
+                      }
+                      ${
+                        discountAmount > 0
+                          ? `
+                      <tr>
+                        <td style="padding-bottom: 6px; font-size: 12px; color: #0f6b4f; font-weight: 600;">Diskon ${discountType === "PERCENTAGE" ? `(${discountValue}%)` : ""}</td>
+                        <td align="right" style="padding-bottom: 6px; font-size: 13px; font-weight: 600; color: #0f6b4f;">-Rp${Number(discountAmount).toLocaleString("id-ID")}</td>
+                      </tr>
+                      `
+                          : ""
+                      }
+                      ${
+                        taxAmount > 0
+                          ? `
+                      <tr>
+                        <td style="padding-bottom: 6px; font-size: 12px; color: #64748b;">Pajak (PPN ${taxRate}%)</td>
+                        <td align="right" style="padding-bottom: 6px; font-size: 13px; font-weight: 600; color: #334155;">+Rp${Number(taxAmount).toLocaleString("id-ID")}</td>
                       </tr>
                       `
                           : ""

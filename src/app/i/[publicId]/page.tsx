@@ -212,13 +212,42 @@ export default async function PublicInvoicePage({
           </table>
         </div>
 
-        {/* Total */}
+        {/* Summary Breakdown */}
         <div className="mt-4 flex justify-end border-t border-gray-200 pt-4">
-          <div className="text-right">
-            <p className="text-sm text-gray-500">Total</p>
-            <p className="text-2xl font-semibold text-gray-900">
-              Rp{Number(invoice.total).toLocaleString("id-ID")}
-            </p>
+          <div className="w-full max-w-xs space-y-2 text-right">
+            <div className="flex justify-between text-sm text-gray-600">
+              <span>Subtotal</span>
+              <span className="font-semibold text-gray-900 tabular-nums">
+                Rp{Number(invoice.subtotal || invoice.total).toLocaleString("id-ID")}
+              </span>
+            </div>
+
+            {Number(invoice.discountAmount) > 0 && (
+              <div className="flex justify-between text-sm text-emerald-700 font-medium">
+                <span>
+                  Diskon {invoice.discountType === "PERCENTAGE" ? `(${Number(invoice.discountValue)}%)` : ""}
+                </span>
+                <span className="tabular-nums">
+                  -Rp{Number(invoice.discountAmount).toLocaleString("id-ID")}
+                </span>
+              </div>
+            )}
+
+            {Number(invoice.taxAmount) > 0 && (
+              <div className="flex justify-between text-sm text-gray-600">
+                <span>Pajak (PPN {Number(invoice.taxRate)}%)</span>
+                <span className="font-semibold text-gray-900 tabular-nums">
+                  +Rp{Number(invoice.taxAmount).toLocaleString("id-ID")}
+                </span>
+              </div>
+            )}
+
+            <div className="border-t border-gray-200 pt-2 flex justify-between items-baseline">
+              <span className="text-base font-bold text-gray-900">Total Tagihan</span>
+              <span className="text-2xl font-bold text-gray-900 tabular-nums">
+                Rp{Number(invoice.total).toLocaleString("id-ID")}
+              </span>
+            </div>
           </div>
         </div>
 

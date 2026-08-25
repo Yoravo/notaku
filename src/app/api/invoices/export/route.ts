@@ -12,6 +12,8 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const statusParam = searchParams.get("status");
+  const fromParam = searchParams.get("from");
+  const toParam = searchParams.get("to");
 
   const validStatuses = new Set([
     "DRAFT",
@@ -26,10 +28,21 @@ export async function GET(request: Request) {
       ? (statusParam as InvoiceStatus)
       : undefined;
 
+  const dateFilter: { gte?: Date; lte?: Date } = {};
+  if (fromParam) {
+    const fromDate = new Date(`${fromParam}T00:00:00.000+07:00`);
+    if (!isNaN(fromDate.getTime())) dateFilter.gte = fromDate;
+  }
+  if (toParam) {
+    const toDate = new Date(`${toParam}T23:59:59.999+07:00`);
+    if (!isNaN(toDate.getTime())) dateFilter.lte = toDate;
+  }
+
   const invoices = await prisma.invoice.findMany({
     where: {
       userId: session.user.id,
       ...(activeStatus ? { status: activeStatus } : {}),
+      ...(Object.keys(dateFilter).length > 0 ? { createdAt: dateFilter } : {}),
     },
     include: {
       customer: true,
@@ -57,6 +70,12 @@ export async function GET(request: Request) {
     "Alamat Pelanggan",
     "Status",
     "Jumlah Item",
+    "Subtotal (IDR)",
+    "Tipe Diskon",
+    "Nilai Diskon",
+    "Potongan Diskon (IDR)",
+    "Tarif PPN (%)",
+    "Pajak PPN (IDR)",
     "Total (IDR)",
     "Catatan",
   ];
@@ -84,6 +103,12 @@ export async function GET(request: Request) {
       escapeCsv(inv.customer.address || "-"),
       escapeCsv(statusText),
       escapeCsv(totalItems),
+      escapeCsv(Number(inv.subtotal || inv.total)),
+      escapeCsv(inv.discountType === "PERCENTAGE" ? "Persentase (%)" : "Nominal (Rp)"),
+      escapeCsv(Number(inv.discountValue || 0)),
+      escapeCsv(Number(inv.discountAmount || 0)),
+      escapeCsv(Number(inv.taxRate || 0)),
+      escapeCsv(Number(inv.taxAmount || 0)),
       escapeCsv(Number(inv.total)),
       escapeCsv(inv.notes || "-"),
     ].join(",");
