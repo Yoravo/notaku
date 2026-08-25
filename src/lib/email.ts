@@ -7,10 +7,16 @@ export async function sendEmail(params: {
   subject: string;
   html: string;
 }) {
-  await resend.emails.send({
-    from: process.env.EMAIL_FROM!,
+  const result = await resend.emails.send({
+    from: process.env.EMAIL_FROM || "NotaKu <onboarding@resend.dev>",
     to: params.to,
     subject: params.subject,
     html: params.html,
   });
+
+  if (result.error) {
+    throw new Error(result.error.message || "Gagal mengirim email via Resend");
+  }
+
+  return result.data;
 }

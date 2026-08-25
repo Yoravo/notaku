@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { InvoiceActions } from "@/components/invoices/invoice-actions";
 import { WhatsAppShareModal } from "@/components/invoices/whatsapp-share-modal";
+import { EmailShareModal } from "@/components/invoices/email-share-modal";
 import { statusLabel } from "@/lib/invoice-utils";
 
 export default async function InvoiceDetailPage({
@@ -75,6 +76,23 @@ export default async function InvoiceDetailPage({
           >
             Download PDF
           </a>
+          <EmailShareModal
+            invoiceId={invoice.id}
+            invoiceNumber={invoice.number || "Draft"}
+            customerName={invoice.customer.name}
+            customerEmail={invoice.customer.email}
+            total={Number(invoice.total)}
+            dueDate={
+              invoice.dueDate
+                ? invoice.dueDate.toLocaleDateString("id-ID", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })
+                : null
+            }
+            status={invoice.status}
+          />
           <WhatsAppShareModal
             invoiceNumber={invoice.number || "Draft"}
             customerName={invoice.customer.name}

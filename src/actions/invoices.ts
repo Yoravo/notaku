@@ -11,6 +11,8 @@ import { canCreateInvoice } from "@/lib/plan-limits";
 import { invoiceSchema } from "@/lib/validations";
 import { auditLog } from "@/lib/audit-log";
 import { checkServerActionRateLimit } from "@/lib/rate-limit";
+import { sendEmail } from "@/lib/email";
+import { renderInvoiceEmailHtml } from "@/lib/email-templates";
 
 async function getUser() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -234,4 +236,103 @@ export async function deleteInvoice(id: string) {
 
   revalidatePath("/invoices");
   redirect("/invoices");
+}
+
+export async function sendInvoiceEmail(data: {
+  invoiceId: string;
+  recipientEmail?: string;
+  templateType?: "new" | "reminder" | "paid";
+  customMessage?: string;
+}) {
+  const user = await getUser();
+  await checkServerActionRateLimit(user.id, "write");
+
+  const invoice = await prisma.invoice.findUnique({
+    where: { id: data.invoiceId, userId: user.id },
+    include: {
+      customer: true,
+      items: true,
+      user: {
+        select: {
+          businessName: true,
+          name: true,
+          email: true,
+        },
+      },
+    },
+  });
+
+  if (!invoice) {
+    throw new Error("Invoice tidak ditemukan");
+  }
+
+  const targetEmail = data.recipientEmail || invoice.customer.email;
+  if (!targetEmail || !targetEmail.trim()) {
+    throw new Error("Alamat email pelanggan tidak ditemukan. Silakan masukkan alamat email tujuan.");
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(targetEmail.trim())) {
+    throw new Error("Format alamat email tidak valid");
+  }
+
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.vercel.app";
+  const invoiceUrl = `${baseUrl}/i/${invoice.publicId}`;
+  const businessName = invoice.user.businessName || invoice.user.name || "NotaKu";
+  const formattedDueDate = invoice.dueDate
+    ? invoice.dueDate.toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+    : null;
+
+  const subject = `[Invoice ${invoice.number || "Draft"}] Tagihan dari ${businessName}`;
+
+  const html = renderInvoiceEmailHtml({
+    invoiceNumber: invoice.number || "Draft",
+    customerName: invoice.customer.name,
+    businessName,
+    total: Number(invoice.total),
+    dueDate: formattedDueDate,
+    publicId: invoice.publicId,
+    invoiceUrl,
+    type: data.templateType || (invoice.status === "PAID" ? "paid" : invoice.status === "OVERDUE" ? "reminder" : "new"),
+    customMessage: data.customMessage,
+    items: invoice.items.map((it) => ({
+      description: it.description,
+      quantity: it.quantity,
+      price: Number(it.price),
+      amount: Number(it.amount),
+    })),
+  });
+
+  await sendEmail({
+    to: targetEmail.trim(),
+    subject,
+    html,
+  });
+
+  // Jika invoice berstatus DRAFT, otomatis perbarui status menjadi SENT
+  if (invoice.status === "DRAFT") {
+    await prisma.invoice.update({
+      where: { id: invoice.id },
+      data: { status: "SENT" },
+    });
+  }
+
+  auditLog(
+    "invoice.email_sent",
+    {
+      invoiceId: invoice.id,
+      recipientEmail: targetEmail.trim(),
+      templateType: data.templateType,
+    },
+    { userId: user.id },
+  );
+
+  revalidatePath(`/invoices/${invoice.id}`);
+  revalidatePath("/invoices");
+
+  return { success: true, recipient: targetEmail.trim() };
 }
