@@ -29,22 +29,18 @@ jobs:
         run: |
           # Refresh referensi remote-tracking (BUKAN ke refs/heads langsung,
           # supaya tidak konflik dengan branch 'main' yang sedang checkout)
+          # Ambil referensi branch terbaru
           git fetch origin main:refs/remotes/origin/main
           git fetch origin queue:refs/remotes/origin/queue
-
-          if ! git rev-parse --verify origin/queue >/dev/null 2>&1; then
-            echo "::error::Branch 'queue' tidak ditemukan di origin."
-            exit 1
-          fi
-
-          COMMITS=$(git log --reverse --format="%H" origin/main..origin/queue)
-          NEXT_COMMIT=$(echo "$COMMITS" | head -n 1)
-
+          
+          # Cari commit berikutnya di queue yang belum ada di main
+          NEXT_COMMIT=$(git log --reverse --format="%H" origin/main..origin/queue | head -n 1)
+          
           if [ -z "$NEXT_COMMIT" ]; then
             echo "Semua commit dari branch 'queue' sudah berada di 'main'. Tidak ada rilis baru."
             exit 0
           fi
-
-          echo "Menerapkan commit: $NEXT_COMMIT ke branch main"
-          git cherry-pick --allow-empty "$NEXT_COMMIT"
+          
+          echo "Memajukan branch main ke commit: $NEXT_COMMIT"
+          git merge --ff-only "$NEXT_COMMIT"
           git push origin main
