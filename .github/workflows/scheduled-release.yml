@@ -27,7 +27,10 @@ jobs:
 
       - name: Check and Advance Main by 1 Commit from Queue
         run: |
-          git checkout main
+          # Refresh referensi remote-tracking (BUKAN ke refs/heads langsung,
+          # supaya tidak konflik dengan branch 'main' yang sedang checkout)
+          git fetch origin main:refs/remotes/origin/main
+          git fetch origin queue:refs/remotes/origin/queue
 
           if ! git rev-parse --verify origin/queue >/dev/null 2>&1; then
             echo "::error::Branch 'queue' tidak ditemukan di origin."
