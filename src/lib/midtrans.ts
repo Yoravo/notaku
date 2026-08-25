@@ -1,9 +1,13 @@
 import crypto from "crypto";
 
-const MIDTRANS_SERVER_KEY = process.env.MIDTRANS_SERVER_KEY;
-if (!MIDTRANS_SERVER_KEY) {
-  throw new Error("MIDTRANS_SERVER_KEY is not configured");
+function getMidtransServerKey() {
+  const key = process.env.MIDTRANS_SERVER_KEY;
+  if (!key) {
+    throw new Error("MIDTRANS_SERVER_KEY is not configured");
+  }
+  return key;
 }
+
 const MIDTRANS_API_URL =
   process.env.MIDTRANS_API_URL || "https://app.midtrans.com/snap/v1";
 
@@ -13,7 +17,8 @@ export async function createSnapToken(params: {
   customerName: string;
   customerEmail: string;
 }) {
-  const authString = Buffer.from(`${MIDTRANS_SERVER_KEY}:`).toString("base64");
+  const serverKey = getMidtransServerKey();
+  const authString = Buffer.from(`${serverKey}:`).toString("base64");
 
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
@@ -53,10 +58,11 @@ export function verifySignature(params: {
   grossAmount: string;
   signatureKey: string;
 }): boolean {
+  const serverKey = getMidtransServerKey();
   const hash = crypto
     .createHash("sha512")
     .update(
-      `${params.orderId}${params.statusCode}${params.grossAmount}${MIDTRANS_SERVER_KEY}`,
+      `${params.orderId}${params.statusCode}${params.grossAmount}${serverKey}`,
     )
     .digest("hex");
 

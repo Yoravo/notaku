@@ -41,7 +41,7 @@ export function WhatsAppShareModal({
   const appUrl =
     typeof window !== "undefined"
       ? window.location.origin
-      : process.env.NEXT_PUBLIC_APP_URL || "https://notaku.vercel.app";
+      : process.env.NEXT_PUBLIC_APP_URL || "https://www.notaku.store";
 
   const invoiceUrl = `${appUrl}/i/${publicId}`;
   const totalFormatted = `Rp${Number(total).toLocaleString("id-ID")}`;

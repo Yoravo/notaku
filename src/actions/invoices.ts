@@ -276,7 +276,7 @@ export async function sendInvoiceEmail(data: {
     throw new Error("Format alamat email tidak valid");
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.vercel.app";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.notaku.store";
   const invoiceUrl = `${baseUrl}/i/${invoice.publicId}`;
   const businessName = invoice.user.businessName || invoice.user.name || "NotaKu";
   const formattedDueDate = invoice.dueDate
@@ -321,7 +321,7 @@ export async function sendInvoiceEmail(data: {
     });
   }
 
-  auditLog(
+  await auditLog(
     "invoice.email_sent",
     {
       invoiceId: invoice.id,
