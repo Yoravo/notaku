@@ -248,12 +248,23 @@ export default async function DashboardPage({
       <RecentInvoices
         invoices={recentInvoices.map(
           (inv): SerializedInvoice => ({
-            ...inv,
-            total: Number(inv.total),
+            id: inv.id,
+            publicId: inv.publicId,
+            userId: inv.userId,
+            customerId: inv.customerId,
+            number: inv.number,
+            status: inv.status,
             dueDate: inv.dueDate ? inv.dueDate.toISOString() : null,
+            notes: inv.notes,
+            total: Number(inv.total),
             createdAt: inv.createdAt.toISOString(),
             customer: {
-              ...inv.customer,
+              id: inv.customer.id,
+              userId: inv.customer.userId,
+              name: inv.customer.name,
+              email: inv.customer.email,
+              phone: inv.customer.phone,
+              address: inv.customer.address,
               createdAt: inv.customer.createdAt.toISOString(),
             },
           }),

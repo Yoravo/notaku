@@ -38,8 +38,9 @@ export async function generateMetadata({
     title,
     description,
     robots: {
-      index: invoice.status !== "DRAFT",
-      follow: true,
+      index: false,
+      follow: false,
+      nocache: true,
     },
     openGraph: {
       title,

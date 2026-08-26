@@ -41,10 +41,10 @@ export async function POST() {
     const token = await createSnapToken({
       orderId,
       amount: PRO_PRICE,
-      customerName: user.name,
+      customerName: user.name || "Pelanggan NotaKu",
       customerEmail: user.email,
     });
-    
+
     return NextResponse.json({
       token,
       clientKey: process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY,

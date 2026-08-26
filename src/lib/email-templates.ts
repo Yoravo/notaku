@@ -1,3 +1,5 @@
+import { escapeHtml } from "./html";
+
 export type InvoiceEmailTemplateProps = {
   invoiceNumber: string;
   customerName: string;
@@ -39,6 +41,12 @@ export function renderInvoiceEmailHtml({
   customMessage,
   items = [],
 }: InvoiceEmailTemplateProps): string {
+  const safeInvoiceNumber = escapeHtml(invoiceNumber || "Draft");
+  const safeCustomerName = escapeHtml(customerName || "Pelanggan");
+  const safeBusinessName = escapeHtml(businessName || "NotaKu");
+  const safeInvoiceUrl = encodeURI(invoiceUrl);
+  const safeCustomMessage = customMessage ? escapeHtml(customMessage) : "";
+
   const formattedTotal = `Rp${Number(total).toLocaleString("id-ID")}`;
   const computedSubtotal = subtotal ? Number(subtotal) : Number(total);
 
@@ -48,7 +56,7 @@ export function renderInvoiceEmailHtml({
       badgeColor: "#0f6b4f",
       badgeBg: "#e6f4ea",
       headline: "Faktur Tagihan Baru",
-      subheadline: `Halo ${customerName}, tagihan baru telah diterbitkan oleh <strong>${businessName}</strong>.`,
+      subheadline: `Halo ${safeCustomerName}, tagihan baru telah diterbitkan oleh <strong>${safeBusinessName}</strong>.`,
       actionText: "Lihat & Bayar Tagihan",
       buttonColor: "#0f6b4f",
     },
@@ -57,7 +65,7 @@ export function renderInvoiceEmailHtml({
       badgeColor: "#b45309",
       badgeBg: "#fef3c7",
       headline: "Pengingat Jatuh Tempo Tagihan",
-      subheadline: `Halo ${customerName}, ini adalah pengingat ramah mengenai tagihan Anda dari <strong>${businessName}</strong>.`,
+      subheadline: `Halo ${safeCustomerName}, ini adalah pengingat ramah mengenai tagihan Anda dari <strong>${safeBusinessName}</strong>.`,
       actionText: "Buka Faktur Sekarang",
       buttonColor: "#d97706",
     },
@@ -66,7 +74,7 @@ export function renderInvoiceEmailHtml({
       badgeColor: "#15803d",
       badgeBg: "#dcfce7",
       headline: "Bukti Pembayaran Lunas",
-      subheadline: `Halo ${customerName}, terima kasih! Pembayaran tagihan Anda kepada <strong>${businessName}</strong> telah diterima.`,
+      subheadline: `Halo ${safeCustomerName}, terima kasih! Pembayaran tagihan Anda kepada <strong>${safeBusinessName}</strong> telah diterima.`,
       actionText: "Lihat Bukti Transaksi",
       buttonColor: "#16a34a",
     },
@@ -88,8 +96,8 @@ export function renderInvoiceEmailHtml({
             .map(
               (item) => `
             <tr style="border-bottom: 1px solid #f1f5f9; color: #1e293b;">
-              <td style="padding: 10px 12px;">${item.description}</td>
-              <td style="padding: 10px 12px; text-align: center; color: #64748b;">${item.quantity}</td>
+              <td style="padding: 10px 12px;">${escapeHtml(item.description)}</td>
+              <td style="padding: 10px 12px; text-align: center; color: #64748b;">${Number(item.quantity)}</td>
               <td style="padding: 10px 12px; text-align: right; color: #64748b;">Rp${Number(item.price).toLocaleString("id-ID")}</td>
               <td style="padding: 10px 12px; text-align: right; font-weight: 500;">Rp${Number(item.amount).toLocaleString("id-ID")}</td>
             </tr>
@@ -107,7 +115,7 @@ export function renderInvoiceEmailHtml({
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Invoice ${invoiceNumber}</title>
+  <title>Invoice ${safeInvoiceNumber}</title>
 </head>
 <body style="margin: 0; padding: 0; background-color: #f4f6f8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1f2937;">
   <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f4f6f8; padding: 30px 15px;">
@@ -147,10 +155,10 @@ export function renderInvoiceEmailHtml({
               </p>
 
               ${
-                customMessage
+                safeCustomMessage
                   ? `
                 <div style="margin-bottom: 24px; padding: 14px 16px; background-color: #f8fafc; border-left: 4px solid #0f6b4f; border-radius: 4px; font-size: 13px; line-height: 1.5; color: #334155; white-space: pre-line;">
-                  ${customMessage}
+                  ${safeCustomMessage}
                 </div>
               `
                   : ""
@@ -163,14 +171,14 @@ export function renderInvoiceEmailHtml({
                     <table width="100%" border="0" cellpadding="0" cellspacing="0">
                       <tr>
                         <td style="padding-bottom: 8px; font-size: 12px; color: #64748b; text-transform: uppercase; font-weight: 600;">Nomor Faktur</td>
-                        <td align="right" style="padding-bottom: 8px; font-size: 13px; font-weight: 600; color: #1e293b;">${invoiceNumber}</td>
+                        <td align="right" style="padding-bottom: 8px; font-size: 13px; font-weight: 600; color: #1e293b;">${safeInvoiceNumber}</td>
                       </tr>
                       ${
                         dueDate
                           ? `
                       <tr>
                         <td style="padding-bottom: 8px; font-size: 12px; color: #64748b; text-transform: uppercase; font-weight: 600;">Jatuh Tempo</td>
-                        <td align="right" style="padding-bottom: 8px; font-size: 13px; font-weight: 600; color: #e11d48;">${dueDate}</td>
+                        <td align="right" style="padding-bottom: 8px; font-size: 13px; font-weight: 600; color: #e11d48;">${escapeHtml(dueDate)}</td>
                       </tr>
                       `
                           : ""
@@ -189,7 +197,7 @@ export function renderInvoiceEmailHtml({
                         discountAmount > 0
                           ? `
                       <tr>
-                        <td style="padding-bottom: 6px; font-size: 12px; color: #0f6b4f; font-weight: 600;">Diskon ${discountType === "PERCENTAGE" ? `(${discountValue}%)` : ""}</td>
+                        <td style="padding-bottom: 6px; font-size: 12px; color: #0f6b4f; font-weight: 600;">Diskon ${discountType === "PERCENTAGE" ? `(${Number(discountValue)}%)` : ""}</td>
                         <td align="right" style="padding-bottom: 6px; font-size: 13px; font-weight: 600; color: #0f6b4f;">-Rp${Number(discountAmount).toLocaleString("id-ID")}</td>
                       </tr>
                       `
@@ -199,7 +207,7 @@ export function renderInvoiceEmailHtml({
                         taxAmount > 0
                           ? `
                       <tr>
-                        <td style="padding-bottom: 6px; font-size: 12px; color: #64748b;">Pajak (PPN ${taxRate}%)</td>
+                        <td style="padding-bottom: 6px; font-size: 12px; color: #64748b;">Pajak (PPN ${Number(taxRate)}%)</td>
                         <td align="right" style="padding-bottom: 6px; font-size: 13px; font-weight: 600; color: #334155;">+Rp${Number(taxAmount).toLocaleString("id-ID")}</td>
                       </tr>
                       `
@@ -221,7 +229,7 @@ export function renderInvoiceEmailHtml({
               <table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-top: 8px; margin-bottom: 24px;">
                 <tr>
                   <td align="center">
-                    <a href="${invoiceUrl}" target="_blank" style="display: inline-block; background-color: ${typeConfig.buttonColor}; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 600; padding: 12px 28px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                    <a href="${safeInvoiceUrl}" target="_blank" style="display: inline-block; background-color: ${typeConfig.buttonColor}; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 600; padding: 12px 28px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                       ${typeConfig.actionText} →
                     </a>
                   </td>
@@ -230,7 +238,7 @@ export function renderInvoiceEmailHtml({
 
               <p style="margin: 0; font-size: 12px; line-height: 1.5; color: #94a3b8; text-align: center;">
                 Jika tombol di atas tidak dapat diklik, salin dan buka tautan berikut di browser:<br>
-                <a href="${invoiceUrl}" style="color: #0f6b4f; text-decoration: underline; word-break: break-all;">${invoiceUrl}</a>
+                <a href="${safeInvoiceUrl}" style="color: #0f6b4f; text-decoration: underline; word-break: break-all;">${safeInvoiceUrl}</a>
               </p>
             </td>
           </tr>
@@ -239,7 +247,7 @@ export function renderInvoiceEmailHtml({
           <tr>
             <td style="padding: 20px 32px; background-color: #f8fafc; border-top: 1px solid #f1f5f9; text-align: center;">
               <p style="margin: 0; font-size: 12px; color: #64748b;">
-                Email ini dikirim otomatis oleh sistem <a href="https://notaku.id" style="color: #0f6b4f; font-weight: 600; text-decoration: none;">NotaKu</a> atas nama <strong>${businessName}</strong>.
+                Email ini dikirim otomatis oleh sistem <a href="https://notaku.store" style="color: #0f6b4f; font-weight: 600; text-decoration: none;">NotaKu</a> atas nama <strong>${safeBusinessName}</strong>.
               </p>
               <p style="margin: 6px 0 0 0; font-size: 11px; color: #94a3b8;">
                 &copy; ${new Date().getFullYear()} NotaKu &bull; Simple & Fast Invoicing
