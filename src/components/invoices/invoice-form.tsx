@@ -139,7 +139,13 @@ export function InvoiceForm({
       } else {
         await createInvoice(payload);
       }
-    } catch (err) {
+    } catch (err: any) {
+      if (
+        err?.message?.includes("NEXT_REDIRECT") ||
+        err?.digest?.includes("NEXT_REDIRECT")
+      ) {
+        throw err;
+      }
       const message = err instanceof Error ? err.message : "Terjadi kesalahan";
       setError(message);
       setLoading(false);

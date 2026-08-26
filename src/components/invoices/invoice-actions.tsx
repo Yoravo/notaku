@@ -46,7 +46,13 @@ export function InvoiceActions({
     try {
       await fn();
       router.refresh();
-    } catch (err) {
+    } catch (err: any) {
+      if (
+        err?.message?.includes("NEXT_REDIRECT") ||
+        err?.digest?.includes("NEXT_REDIRECT")
+      ) {
+        throw err;
+      }
       const message = err instanceof Error ? err.message : "Terjadi kesalahan";
       setError(message);
     } finally {
