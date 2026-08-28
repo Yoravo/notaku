@@ -6,9 +6,9 @@ import { formatDateWIB } from "@/lib/invoice-utils";
 import {
   CheckCircleIcon,
   XCircleIcon,
-  ArrowPathIcon,
   BuildingLibraryIcon,
 } from "@heroicons/react/24/outline";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 interface PayoutRecord {
   id: string;
@@ -36,49 +36,72 @@ export function AdminPayoutsClient({
   const [activeTab, setActiveTab] = useState<"ALL" | "PENDING" | "COMPLETED" | "REJECTED">("ALL");
   const [processingId, setProcessingId] = useState<string | null>(null);
 
+  // Dialog State
+  const [dialogState, setDialogState] = useState<{
+    isOpen: boolean;
+    payout: PayoutRecord | null;
+    targetStatus: "COMPLETED" | "REJECTED" | null;
+    adminNotes: string;
+    errorMsg: string | null;
+  }>({
+    isOpen: false,
+    payout: null,
+    targetStatus: null,
+    adminNotes: "",
+    errorMsg: null,
+  });
+
   const filteredPayouts = payouts.filter((p) => {
     if (activeTab === "ALL") return true;
     return p.status === activeTab;
   });
 
-  const handleStatusChange = async (
-    payoutId: string,
-    newStatus: "PROCESSING" | "COMPLETED" | "REJECTED"
+  const handleOpenConfirm = (
+    payout: PayoutRecord,
+    targetStatus: "COMPLETED" | "REJECTED"
   ) => {
-    const confirmMsg =
-      newStatus === "COMPLETED"
-        ? "Konfirmasi bahwa dana telah berhasil ditransfer ke rekening pengguna?"
-        : newStatus === "REJECTED"
-          ? "Tolak penarikan dana ini? Saldo akan dikembalikan secara otomatis ke akun pengguna."
-          : "Ubah status menjadi sedang diproses?";
+    setDialogState({
+      isOpen: true,
+      payout,
+      targetStatus,
+      adminNotes: "",
+      errorMsg: null,
+    });
+  };
 
-    if (!confirm(confirmMsg)) return;
+  const handleExecuteStatusChange = async () => {
+    const { payout, targetStatus, adminNotes } = dialogState;
+    if (!payout || !targetStatus) return;
 
-    let adminNotes: string | undefined;
-    if (newStatus === "REJECTED") {
-      const reason = prompt("Masukkan alasan penolakan (opsional):");
-      if (reason !== null) adminNotes = reason;
-    }
-
-    setProcessingId(payoutId);
+    setProcessingId(payout.id);
     try {
       const res = await updatePayoutStatus({
-        payoutId,
-        status: newStatus,
-        adminNotes,
+        payoutId: payout.id,
+        status: targetStatus,
+        adminNotes: adminNotes.trim() || undefined,
       });
 
       if (!res.success) {
-        alert(res.error || "Gagal memperbarui status");
+        setDialogState((prev) => ({
+          ...prev,
+          errorMsg: res.error || "Gagal memperbarui status",
+        }));
       } else {
+        setDialogState((prev) => ({ ...prev, isOpen: false }));
         window.location.reload();
       }
     } catch {
-      alert("Terjadi kesalahan sistem.");
+      setDialogState((prev) => ({
+        ...prev,
+        errorMsg: "Terjadi kesalahan sistem.",
+      }));
     } finally {
       setProcessingId(null);
     }
   };
+
+  const activePayout = dialogState.payout;
+  const isRejecting = dialogState.targetStatus === "REJECTED";
 
   return (
     <div className="space-y-6">
@@ -203,7 +226,7 @@ export function AdminPayoutsClient({
                         {p.status === "PENDING" || p.status === "PROCESSING" ? (
                           <div className="flex items-center justify-center gap-1.5">
                             <button
-                              onClick={() => handleStatusChange(p.id, "COMPLETED")}
+                              onClick={() => handleOpenConfirm(p, "COMPLETED")}
                               disabled={processingId === p.id}
                               title="Tandai Selesai Ditransfer"
                               className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-emerald-700 disabled:opacity-50 transition-colors cursor-pointer"
@@ -212,7 +235,7 @@ export function AdminPayoutsClient({
                               <span>Selesai</span>
                             </button>
                             <button
-                              onClick={() => handleStatusChange(p.id, "REJECTED")}
+                              onClick={() => handleOpenConfirm(p, "REJECTED")}
                               disabled={processingId === p.id}
                               title="Tolak Penarikan (Refund Saldo)"
                               className="inline-flex items-center gap-1 rounded-lg bg-rose-50 border border-rose-200 px-2 py-1 text-[11px] font-semibold text-rose-700 hover:bg-rose-100 disabled:opacity-50 transition-colors cursor-pointer"
@@ -235,6 +258,56 @@ export function AdminPayoutsClient({
           </div>
         )}
       </div>
+
+      {/* Modern Payout Action Confirm Dialog */}
+      <ConfirmDialog
+        isOpen={dialogState.isOpen}
+        onClose={() => !processingId && setDialogState((prev) => ({ ...prev, isOpen: false }))}
+        onConfirm={handleExecuteStatusChange}
+        title={isRejecting ? "Tolak Penarikan Dana" : "Konfirmasi Pencairan Selesai"}
+        description={
+          isRejecting
+            ? "Penarikan akan ditolak dan nominal saldo akan dikembalikan (refund) secara otomatis ke dompet pengguna."
+            : "Pastikan dana sudah benar-benar ditransfer ke rekening bank tujuan pengguna sebelum menyelesaikan transaksi ini."
+        }
+        confirmLabel={isRejecting ? "Ya, Tolak & Kembalikan Saldo" : "Ya, Tandai Selesai"}
+        cancelLabel="Batal"
+        variant={isRejecting ? "danger" : "success"}
+        isLoading={Boolean(processingId)}
+        itemDetails={
+          activePayout
+            ? [
+                { label: "Penerima", value: `${activePayout.userName} (${activePayout.userEmail})` },
+                { label: "Rekening Bank", value: `${activePayout.bankName} ${activePayout.accountNumber}` },
+                { label: "Nama Pemilik", value: activePayout.accountName },
+                { label: "Nominal Pencairan", value: `Rp${activePayout.amount.toLocaleString("id-ID")}` },
+              ]
+            : []
+        }
+      >
+        {isRejecting && (
+          <div className="space-y-1.5">
+            <label className="block text-xs font-semibold text-slate-700">
+              Alasan Penolakan (Opsional)
+            </label>
+            <input
+              type="text"
+              value={dialogState.adminNotes}
+              onChange={(e) =>
+                setDialogState((prev) => ({ ...prev, adminNotes: e.target.value }))
+              }
+              placeholder="Contoh: Nomor rekening tidak valid / nama tidak sesuai"
+              className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-rose-500 focus:ring-1 focus:ring-rose-500"
+            />
+          </div>
+        )}
+
+        {dialogState.errorMsg && (
+          <div className="rounded-xl border border-rose-200 bg-rose-50 p-2.5 text-xs text-rose-700 font-medium">
+            {dialogState.errorMsg}
+          </div>
+        )}
+      </ConfirmDialog>
     </div>
   );
 }

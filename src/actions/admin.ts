@@ -5,6 +5,105 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { auditLog } from "@/lib/audit-log";
 
+export async function updateUserPlan(userId: string, plan: "FREE" | "PRO") {
+  const admin = await requireAdmin();
+
+  if (!userId || !["FREE", "PRO"].includes(plan)) {
+    return { success: false, error: "Data input tidak valid" };
+  }
+
+  try {
+    const targetUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, email: true, plan: true },
+    });
+
+    if (!targetUser) {
+      return { success: false, error: "Pengguna tidak ditemukan" };
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: { plan },
+      select: { id: true, email: true, plan: true },
+    });
+
+    // Catat ke Audit Log
+    await auditLog(
+      "admin.user_plan_updated",
+      {
+        targetUserId: userId,
+        targetEmail: targetUser.email,
+        oldPlan: targetUser.plan,
+        newPlan: plan,
+        performedBy: admin.email,
+      },
+      { userId: admin.id }
+    );
+
+    revalidatePath("/admin/users");
+    revalidatePath("/admin");
+
+    return { success: true, user: updatedUser };
+  } catch (error) {
+    console.error("[ADMIN_UPDATE_PLAN_ERROR]", error);
+    return { success: false, error: "Gagal memperbarui paket pengguna" };
+  }
+}
+
+export async function updateUserRole(userId: string, role: "USER" | "ADMIN") {
+  const admin = await requireAdmin();
+
+  if (!userId || !["USER", "ADMIN"].includes(role)) {
+    return { success: false, error: "Data input tidak valid" };
+  }
+
+  // Cegah admin mencabut role admin dirinya sendiri secara tidak sengaja
+  if (userId === admin.id && role !== "ADMIN") {
+    return {
+      success: false,
+      error: "Anda tidak dapat mencabut hak akses ADMIN diri Anda sendiri",
+    };
+  }
+
+  try {
+    const targetUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, email: true, role: true },
+    });
+
+    if (!targetUser) {
+      return { success: false, error: "Pengguna tidak ditemukan" };
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: { role },
+      select: { id: true, email: true, role: true },
+    });
+
+    await auditLog(
+      "admin.user_role_updated",
+      {
+        targetUserId: userId,
+        targetEmail: targetUser.email,
+        oldRole: targetUser.role,
+        newRole: role,
+        performedBy: admin.email,
+      },
+      { userId: admin.id }
+    );
+
+    revalidatePath("/admin/users");
+    revalidatePath("/admin");
+
+    return { success: true, user: updatedUser };
+  } catch (error) {
+    console.error("[ADMIN_UPDATE_ROLE_ERROR]", error);
+    return { success: false, error: "Gagal memperbarui peran pengguna" };
+  }
+}
+
 export type AnnouncementPlacement = "ALL" | "LANDING" | "DASHBOARD";
 
 export async function saveAnnouncement(data: {

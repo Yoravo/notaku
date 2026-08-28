@@ -11,6 +11,7 @@ import {
   PencilSquareIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 type Customer = {
   id: string;
@@ -28,6 +29,10 @@ export function CustomerList({
   const [searchQuery, setSearchQuery] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
+
+  // Delete Confirm Dialog State
+  const [deletingCustomer, setDeletingCustomer] = useState<Customer | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Filter instan berbasis nama, email, telepon, dan alamat
   const filteredCustomers = useMemo(() => {
@@ -47,9 +52,21 @@ export function CustomerList({
     setShowModal(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Hapus pelanggan ini?")) return;
-    await deleteCustomer(id);
+  const handleOpenDelete = (customer: Customer) => {
+    setDeletingCustomer(customer);
+  };
+
+  const handleExecuteDelete = async () => {
+    if (!deletingCustomer) return;
+    setIsDeleting(true);
+    try {
+      await deleteCustomer(deletingCustomer.id);
+      setDeletingCustomer(null);
+    } catch {
+      alert("Gagal menghapus pelanggan");
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -144,7 +161,7 @@ export function CustomerList({
                         </button>
                         <button
                           type="button"
-                          onClick={() => handleDelete(customer.id)}
+                          onClick={() => handleOpenDelete(customer)}
                           title="Hapus Pelanggan"
                           className="p-1 rounded-md text-rose-500 hover:bg-rose-50 hover:text-rose-700 transition-colors cursor-pointer"
                         >
@@ -166,7 +183,28 @@ export function CustomerList({
           onClose={() => setShowModal(false)}
         />
       )}
+
+      {/* Modern Delete Customer Confirm Dialog */}
+      <ConfirmDialog
+        isOpen={Boolean(deletingCustomer)}
+        onClose={() => !isDeleting && setDeletingCustomer(null)}
+        onConfirm={handleExecuteDelete}
+        title="Hapus Kontak Pelanggan?"
+        description="Profil pelanggan ini akan dihapus dari daftar kontak. Invoice yang sudah terbit sebelumnya tidak akan terpengaruh."
+        confirmLabel="Ya, Hapus Pelanggan"
+        cancelLabel="Batal"
+        variant="danger"
+        isLoading={isDeleting}
+        itemDetails={
+          deletingCustomer
+            ? [
+                { label: "Nama Pelanggan", value: deletingCustomer.name },
+                { label: "Email", value: deletingCustomer.email || "—" },
+                { label: "Nomor Telepon", value: deletingCustomer.phone || "—" },
+              ]
+            : undefined
+        }
+      />
     </>
   );
 }
-
