@@ -80,7 +80,7 @@ export function SettingsTabsClient({ user }: { user: UserData }) {
                 Profil & Identitas Usaha
               </h2>
               <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
-                Kelola informasi nama usaha, kontak, alamat, logo, dan tanda tangan resmi pada invoice.
+                Kelola informasi nama usaha, kontak, alamat, logo, tanda tangan, dan stempel resmi pada invoice.
               </p>
             </div>
 
@@ -121,7 +121,7 @@ export function SettingsTabsClient({ user }: { user: UserData }) {
 
         {/* Tab 3: Template & Desain Invoice */}
         {activeTab === "template" && (
-          <div className="space-y-6 max-w-2xl">
+          <div className="space-y-6 max-w-3xl">
             <div>
               <h2 className="text-base sm:text-lg font-bold text-gray-900">
                 Pilihan Template PDF Invoice
@@ -141,7 +141,7 @@ export function SettingsTabsClient({ user }: { user: UserData }) {
                 </div>
                 <p className="text-xs sm:text-sm text-amber-800 leading-relaxed">
                   Pengguna paket gratis menggunakan template standar <strong>Classic</strong>.
-                  Upgrade ke Pro untuk memilih template Modern/Minimal, hapus watermark, dan simpan invoice tanpa batas.
+                  Upgrade ke Pro untuk memilih template Modern/Minimal, hapus watermark, dan kustomisasi penuh PDF faktur.
                 </p>
                 <div className="pt-2">
                   <UpgradeButton />
