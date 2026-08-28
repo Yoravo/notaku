@@ -54,6 +54,9 @@ export async function GET(
       logoUrl: invoice.user.logoUrl || undefined,
       signatureUrl: invoice.user.signatureUrl || undefined,
       stampUrl: invoice.user.stampUrl || undefined,
+      bankName: invoice.user.bankName || undefined,
+      bankAccountNumber: invoice.user.bankAccountNumber || undefined,
+      bankAccountName: invoice.user.bankAccountName || undefined,
     },
     items: invoice.items.map((item) => ({
       description: item.description,

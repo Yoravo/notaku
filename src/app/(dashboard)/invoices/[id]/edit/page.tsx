@@ -20,10 +20,20 @@ export default async function EditInvoicePage({
 
   if (!invoice) notFound();
 
-  const customers = await prisma.customer.findMany({
-    where: { userId: session.user.id },
-    orderBy: { name: "asc" },
-  });
+  const [customers, user] = await Promise.all([
+    prisma.customer.findMany({
+      where: { userId: session.user.id },
+      orderBy: { name: "asc" },
+    }),
+    prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        bankName: true,
+        bankAccountNumber: true,
+        bankAccountName: true,
+      },
+    }),
+  ]);
 
   return (
     <div>
@@ -31,6 +41,9 @@ export default async function EditInvoicePage({
       <div className="mt-6">
         <InvoiceForm
           customers={customers}
+          userBankName={user?.bankName}
+          userBankAccountNumber={user?.bankAccountNumber}
+          userBankAccountName={user?.bankAccountName}
           invoice={{
             id: invoice.id,
             customerId: invoice.customerId,
@@ -39,6 +52,8 @@ export default async function EditInvoicePage({
             discountType: invoice.discountType,
             discountValue: Number(invoice.discountValue || 0),
             taxRate: Number(invoice.taxRate || 0),
+            enableDirectTransfer: invoice.enableDirectTransfer,
+            enableDigitalPayment: invoice.enableDigitalPayment,
             items: invoice.items.map((i) => ({
               description: i.description,
               quantity: Number(i.quantity),

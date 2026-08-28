@@ -19,6 +19,9 @@ export type InvoiceData = {
     logoUrl?: string;
     signatureUrl?: string;
     stampUrl?: string;
+    bankName?: string;
+    bankAccountNumber?: string;
+    bankAccountName?: string;
   };
   items: {
     description: string;

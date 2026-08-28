@@ -2,8 +2,12 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { PaymentVerifier } from "@/components/payment-verifier";
 import { SettingsTabsClient } from "./settings-tabs-client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Pengaturan Akun & Bisnis — NotaKu",
+};
 
 export const dynamic = "force-dynamic";
 
@@ -15,9 +19,6 @@ export default async function SettingsPage() {
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    include: {
-      subscription: true,
-    },
   });
 
   if (!user) {
@@ -26,14 +27,12 @@ export default async function SettingsPage() {
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
-      <PaymentVerifier />
-
       <div>
         <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900">
-          Pengaturan Akun & Profil
+          Pengaturan Akun & Bisnis
         </h1>
         <p className="text-xs sm:text-sm text-gray-500 mt-1">
-          Kelola profil bisnis, logo invoice, preferensi template, keamanan kata sandi, dan paket langganan.
+          Kelola profil usaha, logo & tanda tangan faktur, rekening pembayaran, preferensi template PDF, dan keamanan akun.
         </p>
       </div>
 
@@ -48,14 +47,12 @@ export default async function SettingsPage() {
           logoUrl: user.logoUrl,
           signatureUrl: user.signatureUrl,
           stampUrl: user.stampUrl,
+          bankName: user.bankName,
+          bankAccountNumber: user.bankAccountNumber,
+          bankAccountName: user.bankAccountName,
+          bankAccountLocked: user.bankAccountLocked,
           plan: user.plan,
           invoiceTemplate: user.invoiceTemplate,
-          subscription: user.subscription
-            ? {
-                currentPeriodEnd: user.subscription.currentPeriodEnd,
-                status: user.subscription.status,
-              }
-            : null,
         }}
       />
     </div>

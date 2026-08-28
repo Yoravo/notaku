@@ -323,9 +323,21 @@ export function ClassicTemplate({ data }: { data: InvoiceData }) {
           </View>
         </View>
 
-        {/* Notes & Signature Row */}
+        {/* Notes, Bank Info & Signature Row */}
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginTop: 24 }}>
           <View style={{ flex: 1, paddingRight: 20 }}>
+            {data.user.bankAccountNumber && (
+              <View style={{ marginBottom: 10 }}>
+                <Text style={styles.label}>Informasi Pembayaran (Transfer Bank)</Text>
+                <Text style={styles.bold}>
+                  {data.user.bankName} — {data.user.bankAccountNumber}
+                </Text>
+                <Text style={styles.text}>
+                  a/n {data.user.bankAccountName || data.user.name}
+                </Text>
+              </View>
+            )}
+
             {data.notes && (
               <View>
                 <Text style={styles.label}>Catatan</Text>

@@ -252,4 +252,96 @@ export async function getPromoCodes(): Promise<PromoData[]> {
   }
 }
 
+export async function updatePayoutStatus(data: {
+  payoutId: string;
+  status: "PROCESSING" | "COMPLETED" | "REJECTED";
+  adminNotes?: string;
+}) {
+  const admin = await requireAdmin();
+
+  if (!data.payoutId || !["PROCESSING", "COMPLETED", "REJECTED"].includes(data.status)) {
+    return { success: false, error: "Status atau ID penarikan tidak valid" };
+  }
+
+  try {
+    const payout = await prisma.payout.findUnique({
+      where: { id: data.payoutId },
+      include: { user: true },
+    });
+
+    if (!payout) {
+      return { success: false, error: "Permintaan penarikan dana tidak ditemukan" };
+    }
+
+    if (payout.status === "COMPLETED" || payout.status === "REJECTED") {
+      return {
+        success: false,
+        error: `Penarikan ini sudah berstatus ${payout.status} dan tidak dapat diubah lagi`,
+      };
+    }
+
+    await prisma.$transaction(async (tx) => {
+      // Jika admin menolak penarikan, kembalikan saldo ke user secara otomatis (Refund atomic)
+      if (data.status === "REJECTED") {
+        await tx.user.update({
+          where: { id: payout.userId },
+          data: {
+            balance: {
+              increment: payout.amount,
+            },
+          },
+        });
+
+        // Catat entri REFUND di mutasi transaksi ledger
+        await tx.transaction.create({
+          data: {
+            userId: payout.userId,
+            payoutId: payout.id,
+            type: "REFUND",
+            amount: payout.amount,
+            grossAmount: payout.amount,
+            feeAmount: 0,
+            description: `Pengembalian saldo: Penarikan #${payout.id.slice(-6)} ditolak (${data.adminNotes || "Dibatalkan Admin"})`,
+            referenceId: payout.id,
+          },
+        });
+      }
+
+      // Update status payout
+      await tx.payout.update({
+        where: { id: payout.id },
+        data: {
+          status: data.status,
+          adminNotes: data.adminNotes || null,
+          processedAt: data.status === "COMPLETED" ? new Date() : payout.processedAt,
+        },
+      });
+    });
+
+    await auditLog(
+      "admin.payout_status_updated",
+      {
+        payoutId: payout.id,
+        userId: payout.userId,
+        userEmail: payout.user.email,
+        amount: Number(payout.amount),
+        oldStatus: payout.status,
+        newStatus: data.status,
+        adminNotes: data.adminNotes || null,
+        performedBy: admin.email,
+      },
+      { userId: admin.id }
+    );
+
+    revalidatePath("/admin/payouts");
+    revalidatePath("/admin/finance");
+    revalidatePath("/wallet");
+
+    return { success: true };
+  } catch (error) {
+    console.error("[ADMIN_UPDATE_PAYOUT_ERROR]", error);
+    return { success: false, error: "Gagal memperbarui status penarikan dana" };
+  }
+}
+
 

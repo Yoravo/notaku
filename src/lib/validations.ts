@@ -22,5 +22,18 @@ export const invoiceSchema = z.object({
   discountType: z.enum(["FIXED", "PERCENTAGE"]).default("FIXED"),
   discountValue: z.number().min(0, "Nilai diskon tidak boleh negatif").default(0),
   taxRate: z.number().min(0, "Tarif pajak minimal 0%").max(100, "Tarif pajak maksimal 100%").default(0),
+  enableDirectTransfer: z.boolean().default(true),
+  enableDigitalPayment: z.boolean().default(false),
   items: z.array(invoiceItemSchema).min(1, "Minimal 1 item").max(50, "Maksimal 50 item"),
+});
+
+export const bankAccountSchema = z.object({
+  bankName: z.string().min(1, "Nama Bank / E-Wallet wajib dipilih"),
+  bankAccountNumber: z.string().min(4, "Nomor rekening minimal 4 digit").max(30, "Nomor rekening maksimal 30 karakter"),
+  bankAccountName: z.string().min(2, "Nama pemilik rekening minimal 2 karakter").max(100, "Nama pemilik rekening maksimal 100 karakter"),
+});
+
+export const payoutRequestSchema = z.object({
+  amount: z.number().min(10000, "Minimal penarikan saldo adalah Rp 10.000"),
+  notes: z.string().max(300).optional(),
 });

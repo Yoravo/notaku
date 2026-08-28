@@ -21,6 +21,8 @@ type Invoice = {
   discountType?: DiscountType | string;
   discountValue?: number | string;
   taxRate?: number | string;
+  enableDirectTransfer?: boolean;
+  enableDigitalPayment?: boolean;
   items: { description: string; quantity: number; price: number }[];
 };
 
@@ -37,10 +39,16 @@ export function InvoiceForm({
   customers,
   invoice,
   defaultCustomerId,
+  userBankName,
+  userBankAccountNumber,
+  userBankAccountName,
 }: {
   customers: Customer[];
   invoice?: Invoice;
   defaultCustomerId?: string;
+  userBankName?: string | null;
+  userBankAccountNumber?: string | null;
+  userBankAccountName?: string | null;
 }) {
   const isEdit = !!invoice;
 
@@ -51,6 +59,12 @@ export function InvoiceForm({
     invoice?.dueDate ? invoice.dueDate.split("T")[0] : "",
   );
   const [notes, setNotes] = useState(invoice?.notes || "");
+  const [enableDirectTransfer, setEnableDirectTransfer] = useState(
+    invoice?.enableDirectTransfer ?? true
+  );
+  const [enableDigitalPayment, setEnableDigitalPayment] = useState(
+    invoice?.enableDigitalPayment ?? false
+  );
   const [items, setItems] = useState<InvoiceItem[]>(
     invoice?.items.length
       ? invoice.items.map((i) => ({
@@ -130,6 +144,8 @@ export function InvoiceForm({
       discountType,
       discountValue: totals.discountValue,
       taxRate: activeTaxRate,
+      enableDirectTransfer,
+      enableDigitalPayment,
       items,
     };
 
@@ -553,6 +569,69 @@ export function InvoiceForm({
               </strong>
             </p>
           )}
+        </div>
+      </div>
+
+      {/* Payment Options Card */}
+      <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-xs space-y-4">
+        <div>
+          <h2 className="text-sm font-semibold text-gray-900">
+            Metode Pembayaran untuk Pelanggan
+          </h2>
+          <p className="text-xs text-gray-500 mt-0.5">
+            Pilih opsi pembayaran yang akan ditampilkan pada halaman invoice publik.
+          </p>
+        </div>
+
+        <div className="space-y-3">
+          {/* Option 1: Direct Transfer */}
+          <label className="flex items-start gap-3 p-3.5 rounded-xl border border-gray-200 hover:border-gray-300 transition-colors cursor-pointer bg-gray-50/50">
+            <input
+              type="checkbox"
+              checked={enableDirectTransfer}
+              onChange={(e) => setEnableDirectTransfer(e.target.checked)}
+              className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#0f6b4f] focus:ring-[#0f6b4f]"
+            />
+            <div className="space-y-0.5">
+              <span className="text-xs font-bold text-gray-900">
+                Transfer Rekening Bank / E-Wallet Langsung (Direct Transfer)
+              </span>
+              <p className="text-xs text-gray-500">
+                {userBankName && userBankAccountNumber ? (
+                  <>
+                    Ditransfer langsung ke <strong>{userBankName}</strong> ({userBankAccountNumber} a/n {userBankAccountName}). Anda mengonfirmasi lunas secara manual.
+                  </>
+                ) : (
+                  <>
+                    Tampilkan nomor rekening Anda pada invoice. (Anda belum mendaftarkan rekening di <Link href="/settings" className="text-[#0f6b4f] underline font-semibold">Pengaturan</Link>).
+                  </>
+                )}
+              </p>
+            </div>
+          </label>
+
+          {/* Option 2: Digital Payment via NotaKu */}
+          <label className="flex items-start gap-3 p-3.5 rounded-xl border border-emerald-200 hover:border-emerald-300 transition-colors cursor-pointer bg-emerald-50/30">
+            <input
+              type="checkbox"
+              checked={enableDigitalPayment}
+              onChange={(e) => setEnableDigitalPayment(e.target.checked)}
+              className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#0f6b4f] focus:ring-[#0f6b4f]"
+            />
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-gray-900">
+                  Pembayaran Digital Instan (QRIS & Virtual Account via NotaKu)
+                </span>
+                <span className="rounded-md bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-[#0f6b4f]">
+                  Otomatis Lunas
+                </span>
+              </div>
+              <p className="text-xs text-gray-600">
+                Pelanggan scan QRIS atau bayar Virtual Account secara instan. Dana masuk ke Saldo NotaKu Anda dan invoice otomatis berstatus Lunas (MDR 0.7% dipotong saat settlement).
+              </p>
+            </div>
+          </label>
         </div>
       </div>
 

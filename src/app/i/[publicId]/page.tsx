@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { formatDateWIB } from "@/lib/invoice-utils";
+import { PublicPaymentBox } from "@/components/invoices/public-payment-box";
 import type { Metadata } from "next";
 
 export async function generateMetadata({
@@ -250,6 +251,23 @@ export default async function PublicInvoicePage({
               </span>
             </div>
           </div>
+        </div>
+
+        {/* Payment Methods Box */}
+        <div className="mt-8">
+          <PublicPaymentBox
+            invoiceId={invoice.id}
+            publicId={invoice.publicId}
+            invoiceNumber={invoice.number}
+            total={Number(invoice.total)}
+            status={invoice.status}
+            enableDirectTransfer={invoice.enableDirectTransfer}
+            enableDigitalPayment={invoice.enableDigitalPayment}
+            sellerName={invoice.user.businessName || invoice.user.name}
+            bankName={invoice.user.bankName}
+            bankAccountNumber={invoice.user.bankAccountNumber}
+            bankAccountName={invoice.user.bankAccountName}
+          />
         </div>
 
         {/* Notes */}

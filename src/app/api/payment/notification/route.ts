@@ -44,6 +44,7 @@ export async function POST(request: Request) {
       data.customer_email ||
       data.email;
     const paymentId = data.id || data.paymentId || data.transactionId;
+    const orderId = data.orderId || data.order_id || data.referenceId;
     const status = data.status || event;
     const amount = Number(data.amount || 0);
 
@@ -57,6 +58,88 @@ export async function POST(request: Request) {
       status === "SUCCESS";
 
     if (isSuccess) {
+      // 1. Cek apakah ini adalah Pembayaran Tagihan Invoice Pelanggan (NotaKu Digital Payment)
+      let invoice = null;
+      if (paymentId || orderId) {
+        invoice = await prisma.invoice.findFirst({
+          where: {
+            OR: [
+              ...(paymentId ? [{ mayarPaymentId: String(paymentId) }] : []),
+              ...(orderId ? [{ mayarPaymentId: String(orderId) }] : []),
+              ...(orderId && String(orderId).startsWith("INV-")
+                ? [{ id: { startsWith: String(orderId).split("-")[1] } }]
+                : []),
+            ],
+          },
+          include: { user: true, customer: true },
+        });
+      }
+
+      if (invoice) {
+        // Idempotency: Jika invoice sudah lunas, jangan proses ulang saldo
+        if (invoice.status === "PAID") {
+          return NextResponse.json({ message: "Invoice already settled as PAID" });
+        }
+
+        const grossAmount = Number(invoice.total);
+        // MDR QRIS/VA Mayar: 0.7% dipotong dari saldo penjual
+        const feeAmount = Math.round(grossAmount * 0.007);
+        const netAmount = Math.max(0, grossAmount - feeAmount);
+
+        await prisma.$transaction(async (tx) => {
+          // Update status invoice
+          await tx.invoice.update({
+            where: { id: invoice.id },
+            data: {
+              status: "PAID",
+              paidAt: new Date(),
+              paymentMethod: "NOTAKU_DIGITAL",
+            },
+          });
+
+          // Tambah saldo bersih ke rekening pengguna
+          await tx.user.update({
+            where: { id: invoice.userId },
+            data: {
+              balance: {
+                increment: netAmount,
+              },
+            },
+          });
+
+          // Catat entri mutasi Ledger Transaksi
+          await tx.transaction.create({
+            data: {
+              userId: invoice.userId,
+              invoiceId: invoice.id,
+              type: "INVOICE_PAYMENT",
+              amount: netAmount,
+              grossAmount: grossAmount,
+              feeAmount: feeAmount,
+              description: `Pembayaran ${invoice.number} (${invoice.customer.name}) via QRIS/VA`,
+              referenceId: String(paymentId || orderId),
+            },
+          });
+        });
+
+        auditLog("payment.invoice_digital_settled", {
+          invoiceId: invoice.id,
+          invoiceNumber: invoice.number,
+          userId: invoice.userId,
+          grossAmount,
+          feeAmount,
+          netAmount,
+          paymentId: String(paymentId || orderId),
+        });
+
+        return NextResponse.json({
+          message: "Success: Invoice settled and seller balance credited",
+          invoiceNumber: invoice.number,
+          netAmount,
+        });
+      }
+
+      // 2. Jika bukan invoice, proses Upgrade / Perpanjangan Langganan PRO User
       let user = null;
 
       // Cari user berdasarkan subscription payment ID atau email
@@ -78,7 +161,7 @@ export async function POST(request: Request) {
 
       if (!user) {
         auditLog("payment.user_not_found", { paymentId, customerEmail, amount });
-        return NextResponse.json({ message: "User not found for this transaction" });
+        return NextResponse.json({ message: "User or Invoice not found for this transaction" });
       }
 
       // Upgrade / perpanjang masa aktif PRO 30 hari

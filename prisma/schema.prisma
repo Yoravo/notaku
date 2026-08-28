@@ -24,12 +24,21 @@ model User {
   customers     Customer[]
   invoices      Invoice[]
   subscription  Subscription?
+  transactions  Transaction[]
+  payouts       Payout[]
   emailVerified Boolean       @default(false)
   image         String?
   updatedAt     DateTime      @updatedAt
   sessions      Session[]
   accounts      Account[]
   invoiceTemplate InvoiceTemplate @default(CLASSIC)
+
+  // Rekening Bank & E-Wallet Penjual (Direct Transfer & Payout)
+  bankName          String?
+  bankAccountNumber String?
+  bankAccountName   String?
+  bankAccountLocked Boolean   @default(false)
+  balance           Decimal   @default(0)
 
   @@map("user")
 }
@@ -67,7 +76,79 @@ model Invoice {
   user           User          @relation(fields: [userId], references: [id])
   customer       Customer      @relation(fields: [customerId], references: [id])
 
+  // Opsi & Integrasi Pembayaran
+  enableDirectTransfer Boolean   @default(true)
+  enableDigitalPayment Boolean   @default(false)
+  mayarPaymentUrl      String?
+  mayarPaymentId       String?
+  paidAt               DateTime?
+  paymentMethod        String?   // "DIRECT_TRANSFER" | "NOTAKU_DIGITAL"
+
+  transactions         Transaction[]
+
   @@unique([userId, number])
+}
+
+model Transaction {
+  id          String            @id @default(cuid())
+  userId      String
+  invoiceId   String?
+  payoutId    String?
+  type        TransactionType   // "INVOICE_PAYMENT" | "PAYOUT_WITHDRAWAL" | "FEE_DEDUCTION" | "REFUND"
+  amount      Decimal           // Nominal bersih yang menambah/mengurangi saldo
+  grossAmount Decimal           @default(0) // Nominal kotor invoice
+  feeAmount   Decimal           @default(0) // Biaya MDR 0.7% atau biaya admin
+  description String
+  referenceId String?           // ID pembayaran Mayar / ID penarikan
+  createdAt   DateTime          @default(now())
+
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invoice     Invoice?          @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  payout      Payout?           @relation(fields: [payoutId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([invoiceId])
+  @@index([createdAt])
+  @@map("transaction")
+}
+
+model Payout {
+  id            String        @id @default(cuid())
+  userId        String
+  amount        Decimal       // Nominal yang ditarik user
+  feeAmount     Decimal       @default(0) // Biaya transfer / admin jika ada
+  netAmount     Decimal       // Nominal bersih yang ditransfer ke rekening user
+  bankName      String
+  accountNumber String
+  accountName   String
+  status        PayoutStatus  @default(PENDING)
+  notes         String?
+  adminNotes    String?
+  processedAt   DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions  Transaction[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("payout")
+}
+
+enum TransactionType {
+  INVOICE_PAYMENT
+  PAYOUT_WITHDRAWAL
+  FEE_DEDUCTION
+  REFUND
+}
+
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  REJECTED
 }
 
 model InvoiceItem {

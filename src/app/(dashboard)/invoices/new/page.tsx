@@ -15,10 +15,20 @@ export default async function NewInvoicePage(props: {
   const searchParams = await props.searchParams;
   const initialCustomerId = searchParams?.customerId;
 
-  const customers = await prisma.customer.findMany({
-    where: { userId: session.user.id },
-    orderBy: { name: "asc" },
-  });
+  const [customers, user] = await Promise.all([
+    prisma.customer.findMany({
+      where: { userId: session.user.id },
+      orderBy: { name: "asc" },
+    }),
+    prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        bankName: true,
+        bankAccountNumber: true,
+        bankAccountName: true,
+      },
+    }),
+  ]);
 
   const { allowed, used, limit } = await canCreateInvoice(session.user.id);
 
@@ -49,6 +59,9 @@ export default async function NewInvoicePage(props: {
             <InvoiceForm
               customers={customers}
               defaultCustomerId={initialCustomerId}
+              userBankName={user?.bankName}
+              userBankAccountNumber={user?.bankAccountNumber}
+              userBankAccountName={user?.bankAccountName}
             />
           </div>
         </>
