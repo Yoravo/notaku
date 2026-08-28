@@ -2,6 +2,7 @@ import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import { MegaphoneIcon } from "@heroicons/react/24/outline";
 import { AnnouncementForm } from "./announcement-form";
+import type { AnnouncementPlacement } from "@/actions/admin";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +20,8 @@ export default async function AdminAnnouncementPage() {
   const currentData = detail
     ? {
         message: detail.message || "",
-        type: detail.type || "info",
+        type: (detail.type || "info") as "info" | "warning" | "success",
+        placement: (detail.placement || "ALL") as AnnouncementPlacement,
         isActive: Boolean(detail.isActive),
         linkText: detail.linkText || "",
         linkUrl: detail.linkUrl || "",
@@ -33,10 +35,10 @@ export default async function AdminAnnouncementPage() {
       <div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
           <MegaphoneIcon className="w-8 h-8 text-emerald-600" />
-          Siaran Pengumuman Dashboard (Broadcast)
+          Siaran Pengumuman & Promo (Broadcast)
         </h1>
         <p className="text-sm text-slate-600 mt-1">
-          Tampilkan banner pengumuman, update sistem, promo, atau info penting di bagian atas dashboard seluruh pengguna.
+          Tampilkan banner pengumuman, promo diskon, update sistem, atau info penting di Landing Page dan Dashboard pengguna.
         </p>
       </div>
 

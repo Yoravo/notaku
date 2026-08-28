@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { TrafficTracker } from "@/components/traffic-tracker";
+import { LanguageProvider } from "@/lib/i18n/context";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
   ),
   title: {
-    default: "NotaKu - Invoice Generator untuk UMKM",
+    default: "NotaKu - Invoice Generator untuk UMKM & Bisnis",
     template: "%s · NotaKu",
   },
   description:
@@ -38,14 +39,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "id_ID",
-    title: "NotaKu - Invoice Generator untuk UMKM",
+    title: "NotaKu - Invoice Generator untuk UMKM & Bisnis",
     description:
       "Bikin invoice profesional dalam 30 detik. Gratis untuk UMKM Indonesia.",
     siteName: "NotaKu",
   },
   twitter: {
     card: "summary_large_image",
-    title: "NotaKu - Invoice Generator untuk UMKM",
+    title: "NotaKu - Invoice Generator untuk UMKM & Bisnis",
     description:
       "Bikin invoice profesional dalam 30 detik. Gratis untuk UMKM Indonesia.",
   },
@@ -65,7 +66,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <TrafficTracker />
-        {children}
+        <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
   );

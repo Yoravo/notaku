@@ -1,18 +1,22 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { saveAnnouncement } from "@/actions/admin";
+import { saveAnnouncement, type AnnouncementPlacement } from "@/actions/admin";
 import {
   MegaphoneIcon,
   CheckCircleIcon,
   ExclamationCircleIcon,
   ArrowPathIcon,
+  GlobeAltIcon,
+  ComputerDesktopIcon,
+  SparklesIcon,
 } from "@heroicons/react/24/outline";
 
 type AnnouncementFormProps = {
   initialData: {
     message: string;
     type: "info" | "warning" | "success";
+    placement?: AnnouncementPlacement;
     isActive: boolean;
     linkText?: string | null;
     linkUrl?: string | null;
@@ -26,6 +30,9 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
   const [message, setMessage] = useState(initialData?.message || "");
   const [type, setType] = useState<"info" | "warning" | "success">(
     initialData?.type || "info"
+  );
+  const [placement, setPlacement] = useState<AnnouncementPlacement>(
+    initialData?.placement || "ALL"
   );
   const [isActive, setIsActive] = useState(initialData?.isActive ?? false);
   const [linkText, setLinkText] = useState(initialData?.linkText || "");
@@ -51,6 +58,7 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
       const res = await saveAnnouncement({
         message,
         type,
+        placement,
         isActive,
         linkText,
         linkUrl,
@@ -59,7 +67,7 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
       if (res.success) {
         setStatusFeedback({
           type: "success",
-          text: "Pengumuman berhasil diperbarui dan disiarkan ke dashboard!",
+          text: "Pengumuman berhasil diperbarui dan disiarkan!",
         });
         setTimeout(() => setStatusFeedback(null), 4000);
       } else {
@@ -76,7 +84,7 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
       {/* Live Preview */}
       <div className="bg-slate-50 border border-slate-200 rounded-xl p-5">
         <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
-          Live Preview (Tampilan di Dashboard User)
+          Live Preview (Tampilan Banner Pengumuman)
         </h3>
         {isActive && message.trim() ? (
           <div
@@ -100,8 +108,7 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
           </div>
         ) : (
           <div className="p-4 rounded-xl border border-dashed border-slate-300 text-center text-slate-400 text-sm">
-            Pengumuman saat ini <strong>NONAKTIF</strong> (Tidak akan tampil di
-            dashboard pengguna).
+            Pengumuman saat ini <strong>NONAKTIF</strong>.
           </div>
         )}
       </div>
@@ -115,7 +122,7 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
               Status Pengumuman
             </p>
             <p className="text-xs text-slate-500">
-              Aktifkan untuk menampilkan banner ini di dashboard seluruh pengguna.
+              Aktifkan untuk menyiarkan pesan pengumuman ini secara langsung.
             </p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
@@ -129,16 +136,62 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
           </label>
         </div>
 
+        {/* Target Placement */}
+        <div>
+          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">
+            Target Penayangan (Placement)
+          </label>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {[
+              {
+                id: "ALL",
+                label: "Semua Halaman (Global)",
+                desc: "Landing Page & Dashboard User",
+                icon: SparklesIcon,
+              },
+              {
+                id: "LANDING",
+                label: "Landing Page Saja",
+                desc: "Pengunjung & Marketing",
+                icon: GlobeAltIcon,
+              },
+              {
+                id: "DASHBOARD",
+                label: "Dashboard User Saja",
+                desc: "Pengguna yang sudah login",
+                icon: ComputerDesktopIcon,
+              },
+            ].map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setPlacement(p.id as AnnouncementPlacement)}
+                className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
+                  placement === p.id
+                    ? "border-slate-900 bg-slate-50 ring-2 ring-slate-900/10"
+                    : "border-slate-200 bg-white hover:border-slate-300"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <p.icon className={`w-4 h-4 ${placement === p.id ? "text-emerald-600" : "text-slate-400"}`} />
+                  <span className="text-xs font-bold text-slate-900">{p.label}</span>
+                </div>
+                <p className="text-[11px] text-slate-500 mt-1">{p.desc}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Message Input */}
         <div>
           <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">
-            Isi Pesan Pengumuman
+            Isi Pesan Pengumuman / Promo
           </label>
           <textarea
             rows={3}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="Contoh: Fitur Template PDF Modern & Minimal kini sudah aktif! Upgrade ke Pro untuk menikmati."
+            placeholder="Contoh: 🎉 Promo Peluncuran! Gunakan kode voucher LAUNCH50 untuk diskon 50% paket PRO."
             className="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900"
           />
         </div>
@@ -180,7 +233,7 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
               type="text"
               value={linkText}
               onChange={(e) => setLinkText(e.target.value)}
-              placeholder="Contoh: Lihat Detail"
+              placeholder="Contoh: Klaim Promo Diskon"
               className="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900"
             />
           </div>
@@ -192,7 +245,7 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
               type="text"
               value={linkUrl}
               onChange={(e) => setLinkUrl(e.target.value)}
-              placeholder="Contoh: /settings atau https://..."
+              placeholder="Contoh: /billing atau #pricing"
               className="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900"
             />
           </div>

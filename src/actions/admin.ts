@@ -2,111 +2,15 @@
 
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
-import { auditLog } from "@/lib/audit-log";
 import { revalidatePath } from "next/cache";
+import { auditLog } from "@/lib/audit-log";
 
-export async function updateUserPlan(userId: string, plan: "FREE" | "PRO") {
-  const admin = await requireAdmin();
-
-  if (!userId || !["FREE", "PRO"].includes(plan)) {
-    return { success: false, error: "Data input tidak valid" };
-  }
-
-  try {
-    const targetUser = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { id: true, email: true, plan: true },
-    });
-
-    if (!targetUser) {
-      return { success: false, error: "Pengguna tidak ditemukan" };
-    }
-
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: { plan },
-      select: { id: true, email: true, plan: true },
-    });
-
-    // Catat ke Audit Log
-    await auditLog(
-      "admin.user_plan_updated",
-      {
-        targetUserId: userId,
-        targetEmail: targetUser.email,
-        oldPlan: targetUser.plan,
-        newPlan: plan,
-        performedBy: admin.email,
-      },
-      { userId: admin.id }
-    );
-
-    revalidatePath("/admin/users");
-    revalidatePath("/admin");
-
-    return { success: true, user: updatedUser };
-  } catch (error) {
-    console.error("[ADMIN_UPDATE_PLAN_ERROR]", error);
-    return { success: false, error: "Gagal memperbarui paket pengguna" };
-  }
-}
-
-export async function updateUserRole(userId: string, role: "USER" | "ADMIN") {
-  const admin = await requireAdmin();
-
-  if (!userId || !["USER", "ADMIN"].includes(role)) {
-    return { success: false, error: "Data input tidak valid" };
-  }
-
-  // Cegah admin mencabut role admin dirinya sendiri secara tidak sengaja
-  if (userId === admin.id && role !== "ADMIN") {
-    return {
-      success: false,
-      error: "Anda tidak dapat mencabut hak akses ADMIN diri Anda sendiri",
-    };
-  }
-
-  try {
-    const targetUser = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { id: true, email: true, role: true },
-    });
-
-    if (!targetUser) {
-      return { success: false, error: "Pengguna tidak ditemukan" };
-    }
-
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: { role },
-      select: { id: true, email: true, role: true },
-    });
-
-    await auditLog(
-      "admin.user_role_updated",
-      {
-        targetUserId: userId,
-        targetEmail: targetUser.email,
-        oldRole: targetUser.role,
-        newRole: role,
-        performedBy: admin.email,
-      },
-      { userId: admin.id }
-    );
-
-    revalidatePath("/admin/users");
-    revalidatePath("/admin");
-
-    return { success: true, user: updatedUser };
-  } catch (error) {
-    console.error("[ADMIN_UPDATE_ROLE_ERROR]", error);
-    return { success: false, error: "Gagal memperbarui peran pengguna" };
-  }
-}
+export type AnnouncementPlacement = "ALL" | "LANDING" | "DASHBOARD";
 
 export async function saveAnnouncement(data: {
   message: string;
   type: "info" | "warning" | "success";
+  placement?: AnnouncementPlacement;
   isActive: boolean;
   linkText?: string;
   linkUrl?: string;
@@ -119,6 +23,7 @@ export async function saveAnnouncement(data: {
       {
         message: data.message.trim(),
         type: data.type,
+        placement: data.placement || "ALL",
         isActive: data.isActive,
         linkText: data.linkText?.trim() || null,
         linkUrl: data.linkUrl?.trim() || null,
@@ -128,6 +33,7 @@ export async function saveAnnouncement(data: {
       { userId: admin.id }
     );
 
+    revalidatePath("/");
     revalidatePath("/dashboard");
     revalidatePath("/admin/announcement");
     revalidatePath("/(dashboard)", "layout");
@@ -139,7 +45,7 @@ export async function saveAnnouncement(data: {
   }
 }
 
-export async function getActiveAnnouncement() {
+export async function getActiveAnnouncement(target?: "LANDING" | "DASHBOARD") {
   try {
     const latest = await prisma.auditLog.findFirst({
       where: { event: "system.announcement" },
@@ -151,6 +57,7 @@ export async function getActiveAnnouncement() {
     const detail = latest.detail as {
       message?: string;
       type?: "info" | "warning" | "success";
+      placement?: AnnouncementPlacement;
       isActive?: boolean;
       linkText?: string | null;
       linkUrl?: string | null;
@@ -160,9 +67,15 @@ export async function getActiveAnnouncement() {
       return null;
     }
 
+    const placement = detail.placement || "ALL";
+    if (target && placement !== "ALL" && placement !== target) {
+      return null;
+    }
+
     return {
       message: detail.message,
       type: detail.type || "info",
+      placement,
       linkText: detail.linkText || null,
       linkUrl: detail.linkUrl || null,
     };
@@ -343,5 +256,3 @@ export async function updatePayoutStatus(data: {
     return { success: false, error: "Gagal memperbarui status penarikan dana" };
   }
 }
-
-
