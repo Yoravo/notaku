@@ -1,138 +1,129 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { CheckIcon } from "@heroicons/react/24/outline";
-
-declare global {
-  interface Window {
-    snap: {
-      pay: (
-        token: string,
-        options: {
-          onSuccess: () => void;
-          onPending: () => void;
-          onError: () => void;
-          onClose: () => void;
-        },
-      ) => void;
-    };
-  }
-}
+import { useState } from "react";
+import { CheckIcon, SparklesIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 export function UpgradeModal({ onClose }: { onClose: () => void }) {
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://app.midtrans.com/snap/snap.js";
-    script.setAttribute(
-      "data-client-key",
-      process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || "",
-    );
-    script.async = true;
-    document.head.appendChild(script);
-
-    return () => {
-      document.head.removeChild(script);
-    };
-  }, []);
+  const [error, setError] = useState<string | null>(null);
 
   const handleUpgrade = async () => {
     setLoading(true);
+    setError(null);
 
     try {
       const res = await fetch("/api/payment/create", { method: "POST" });
-      const { token } = await res.json();
+      const data = await res.json();
 
-      if (!token) {
-        alert("Gagal membuat pembayaran. Coba lagi.");
+      if (!res.ok || !data.paymentUrl) {
+        setError(data.error || "Gagal membuat tautan pembayaran. Coba lagi.");
         setLoading(false);
         return;
       }
 
-      window.snap.pay(token, {
-        onSuccess: async () => {
-          // Verifikasi & update subscription langsung
-          const verify = await fetch("/api/payment/verify");
-          const result = await verify.json();
-          if (result.status === "activated") {
-            alert("Pembayaran berhasil! Akun kamu sekarang Pro");
-          }
-          window.location.reload();
-        },
-        onPending: () => {
-          alert("Pembayaran sedang diproses. Status akan diperbarui otomatis.");
-          onClose();
-        },
-        onError: () => {
-          alert("Pembayaran gagal. Silakan coba lagi.");
-          setLoading(false);
-        },
-        onClose: () => {
-          setLoading(false);
-        },
-      });
+      // Redirect langsung ke halaman checkout Mayar (QRIS, VA Bank, E-Wallet, Kartu Kredit)
+      window.location.href = data.paymentUrl;
     } catch {
-      alert("Terjadi kesalahan. Coba lagi.");
+      setError("Terjadi kesalahan koneksi. Silakan coba lagi.");
       setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="fixed inset-0 bg-black/40" onClick={onClose} />
-      <div className="relative w-full max-w-sm rounded-lg bg-white p-6 shadow-lg">
-        <h2 className="text-lg font-semibold text-gray-900">Upgrade ke Pro</h2>
-        <p className="mt-2 text-sm text-gray-600">
-          Dapatkan akses unlimited invoice, custom branding, dan fitur premium
-          lainnya.
-        </p>
-
-        <div className="mt-4 rounded-md bg-blue-50 p-4">
-          <p className="text-2xl font-bold text-gray-900">
-            Rp49.000
-            <span
-              className="text-sm font-normal
-  text-gray-500"
-            >
-              /bulan
-            </span>
-          </p>
-        </div>
-
-        <ul className="mt-4 space-y-2 text-sm text-gray-600">
-          <li className="flex items-center gap-2">
-            <span className="text-green-600"><CheckIcon className="h-4 w-4" /></span> Invoice unlimited
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="text-green-600"><CheckIcon className="h-4 w-4" /></span> Custom logo & branding
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="text-green-600"><CheckIcon className="h-4 w-4" /></span> Template premium
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="text-green-600"><CheckIcon className="h-4 w-4" /></span> Tanpa watermark
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="text-green-600"><CheckIcon className="h-4 w-4" /></span> Laporan bulanan
-          </li>
-        </ul>
-
-        <div className="mt-6 flex gap-3">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div
+        className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity animate-in fade-in"
+        onClick={onClose}
+      />
+      <div className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl space-y-5 animate-in zoom-in-95 border border-gray-100">
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-emerald-50 text-[#0f6b4f] flex items-center justify-center">
+              <SparklesIcon className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-gray-900">
+                Upgrade ke Nota<span className="text-[#0f6b4f]">Ku</span> PRO
+              </h2>
+              <p className="text-xs text-gray-500">
+                Buka seluruh potensi bisnis Anda tanpa batas
+              </p>
+            </div>
+          </div>
           <button
             onClick={onClose}
-            className="flex-1 rounded-md px-4 py-2 text-sm font-medium text-gray-700 cursor-pointer hover:bg-gray-100
-  transition-colors"
+            className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors cursor-pointer"
           >
-            Nanti
+            <XMarkIcon className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Pricing Box */}
+        <div className="rounded-xl bg-linear-to-br from-emerald-500/10 to-teal-500/5 p-4 border border-emerald-200/80">
+          <div className="flex items-baseline justify-between">
+            <div>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800">
+                Akses Penuh Unlimited
+              </span>
+              <p className="text-3xl font-extrabold text-gray-900 mt-1">
+                Rp49.000
+                <span className="text-xs font-medium text-gray-500 ml-1">
+                  / 30 hari
+                </span>
+              </p>
+            </div>
+            <span className="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-bold text-emerald-800">
+              Diskon Peluncuran
+            </span>
+          </div>
+        </div>
+
+        {error && (
+          <div className="rounded-lg bg-rose-50 border border-rose-200 p-3 text-xs text-rose-700">
+            {error}
+          </div>
+        )}
+
+        {/* Feature List */}
+        <ul className="space-y-2.5 text-xs text-gray-700">
+          {[
+            "Pembuatan invoice & kuota pelanggan Unlimited",
+            "Ekspor PDF resmi tanpa watermark NotaKu",
+            "Kustomisasi Logo Bisnis, TTD Digital & Cap Stempel",
+            "Pilihan Template Premium (Classic, Modern, Minimal)",
+            "Kirim Pengingat Tagihan WhatsApp & Email Otomatis",
+            "Laporan rekap keuangan & ekspor data lengkap (CSV)",
+          ].map((item, idx) => (
+            <li key={idx} className="flex items-center gap-2 font-medium">
+              <div className="w-4 h-4 rounded-full bg-emerald-100 text-[#0f6b4f] flex items-center justify-center shrink-0">
+                <CheckIcon className="w-2.5 h-2.5 stroke-[3]" />
+              </div>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+
+        {/* Payment Methods Info */}
+        <div className="text-[11px] text-gray-400 text-center border-t border-gray-100 pt-3">
+          Didukung pembayaran resmi via <strong>QRIS</strong>, <strong>Virtual Account (BCA, Mandiri, BRI, BNI)</strong>, <strong>E-Wallet</strong>, dan <strong>Kartu Kredit</strong>.
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-2.5">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex-1 rounded-xl px-4 py-2.5 text-xs font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
+          >
+            Nanti Saja
           </button>
           <button
+            type="button"
             onClick={handleUpgrade}
             disabled={loading}
-            className="flex-1 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white cursor-pointer
-  hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            className="flex-1 rounded-xl bg-[#0f6b4f] px-4 py-2.5 text-xs font-bold text-white hover:bg-[#0c5740] disabled:opacity-50 transition-colors cursor-pointer shadow-xs"
           >
-            {loading ? "Memproses..." : "Bayar Sekarang"}
+            {loading ? "Menyiapkan Pembayaran..." : "Bayar Sekarang"}
           </button>
         </div>
       </div>

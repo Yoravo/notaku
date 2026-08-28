@@ -15,7 +15,9 @@ import {
   MagnifyingGlassMinusIcon,
   XMarkIcon,
   ArrowsPointingOutIcon,
+  PencilSquareIcon,
 } from "@heroicons/react/24/outline";
+import { SignaturePadModal } from "@/components/signature-pad-modal";
 
 type Props = {
   name: string;
@@ -54,6 +56,7 @@ export function ProfileForm({
   // State untuk modal crop / custom resize (target: logo | signature | stamp)
   const [cropTarget, setCropTarget] = useState<"logo" | "signature" | "stamp">("logo");
   const [tempImage, setTempImage] = useState<string | null>(null);
+  const [showSignaturePad, setShowSignaturePad] = useState(false);
   const [scale, setScale] = useState(1);
   const [offsetX, setOffsetX] = useState(0);
   const [offsetY, setOffsetY] = useState(0);
@@ -264,28 +267,56 @@ export function ProfileForm({
               )}
             </div>
             <div className="space-y-1.5 flex-1">
-              <label className="cursor-pointer inline-flex items-center justify-center px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-xs">
-                <span>{form.signatureUrl ? "Ganti TTD" : "Unggah TTD"}</span>
-                <input
-                  type="file"
-                  accept="image/png, image/jpeg, image/webp"
-                  onChange={(e) => handleFileUpload(e, "signature")}
-                  className="hidden"
-                />
-              </label>
-              {form.signatureUrl && (
+              <div className="flex flex-wrap items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => setForm((prev) => ({ ...prev, signatureUrl: "" }))}
-                  className="block text-xs text-rose-600 hover:underline cursor-pointer"
+                  onClick={() => setShowSignaturePad(true)}
+                  className="cursor-pointer inline-flex items-center gap-1.5 justify-center px-3 py-1.5 rounded-lg border border-[#0f6b4f]/40 bg-emerald-50 text-xs font-semibold text-[#0f6b4f] hover:bg-emerald-100 transition-colors shadow-xs"
                 >
-                  Hapus TTD
+                  <PencilSquareIcon className="w-3.5 h-3.5" />
+                  <span>{form.signatureUrl ? "Gores Ulang TTD" : "Buat TTD (Draw)"}</span>
                 </button>
+
+                <label className="cursor-pointer inline-flex items-center justify-center px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-xs">
+                  <span>Unggah File</span>
+                  <input
+                    type="file"
+                    accept="image/png, image/jpeg, image/webp"
+                    onChange={(e) => handleFileUpload(e, "signature")}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+
+              {form.signatureUrl && (
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCropTarget("signature");
+                      setTempImage(form.signatureUrl);
+                      setScale(1);
+                      setOffsetX(0);
+                      setOffsetY(0);
+                    }}
+                    className="text-xs text-gray-600 hover:text-gray-900 hover:underline cursor-pointer"
+                  >
+                    Atur Ukuran
+                  </button>
+                  <span className="text-gray-300">•</span>
+                  <button
+                    type="button"
+                    onClick={() => setForm((prev) => ({ ...prev, signatureUrl: "" }))}
+                    className="text-xs text-rose-600 hover:underline cursor-pointer"
+                  >
+                    Hapus TTD
+                  </button>
+                </div>
               )}
             </div>
           </div>
           <p className="text-[10px] text-gray-500">
-            Unggah foto/scan tanda tangan berlatar transparan/putih.
+            Goreskan tanda tangan langsung dengan jari/mouse, atau unggah foto/scan tanda tangan.
           </p>
         </div>
 
@@ -332,6 +363,16 @@ export function ProfileForm({
           </p>
         </div>
       </div>
+
+      {/* Modal Signature Drawing Pad */}
+      <SignaturePadModal
+        isOpen={showSignaturePad}
+        onClose={() => setShowSignaturePad(false)}
+        onSave={(dataUrl) => {
+          setForm((prev) => ({ ...prev, signatureUrl: dataUrl }));
+          setError(null);
+        }}
+      />
 
       {/* Modal Custom Resize & Crop */}
       {tempImage && (
