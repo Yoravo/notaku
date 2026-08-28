@@ -20,13 +20,6 @@ export async function createCustomer(formData: FormData) {
   const user = await getUser();
   await checkServerActionRateLimit(user.id, "write");
 
-  const { allowed } = await canCreateCustomer(user.id);
-  if (!allowed) {
-    throw new Error(
-      "Batas pelanggan gratis tercapai. Upgrade ke Pro untuk unlimited.",
-    );
-  }
-
   const parsed = customerSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email") || "",
@@ -38,14 +31,24 @@ export async function createCustomer(formData: FormData) {
     throw new Error(parsed.error.issues[0].message);
   }
 
-  await prisma.customer.create({
-    data: {
-      userId: user.id,
-      name: parsed.data.name,
-      email: parsed.data.email || null,
-      phone: parsed.data.phone || null,
-      address: parsed.data.address || null,
-    },
+  // Atomic limit check + create
+  await prisma.$transaction(async (tx) => {
+    const { allowed } = await canCreateCustomer(user.id, tx);
+    if (!allowed) {
+      throw new Error(
+        "Batas pelanggan gratis tercapai (maks. 20 pelanggan). Upgrade ke Pro untuk unlimited.",
+      );
+    }
+
+    return tx.customer.create({
+      data: {
+        userId: user.id,
+        name: parsed.data.name,
+        email: parsed.data.email || null,
+        phone: parsed.data.phone || null,
+        address: parsed.data.address || null,
+      },
+    });
   });
 
   auditLog(
