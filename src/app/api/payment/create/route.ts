@@ -4,10 +4,9 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { createMayarPayment } from "@/lib/mayar";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { validatePromoCode, BASE_PRO_PRICE } from "@/lib/promos";
 
-const PRO_PRICE = 49000;
-
-export async function POST() {
+export async function POST(request: Request) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -20,14 +19,38 @@ export async function POST() {
     );
   }
 
+  let promoCode: string | null = null;
+  try {
+    const body = await request.json().catch(() => ({}));
+    if (body.promoCode && typeof body.promoCode === "string") {
+      promoCode = body.promoCode.trim().toUpperCase();
+    }
+  } catch {
+    // Body optional
+  }
+
+  let finalPrice = BASE_PRO_PRICE;
+  let appliedPromoDescription = "";
+
+  if (promoCode) {
+    const promoCheck = await validatePromoCode(promoCode, BASE_PRO_PRICE);
+    if (!promoCheck.valid) {
+      return NextResponse.json(
+        { error: promoCheck.error },
+        { status: 400 }
+      );
+    }
+    finalPrice = promoCheck.finalPrice;
+    appliedPromoDescription = ` (Diskon Voucher: ${promoCheck.code})`;
+  }
+
   const user = session.user;
   const orderId = `PRO-${user.id.slice(0, 8)}-${Date.now()}`;
 
-  // Error Handling for Mayar API call
   try {
     const { paymentUrl, paymentId } = await createMayarPayment({
-      name: "NotaKu PRO - 1 Bulan",
-      amount: PRO_PRICE,
+      name: `NotaKu PRO - 1 Bulan${appliedPromoDescription}`,
+      amount: finalPrice,
       customerName: user.name || "Pelanggan NotaKu",
       customerEmail: user.email,
       orderId,
@@ -49,6 +72,8 @@ export async function POST() {
     return NextResponse.json({
       paymentUrl,
       paymentId: paymentId || orderId,
+      finalPrice,
+      promoCode,
     });
   } catch (err) {
     console.error("Error creating Mayar payment:", err);
