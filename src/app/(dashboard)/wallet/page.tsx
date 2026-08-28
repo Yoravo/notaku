@@ -43,43 +43,32 @@ export default async function WalletPage() {
   if (!user) redirect("/login");
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-gray-900">
-          Saldo & Mutasi Pembayaran
-        </h1>
-        <p className="text-sm text-gray-500">
-          Kelola penerimaan pembayaran digital invoice pelanggan dan pengajuan penarikan dana ke rekening Anda.
-        </p>
-      </div>
-
-      <WalletClient
-        balance={Number(user.balance || 0)}
-        bankName={user.bankName}
-        bankAccountNumber={user.bankAccountNumber}
-        bankAccountName={user.bankAccountName}
-        transactions={transactions.map((tx) => ({
-          id: tx.id,
-          type: tx.type,
-          amount: Number(tx.amount),
-          grossAmount: Number(tx.grossAmount),
-          feeAmount: Number(tx.feeAmount),
-          description: tx.description,
-          createdAt: tx.createdAt.toISOString(),
-          invoiceNumber: tx.invoice?.number || null,
-        }))}
-        payouts={payouts.map((p) => ({
-          id: p.id,
-          amount: Number(p.amount),
-          feeAmount: Number(p.feeAmount),
-          netAmount: Number(p.netAmount),
-          bankName: p.bankName,
-          accountNumber: p.accountNumber,
-          status: p.status,
-          createdAt: p.createdAt.toISOString(),
-          processedAt: p.processedAt?.toISOString() || null,
-        }))}
-      />
-    </div>
+    <WalletClient
+      balance={Number(user.balance || 0)}
+      bankName={user.bankName}
+      bankAccountNumber={user.bankAccountNumber}
+      bankAccountName={user.bankAccountName}
+      transactions={transactions.map((tx) => ({
+        id: tx.id,
+        type: tx.type,
+        amount: Number(tx.amount),
+        grossAmount: Number(tx.grossAmount),
+        feeAmount: Number(tx.feeAmount),
+        description: tx.description,
+        createdAt: tx.createdAt.toISOString(),
+        invoiceNumber: tx.invoice?.number || null,
+      }))}
+      payouts={payouts.map((p) => ({
+        id: p.id,
+        amount: Number(p.amount),
+        feeAmount: Number(p.feeAmount),
+        netAmount: Number(p.netAmount),
+        bankName: p.bankName,
+        accountNumber: p.accountNumber,
+        status: p.status,
+        createdAt: p.createdAt.toISOString(),
+        processedAt: p.processedAt?.toISOString() || null,
+      }))}
+    />
   );
 }

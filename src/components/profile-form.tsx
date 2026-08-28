@@ -11,13 +11,13 @@ import {
   CheckCircleIcon,
   ExclamationCircleIcon,
   ArrowPathIcon,
-  MagnifyingGlassPlusIcon,
   MagnifyingGlassMinusIcon,
   XMarkIcon,
   ArrowsPointingOutIcon,
   PencilSquareIcon,
 } from "@heroicons/react/24/outline";
 import { SignaturePadModal } from "@/components/signature-pad-modal";
+import { useLanguage } from "@/lib/i18n/context";
 
 type Props = {
   name: string;
@@ -40,6 +40,7 @@ export function ProfileForm({
   stampUrl,
   email,
 }: Props) {
+  const { t, locale } = useLanguage();
   const [form, setForm] = useState({
     name,
     businessName: businessName ?? "",
@@ -53,7 +54,7 @@ export function ProfileForm({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  // State untuk modal crop / custom resize (target: logo | signature | stamp)
+  // Modal crop / custom resize (target: logo | signature | stamp)
   const [cropTarget, setCropTarget] = useState<"logo" | "signature" | "stamp">("logo");
   const [tempImage, setTempImage] = useState<string | null>(null);
   const [showSignaturePad, setShowSignaturePad] = useState(false);
@@ -79,7 +80,11 @@ export function ProfileForm({
     if (!file) return;
 
     if (file.size > 5 * 1024 * 1024) {
-      setError(`Ukuran file ${target} maksimal 5MB`);
+      setError(
+        locale === "id"
+          ? `Ukuran file ${target} maksimal 5MB`
+          : `${target} file size max 5MB`
+      );
       return;
     }
 
@@ -156,7 +161,13 @@ export function ProfileForm({
       setSuccess(true);
       setTimeout(() => setSuccess(false), 4000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan");
+      setError(
+        err instanceof Error
+          ? err.message
+          : locale === "id"
+          ? "Terjadi kesalahan saat menyimpan profil"
+          : "Error occurred while saving profile"
+      );
     } finally {
       setLoading(false);
     }
@@ -167,43 +178,51 @@ export function ProfileForm({
       {error && (
         <div
           role="alert"
-          className="rounded-lg border border-red-200 bg-red-50 p-3.5 text-xs text-red-700 flex items-center gap-2"
+          className="rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-xs text-rose-700 flex items-center gap-2 font-medium"
         >
-          <ExclamationCircleIcon className="w-4 h-4 shrink-0 text-red-600" />
+          <ExclamationCircleIcon className="w-4 h-4 shrink-0 text-rose-600" />
           <span>{error}</span>
         </div>
       )}
 
       {success && (
-        <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3.5 text-xs text-emerald-800 flex items-center gap-2 font-medium">
-          <CheckCircleIcon className="w-4 h-4 shrink-0 text-emerald-600" />
-          <span>Profil dan identitas bisnis berhasil diperbarui!</span>
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3.5 text-xs text-[#0f6b4f] flex items-center gap-2 font-semibold shadow-2xs">
+          <CheckCircleIcon className="w-4 h-4 shrink-0 text-[#0f6b4f]" />
+          <span>
+            {locale === "id"
+              ? "Profil dan identitas bisnis berhasil diperbarui!"
+              : "Business profile and identities updated successfully!"}
+          </span>
         </div>
       )}
 
-      {/* Logo Bisnis Section */}
-      <div className="rounded-xl border border-gray-200 bg-gray-50/60 p-4">
-        <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">
-          Logo Bisnis / Toko (Untuk Header Invoice)
+      {/* Business Logo Section */}
+      <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 sm:p-5">
+        <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2.5">
+          {locale === "id" ? "Logo Bisnis / Toko (Header Invoice)" : "Business / Store Logo (Invoice Header)"}
         </label>
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <div className="w-20 h-20 rounded-lg border-2 border-dashed border-gray-300 bg-white flex items-center justify-center overflow-hidden shrink-0">
+          <div className="w-20 h-20 rounded-xl border-2 border-dashed border-slate-300 bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
             {form.logoUrl ? (
               <img
                 src={form.logoUrl}
-                alt="Logo Bisnis"
-                className="w-full h-full object-contain p-1"
+                alt="Business Logo"
+                className="w-full h-full object-contain p-1.5"
               />
             ) : (
-              <PhotoIcon className="w-8 h-8 text-gray-400" />
+              <PhotoIcon className="w-8 h-8 text-slate-400" />
             )}
           </div>
 
           <div className="space-y-2 flex-1 w-full">
             <div className="flex flex-wrap items-center gap-2">
-              <label className="cursor-pointer inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg border border-gray-300 bg-white text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-xs">
-                <span>{form.logoUrl ? "Ganti Logo" : "Pilih Gambar"}</span>
+              <label className="cursor-pointer inline-flex items-center justify-center px-3.5 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all shadow-2xs min-h-[44px] sm:min-h-[38px]">
+                <span>
+                  {form.logoUrl
+                    ? locale === "id" ? "Ganti Logo" : "Change Logo"
+                    : locale === "id" ? "Pilih Gambar" : "Select Image"}
+                </span>
                 <input
                   type="file"
                   accept="image/png, image/jpeg, image/webp"
@@ -223,47 +242,51 @@ export function ProfileForm({
                       setOffsetX(0);
                       setOffsetY(0);
                     }}
-                    className="px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200 cursor-pointer inline-flex items-center gap-1.5"
+                    className="px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 rounded-xl transition-all border border-slate-200 bg-white cursor-pointer inline-flex items-center gap-1.5 shadow-2xs min-h-[44px] sm:min-h-[38px]"
                   >
-                    <ArrowsPointingOutIcon className="w-3.5 h-3.5 text-gray-500" />
-                    <span>Sesuaikan Ukuran</span>
+                    <ArrowsPointingOutIcon className="w-3.5 h-3.5 text-slate-500" />
+                    <span>{locale === "id" ? "Sesuaikan Ukuran" : "Adjust Size"}</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setForm((prev) => ({ ...prev, logoUrl: "" }))}
-                    className="px-3 py-1.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                    className="px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer min-h-[44px] sm:min-h-[38px]"
                   >
-                    Hapus Logo
+                    {locale === "id" ? "Hapus Logo" : "Remove Logo"}
                   </button>
                 </>
               )}
             </div>
 
-            <p className="text-[11px] text-gray-500">
-              Format PNG/JPG/WebP, maks 5MB. Ditampilkan di header/kop faktur.
+            <p className="text-[11px] text-slate-500 font-medium">
+              {locale === "id"
+                ? "Format PNG/JPG/WebP, maks 5MB. Ditampilkan di header/kop faktur."
+                : "PNG/JPG/WebP format, max 5MB. Rendered in invoice header."}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Tanda Tangan & Stempel Digital Section */}
+      {/* Digital Signature & Stamp Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/* Tanda Tangan Digital */}
-        <div className="rounded-xl border border-gray-200 bg-gray-50/60 p-4 space-y-3">
-          <label className="block text-xs font-bold uppercase tracking-wider text-gray-700">
-            Tanda Tangan Digital (Bawah PDF)
+        {/* Digital Signature */}
+        <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 sm:p-5 space-y-3">
+          <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+            {locale === "id" ? "Tanda Tangan Digital (Bawah PDF)" : "Digital Signature (PDF Footer)"}
           </label>
           <div className="flex items-center gap-3">
-            <div className="w-24 h-16 rounded-lg border-2 border-dashed border-gray-300 bg-white flex items-center justify-center overflow-hidden shrink-0">
+            <div className="w-24 h-16 rounded-xl border-2 border-dashed border-slate-300 bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
               {form.signatureUrl ? (
                 <img
                   src={form.signatureUrl}
-                  alt="Tanda Tangan"
+                  alt="Signature"
                   className="w-full h-full object-contain p-1"
                 />
               ) : (
-                <span className="text-[10px] text-gray-400 font-medium text-center px-1">Tanpa TTD</span>
+                <span className="text-[10px] text-slate-400 font-medium text-center px-1">
+                  {locale === "id" ? "Tanpa TTD" : "No Signature"}
+                </span>
               )}
             </div>
             <div className="space-y-1.5 flex-1">
@@ -271,14 +294,18 @@ export function ProfileForm({
                 <button
                   type="button"
                   onClick={() => setShowSignaturePad(true)}
-                  className="cursor-pointer inline-flex items-center gap-1.5 justify-center px-3 py-1.5 rounded-lg border border-[#0f6b4f]/40 bg-emerald-50 text-xs font-semibold text-[#0f6b4f] hover:bg-emerald-100 transition-colors shadow-xs"
+                  className="cursor-pointer inline-flex items-center gap-1.5 justify-center px-3 py-1.5 rounded-xl border border-emerald-200 bg-emerald-50 text-xs font-bold text-[#0f6b4f] hover:bg-emerald-100 transition-all shadow-2xs min-h-[38px]"
                 >
                   <PencilSquareIcon className="w-3.5 h-3.5" />
-                  <span>{form.signatureUrl ? "Gores Ulang TTD" : "Buat TTD (Draw)"}</span>
+                  <span>
+                    {form.signatureUrl
+                      ? locale === "id" ? "Gores Ulang" : "Redraw"
+                      : locale === "id" ? "Buat TTD (Draw)" : "Draw Signature"}
+                  </span>
                 </button>
 
-                <label className="cursor-pointer inline-flex items-center justify-center px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-xs">
-                  <span>Unggah File</span>
+                <label className="cursor-pointer inline-flex items-center justify-center px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all shadow-2xs min-h-[38px]">
+                  <span>{locale === "id" ? "Unggah File" : "Upload File"}</span>
                   <input
                     type="file"
                     accept="image/png, image/jpeg, image/webp"
@@ -289,7 +316,7 @@ export function ProfileForm({
               </div>
 
               {form.signatureUrl && (
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 pt-0.5">
                   <button
                     type="button"
                     onClick={() => {
@@ -299,47 +326,55 @@ export function ProfileForm({
                       setOffsetX(0);
                       setOffsetY(0);
                     }}
-                    className="text-xs text-gray-600 hover:text-gray-900 hover:underline cursor-pointer"
+                    className="text-xs text-slate-600 hover:text-slate-900 font-semibold cursor-pointer"
                   >
-                    Atur Ukuran
+                    {locale === "id" ? "Atur Ukuran" : "Resize"}
                   </button>
-                  <span className="text-gray-300">•</span>
+                  <span className="text-slate-300">•</span>
                   <button
                     type="button"
                     onClick={() => setForm((prev) => ({ ...prev, signatureUrl: "" }))}
-                    className="text-xs text-rose-600 hover:underline cursor-pointer"
+                    className="text-xs text-rose-600 hover:underline font-semibold cursor-pointer"
                   >
-                    Hapus TTD
+                    {locale === "id" ? "Hapus" : "Remove"}
                   </button>
                 </div>
               )}
             </div>
           </div>
-          <p className="text-[10px] text-gray-500">
-            Goreskan tanda tangan langsung dengan jari/mouse, atau unggah foto/scan tanda tangan.
+          <p className="text-[10px] text-slate-500 font-medium">
+            {locale === "id"
+              ? "Goreskan tanda tangan langsung dengan jari/mouse, atau unggah foto/scan tanda tangan."
+              : "Draw directly with touch/mouse, or upload an image of your signature."}
           </p>
         </div>
 
-        {/* Stempel Bisnis Digital */}
-        <div className="rounded-xl border border-gray-200 bg-gray-50/60 p-4 space-y-3">
-          <label className="block text-xs font-bold uppercase tracking-wider text-gray-700">
-            Stempel Toko / Bisnis (Cap PDF)
+        {/* Digital Business Stamp */}
+        <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 sm:p-5 space-y-3">
+          <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+            {locale === "id" ? "Stempel Toko / Bisnis (Cap PDF)" : "Company Stamp (Official Seal)"}
           </label>
           <div className="flex items-center gap-3">
-            <div className="w-24 h-16 rounded-lg border-2 border-dashed border-gray-300 bg-white flex items-center justify-center overflow-hidden shrink-0">
+            <div className="w-24 h-16 rounded-xl border-2 border-dashed border-slate-300 bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
               {form.stampUrl ? (
                 <img
                   src={form.stampUrl}
-                  alt="Stempel Toko"
+                  alt="Company Stamp"
                   className="w-full h-full object-contain p-1"
                 />
               ) : (
-                <span className="text-[10px] text-gray-400 font-medium text-center px-1">Tanpa Cap</span>
+                <span className="text-[10px] text-slate-400 font-medium text-center px-1">
+                  {locale === "id" ? "Tanpa Cap" : "No Stamp"}
+                </span>
               )}
             </div>
             <div className="space-y-1.5 flex-1">
-              <label className="cursor-pointer inline-flex items-center justify-center px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-xs">
-                <span>{form.stampUrl ? "Ganti Cap" : "Unggah Cap"}</span>
+              <label className="cursor-pointer inline-flex items-center justify-center px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all shadow-2xs min-h-[38px]">
+                <span>
+                  {form.stampUrl
+                    ? locale === "id" ? "Ganti Cap" : "Change Stamp"
+                    : locale === "id" ? "Unggah Cap" : "Upload Stamp"}
+                </span>
                 <input
                   type="file"
                   accept="image/png, image/jpeg, image/webp"
@@ -351,20 +386,22 @@ export function ProfileForm({
                 <button
                   type="button"
                   onClick={() => setForm((prev) => ({ ...prev, stampUrl: "" }))}
-                  className="block text-xs text-rose-600 hover:underline cursor-pointer"
+                  className="block text-xs text-rose-600 hover:underline font-semibold cursor-pointer"
                 >
-                  Hapus Cap
+                  {locale === "id" ? "Hapus Cap" : "Remove Stamp"}
                 </button>
               )}
             </div>
           </div>
-          <p className="text-[10px] text-gray-500">
-            Unggah stempel cap digital untuk dicetak menimpa area tanda tangan.
+          <p className="text-[10px] text-slate-500 font-medium">
+            {locale === "id"
+              ? "Unggah stempel cap digital untuk dicetak menimpa area tanda tangan faktur."
+              : "Upload a digital stamp to overlay above the signature block on invoice PDFs."}
           </p>
         </div>
       </div>
 
-      {/* Modal Signature Drawing Pad */}
+      {/* Signature Modal */}
       <SignaturePadModal
         isOpen={showSignaturePad}
         onClose={() => setShowSignaturePad(false)}
@@ -374,23 +411,30 @@ export function ProfileForm({
         }}
       />
 
-      {/* Modal Custom Resize & Crop */}
+      {/* Custom Resize & Crop Modal */}
       {tempImage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-5 sm:p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-lg rounded-2xl bg-white p-5 sm:p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 border border-slate-200">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
-                <h3 className="text-base font-bold text-gray-900">
-                  Sesuaikan & Resize {cropTarget === "logo" ? "Logo" : cropTarget === "signature" ? "Tanda Tangan" : "Stempel Cap"}
+                <h3 className="text-base font-bold text-slate-900">
+                  {locale === "id" ? "Sesuaikan & Resize" : "Adjust & Resize"}{" "}
+                  {cropTarget === "logo"
+                    ? locale === "id" ? "Logo" : "Logo"
+                    : cropTarget === "signature"
+                    ? locale === "id" ? "Tanda Tangan" : "Signature"
+                    : locale === "id" ? "Stempel Cap" : "Stamp"}
                 </h3>
-                <p className="text-xs text-gray-500">
-                  Geser dan atur perbesaran gambar agar pas dicetak pada faktur
+                <p className="text-xs text-slate-500 font-medium">
+                  {locale === "id"
+                    ? "Geser dan atur perbesaran gambar agar pas dicetak pada faktur"
+                    : "Drag and zoom image to fit properly on PDF printouts"}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setTempImage(null)}
-                className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 cursor-pointer"
+                className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 cursor-pointer"
               >
                 <XMarkIcon className="w-5 h-5" />
               </button>
@@ -398,7 +442,7 @@ export function ProfileForm({
 
             {/* Preview Box with Drag */}
             <div
-              className="relative w-full h-56 sm:h-64 rounded-xl border-2 border-dashed border-gray-300 bg-gray-900/5 flex items-center justify-center overflow-hidden cursor-move select-none"
+              className="relative w-full h-56 sm:h-64 rounded-xl border-2 border-dashed border-slate-300 bg-slate-900/5 flex items-center justify-center overflow-hidden cursor-move select-none"
               onMouseDown={(e) => {
                 setIsDragging(true);
                 setDragStart({ x: e.clientX - offsetX, y: e.clientY - offsetY });
@@ -440,21 +484,21 @@ export function ProfileForm({
               />
 
               {/* Target Overlay Guide */}
-              <div className="absolute inset-4 pointer-events-none border border-emerald-500/40 rounded-lg flex items-center justify-center">
-                <span className="text-[10px] uppercase font-bold tracking-widest text-emerald-700/60 bg-white/80 px-2 py-0.5 rounded shadow-xs">
-                  Area Cetak PDF
+              <div className="absolute inset-4 pointer-events-none border border-[#0f6b4f]/40 rounded-xl flex items-center justify-center">
+                <span className="text-[10px] uppercase font-bold tracking-widest text-[#0f6b4f] bg-white/90 px-2 py-0.5 rounded-md shadow-xs">
+                  {locale === "id" ? "Area Cetak PDF" : "PDF Print Area"}
                 </span>
               </div>
             </div>
 
             {/* Scale Control Slider */}
-            <div className="space-y-2 bg-gray-50 p-3 rounded-xl border border-gray-200/80">
-              <div className="flex items-center justify-between text-xs text-gray-700">
-                <span className="font-semibold flex items-center gap-1">
-                  <MagnifyingGlassMinusIcon className="w-4 h-4 text-gray-400" />
-                  Ukuran / Zoom
+            <div className="space-y-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
+              <div className="flex items-center justify-between text-xs text-slate-700">
+                <span className="font-bold flex items-center gap-1">
+                  <MagnifyingGlassMinusIcon className="w-4 h-4 text-slate-400" />
+                  {locale === "id" ? "Ukuran / Zoom" : "Size / Zoom"}
                 </span>
-                <span className="font-mono text-emerald-700 font-bold">
+                <span className="font-mono text-[#0f6b4f] font-bold">
                   {Math.round(scale * 100)}%
                 </span>
               </div>
@@ -466,7 +510,7 @@ export function ProfileForm({
                   step="0.05"
                   value={scale}
                   onChange={(e) => setScale(parseFloat(e.target.value))}
-                  className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#0f6b4f]"
+                  className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#0f6b4f]"
                 />
                 <button
                   type="button"
@@ -475,7 +519,7 @@ export function ProfileForm({
                     setOffsetX(0);
                     setOffsetY(0);
                   }}
-                  className="text-[11px] font-semibold text-gray-600 hover:text-gray-900 hover:underline shrink-0 cursor-pointer"
+                  className="text-[11px] font-bold text-slate-600 hover:text-slate-900 hover:underline shrink-0 cursor-pointer"
                 >
                   Reset
                 </button>
@@ -487,16 +531,16 @@ export function ProfileForm({
               <button
                 type="button"
                 onClick={() => setTempImage(null)}
-                className="px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer min-h-[44px] sm:min-h-[38px]"
               >
-                Batal
+                {locale === "id" ? "Batal" : "Cancel"}
               </button>
               <button
                 type="button"
                 onClick={handleApplyCrop}
-                className="px-5 py-2 text-xs font-semibold text-white bg-[#0f6b4f] hover:bg-[#0c5740] rounded-lg transition-colors cursor-pointer shadow-xs"
+                className="px-5 py-2 text-xs font-bold text-white bg-[#0f6b4f] hover:bg-[#0c553e] rounded-xl transition-all cursor-pointer shadow-xs min-h-[44px] sm:min-h-[38px]"
               >
-                Terapkan Gambar
+                {locale === "id" ? "Terapkan Gambar" : "Apply Image"}
               </button>
             </div>
           </div>
@@ -506,9 +550,9 @@ export function ProfileForm({
       {/* Personal & Business Fields */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm">
         <div>
-          <label className="block font-semibold text-gray-700 mb-1.5 flex items-center gap-1.5">
-            <UserIcon className="w-4 h-4 text-gray-400" />
-            Nama Lengkap <span className="text-rose-500">*</span>
+          <label className="block font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
+            <UserIcon className="w-4 h-4 text-slate-400" />
+            <span>{locale === "id" ? "Nama Lengkap" : "Full Name"}</span> <span className="text-rose-500">*</span>
           </label>
           <input
             type="text"
@@ -516,67 +560,71 @@ export function ProfileForm({
             name="name"
             value={form.name}
             onChange={handleChange}
-            className="w-full rounded-lg border border-gray-300 px-3.5 py-2 text-gray-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f]"
+            className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-slate-900 font-medium focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs min-h-[44px] sm:min-h-[40px]"
           />
         </div>
 
         <div>
-          <label className="block font-semibold text-gray-700 mb-1.5 flex items-center gap-1.5">
-            <BuildingOfficeIcon className="w-4 h-4 text-gray-400" />
-            Nama Bisnis / Toko
+          <label className="block font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
+            <BuildingOfficeIcon className="w-4 h-4 text-slate-400" />
+            <span>{t.settings?.businessName || (locale === "id" ? "Nama Bisnis / Toko" : "Business / Store Name")}</span>
           </label>
           <input
             type="text"
             name="businessName"
             value={form.businessName}
             onChange={handleChange}
-            placeholder="Contoh: Toko Kopi Sejahtera"
-            className="w-full rounded-lg border border-gray-300 px-3.5 py-2 text-gray-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f]"
+            placeholder={locale === "id" ? "Contoh: Toko Kopi Sejahtera" : "e.g. Acme Studio Inc."}
+            className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-slate-900 font-medium focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs min-h-[44px] sm:min-h-[40px]"
           />
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm">
         <div>
-          <label className="block font-semibold text-gray-700 mb-1.5">
-            Email Akun
+          <label className="block font-bold text-slate-700 mb-1.5">
+            {locale === "id" ? "Email Akun" : "Account Email"}
           </label>
           <input
             type="email"
             disabled
             value={email}
-            className="w-full rounded-lg border border-gray-200 bg-gray-100 px-3.5 py-2 text-gray-500 font-mono text-xs cursor-not-allowed"
+            className="w-full rounded-xl border border-slate-200 bg-slate-100 px-3.5 py-2.5 text-slate-500 font-mono text-xs cursor-not-allowed shadow-2xs min-h-[44px] sm:min-h-[40px]"
           />
         </div>
 
         <div>
-          <label className="block font-semibold text-gray-700 mb-1.5 flex items-center gap-1.5">
-            <PhoneIcon className="w-4 h-4 text-gray-400" />
-            No. WhatsApp / Telepon
+          <label className="block font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
+            <PhoneIcon className="w-4 h-4 text-slate-400" />
+            <span>{t.settings?.businessPhone || (locale === "id" ? "No. WhatsApp / Telepon" : "WhatsApp / Phone Number")}</span>
           </label>
           <input
             type="text"
             name="phone"
             value={form.phone}
             onChange={handleChange}
-            placeholder="Contoh: 08123456789"
-            className="w-full rounded-lg border border-gray-300 px-3.5 py-2 text-gray-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f]"
+            placeholder={locale === "id" ? "Contoh: 08123456789" : "e.g. +628123456789"}
+            className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-slate-900 font-medium focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-mono min-h-[44px] sm:min-h-[40px]"
           />
         </div>
       </div>
 
       <div>
-        <label className="block font-semibold text-gray-700 mb-1.5 flex items-center gap-1.5 text-xs sm:text-sm">
-          <MapPinIcon className="w-4 h-4 text-gray-400" />
-          Alamat Bisnis / Kantor
+        <label className="block font-bold text-slate-700 mb-1.5 flex items-center gap-1.5 text-xs sm:text-sm">
+          <MapPinIcon className="w-4 h-4 text-slate-400" />
+          <span>{t.settings?.businessAddress || (locale === "id" ? "Alamat Bisnis / Kantor" : "Business / Office Address")}</span>
         </label>
         <textarea
           name="address"
           value={form.address}
           onChange={handleChange}
           rows={3}
-          placeholder="Alamat yang akan dicetak pada invoice..."
-          className="w-full rounded-lg border border-gray-300 px-3.5 py-2 text-xs sm:text-sm text-gray-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] resize-none"
+          placeholder={
+            locale === "id"
+              ? "Alamat yang akan dicetak pada invoice..."
+              : "Address to appear on your invoice header..."
+          }
+          className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 font-medium focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] resize-none shadow-2xs leading-relaxed"
         />
       </div>
 
@@ -584,14 +632,18 @@ export function ProfileForm({
         <button
           type="submit"
           disabled={loading}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#0f6b4f] px-5 py-2.5 text-xs sm:text-sm font-semibold text-white hover:bg-[#0c5740] transition-colors disabled:opacity-50 cursor-pointer shadow-xs w-full sm:w-auto"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0f6b4f] px-5 py-2.5 text-xs sm:text-sm font-bold text-white hover:bg-[#0c553e] active:scale-[0.98] transition-all disabled:opacity-50 cursor-pointer shadow-xs w-full sm:w-auto min-h-[44px]"
         >
           {loading ? (
             <ArrowPathIcon className="w-4 h-4 animate-spin" />
           ) : (
             <CheckCircleIcon className="w-4 h-4 text-emerald-200" />
           )}
-          <span>{loading ? "Menyimpan..." : "Simpan Perubahan"}</span>
+          <span>
+            {loading
+              ? t.settings?.saving || (locale === "id" ? "Menyimpan..." : "Saving...")
+              : t.settings?.saveChanges || (locale === "id" ? "Simpan Perubahan" : "Save Changes")}
+          </span>
         </button>
       </div>
     </form>

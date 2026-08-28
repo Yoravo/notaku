@@ -12,12 +12,13 @@ import {
   ShieldCheckIcon,
   Bars3Icon,
   XMarkIcon,
-  ChevronDoubleLeftIcon,
   ClipboardDocumentListIcon,
   TagIcon,
   CpuChipIcon,
   BanknotesIcon,
 } from "@heroicons/react/24/outline";
+import { LanguageDropdown } from "@/components/language-dropdown";
+import { useLanguage } from "@/lib/i18n/context";
 
 type AdminUser = {
   id: string;
@@ -25,18 +26,6 @@ type AdminUser = {
   email: string;
   role?: string | null;
 };
-
-const adminNavItems = [
-  { href: "/admin", label: "Overview & Trafik", icon: ChartBarIcon, exact: true },
-  { href: "/admin/users", label: "Manajemen User", icon: UsersIcon },
-  { href: "/admin/invoices", label: "Semua Invoices", icon: DocumentTextIcon },
-  { href: "/admin/payouts", label: "Pencairan Dana", icon: BanknotesIcon },
-  { href: "/admin/finance", label: "Laporan Finansial", icon: ChartBarIcon },
-  { href: "/admin/promos", label: "Voucher & Promo", icon: TagIcon },
-  { href: "/admin/announcement", label: "Pengumuman", icon: MegaphoneIcon },
-  { href: "/admin/logs", label: "Audit Logs", icon: ClipboardDocumentListIcon },
-  { href: "/admin/system", label: "System Health", icon: CpuChipIcon },
-];
 
 export function AdminLayoutClient({
   adminUser,
@@ -50,6 +39,19 @@ export function AdminLayoutClient({
   // Desktop sidebar collapse state (default: show/expanded)
   const [desktopOpen, setDesktopOpen] = useState(true);
   const pathname = usePathname();
+  const { t, locale } = useLanguage();
+
+  const adminNavItems = [
+    { href: "/admin", label: t.admin?.overview || "Overview & Trafik", icon: ChartBarIcon, exact: true },
+    { href: "/admin/users", label: t.admin?.users || "Manajemen User", icon: UsersIcon },
+    { href: "/admin/invoices", label: t.admin?.invoices || "Semua Invoices", icon: DocumentTextIcon },
+    { href: "/admin/payouts", label: t.admin?.payouts || "Pencairan Dana", icon: BanknotesIcon },
+    { href: "/admin/finance", label: t.admin?.finance || "Laporan Finansial", icon: ChartBarIcon },
+    { href: "/admin/promos", label: t.admin?.promos || "Voucher & Promo", icon: TagIcon },
+    { href: "/admin/announcement", label: t.admin?.announcement || "Pengumuman", icon: MegaphoneIcon },
+    { href: "/admin/logs", label: t.admin?.logs || "Audit Logs", icon: ClipboardDocumentListIcon },
+    { href: "/admin/system", label: t.admin?.system || "System Health", icon: CpuChipIcon },
+  ];
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-900 text-slate-100">
@@ -104,7 +106,7 @@ export function AdminLayoutClient({
         {/* Navigation Menu */}
         <nav className="flex-1 space-y-1.5 px-3 py-4 overflow-y-auto">
           <p className="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2 whitespace-nowrap">
-            Menu Utama
+            {locale === "id" ? "Menu Utama" : "Main Menu"}
           </p>
           {adminNavItems.map((item) => {
             const isActive = item.exact
@@ -151,7 +153,7 @@ export function AdminLayoutClient({
             className="flex items-center justify-center gap-2 w-full py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors whitespace-nowrap"
           >
             <ArrowLeftOnRectangleIcon className="w-4 h-4 text-slate-400" />
-            <span>Kembali ke App User</span>
+            <span>{t.admin?.backToUserApp || "Kembali ke App User"}</span>
           </Link>
         </div>
       </aside>
@@ -208,7 +210,10 @@ export function AdminLayoutClient({
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="text-right hidden sm:block">
+            {/* Global Language Switcher */}
+            <LanguageDropdown variant="light" />
+
+            <div className="text-right hidden md:block">
               <span className="text-xs text-slate-400">Logged in as: </span>
               <span className="text-xs font-mono font-semibold text-slate-700">
                 {adminUser.email}
@@ -220,7 +225,7 @@ export function AdminLayoutClient({
               className="inline-flex items-center gap-1.5 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg transition-colors shadow-xs"
             >
               <ArrowLeftOnRectangleIcon className="w-4 h-4 text-slate-400" />
-              <span>Ke App User</span>
+              <span className="hidden sm:inline">{t.admin?.backToUserApp || "Ke App User"}</span>
             </Link>
           </div>
         </header>

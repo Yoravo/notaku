@@ -8,6 +8,7 @@ import {
   DocumentDuplicateIcon,
   ArrowTopRightOnSquareIcon,
 } from "@heroicons/react/24/outline";
+import { useLanguage } from "@/lib/i18n/context";
 
 type Props = {
   invoiceNumber: string;
@@ -30,6 +31,7 @@ export function WhatsAppShareModal({
   businessName,
   status,
 }: Props) {
+  const { t, locale } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -51,33 +53,48 @@ export function WhatsAppShareModal({
   const templates = [
     {
       id: "new",
-      title: "Tagihan Baru",
-      desc: "Untuk mengirim tagihan pertama kali ke pelanggan",
-      text: `Halo Kak ${customerName},\n\nTerima kasih atas kerja samanya. Berikut rincian invoice ${invoiceNumber} dari ${sender}:\n\n💰 *Total Tagihan:* ${totalFormatted}${dueDate ? `\n📅 *Jatuh Tempo:* ${dueDate}` : ""}\n\nSilakan cek rincian dan pembayaran melalui link resmi berikut:\n👉 ${invoiceUrl}\n\nTerima kasih!`,
+      title: locale === "id" ? "Tagihan Baru" : "New Invoice",
+      desc: locale === "id" ? "Kirim tagihan pertama kali ke pelanggan" : "Send initial invoice to client",
+      text:
+        locale === "id"
+          ? `Halo Kak ${customerName},\n\nTerima kasih atas kerja samanya. Berikut rincian invoice ${invoiceNumber} dari ${sender}:\n\n💰 *Total Tagihan:* ${totalFormatted}${dueDate ? `\n📅 *Jatuh Tempo:* ${dueDate}` : ""}\n\nSilakan cek rincian dan pembayaran melalui link resmi berikut:\n👉 ${invoiceUrl}\n\nTerima kasih!`
+          : `Hello ${customerName},\n\nThank you for working with us. Here are the invoice details for ${invoiceNumber} from ${sender}:\n\n💰 *Total Due:* ${totalFormatted}${dueDate ? `\n📅 *Due Date:* ${dueDate}` : ""}\n\nPlease review and settle payment via this secure link:\n👉 ${invoiceUrl}\n\nThank you!`,
     },
     {
       id: "reminder_h3",
-      title: "Pengingat (H-3)",
-      desc: "Pengingat ramah 3 hari sebelum jatuh tempo",
-      text: `Halo Kak ${customerName},\n\nSemoga hari Anda menyenangkan. Sekadar pengingat ramah bahwa tagihan invoice ${invoiceNumber} dari ${sender} sebesar ${totalFormatted} akan jatuh tempo dalam *3 hari lagi* (${dueDate || "segera"}).\n\nUntuk rincian dan pembayaran dapat diakses melalui link berikut:\n👉 ${invoiceUrl}\n\nTerima kasih banyak!`,
+      title: locale === "id" ? "Pengingat (H-3)" : "Reminder (3 Days)",
+      desc: locale === "id" ? "Pengingat ramah 3 hari sebelum jatuh tempo" : "Friendly reminder 3 days before due date",
+      text:
+        locale === "id"
+          ? `Halo Kak ${customerName},\n\nSemoga hari Anda menyenangkan. Sekadar pengingat ramah bahwa tagihan invoice ${invoiceNumber} dari ${sender} sebesar ${totalFormatted} akan jatuh tempo dalam *3 hari lagi* (${dueDate || "segera"}).\n\nUntuk rincian dan pembayaran dapat diakses melalui link berikut:\n👉 ${invoiceUrl}\n\nTerima kasih banyak!`
+          : `Hello ${customerName},\n\nHope you have a great day. This is a friendly reminder that invoice ${invoiceNumber} from ${sender} for ${totalFormatted} is due in *3 days* (${dueDate || "soon"}).\n\nView details & pay online:\n👉 ${invoiceUrl}\n\nThank you!`,
     },
     {
       id: "reminder_today",
-      title: "Hari H Jatuh Tempo",
-      desc: "Pengingat tepat pada tanggal jatuh tempo",
-      text: `Halo Kak ${customerName},\n\nKami ingin menginformasikan bahwa tagihan invoice ${invoiceNumber} dari ${sender} sebesar ${totalFormatted} jatuh tempo *HARI INI* (${dueDate || "hari ini"}).\n\nMohon bantuannya untuk dapat menyelesaikan pembayaran melalui tautan berikut:\n👉 ${invoiceUrl}\n\nJika sudah melakukan pembayaran, silakan abaikan pesan ini. Terima kasih!`,
+      title: locale === "id" ? "Hari H Jatuh Tempo" : "Due Today",
+      desc: locale === "id" ? "Pengingat tepat pada tanggal jatuh tempo" : "Reminder on due date",
+      text:
+        locale === "id"
+          ? `Halo Kak ${customerName},\n\nKami ingin menginformasikan bahwa tagihan invoice ${invoiceNumber} dari ${sender} sebesar ${totalFormatted} jatuh tempo *HARI INI* (${dueDate || "hari ini"}).\n\nMohon bantuannya untuk dapat menyelesaikan pembayaran melalui tautan berikut:\n👉 ${invoiceUrl}\n\nJika sudah melakukan pembayaran, silakan abaikan pesan ini. Terima kasih!`
+          : `Hello ${customerName},\n\nFriendly reminder that invoice ${invoiceNumber} from ${sender} for ${totalFormatted} is due *TODAY* (${dueDate || "today"}).\n\nPlease complete payment via:\n👉 ${invoiceUrl}\n\nIf already paid, please disregard. Thank you!`,
     },
     {
       id: "reminder_overdue",
-      title: "Lewat Jatuh Tempo (Overdue)",
-      desc: "Pemberitahuan tagihan yang telah melewati jatuh tempo",
-      text: `Halo Kak ${customerName},\n\nKami menginformasikan bahwa tagihan invoice ${invoiceNumber} dari ${sender} sebesar ${totalFormatted} saat ini telah *MELEWATI JATUH TEMPO* (${dueDate || "sudah lewat"}).\n\nMohon kesediaannya untuk segera melakukan konfirmasi dan pembayaran melalui link resmi berikut:\n👉 ${invoiceUrl}\n\nTerima kasih atas perhatian dan kerja samanya.`,
+      title: locale === "id" ? "Lewat Jatuh Tempo" : "Overdue",
+      desc: locale === "id" ? "Pemberitahuan tagihan yang telah melewati tempo" : "Notice for overdue invoices",
+      text:
+        locale === "id"
+          ? `Halo Kak ${customerName},\n\nKami menginformasikan bahwa tagihan invoice ${invoiceNumber} dari ${sender} sebesar ${totalFormatted} saat ini telah *MELEWATI JATUH TEMPO* (${dueDate || "sudah lewat"}).\n\nMohon kesediaannya untuk segera melakukan konfirmasi dan pembayaran melalui link resmi berikut:\n👉 ${invoiceUrl}\n\nTerima kasih atas perhatian dan kerja samanya.`
+          : `Hello ${customerName},\n\nWe would like to notify you that invoice ${invoiceNumber} from ${sender} for ${totalFormatted} is now *OVERDUE* (${dueDate || "past due"}).\n\nPlease settle payment via:\n👉 ${invoiceUrl}\n\nThank you for your cooperation.`,
     },
     {
       id: "paid",
-      title: "Konfirmasi Lunas",
-      desc: "Untuk mengonfirmasi pembayaran yang telah diterima",
-      text: `Halo Kak ${customerName},\n\nPembayaran untuk invoice ${invoiceNumber} sebesar ${totalFormatted} telah kami terima dan berstatus *LUNAS* ✅.\n\nTerima kasih banyak atas kepercayaannya bersama ${sender}.\n\nBukti transaksi digital dapat dilihat di:\n👉 ${invoiceUrl}`,
+      title: locale === "id" ? "Konfirmasi Lunas" : "Paid Confirmation",
+      desc: locale === "id" ? "Konfirmasi pembayaran yang telah diterima" : "Confirm payment received",
+      text:
+        locale === "id"
+          ? `Halo Kak ${customerName},\n\nPembayaran untuk invoice ${invoiceNumber} sebesar ${totalFormatted} telah kami terima dan berstatus *LUNAS* ✅.\n\nTerima kasih banyak atas kepercayaannya bersama ${sender}.\n\nBukti transaksi digital dapat dilihat di:\n👉 ${invoiceUrl}`
+          : `Hello ${customerName},\n\nPayment for invoice ${invoiceNumber} of ${totalFormatted} has been received and confirmed *PAID* ✅.\n\nThank you for your trust in ${sender}.\n\nReceipt:\n👉 ${invoiceUrl}`,
     },
   ];
 
@@ -118,36 +135,36 @@ export function WhatsAppShareModal({
           setCustomMessage(initial.text);
           setIsOpen(true);
         }}
-        className="inline-flex items-center gap-1.5 rounded-md bg-[#25D366] px-3 py-1.5 text-sm font-medium text-white hover:bg-[#20ba5a] transition-colors cursor-pointer shadow-xs"
+        className="inline-flex items-center gap-1.5 rounded-xl bg-[#25D366] px-3.5 py-2 text-xs sm:text-sm font-bold text-white hover:bg-[#20ba5a] active:scale-[0.98] transition-all cursor-pointer shadow-xs"
       >
         <ChatBubbleLeftRightIcon className="w-4 h-4" />
-        <span>Share WhatsApp</span>
+        <span>{t.invoices?.shareWhatsApp || "Share WhatsApp"}</span>
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs animate-in fade-in">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-5 sm:p-6 shadow-2xl space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 sm:p-6 backdrop-blur-xs animate-in fade-in">
+          <div className="w-full max-w-lg rounded-2xl bg-white p-5 sm:p-6 shadow-2xl border border-slate-200 space-y-4">
             {/* Header Modal */}
-            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center text-green-600">
+                <div className="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center text-[#0f6b4f] border border-emerald-200/60">
                   <ChatBubbleLeftRightIcon className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-gray-900">
-                    Kirim via WhatsApp
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900">
+                    {locale === "id" ? "Kirim Tagihan via WhatsApp" : "Share via WhatsApp"}
                   </h3>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-[11px] text-slate-500 font-medium">
                     {customerPhone
-                      ? `Tujuan: ${customerName} (${customerPhone})`
-                      : `Tujuan: ${customerName}`}
+                      ? `${locale === "id" ? "Tujuan" : "To"}: ${customerName} (${customerPhone})`
+                      : `${locale === "id" ? "Tujuan" : "To"}: ${customerName}`}
                   </p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 cursor-pointer"
+                className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 cursor-pointer transition-colors"
               >
                 <XMarkIcon className="w-5 h-5" />
               </button>
@@ -155,8 +172,8 @@ export function WhatsAppShareModal({
 
             {/* Template Selector */}
             <div>
-              <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                Pilih Skenario Pesan
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                {locale === "id" ? "Pilih Skenario Pesan" : "Select Message Scenario"}
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {templates.map((tmpl) => {
@@ -168,12 +185,12 @@ export function WhatsAppShareModal({
                       onClick={() => handleSelectTemplate(tmpl.id)}
                       className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                         isSelected
-                          ? "border-green-600 bg-green-50/70 text-green-900 ring-1 ring-green-600 shadow-xs"
-                          : "border-gray-200 bg-gray-50 hover:bg-gray-100 text-gray-700"
+                          ? "border-[#0f6b4f] bg-emerald-50/70 text-[#0f6b4f] ring-1 ring-[#0f6b4f] shadow-2xs"
+                          : "border-slate-200 bg-slate-50/60 hover:bg-slate-100 text-slate-700"
                       }`}
                     >
                       <p className="text-xs font-bold">{tmpl.title}</p>
-                      <p className="text-[10px] text-gray-500 line-clamp-1 mt-0.5">
+                      <p className="text-[10px] text-slate-500 line-clamp-1 mt-0.5">
                         {tmpl.desc}
                       </p>
                     </button>
@@ -185,23 +202,23 @@ export function WhatsAppShareModal({
             {/* Custom Message Area */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-xs font-semibold text-gray-700">
-                  Pratinjau / Edit Pesan
+                <label className="block text-xs font-bold text-slate-700">
+                  {locale === "id" ? "Pratinjau / Edit Pesan" : "Message Preview / Edit"}
                 </label>
                 <button
                   type="button"
                   onClick={handleCopy}
-                  className="text-xs text-gray-600 hover:text-gray-900 font-medium inline-flex items-center gap-1 cursor-pointer"
+                  className="text-xs text-slate-600 hover:text-slate-900 font-semibold inline-flex items-center gap-1 cursor-pointer min-h-[32px] px-1"
                 >
                   {copied ? (
                     <>
-                      <CheckIcon className="w-3.5 h-3.5 text-green-600" />
-                      <span className="text-green-600">Tersalin!</span>
+                      <CheckIcon className="w-3.5 h-3.5 text-[#0f6b4f]" />
+                      <span className="text-[#0f6b4f]">{locale === "id" ? "Tersalin!" : "Copied!"}</span>
                     </>
                   ) : (
                     <>
-                      <DocumentDuplicateIcon className="w-3.5 h-3.5 text-gray-400" />
-                      <span>Salin Teks</span>
+                      <DocumentDuplicateIcon className="w-3.5 h-3.5 text-slate-400" />
+                      <span>{locale === "id" ? "Salin Teks" : "Copy Text"}</span>
                     </>
                   )}
                 </button>
@@ -209,28 +226,28 @@ export function WhatsAppShareModal({
               <textarea
                 value={customMessage}
                 onChange={(e) => setCustomMessage(e.target.value)}
-                rows={7}
-                className="w-full rounded-xl border border-gray-300 p-3 text-xs sm:text-sm text-gray-900 focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600 font-sans leading-relaxed"
+                rows={6}
+                className="w-full rounded-xl border border-slate-200 p-3 text-xs sm:text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] font-sans leading-relaxed shadow-2xs"
               />
             </div>
 
             {/* Footer Modal */}
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+            <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shadow-2xs"
               >
-                Tutup
+                {locale === "id" ? "Tutup" : "Close"}
               </button>
               <a
                 href={waLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setIsOpen(false)}
-                className="inline-flex items-center gap-1.5 px-5 py-2 text-xs font-semibold text-white bg-[#25D366] hover:bg-[#20ba5a] rounded-lg transition-colors cursor-pointer shadow-xs"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-[#25D366] px-5 py-2.5 text-xs sm:text-sm font-bold text-white hover:bg-[#20ba5a] active:scale-[0.98] transition-all cursor-pointer shadow-xs"
               >
-                <span>Buka di WhatsApp</span>
+                <span>{locale === "id" ? "Buka WhatsApp" : "Open WhatsApp"}</span>
                 <ArrowTopRightOnSquareIcon className="w-4 h-4" />
               </a>
             </div>

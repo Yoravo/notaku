@@ -12,6 +12,7 @@ import {
   DocumentDuplicateIcon,
 } from "@heroicons/react/24/outline";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { useLanguage } from "@/lib/i18n/context";
 
 export function InvoiceActions({
   invoiceId,
@@ -22,6 +23,7 @@ export function InvoiceActions({
   status: string;
   invoiceNumber?: string;
 }) {
+  const { t, locale } = useLanguage();
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -65,7 +67,12 @@ export function InvoiceActions({
       ) {
         throw err;
       }
-      const message = err instanceof Error ? err.message : "Terjadi kesalahan";
+      const message =
+        err instanceof Error
+          ? err.message
+          : locale === "id"
+          ? "Terjadi kesalahan"
+          : "An error occurred";
       setError(message);
     } finally {
       setLoading(null);
@@ -100,10 +107,14 @@ export function InvoiceActions({
           <button
             onClick={handleMarkSent}
             disabled={busy}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3.5 py-2 text-xs sm:text-sm font-semibold text-white cursor-pointer hover:bg-blue-700 transition-colors disabled:opacity-50 shadow-xs"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-3.5 py-2 text-xs sm:text-sm font-semibold text-white cursor-pointer hover:bg-blue-700 active:scale-[0.98] transition-all disabled:opacity-50 shadow-xs"
           >
             <PaperAirplaneIcon className="w-4 h-4" />
-            <span>{isLoading("sent") ? "Menandai..." : "Tandai Terkirim"}</span>
+            <span>
+              {isLoading("sent")
+                ? locale === "id" ? "Menandai..." : "Updating..."
+                : t.invoices?.markSent || (locale === "id" ? "Tandai Terkirim" : "Mark as Sent")}
+            </span>
           </button>
         )}
 
@@ -111,10 +122,14 @@ export function InvoiceActions({
           <button
             onClick={handleMarkPaid}
             disabled={busy}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-2 text-xs sm:text-sm font-semibold text-white cursor-pointer hover:bg-emerald-700 transition-colors disabled:opacity-50 shadow-xs"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#0f6b4f] px-3.5 py-2 text-xs sm:text-sm font-bold text-white cursor-pointer hover:bg-[#0c553e] active:scale-[0.98] transition-all disabled:opacity-50 shadow-xs"
           >
             <CheckIcon className="w-4 h-4 stroke-[2.5]" />
-            <span>{isLoading("paid") ? "Menyimpan..." : "Tandai Lunas"}</span>
+            <span>
+              {isLoading("paid")
+                ? locale === "id" ? "Menyimpan..." : "Saving..."
+                : t.invoices?.markPaid || (locale === "id" ? "Tandai Lunas" : "Mark as Paid")}
+            </span>
           </button>
         )}
 
@@ -123,29 +138,29 @@ export function InvoiceActions({
           type="button"
           onClick={() => setDropdownOpen(!dropdownOpen)}
           disabled={busy}
-          aria-label="Menu Opsi Tambahan"
-          className="p-2 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer shadow-xs disabled:opacity-50"
+          aria-label={locale === "id" ? "Menu Opsi Tambahan" : "More Actions"}
+          className="p-2 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shadow-2xs disabled:opacity-50"
         >
           <EllipsisVerticalIcon className="w-4 h-4" />
         </button>
 
         {dropdownOpen && (
-          <div className="absolute right-0 top-full mt-1.5 w-48 rounded-xl bg-white p-1.5 shadow-xl border border-gray-200 z-30 animate-in fade-in zoom-in-95 duration-100">
+          <div className="absolute right-0 top-full mt-1.5 w-52 rounded-2xl bg-white p-1.5 shadow-xl border border-slate-200 z-30 animate-in fade-in zoom-in-95 duration-100">
             <button
               onClick={handleClone}
-              className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-blue-700 hover:bg-blue-50 transition-colors cursor-pointer"
+              className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
             >
-              <DocumentDuplicateIcon className="w-4 h-4 text-blue-600" />
-              <span>Duplikasi Invoice (1-Click)</span>
+              <DocumentDuplicateIcon className="w-4 h-4 text-slate-500" />
+              <span>{t.invoices?.duplicateInvoice || (locale === "id" ? "Duplikasi (1-Click)" : "Duplicate (1-Click)")}</span>
             </button>
 
             {status === "DRAFT" && (
               <button
                 onClick={handleMarkPaid}
-                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-emerald-700 hover:bg-emerald-50 transition-colors cursor-pointer"
+                className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-[#0f6b4f] hover:bg-emerald-50 transition-colors cursor-pointer"
               >
                 <CheckIcon className="w-4 h-4" />
-                <span>Langsung Tandai Lunas</span>
+                <span>{t.invoices?.markPaid || (locale === "id" ? "Langsung Tandai Lunas" : "Mark as Paid")}</span>
               </button>
             )}
 
@@ -155,24 +170,24 @@ export function InvoiceActions({
                   setDropdownOpen(false);
                   setConfirmModal({ isOpen: true, type: "cancel" });
                 }}
-                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer"
+                className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-amber-700 hover:bg-amber-50 transition-colors cursor-pointer"
               >
-                <XCircleIcon className="w-4 h-4 text-gray-500" />
-                <span>Batalkan Invoice</span>
+                <XCircleIcon className="w-4 h-4 text-amber-500" />
+                <span>{t.invoices?.cancelInvoice || (locale === "id" ? "Batalkan Invoice" : "Cancel Invoice")}</span>
               </button>
             )}
 
-            <div className="my-1 border-t border-gray-100" />
+            <div className="my-1 border-t border-slate-100" />
 
             <button
               onClick={() => {
                 setDropdownOpen(false);
                 setConfirmModal({ isOpen: true, type: "delete" });
               }}
-              className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+              className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
             >
               <TrashIcon className="w-4 h-4" />
-              <span>Hapus Invoice</span>
+              <span>{t.invoices?.deleteInvoice || (locale === "id" ? "Hapus Invoice" : "Delete Invoice")}</span>
             </button>
           </div>
         )}
@@ -180,7 +195,7 @@ export function InvoiceActions({
         {error && (
           <div
             role="alert"
-            className="absolute right-0 top-full mt-2 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700 font-medium shadow-md whitespace-nowrap z-40"
+            className="absolute right-0 top-full mt-2 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700 font-medium shadow-md whitespace-nowrap z-40 animate-in fade-in"
           >
             {error}
           </div>
@@ -192,20 +207,16 @@ export function InvoiceActions({
         isOpen={confirmModal.isOpen && confirmModal.type === "cancel"}
         onClose={() => setConfirmModal({ isOpen: false, type: null })}
         onConfirm={handleExecuteCancel}
-        title="Batalkan Invoice Ini?"
-        description="Status invoice akan diubah menjadi CANCELLED. Pelanggan tidak akan dapat melakukan pembayaran digital untuk invoice ini."
-        confirmLabel="Ya, Batalkan Invoice"
-        cancelLabel="Kembali"
+        title={locale === "id" ? "Batalkan Invoice Ini?" : "Cancel this Invoice?"}
+        description={
+          locale === "id"
+            ? "Status invoice akan diubah menjadi CANCELLED. Pelanggan tidak akan dapat melakukan pembayaran digital untuk invoice ini."
+            : "Invoice status will change to CANCELLED. Digital payments will be disabled for this invoice."
+        }
+        confirmLabel={locale === "id" ? "Ya, Batalkan Invoice" : "Yes, Cancel Invoice"}
+        cancelLabel={locale === "id" ? "Kembali" : "Go Back"}
         variant="warning"
         isLoading={isLoading("cancel")}
-        itemDetails={
-          invoiceNumber
-            ? [
-                { label: "Nomor Invoice", value: invoiceNumber },
-                { label: "Status Saat Ini", value: status },
-              ]
-            : undefined
-        }
       />
 
       {/* Delete Invoice Confirm Modal */}
@@ -213,20 +224,17 @@ export function InvoiceActions({
         isOpen={confirmModal.isOpen && confirmModal.type === "delete"}
         onClose={() => setConfirmModal({ isOpen: false, type: null })}
         onConfirm={handleExecuteDelete}
-        title="Hapus Invoice Permanen?"
-        description="Invoice beserta seluruh rincian itemnya akan dihapus permanen dari sistem. Tindakan ini tidak dapat dibatalkan."
-        confirmLabel="Ya, Hapus Permanen"
-        cancelLabel="Batal"
+        title={t.invoices?.deleteConfirmTitle || (locale === "id" ? "Hapus Invoice Ini?" : "Delete This Invoice?")}
+        description={
+          t.invoices?.deleteConfirmDesc ||
+          (locale === "id"
+            ? "Invoice yang dihapus tidak dapat dipulihkan kembali. Seluruh data item dan tautan publik invoice ini akan dinonaktifkan."
+            : "Deleted invoices cannot be recovered. All line items and public links will be permanently disabled.")
+        }
+        confirmLabel={locale === "id" ? "Ya, Hapus Invoice" : "Yes, Delete Invoice"}
+        cancelLabel={locale === "id" ? "Batal" : "Cancel"}
         variant="danger"
         isLoading={isLoading("delete")}
-        itemDetails={
-          invoiceNumber
-            ? [
-                { label: "Nomor Invoice", value: invoiceNumber },
-                { label: "Peringatan", value: "Data tidak bisa dipulihkan" },
-              ]
-            : undefined
-        }
       />
     </>
   );

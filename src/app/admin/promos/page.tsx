@@ -12,16 +12,16 @@ export default async function AdminPromosPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center gap-3">
-        <div className="p-2 rounded-xl bg-slate-900 text-white">
+      <div className="flex items-center gap-2.5">
+        <div className="p-2.5 rounded-2xl bg-slate-900 text-white shadow-2xs">
           <TagIcon className="w-6 h-6 text-emerald-400" />
         </div>
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 font-display">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
             Manajemen Kode Voucher & Promo
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500">
-            Buat dan kelola kupon diskon untuk langganan paket Pro pengguna NotaKu.
+          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+            Buat dan kelola kupon diskon untuk langganan paket Pro pengguna NotaKu via Mayar Checkout.
           </p>
         </div>
       </div>

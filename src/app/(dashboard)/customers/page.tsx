@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { CustomerList } from "@/components/customers/customer-list";
+import { CustomersClient } from "./customers-client";
 
 export default async function CustomerPage(props: {
   searchParams?: Promise<{ error?: string }>;
@@ -18,21 +18,9 @@ export default async function CustomerPage(props: {
   });
 
   return (
-    <div>
-      { searchParams?.error && (
-        <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-md">
-          {searchParams.error}
-        </div>
-      )}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-gray-900">Pelanggan</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            {customers.length} pelanggan terdaftar
-          </p>
-        </div>
-      </div>
-      <CustomerList customers={customers} />
-    </div>
+    <CustomersClient
+      customers={customers}
+      errorMessage={searchParams?.error}
+    />
   );
 }

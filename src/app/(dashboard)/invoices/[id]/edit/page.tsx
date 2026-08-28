@@ -2,7 +2,14 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { InvoiceForm } from "@/components/invoices/invoice-form";
+import { EditInvoiceClient } from "./edit-invoice-client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Edit Invoice — NotaKu",
+};
+
+export const dynamic = "force-dynamic";
 
 export default async function EditInvoicePage({
   params,
@@ -24,6 +31,7 @@ export default async function EditInvoicePage({
     prisma.customer.findMany({
       where: { userId: session.user.id },
       orderBy: { name: "asc" },
+      select: { id: true, name: true },
     }),
     prisma.user.findUnique({
       where: { id: session.user.id },
@@ -36,32 +44,27 @@ export default async function EditInvoicePage({
   ]);
 
   return (
-    <div>
-      <h1 className="text-xl font-semibold text-gray-900">Edit Invoice</h1>
-      <div className="mt-6">
-        <InvoiceForm
-          customers={customers}
-          userBankName={user?.bankName}
-          userBankAccountNumber={user?.bankAccountNumber}
-          userBankAccountName={user?.bankAccountName}
-          invoice={{
-            id: invoice.id,
-            customerId: invoice.customerId,
-            dueDate: invoice.dueDate ? invoice.dueDate.toISOString() : null,
-            notes: invoice.notes,
-            discountType: invoice.discountType,
-            discountValue: Number(invoice.discountValue || 0),
-            taxRate: Number(invoice.taxRate || 0),
-            enableDirectTransfer: invoice.enableDirectTransfer,
-            enableDigitalPayment: invoice.enableDigitalPayment,
-            items: invoice.items.map((i) => ({
-              description: i.description,
-              quantity: Number(i.quantity),
-              price: Number(i.price),
-            })),
-          }}
-        />
-      </div>
-    </div>
+    <EditInvoiceClient
+      customers={customers}
+      userBankName={user?.bankName}
+      userBankAccountNumber={user?.bankAccountNumber}
+      userBankAccountName={user?.bankAccountName}
+      invoice={{
+        id: invoice.id,
+        customerId: invoice.customerId,
+        dueDate: invoice.dueDate ? invoice.dueDate.toISOString() : null,
+        notes: invoice.notes,
+        discountType: invoice.discountType,
+        discountValue: Number(invoice.discountValue || 0),
+        taxRate: Number(invoice.taxRate || 0),
+        enableDirectTransfer: invoice.enableDirectTransfer,
+        enableDigitalPayment: invoice.enableDigitalPayment,
+        items: invoice.items.map((i) => ({
+          description: i.description,
+          quantity: Number(i.quantity),
+          price: Number(i.price),
+        })),
+      }}
+    />
   );
 }

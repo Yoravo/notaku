@@ -24,16 +24,13 @@ export function LandingNavbar({ session }: NavbarProps) {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-line/60 bg-paper/85 backdrop-blur-md transition-all">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
-        {/* Brand Logo */}
+        {/* Brand Logo - NotaKu two-tone standard without trailing bubble ID */}
         <Link
           href="/"
-          className="flex items-center gap-1.5 font-display text-2xl font-bold tracking-tight text-ink transition-transform hover:scale-[1.02]"
+          className="flex items-center text-2xl font-bold tracking-tight text-ink transition-transform hover:scale-[1.02]"
         >
           <span>Nota</span>
           <span className="text-emerald">Ku</span>
-          <span className="ml-1 rounded-md bg-emerald/10 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald">
-            ID
-          </span>
         </Link>
 
         {/* Desktop Navigation */}

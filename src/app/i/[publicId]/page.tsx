@@ -73,45 +73,52 @@ export default async function PublicInvoicePage({
   if (!invoice) notFound();
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="mx-auto max-w-2xl rounded-lg border border-gray-200 bg-white p-8">
+    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6">
+      <div className="mx-auto max-w-2xl rounded-2xl border border-slate-200 bg-white p-6 sm:p-10 shadow-sm">
         {/* Header */}
-        <div className="flex justify-between items-start">
+        <div className="flex justify-between items-start gap-4">
           <div>
-            <h1 className="text-lg font-semibold text-gray-900">INVOICE</h1>
-            <p className="text-sm text-gray-600">{invoice.number}</p>
-            <span
-              className={`mt-2 inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                invoice.status === "PAID"
-                  ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60"
-                  : invoice.status === "SENT"
-                    ? "bg-blue-50 text-blue-700 border border-blue-200/60"
-                    : invoice.status === "OVERDUE"
-                      ? "bg-rose-50 text-rose-700 border border-rose-200/60"
-                      : "bg-gray-100 text-gray-700 border border-gray-200"
-              }`}
-            >
-              <span
-                className={`h-1.5 w-1.5 rounded-full ${
-                  invoice.status === "PAID"
-                    ? "bg-emerald-500"
-                    : invoice.status === "SENT"
-                      ? "bg-blue-500"
-                      : invoice.status === "OVERDUE"
-                        ? "bg-rose-500"
-                        : "bg-gray-400"
-                }`}
-              />
-              {invoice.status === "PAID"
-                ? "Lunas"
-                : invoice.status === "SENT"
-                  ? "Menunggu Pembayaran"
-                  : invoice.status === "OVERDUE"
-                    ? "Jatuh Tempo"
-                    : invoice.status}
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+              Tagihan Resmi
             </span>
+            <h1 className="text-xl sm:text-2xl font-mono font-bold text-slate-900 mt-0.5">
+              {invoice.number}
+            </h1>
+            <div className="mt-2.5">
+              <span
+                className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                  invoice.status === "PAID"
+                    ? "bg-emerald-50 text-[#0f6b4f] border border-emerald-200/60"
+                    : invoice.status === "SENT"
+                      ? "bg-blue-50 text-blue-700 border border-blue-200/60"
+                      : invoice.status === "OVERDUE"
+                        ? "bg-rose-50 text-rose-700 border border-rose-200/60"
+                        : "bg-slate-100 text-slate-700 border border-slate-200"
+                }`}
+              >
+                <span
+                  className={`h-1.5 w-1.5 rounded-full ${
+                    invoice.status === "PAID"
+                      ? "bg-emerald-500"
+                      : invoice.status === "SENT"
+                        ? "bg-blue-500"
+                        : invoice.status === "OVERDUE"
+                          ? "bg-rose-500"
+                          : "bg-slate-400"
+                  }`}
+                />
+                {invoice.status === "PAID"
+                  ? "Lunas (PAID)"
+                  : invoice.status === "SENT"
+                    ? "Menunggu Pembayaran"
+                    : invoice.status === "OVERDUE"
+                      ? "Jatuh Tempo"
+                      : invoice.status}
+              </span>
+            </div>
           </div>
-          <div className="text-right flex flex-col items-end">
+
+          <div className="text-right flex flex-col items-end shrink-0">
             {invoice.user.logoUrl && (
               <img
                 src={invoice.user.logoUrl}
@@ -119,40 +126,43 @@ export default async function PublicInvoicePage({
                 className="h-10 max-w-[120px] object-contain mb-1.5"
               />
             )}
-            <p className="font-medium text-gray-900">
+            <p className="font-bold text-slate-900 text-sm sm:text-base">
               {invoice.user.businessName || invoice.user.name}
             </p>
           </div>
         </div>
 
         {/* Customer & dates */}
-        <div className="mt-8 grid grid-cols-2 gap-4">
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 rounded-xl bg-slate-50/70 p-4 border border-slate-200/60">
           <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-              Ditagihkan kepada
+            <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              Ditagihkan kepada:
             </p>
-            <p className="mt-1 font-medium text-gray-900">
+            <p className="mt-1 font-bold text-slate-900 text-sm">
               {invoice.customer.name}
             </p>
             {invoice.customer.email && (
-              <p className="text-sm text-gray-600">
+              <p className="text-xs text-slate-600 font-mono mt-0.5">
                 {invoice.customer.email.replace(/^(.)(.*)(@.*)$/, "$1****$3")}
               </p>
             )}
             {invoice.customer.phone && (
-              <p className="text-sm text-gray-600">{invoice.customer.phone}</p>
+              <p className="text-xs text-slate-600 font-mono mt-0.5">
+                {invoice.customer.phone}
+              </p>
             )}
             {invoice.customer.address && (
-              <p className="text-sm text-gray-600">
+              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
                 {invoice.customer.address}
               </p>
             )}
           </div>
-          <div className="text-right">
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-              Tanggal
+
+          <div className="sm:text-right">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              Tanggal Terbit
             </p>
-            <p className="mt-1 text-sm text-gray-900">
+            <p className="mt-1 text-xs font-semibold text-slate-800">
               {formatDateWIB(invoice.createdAt, {
                 day: "numeric",
                 month: "long",
@@ -161,10 +171,10 @@ export default async function PublicInvoicePage({
             </p>
             {invoice.dueDate && (
               <>
-                <p className="mt-2 text-xs font-medium uppercase tracking-wide text-gray-500">
-                  Jatuh Tempo
+                <p className="mt-2.5 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  Batas Pembayaran (Jatuh Tempo)
                 </p>
-                <p className="mt-1 text-sm text-gray-900">
+                <p className="mt-0.5 text-xs font-bold text-rose-700">
                   {formatDateWIB(invoice.dueDate, {
                     day: "numeric",
                     month: "long",
@@ -178,34 +188,26 @@ export default async function PublicInvoicePage({
 
         {/* Items */}
         <div className="mt-8">
-          <table className="w-full text-sm">
+          <table className="w-full text-xs sm:text-sm">
             <thead>
-              <tr className="border-b border-gray-200">
-                <th className="pb-2 text-left font-medium text-gray-700">
-                  Deskripsi
-                </th>
-                <th className="pb-2 text-right font-medium text-gray-700">
-                  Qty
-                </th>
-                <th className="pb-2 text-right font-medium text-gray-700">
-                  Harga
-                </th>
-                <th className="pb-2 text-right font-medium text-gray-700">
-                  Jumlah
-                </th>
+              <tr className="border-b border-slate-200 text-slate-500 uppercase text-[11px] font-bold tracking-wider">
+                <th className="pb-3 text-left">Deskripsi</th>
+                <th className="pb-3 text-center">Qty</th>
+                <th className="pb-3 text-right">Harga</th>
+                <th className="pb-3 text-right">Jumlah</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-slate-100">
               {invoice.items.map((item, index) => (
                 <tr key={index}>
-                  <td className="py-3 text-gray-900">{item.description}</td>
-                  <td className="py-3 text-right text-gray-600">
+                  <td className="py-3 text-slate-900 font-medium">{item.description}</td>
+                  <td className="py-3 text-center text-slate-600 font-mono">
                     {item.quantity}
                   </td>
-                  <td className="py-3 text-right text-gray-600">
+                  <td className="py-3 text-right text-slate-600 tabular-nums">
                     Rp{Number(item.price).toLocaleString("id-ID")}
                   </td>
-                  <td className="py-3 text-right font-medium text-gray-900">
+                  <td className="py-3 text-right font-bold text-slate-900 tabular-nums">
                     Rp{Number(item.amount).toLocaleString("id-ID")}
                   </td>
                 </tr>
@@ -215,17 +217,17 @@ export default async function PublicInvoicePage({
         </div>
 
         {/* Summary Breakdown */}
-        <div className="mt-4 flex justify-end border-t border-gray-200 pt-4">
+        <div className="mt-4 flex justify-end border-t border-slate-200 pt-4">
           <div className="w-full max-w-xs space-y-2 text-right">
-            <div className="flex justify-between text-sm text-gray-600">
-              <span>Subtotal</span>
-              <span className="font-semibold text-gray-900 tabular-nums">
+            <div className="flex justify-between text-xs sm:text-sm text-slate-600">
+              <span className="font-medium">Subtotal</span>
+              <span className="font-bold text-slate-900 tabular-nums">
                 Rp{Number(invoice.subtotal || invoice.total).toLocaleString("id-ID")}
               </span>
             </div>
 
             {Number(invoice.discountAmount) > 0 && (
-              <div className="flex justify-between text-sm text-emerald-700 font-medium">
+              <div className="flex justify-between text-xs sm:text-sm text-[#0f6b4f] font-semibold">
                 <span>
                   Diskon {invoice.discountType === "PERCENTAGE" ? `(${Number(invoice.discountValue)}%)` : ""}
                 </span>
@@ -236,17 +238,19 @@ export default async function PublicInvoicePage({
             )}
 
             {Number(invoice.taxAmount) > 0 && (
-              <div className="flex justify-between text-sm text-gray-600">
-                <span>Pajak (PPN {Number(invoice.taxRate)}%)</span>
-                <span className="font-semibold text-gray-900 tabular-nums">
+              <div className="flex justify-between text-xs sm:text-sm text-slate-600">
+                <span className="font-medium">Pajak (PPN {Number(invoice.taxRate)}%)</span>
+                <span className="font-bold text-slate-900 tabular-nums">
                   +Rp{Number(invoice.taxAmount).toLocaleString("id-ID")}
                 </span>
               </div>
             )}
 
-            <div className="border-t border-gray-200 pt-2 flex justify-between items-baseline">
-              <span className="text-base font-bold text-gray-900">Total Tagihan</span>
-              <span className="text-2xl font-bold text-gray-900 tabular-nums">
+            <div className="border-t border-slate-200 pt-2 flex justify-between items-baseline">
+              <span className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                Total Tagihan
+              </span>
+              <span className="text-xl sm:text-2xl font-bold text-slate-900 tabular-nums">
                 Rp{Number(invoice.total).toLocaleString("id-ID")}
               </span>
             </div>
@@ -272,18 +276,20 @@ export default async function PublicInvoicePage({
 
         {/* Notes */}
         {invoice.notes && (
-          <div className="mt-6 border-t border-gray-200 pt-4">
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+          <div className="mt-6 border-t border-slate-200 pt-4">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
               Catatan
             </p>
-            <p className="mt-1 text-sm text-gray-600">{invoice.notes}</p>
+            <p className="mt-1 text-xs text-slate-600 italic leading-relaxed">
+              &quot;{invoice.notes}&quot;
+            </p>
           </div>
         )}
 
         {/* Watermark for free tier */}
         {invoice.user.plan === "FREE" && (
-          <p className="mt-8 text-center text-xs text-gray-400">
-            Dibuat dengan NotaKu
+          <p className="mt-8 text-center text-xs text-slate-400">
+            Diterbitkan secara digital dengan <span className="font-bold text-slate-600">NotaKu</span>
           </p>
         )}
       </div>

@@ -34,16 +34,7 @@ export default async function BillingPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
-      <div>
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900">
-          Paket Langganan & Kuota
-        </h1>
-        <p className="text-xs sm:text-sm text-gray-500 mt-1">
-          Pantau sisa kuota invoice bulanan, jumlah pelanggan terdaftar, dan upgrade ke NotaKu PRO.
-        </p>
-      </div>
-
+    <div className="max-w-4xl mx-auto">
       <BillingClient
         user={{
           id: user.id,

@@ -10,6 +10,7 @@ import {
   calculateInvoiceTotals,
   DiscountType,
 } from "@/lib/invoice-calculations";
+import { useLanguage } from "@/lib/i18n/context";
 
 type Customer = { id: string; name: string };
 type InvoiceItem = { description: string; quantity: number; price: number };
@@ -25,13 +26,6 @@ type Invoice = {
   enableDigitalPayment?: boolean;
   items: { description: string; quantity: number; price: number }[];
 };
-
-const TAX_PRESETS = [
-  { label: "Tanpa Pajak (0%)", value: 0 },
-  { label: "PPN 11%", value: 11 },
-  { label: "PPN 12%", value: 12 },
-  { label: "Kustom", value: "custom" },
-] as const;
 
 const DISCOUNT_PERCENT_PRESETS = [5, 10, 15, 20, 50];
 
@@ -50,6 +44,7 @@ export function InvoiceForm({
   userBankAccountNumber?: string | null;
   userBankAccountName?: string | null;
 }) {
+  const { t, locale } = useLanguage();
   const isEdit = !!invoice;
 
   const [customerId, setCustomerId] = useState(
@@ -131,9 +126,19 @@ export function InvoiceForm({
   const handleSubmit = async () => {
     setError(null);
 
-    if (!customerId) return setError("Pilih pelanggan terlebih dahulu");
+    if (!customerId) {
+      return setError(
+        locale === "id"
+          ? "Pilih pelanggan terlebih dahulu"
+          : "Please select a client first"
+      );
+    }
     if (items.some((i) => !i.description || i.price <= 0)) {
-      return setError("Lengkapi semua deskripsi dan harga item (minimal 1)");
+      return setError(
+        locale === "id"
+          ? "Lengkapi semua deskripsi dan harga item (minimal 1)"
+          : "Complete all item descriptions and unit prices (min. 1)"
+      );
     }
 
     setLoading(true);
@@ -162,31 +167,46 @@ export function InvoiceForm({
       ) {
         throw err;
       }
-      const message = err instanceof Error ? err.message : "Terjadi kesalahan";
+      const message =
+        err instanceof Error
+          ? err.message
+          : locale === "id"
+          ? "Terjadi kesalahan saat menyimpan invoice"
+          : "An error occurred while saving the invoice";
       setError(message);
       setLoading(false);
     }
   };
 
+  const taxPresets = [
+    { label: t.invoices?.taxPresetNone || (locale === "id" ? "Tanpa Pajak (0%)" : "No Tax (0%)"), value: 0 },
+    { label: "PPN 11%", value: 11 },
+    { label: "PPN 12%", value: 12 },
+    { label: t.invoices?.taxPresetCustom || (locale === "id" ? "Kustom %" : "Custom %"), value: "custom" },
+  ] as const;
+
   return (
-    <div className="max-w-3xl space-y-6 pb-24 md:pb-6">
+    <div className="max-w-4xl space-y-6 pb-24 md:pb-6">
       {/* Customer & Due Date Card */}
-      <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-xs">
-        <h2 className="text-sm font-semibold text-gray-900 mb-4">
-          Informasi Tagihan
+      <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs">
+        <h2 className="text-sm font-bold text-slate-900 mb-4">
+          {locale === "id" ? "Informasi Pelanggan & Batas Pembayaran" : "Client & Payment Schedule"}
         </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">
-              Pelanggan *
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+              {t.invoices?.customer || (locale === "id" ? "Pelanggan" : "Client")}{" "}
+              <span className="text-rose-500">*</span>
             </label>
             <div className="flex gap-2">
               <select
                 value={customerId}
                 onChange={(e) => setCustomerId(e.target.value)}
-                className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-xs"
+                className="flex-1 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-medium"
               >
-                <option value="">Pilih pelanggan</option>
+                <option value="">
+                  {t.invoices?.selectCustomer || (locale === "id" ? "Pilih pelanggan..." : "Select client...")}
+                </option>
                 {customers.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
@@ -196,15 +216,17 @@ export function InvoiceForm({
               <button
                 type="button"
                 onClick={() => setShowCustomerModal(true)}
-                className="inline-flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer whitespace-nowrap shadow-xs"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer whitespace-nowrap shadow-2xs"
               >
                 <PlusIcon className="h-4 w-4 text-[#0f6b4f]" />
-                <span>Baru</span>
+                <span>{locale === "id" ? "Baru" : "New"}</span>
               </button>
             </div>
             {customers.length === 0 && (
-              <p className="mt-1.5 text-xs text-amber-600">
-                Belum ada pelanggan. Klik <strong>+ Baru</strong> untuk menambahkan dalam sekejap.
+              <p className="mt-2 text-xs text-amber-700 font-medium">
+                {locale === "id"
+                  ? "Belum ada pelanggan. Klik + Baru untuk menambahkan."
+                  : "No clients found. Click + New to add one."}
               </p>
             )}
             {showCustomerModal && (
@@ -219,62 +241,65 @@ export function InvoiceForm({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">
-              Jatuh Tempo (Opsional)
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+              {t.invoices?.dueDate || (locale === "id" ? "Jatuh Tempo" : "Due Date")}{" "}
+              <span className="text-slate-400 font-normal">({t.invoices?.optional || (locale === "id" ? "Opsional" : "Optional")})</span>
             </label>
             <input
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-xs"
+              className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-medium"
             />
           </div>
         </div>
       </div>
 
       {/* Line Items Card */}
-      <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-xs">
+      <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-semibold text-gray-900">Daftar Item / Jasa</h2>
-          <span className="text-xs text-gray-500 font-medium">
-            {items.length} item
+          <h2 className="text-sm font-bold text-slate-900">
+            {t.invoices?.itemsTitle || (locale === "id" ? "Daftar Item / Jasa" : "Line Items & Services")}
+          </h2>
+          <span className="text-xs text-slate-500 font-semibold">
+            {items.length} {locale === "id" ? "item" : "items"}
           </span>
         </div>
 
         {/* Mobile Items Layout */}
-        <div className="space-y-4 md:hidden">
+        <div className="space-y-3.5 md:hidden">
           {items.map((item, index) => (
             <div
               key={index}
-              className="rounded-lg border border-gray-200 p-3.5 bg-gray-50/50 space-y-3 relative"
+              className="rounded-xl border border-slate-200 p-4 bg-slate-50/60 space-y-3 relative"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-gray-500">
-                  Item #{index + 1}
+                <span className="text-xs font-bold text-slate-500">
+                  {locale === "id" ? `Item #${index + 1}` : `Line #${index + 1}`}
                 </span>
                 {items.length > 1 && (
                   <button
                     type="button"
                     onClick={() => removeItem(index)}
-                    className="text-xs text-rose-600 hover:text-rose-700 font-medium cursor-pointer inline-flex items-center gap-1"
+                    className="text-xs text-rose-600 hover:text-rose-700 font-semibold cursor-pointer inline-flex items-center gap-1 min-h-[36px] px-2"
                   >
                     <TrashIcon className="w-3.5 h-3.5" />
-                    <span>Hapus</span>
+                    <span>{locale === "id" ? "Hapus" : "Delete"}</span>
                   </button>
                 )}
               </div>
               <input
-                placeholder="Deskripsi barang atau jasa"
+                placeholder={t.invoices?.itemName || (locale === "id" ? "Deskripsi barang atau jasa" : "Item or service description")}
                 value={item.description}
                 onChange={(e) =>
                   updateItem(index, "description", e.target.value)
                 }
-                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f]"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f]"
               />
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-[11px] font-medium text-gray-500 mb-1">
-                    Qty
+                  <label className="block text-[11px] font-bold text-slate-500 mb-1">
+                    {t.invoices?.quantity || (locale === "id" ? "Jumlah (Qty)" : "Quantity")}
                   </label>
                   <input
                     type="number"
@@ -288,12 +313,12 @@ export function InvoiceForm({
                         parseInt(e.target.value) || 0,
                       )
                     }
-                    className="w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f]"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs sm:text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] tabular-nums"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-medium text-gray-500 mb-1">
-                    Harga Satuan (Rp)
+                  <label className="block text-[11px] font-bold text-slate-500 mb-1">
+                    {t.invoices?.price || (locale === "id" ? "Harga Satuan (Rp)" : "Unit Price (Rp)")}
                   </label>
                   <input
                     type="number"
@@ -307,13 +332,13 @@ export function InvoiceForm({
                         parseFloat(e.target.value) || 0,
                       )
                     }
-                    className="w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f]"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs sm:text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] tabular-nums"
                   />
                 </div>
               </div>
-              <div className="text-right pt-1 border-t border-gray-200/60 flex items-center justify-between text-xs">
-                <span className="text-gray-500">Subtotal:</span>
-                <span className="font-bold text-gray-900">
+              <div className="text-right pt-2 border-t border-slate-200 flex items-center justify-between text-xs">
+                <span className="text-slate-500 font-medium">Subtotal:</span>
+                <span className="font-bold text-slate-900 tabular-nums">
                   Rp{(item.quantity * item.price).toLocaleString("id-ID")}
                 </span>
               </div>
@@ -323,24 +348,24 @@ export function InvoiceForm({
 
         {/* Desktop Items Layout */}
         <div className="hidden md:block space-y-3">
-          <div className="grid grid-cols-12 gap-3 text-xs font-semibold text-gray-500 uppercase px-1">
-            <div className="col-span-5">Deskripsi</div>
-            <div className="col-span-2 text-center">Qty</div>
-            <div className="col-span-2 text-right">Harga (Rp)</div>
-            <div className="col-span-2 text-right">Jumlah</div>
-            <div className="col-span-1 text-center">Aksi</div>
+          <div className="grid grid-cols-12 gap-3 text-xs font-bold text-slate-500 uppercase tracking-wider px-1">
+            <div className="col-span-5">{t.invoices?.itemName || (locale === "id" ? "Deskripsi" : "Description")}</div>
+            <div className="col-span-2 text-center">{t.invoices?.quantity || "Qty"}</div>
+            <div className="col-span-2 text-right">{t.invoices?.price || "Harga (Rp)"}</div>
+            <div className="col-span-2 text-right">{t.invoices?.amount || "Jumlah"}</div>
+            <div className="col-span-1 text-center">{t.invoices?.actions || "Aksi"}</div>
           </div>
 
           {items.map((item, index) => (
             <div key={index} className="grid grid-cols-12 gap-3 items-center">
               <div className="col-span-5">
                 <input
-                  placeholder="Deskripsi barang atau jasa"
+                  placeholder={t.invoices?.itemName || (locale === "id" ? "Deskripsi barang atau jasa" : "Item or service description")}
                   value={item.description}
                   onChange={(e) =>
                     updateItem(index, "description", e.target.value)
                   }
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f]"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f]"
                 />
               </div>
               <div className="col-span-2">
@@ -356,7 +381,7 @@ export function InvoiceForm({
                       parseInt(e.target.value) || 0,
                     )
                   }
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-center text-sm text-gray-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f]"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-center text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] tabular-nums"
                 />
               </div>
               <div className="col-span-2">
@@ -372,10 +397,10 @@ export function InvoiceForm({
                       parseFloat(e.target.value) || 0,
                     )
                   }
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-right text-sm text-gray-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f]"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-right text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] tabular-nums"
                 />
               </div>
-              <div className="col-span-2 text-right font-semibold text-sm text-gray-900 tabular-nums">
+              <div className="col-span-2 text-right font-bold text-sm text-slate-900 tabular-nums">
                 Rp{(item.quantity * item.price).toLocaleString("id-ID")}
               </div>
               <div className="col-span-1 text-center">
@@ -383,8 +408,8 @@ export function InvoiceForm({
                   type="button"
                   onClick={() => removeItem(index)}
                   disabled={items.length === 1}
-                  className="p-1.5 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer disabled:opacity-20 disabled:cursor-not-allowed"
-                  title="Hapus baris item"
+                  className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer disabled:opacity-20 disabled:cursor-not-allowed"
+                  title={locale === "id" ? "Hapus baris item" : "Remove item"}
                 >
                   <TrashIcon className="h-4 w-4" />
                 </button>
@@ -396,48 +421,48 @@ export function InvoiceForm({
         <button
           type="button"
           onClick={addItem}
-          className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#0f6b4f] hover:text-[#0b503b] transition-colors cursor-pointer bg-emerald-50/60 hover:bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200/50"
+          className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-[#0f6b4f] hover:text-[#0c553e] transition-colors cursor-pointer bg-emerald-50 hover:bg-emerald-100/70 px-3.5 py-2 rounded-xl border border-emerald-200 shadow-2xs active:scale-[0.98]"
         >
           <PlusIcon className="h-4 w-4" />
-          <span>Tambah Baris Item</span>
+          <span>{t.invoices?.addItem || (locale === "id" ? "Tambah Baris Item" : "Add Line Item")}</span>
         </button>
       </div>
 
       {/* Diskon & Pajak (PPN) Card */}
-      <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-xs space-y-6">
-        <h2 className="text-sm font-semibold text-gray-900">
-          Pengaturan Diskon & Pajak
+      <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs space-y-6">
+        <h2 className="text-sm font-bold text-slate-900">
+          {locale === "id" ? "Pengaturan Diskon & Pajak (PPN)" : "Discount & Tax Settings"}
         </h2>
 
         {/* Section Diskon */}
         <div className="space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <label className="text-xs font-semibold text-gray-700 uppercase tracking-wider">
-              Diskon
+            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+              {t.invoices?.discount || (locale === "id" ? "Diskon" : "Discount")}
             </label>
             {/* Toggle Tipe Diskon */}
-            <div className="inline-flex rounded-lg border border-gray-200 bg-gray-50 p-1 self-start sm:self-auto">
+            <div className="inline-flex rounded-xl border border-slate-200 bg-slate-50 p-1 self-start sm:self-auto">
               <button
                 type="button"
                 onClick={() => setDiscountType("FIXED")}
-                className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors cursor-pointer ${
+                className={`rounded-lg px-3 py-1 text-xs font-bold transition-all cursor-pointer ${
                   discountType === "FIXED"
                     ? "bg-white text-[#0f6b4f] shadow-xs"
-                    : "text-gray-600 hover:text-gray-900"
+                    : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                Nominal (Rp)
+                {t.invoices?.discountTypeFixed || "Rp (Nominal)"}
               </button>
               <button
                 type="button"
                 onClick={() => setDiscountType("PERCENTAGE")}
-                className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors cursor-pointer ${
+                className={`rounded-lg px-3 py-1 text-xs font-bold transition-all cursor-pointer ${
                   discountType === "PERCENTAGE"
                     ? "bg-white text-[#0f6b4f] shadow-xs"
-                    : "text-gray-600 hover:text-gray-900"
+                    : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                Persentase (%)
+                {t.invoices?.discountTypePercent || "% (Persen)"}
               </button>
             </div>
           </div>
@@ -446,7 +471,7 @@ export function InvoiceForm({
             <div className="sm:col-span-7">
               <div className="relative">
                 {discountType === "FIXED" && (
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-xs font-bold text-gray-500 pointer-events-none">
+                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-xs font-bold text-slate-400 pointer-events-none">
                     Rp
                   </span>
                 )}
@@ -458,13 +483,13 @@ export function InvoiceForm({
                   onChange={(e) =>
                     setDiscountValue(Math.max(0, parseFloat(e.target.value) || 0))
                   }
-                  placeholder={discountType === "FIXED" ? "0" : "Contoh: 10"}
-                  className={`w-full rounded-lg border border-gray-300 bg-white py-2 text-sm text-gray-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] ${
-                    discountType === "FIXED" ? "pl-9 pr-3" : "px-3"
+                  placeholder={discountType === "FIXED" ? "0" : (locale === "id" ? "Contoh: 10" : "e.g. 10")}
+                  className={`w-full rounded-xl border border-slate-200 bg-white py-2.5 text-xs sm:text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] tabular-nums font-medium ${
+                    discountType === "FIXED" ? "pl-10 pr-3.5" : "px-3.5"
                   }`}
                 />
                 {discountType === "PERCENTAGE" && (
-                  <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-xs font-bold text-gray-500 pointer-events-none">
+                  <span className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-xs font-bold text-slate-400 pointer-events-none">
                     %
                   </span>
                 )}
@@ -479,10 +504,10 @@ export function InvoiceForm({
                     key={p}
                     type="button"
                     onClick={() => setDiscountValue(p)}
-                    className={`rounded-md px-2.5 py-1 text-xs font-medium border transition-colors cursor-pointer ${
+                    className={`rounded-lg px-2.5 py-1 text-xs font-semibold border transition-colors cursor-pointer ${
                       discountValue === p
-                        ? "bg-emerald-50 border-[#0f6b4f] text-[#0f6b4f] font-semibold"
-                        : "border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100"
+                        ? "bg-emerald-50 border-[#0f6b4f] text-[#0f6b4f]"
+                        : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
                     }`}
                   >
                     {p}%
@@ -493,26 +518,26 @@ export function InvoiceForm({
           </div>
 
           {totals.discountAmount > 0 && (
-            <p className="text-xs text-emerald-700 font-medium">
-              Potongan diskon:{" "}
+            <p className="text-xs text-[#0f6b4f] font-semibold">
+              {locale === "id" ? "Potongan diskon:" : "Discount deduction:"}{" "}
               <strong>
                 -Rp{totals.discountAmount.toLocaleString("id-ID")}
               </strong>{" "}
-              {discountType === "PERCENTAGE" && `(${totals.discountValue}% dari subtotal)`}
+              {discountType === "PERCENTAGE" && `(${totals.discountValue}% ${locale === "id" ? "dari subtotal" : "of subtotal"})`}
             </p>
           )}
         </div>
 
-        <hr className="border-gray-100" />
+        <hr className="border-slate-100" />
 
         {/* Section Pajak (PPN) */}
         <div className="space-y-3">
-          <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider">
-            Pajak Pertambahan Nilai (PPN)
+          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+            {t.invoices?.taxVat || (locale === "id" ? "Pajak Pertambahan Nilai (PPN)" : "Tax (VAT)")}
           </label>
 
           <div className="flex flex-wrap gap-2">
-            {TAX_PRESETS.map((preset) => (
+            {taxPresets.map((preset) => (
               <button
                 key={preset.label}
                 type="button"
@@ -522,10 +547,10 @@ export function InvoiceForm({
                     setCustomTaxRate(0);
                   }
                 }}
-                className={`rounded-lg px-3.5 py-2 text-xs font-semibold border transition-colors cursor-pointer ${
+                className={`rounded-xl px-3.5 py-2 text-xs font-bold border transition-all cursor-pointer ${
                   selectedTaxMode === preset.value
-                    ? "bg-emerald-50 border-[#0f6b4f] text-[#0f6b4f] shadow-xs"
-                    : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
+                    ? "bg-[#0f6b4f]/10 border-[#0f6b4f]/30 text-[#0f6b4f] shadow-2xs"
+                    : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
                 }`}
               >
                 {preset.label}
@@ -535,8 +560,8 @@ export function InvoiceForm({
 
           {selectedTaxMode === "custom" && (
             <div className="max-w-xs pt-1">
-              <label className="block text-[11px] font-medium text-gray-500 mb-1">
-                Tarif Pajak Kustom (%)
+              <label className="block text-[11px] font-bold text-slate-500 mb-1">
+                {locale === "id" ? "Tarif Pajak Kustom (%)" : "Custom Tax Rate (%)"}
               </label>
               <div className="relative">
                 <input
@@ -550,10 +575,10 @@ export function InvoiceForm({
                       Math.min(100, Math.max(0, parseFloat(e.target.value) || 0)),
                     )
                   }
-                  placeholder="Contoh: 10 atau 2.5"
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 pr-8 text-sm text-gray-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f]"
+                  placeholder={locale === "id" ? "Contoh: 10 atau 2.5" : "e.g. 10 or 2.5"}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 pr-8 text-xs sm:text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] font-medium"
                 />
-                <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-xs font-bold text-gray-500 pointer-events-none">
+                <span className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-xs font-bold text-slate-400 pointer-events-none">
                   %
                 </span>
               </div>
@@ -561,10 +586,11 @@ export function InvoiceForm({
           )}
 
           {activeTaxRate > 0 && (
-            <p className="text-xs text-gray-600">
-              Pajak dihitung dari <strong>DPP (Dasar Pengenaan Pajak)</strong> ={" "}
+            <p className="text-xs text-slate-600 font-medium">
+              {locale === "id" ? "Pajak dihitung dari" : "Tax calculated from"}{" "}
+              <strong>{t.invoices?.taxableBase || "DPP"}</strong> ={" "}
               <span>Rp{totals.taxableBase.toLocaleString("id-ID")}</span>:{" "}
-              <strong className="text-gray-900">
+              <strong className="text-slate-900">
                 +Rp{totals.taxAmount.toLocaleString("id-ID")}
               </strong>
             </p>
@@ -573,37 +599,46 @@ export function InvoiceForm({
       </div>
 
       {/* Payment Options Card */}
-      <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-xs space-y-4">
+      <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs space-y-4">
         <div>
-          <h2 className="text-sm font-semibold text-gray-900">
-            Metode Pembayaran untuk Pelanggan
+          <h2 className="text-sm font-bold text-slate-900">
+            {t.invoices?.paymentMethodsTitle || (locale === "id" ? "Metode Pembayaran untuk Pelanggan" : "Payment Methods for Clients")}
           </h2>
-          <p className="text-xs text-gray-500 mt-0.5">
-            Pilih opsi pembayaran yang akan ditampilkan pada halaman invoice publik.
+          <p className="text-xs text-slate-500 mt-0.5">
+            {locale === "id"
+              ? "Pilih opsi pembayaran yang akan ditampilkan pada halaman invoice publik."
+              : "Choose payment options displayed on the public invoice page."}
           </p>
         </div>
 
         <div className="space-y-3">
           {/* Option 1: Direct Transfer */}
-          <label className="flex items-start gap-3 p-3.5 rounded-xl border border-gray-200 hover:border-gray-300 transition-colors cursor-pointer bg-gray-50/50">
+          <label className="flex items-start gap-3 p-4 rounded-xl border border-slate-200 hover:border-slate-300 transition-colors cursor-pointer bg-slate-50/60">
             <input
               type="checkbox"
               checked={enableDirectTransfer}
               onChange={(e) => setEnableDirectTransfer(e.target.checked)}
-              className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#0f6b4f] focus:ring-[#0f6b4f]"
+              className="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#0f6b4f] focus:ring-[#0f6b4f]"
             />
             <div className="space-y-0.5">
-              <span className="text-xs font-bold text-gray-900">
-                Transfer Rekening Bank / E-Wallet Langsung (Direct Transfer)
+              <span className="text-xs font-bold text-slate-900">
+                {t.invoices?.directTransferTitle || (locale === "id" ? "Transfer Rekening Bank / E-Wallet Langsung (Direct Transfer)" : "Direct Bank Transfer")}
               </span>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-slate-500">
                 {userBankName && userBankAccountNumber ? (
                   <>
-                    Ditransfer langsung ke <strong>{userBankName}</strong> ({userBankAccountNumber} a/n {userBankAccountName}). Anda mengonfirmasi lunas secara manual.
+                    {locale === "id" ? "Ditransfer langsung ke" : "Transferred directly to"}{" "}
+                    <strong>{userBankName}</strong> ({userBankAccountNumber} {locale === "id" ? "a/n" : "a.n."} {userBankAccountName}). {locale === "id" ? "Anda mengonfirmasi lunas secara manual." : "You confirm settlement manually."}
                   </>
                 ) : (
                   <>
-                    Tampilkan nomor rekening Anda pada invoice. (Anda belum mendaftarkan rekening di <Link href="/settings" className="text-[#0f6b4f] underline font-semibold">Pengaturan</Link>).
+                    {locale === "id"
+                      ? "Tampilkan nomor rekening Anda pada invoice. (Anda belum mendaftarkan rekening di "
+                      : "Display bank account on invoice. (You haven't configured a bank account in "}
+                    <Link href="/settings" className="text-[#0f6b4f] underline font-bold">
+                      {t.dashboard?.settings || "Settings"}
+                    </Link>
+                    ).
                   </>
                 )}
               </p>
@@ -611,24 +646,27 @@ export function InvoiceForm({
           </label>
 
           {/* Option 2: Digital Payment via NotaKu */}
-          <label className="flex items-start gap-3 p-3.5 rounded-xl border border-emerald-200 hover:border-emerald-300 transition-colors cursor-pointer bg-emerald-50/30">
+          <label className="flex items-start gap-3 p-4 rounded-xl border border-emerald-200 hover:border-emerald-300 transition-colors cursor-pointer bg-emerald-50/40">
             <input
               type="checkbox"
               checked={enableDigitalPayment}
               onChange={(e) => setEnableDigitalPayment(e.target.checked)}
-              className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#0f6b4f] focus:ring-[#0f6b4f]"
+              className="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#0f6b4f] focus:ring-[#0f6b4f]"
             />
             <div className="space-y-0.5">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-gray-900">
-                  Pembayaran Digital Instan (QRIS & Virtual Account via NotaKu)
+                <span className="text-xs font-bold text-slate-900">
+                  {t.invoices?.digitalPaymentTitle || (locale === "id" ? "Pembayaran Digital Instan (QRIS & Virtual Account via NotaKu)" : "Instant Digital Payment (QRIS & VA)")}
                 </span>
-                <span className="rounded-md bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-[#0f6b4f]">
-                  Otomatis Lunas
+                <span className="rounded-md bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-[#0f6b4f]">
+                  {locale === "id" ? "Otomatis Lunas" : "Auto Settled"}
                 </span>
               </div>
-              <p className="text-xs text-gray-600">
-                Pelanggan scan QRIS atau bayar Virtual Account secara instan. Dana masuk ke Saldo NotaKu Anda dan invoice otomatis berstatus Lunas (MDR 0.7% dipotong saat settlement).
+              <p className="text-xs text-slate-600">
+                {t.invoices?.digitalPaymentDesc ||
+                  (locale === "id"
+                    ? "Pelanggan scan QRIS atau bayar Virtual Account secara instan. Dana masuk ke Saldo NotaKu Anda dan invoice otomatis berstatus Lunas (MDR 0.7% dipotong saat settlement)."
+                    : "Client scans QRIS or pays via Virtual Account instantly. Funds go to your NotaKu Wallet and the invoice is automatically settled (0.7% MDR applies).")}
               </p>
             </div>
           </label>
@@ -636,16 +674,16 @@ export function InvoiceForm({
       </div>
 
       {/* Notes Card */}
-      <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-xs">
-        <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">
-          Catatan Tambahan (Opsional)
+      <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs">
+        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+          {t.invoices?.notes || (locale === "id" ? "Catatan Tambahan (Opsional)" : "Additional Notes (Optional)")}
         </label>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           rows={2}
-          placeholder="Contoh: Pembayaran dapat ditransfer ke rekening BCA 123456789 a/n Nama Bisnis"
-          className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] resize-none"
+          placeholder={t.invoices?.notesPlaceholder || (locale === "id" ? "Contoh: Pembayaran dapat ditransfer ke rekening BCA 123456789 a/n Nama Bisnis" : "e.g. Payment due within 14 days of issue.")}
+          className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] resize-none shadow-2xs"
         />
       </div>
 
@@ -653,26 +691,26 @@ export function InvoiceForm({
       {error && (
         <div
           role="alert"
-          className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 font-medium shadow-xs"
+          className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs sm:text-sm text-rose-700 font-semibold shadow-2xs animate-in fade-in"
         >
           {error}
         </div>
       )}
 
       {/* Desktop Summary & Action Buttons */}
-      <div className="hidden md:block rounded-xl border border-gray-200 bg-white p-5 shadow-xs">
-        <div className="space-y-2 border-b border-gray-100 pb-4 text-sm">
-          <div className="flex justify-between text-gray-600">
-            <span>Subtotal</span>
-            <span className="font-semibold text-gray-900 tabular-nums">
+      <div className="hidden md:block rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs">
+        <div className="space-y-2 border-b border-slate-100 pb-4 text-sm">
+          <div className="flex justify-between text-slate-600">
+            <span className="font-medium">{t.invoices?.subtotal || "Subtotal"}</span>
+            <span className="font-bold text-slate-900 tabular-nums">
               Rp{totals.subtotal.toLocaleString("id-ID")}
             </span>
           </div>
 
           {totals.discountAmount > 0 && (
-            <div className="flex justify-between text-emerald-700 font-medium">
+            <div className="flex justify-between text-[#0f6b4f] font-semibold">
               <span>
-                Diskon{" "}
+                {t.invoices?.discount || (locale === "id" ? "Diskon" : "Discount")}{" "}
                 {discountType === "PERCENTAGE"
                   ? `(${totals.discountValue}%)`
                   : ""}
@@ -684,9 +722,9 @@ export function InvoiceForm({
           )}
 
           {activeTaxRate > 0 && (
-            <div className="flex justify-between text-gray-600">
-              <span>Pajak (PPN {activeTaxRate}%)</span>
-              <span className="font-semibold text-gray-900 tabular-nums">
+            <div className="flex justify-between text-slate-600">
+              <span className="font-medium">{t.invoices?.taxVat || "Pajak"} ({activeTaxRate}%)</span>
+              <span className="font-bold text-slate-900 tabular-nums">
                 +Rp{totals.taxAmount.toLocaleString("id-ID")}
               </span>
             </div>
@@ -695,10 +733,10 @@ export function InvoiceForm({
 
         <div className="flex items-center justify-between pt-4">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
-              Total Tagihan
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              {t.invoices?.total || (locale === "id" ? "Total Tagihan" : "Grand Total")}
             </span>
-            <p className="text-2xl font-bold text-gray-900 tabular-nums">
+            <p className="text-2xl font-bold text-slate-900 tabular-nums">
               Rp{totals.total.toLocaleString("id-ID")}
             </p>
           </div>
@@ -706,67 +744,47 @@ export function InvoiceForm({
           <div className="flex items-center gap-3">
             <Link
               href="/invoices"
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-xs"
+              className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs"
             >
-              Batal
+              {locale === "id" ? "Batal" : "Cancel"}
             </Link>
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="rounded-lg bg-blue-600 px-6 py-2 text-sm font-semibold text-white cursor-pointer hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-xs"
+              className="rounded-xl bg-[#0f6b4f] px-6 py-2.5 text-xs sm:text-sm font-bold text-white cursor-pointer hover:bg-[#0c553e] active:scale-[0.98] disabled:opacity-50 transition-all shadow-xs"
             >
               {loading
-                ? "Menyimpan..."
+                ? (locale === "id" ? "Menyimpan..." : "Saving...")
                 : isEdit
-                  ? "Update Invoice"
-                  : "Simpan & Buat Invoice"}
+                ? (locale === "id" ? "Simpan Perubahan" : "Save Changes")
+                : (locale === "id" ? "Buat & Simpan Invoice" : "Create Invoice")}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Sticky Bottom Action Bar with Breakdown */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-gray-200 bg-white/95 backdrop-blur-md px-4 py-3 shadow-lg">
-        {(totals.discountAmount > 0 || activeTaxRate > 0) && (
-          <div className="flex items-center justify-between text-[11px] text-gray-500 border-b border-gray-100 pb-1.5 mb-1.5">
-            <span>
-              Sub: Rp{totals.subtotal.toLocaleString("id-ID")}
-              {totals.discountAmount > 0 && (
-                <span className="text-emerald-600 font-semibold ml-1">
-                  (Disc: -Rp{totals.discountAmount.toLocaleString("id-ID")})
-                </span>
-              )}
-            </span>
-            {activeTaxRate > 0 && (
-              <span>PPN {activeTaxRate}%: +Rp{totals.taxAmount.toLocaleString("id-ID")}</span>
-            )}
-          </div>
-        )}
-
+      {/* Mobile Sticky Bottom Action Bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur-md p-4 md:hidden shadow-lg">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
-              Total Tagihan
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              {t.invoices?.total || "Total"}
             </span>
-            <p className="text-base font-bold text-gray-900 tabular-nums">
+            <p className="text-base font-extrabold text-slate-900 tabular-nums">
               Rp{totals.total.toLocaleString("id-ID")}
             </p>
           </div>
-          <div className="flex items-center gap-2">
-            <Link
-              href="/invoices"
-              className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
-            >
-              Batal
-            </Link>
-            <button
-              onClick={handleSubmit}
-              disabled={loading}
-              className="rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white cursor-pointer hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-xs"
-            >
-              {loading ? "Menyimpan..." : isEdit ? "Update" : "Simpan"}
-            </button>
-          </div>
+          <button
+            onClick={handleSubmit}
+            disabled={loading}
+            className="flex-1 max-w-[200px] rounded-xl bg-[#0f6b4f] px-4 py-3 text-xs font-bold text-white shadow-xs hover:bg-[#0c553e] active:scale-[0.98] disabled:opacity-50 transition-all text-center cursor-pointer min-h-[44px]"
+          >
+            {loading
+              ? (locale === "id" ? "Menyimpan..." : "Saving...")
+              : isEdit
+              ? (locale === "id" ? "Simpan Perubahan" : "Save Changes")
+              : (locale === "id" ? "Simpan Invoice" : "Create Invoice")}
+          </button>
         </div>
       </div>
     </div>

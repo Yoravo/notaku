@@ -10,8 +10,10 @@ import {
   DocumentPlusIcon,
   PencilSquareIcon,
   TrashIcon,
+  UsersIcon,
 } from "@heroicons/react/24/outline";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { useLanguage } from "@/lib/i18n/context";
 
 type Customer = {
   id: string;
@@ -26,6 +28,7 @@ export function CustomerList({
 }: {
   customers: Customer[];
 }) {
+  const { t, locale } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
@@ -63,7 +66,7 @@ export function CustomerList({
       await deleteCustomer(deletingCustomer.id);
       setDeletingCustomer(null);
     } catch {
-      alert("Gagal menghapus pelanggan");
+      alert(locale === "id" ? "Gagal menghapus pelanggan" : "Failed to delete client");
     } finally {
       setIsDeleting(false);
     }
@@ -71,16 +74,16 @@ export function CustomerList({
 
   return (
     <>
-      <div className="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         {/* Search Bar */}
         <div className="relative flex-1 max-w-md">
-          <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <MagnifyingGlassIcon className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Cari nama, email, atau no. telepon..."
-            className="w-full rounded-lg border border-gray-300 bg-white pl-9 pr-3.5 py-2 text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-xs"
+            placeholder={t.customers?.searchPlaceholder || (locale === "id" ? "Cari nama, email, atau no. telepon..." : "Search name, email, or phone...")}
+            className="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-4 py-2.5 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-medium"
           />
         </div>
 
@@ -89,81 +92,98 @@ export function CustomerList({
             setEditingCustomer(null);
             setShowModal(true);
           }}
-          className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-xs sm:text-sm font-semibold text-white hover:bg-blue-700 transition-colors shadow-xs cursor-pointer shrink-0"
+          className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#0f6b4f] px-4 py-2.5 text-xs sm:text-sm font-bold text-white hover:bg-[#0c553e] active:scale-[0.98] transition-all shadow-xs cursor-pointer shrink-0"
         >
           <PlusIcon className="h-4 w-4" />
-          <span>Tambah Pelanggan</span>
+          <span>{t.customers?.addCustomer || (locale === "id" ? "Tambah Pelanggan" : "Add Client")}</span>
         </button>
       </div>
 
       {initial.length === 0 ? (
-        <div className="mt-8 text-center rounded-xl border border-dashed border-gray-300 p-8 bg-gray-50/50">
-          <p className="text-sm font-medium text-gray-600">Belum ada pelanggan terdaftar.</p>
-          <p className="text-xs text-gray-400 mt-1">
-            Tambah pelanggan untuk mempercepat pembuatan invoice berulang.
+        <div className="rounded-2xl border border-dashed border-slate-300 p-8 sm:p-12 text-center bg-white shadow-2xs">
+          <div className="mx-auto w-12 h-12 rounded-2xl bg-[#0f6b4f]/10 text-[#0f6b4f] flex items-center justify-center mb-3 border border-[#0f6b4f]/20">
+            <UsersIcon className="w-6 h-6" />
+          </div>
+          <h3 className="text-sm font-bold text-slate-900">
+            {t.customers?.emptyTitle || (locale === "id" ? "Belum ada pelanggan terdaftar" : "No clients registered yet")}
+          </h3>
+          <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+            {t.customers?.emptyDesc || (locale === "id" ? "Tambah profil pelanggan pertama Anda untuk mempercepat pembuatan invoice berulang." : "Add your first client profile to speed up recurring invoice creation.")}
           </p>
+          <button
+            onClick={() => {
+              setEditingCustomer(null);
+              setShowModal(true);
+            }}
+            className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-[#0f6b4f] px-4 py-2 text-xs font-semibold text-white hover:bg-[#0c553e] transition-all shadow-xs cursor-pointer"
+          >
+            <PlusIcon className="h-4 w-4" />
+            <span>{t.customers?.addCustomer || (locale === "id" ? "Tambah Pelanggan" : "Add Client")}</span>
+          </button>
         </div>
       ) : filteredCustomers.length === 0 ? (
-        <div className="mt-8 text-center py-8">
-          <p className="text-sm text-gray-500">
-            Tidak ditemukan pelanggan dengan kata kunci &quot;{searchQuery}&quot;.
+        <div className="text-center py-12 bg-white rounded-2xl border border-slate-200 shadow-2xs">
+          <p className="text-sm text-slate-500 font-medium">
+            {locale === "id"
+              ? `Tidak ditemukan pelanggan dengan kata kunci "${searchQuery}".`
+              : `No clients found matching "${searchQuery}".`}
           </p>
         </div>
       ) : (
-        <div className="mt-4 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xs">
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xs">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs sm:text-sm">
-              <thead className="border-b border-gray-200 bg-gray-50 text-gray-700">
+              <thead className="border-b border-slate-200 bg-slate-50/80 text-slate-500 uppercase text-[11px] font-bold tracking-wider">
                 <tr>
-                  <th className="px-4 py-3 font-semibold">Nama</th>
-                  <th className="px-4 py-3 font-semibold">Email</th>
-                  <th className="px-4 py-3 font-semibold">Telepon</th>
-                  <th className="px-4 py-3 font-semibold hidden md:table-cell">
-                    Alamat
+                  <th className="px-5 py-3.5">{t.customers?.name || (locale === "id" ? "Nama" : "Name")}</th>
+                  <th className="px-5 py-3.5">{t.customers?.email || (locale === "id" ? "Email" : "Email")}</th>
+                  <th className="px-5 py-3.5">{t.customers?.phone || (locale === "id" ? "Telepon" : "Phone")}</th>
+                  <th className="px-5 py-3.5 hidden md:table-cell">
+                    {t.customers?.address || (locale === "id" ? "Alamat" : "Address")}
                   </th>
-                  <th className="px-4 py-3 font-semibold text-right">
-                    Aksi
+                  <th className="px-5 py-3.5 text-right">
+                    {t.invoices?.actions || (locale === "id" ? "Aksi" : "Actions")}
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-slate-100">
                 {filteredCustomers.map((customer) => (
-                  <tr key={customer.id} className="hover:bg-gray-50/80 transition-colors">
-                    <td className="px-4 py-3 font-medium text-gray-900">
+                  <tr key={customer.id} className="hover:bg-slate-50/80 transition-colors group">
+                    <td className="px-5 py-3.5 font-bold text-slate-900">
                       {customer.name}
                     </td>
-                    <td className="px-4 py-3 text-gray-600">
+                    <td className="px-5 py-3.5 text-slate-600 font-mono text-xs">
                       {customer.email || "—"}
                     </td>
-                    <td className="px-4 py-3 text-gray-600 font-mono text-xs">
+                    <td className="px-5 py-3.5 text-slate-600 font-mono text-xs">
                       {customer.phone || "—"}
                     </td>
-                    <td className="px-4 py-3 text-gray-600 hidden md:table-cell max-w-xs truncate">
+                    <td className="px-5 py-3.5 text-slate-600 hidden md:table-cell max-w-xs truncate">
                       {customer.address || "—"}
                     </td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-5 py-3.5 text-right">
                       <div className="inline-flex items-center gap-1.5">
                         <Link
                           href={`/invoices/new?customerId=${customer.id}`}
-                          title="Buat invoice untuk pelanggan ini"
-                          className="inline-flex items-center gap-1 rounded-md bg-emerald-50 text-emerald-700 hover:bg-emerald-100 px-2.5 py-1 text-xs font-semibold transition-colors border border-emerald-200/60"
+                          title={locale === "id" ? "Buat invoice untuk pelanggan ini" : "Create invoice for this client"}
+                          className="inline-flex items-center gap-1 rounded-xl bg-emerald-50 text-[#0f6b4f] hover:bg-emerald-100 px-3 py-1.5 text-xs font-bold transition-all border border-emerald-200/60 shadow-2xs"
                         >
                           <DocumentPlusIcon className="w-3.5 h-3.5" />
-                          <span>Buat Invoice</span>
+                          <span>{t.customers?.createInvoiceFor || (locale === "id" ? "Buat Invoice" : "Create Invoice")}</span>
                         </Link>
                         <button
                           type="button"
                           onClick={() => handleEdit(customer)}
-                          title="Edit Pelanggan"
-                          className="p-1 rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors cursor-pointer"
+                          title={t.customers?.editCustomer || (locale === "id" ? "Edit Pelanggan" : "Edit Client")}
+                          className="p-1.5 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors cursor-pointer border border-transparent hover:border-slate-200"
                         >
                           <PencilSquareIcon className="w-4 h-4" />
                         </button>
                         <button
                           type="button"
                           onClick={() => handleOpenDelete(customer)}
-                          title="Hapus Pelanggan"
-                          className="p-1 rounded-md text-rose-500 hover:bg-rose-50 hover:text-rose-700 transition-colors cursor-pointer"
+                          title={t.customers?.deleteCustomer || (locale === "id" ? "Hapus Pelanggan" : "Delete Client")}
+                          className="p-1.5 rounded-xl text-rose-500 hover:bg-rose-50 hover:text-rose-700 transition-colors cursor-pointer border border-transparent hover:border-rose-200"
                         >
                           <TrashIcon className="w-4 h-4" />
                         </button>
@@ -189,18 +209,22 @@ export function CustomerList({
         isOpen={Boolean(deletingCustomer)}
         onClose={() => !isDeleting && setDeletingCustomer(null)}
         onConfirm={handleExecuteDelete}
-        title="Hapus Kontak Pelanggan?"
-        description="Profil pelanggan ini akan dihapus dari daftar kontak. Invoice yang sudah terbit sebelumnya tidak akan terpengaruh."
-        confirmLabel="Ya, Hapus Pelanggan"
-        cancelLabel="Batal"
+        title={locale === "id" ? "Hapus Kontak Pelanggan?" : "Delete Client Contact?"}
+        description={
+          locale === "id"
+            ? "Profil pelanggan ini akan dihapus dari daftar kontak. Invoice yang sudah terbit sebelumnya tidak akan terpengaruh."
+            : "This client profile will be removed from your contact list. Previously issued invoices will not be affected."
+        }
+        confirmLabel={locale === "id" ? "Ya, Hapus Pelanggan" : "Yes, Delete Client"}
+        cancelLabel={locale === "id" ? "Batal" : "Cancel"}
         variant="danger"
         isLoading={isDeleting}
         itemDetails={
           deletingCustomer
             ? [
-                { label: "Nama Pelanggan", value: deletingCustomer.name },
+                { label: locale === "id" ? "Nama Pelanggan" : "Client Name", value: deletingCustomer.name },
                 { label: "Email", value: deletingCustomer.email || "—" },
-                { label: "Nomor Telepon", value: deletingCustomer.phone || "—" },
+                { label: locale === "id" ? "Nomor Telepon" : "Phone Number", value: deletingCustomer.phone || "—" },
               ]
             : undefined
         }

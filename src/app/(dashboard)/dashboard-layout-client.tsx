@@ -6,10 +6,12 @@ import { Sidebar } from "@/components/sidebar";
 import {
   Bars3Icon,
   XMarkIcon,
-  ChevronDoubleLeftIcon,
+  ArrowLeftOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { LanguageDropdown } from "@/components/language-dropdown";
+import { useLanguage } from "@/lib/i18n/context";
 
 type User = {
   id: string;
@@ -31,6 +33,7 @@ export function DashboardLayoutClient({
   // Desktop collapse state (default: show/expanded)
   const [desktopOpen, setDesktopOpen] = useState(true);
   const router = useRouter();
+  const { t } = useLanguage();
 
   const handleSignOut = async () => {
     await authClient.signOut({
@@ -70,7 +73,7 @@ export function DashboardLayoutClient({
       {/* Main Content Area */}
       <main className="flex flex-1 flex-col overflow-hidden bg-gray-50">
         {/* Top Header Bar (Desktop & Mobile) */}
-        <header className="flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4 shrink-0">
+        <header className="flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4 sm:px-6 shrink-0 shadow-2xs">
           <div className="flex items-center gap-2.5">
             {/* Desktop 3-Bar Toggle Button */}
             <button
@@ -117,13 +120,19 @@ export function DashboardLayoutClient({
             </Link>
           </div>
 
-          <button
-            onClick={handleSignOut}
-            className="inline-flex items-center justify-center rounded-md px-2.5 py-1.5 hover:bg-gray-100 transition-colors text-gray-500 hover:text-gray-900 cursor-pointer"
-            aria-label="Keluar"
-          >
-            <span className="text-sm font-medium">Keluar</span>
-          </button>
+          <div className="flex items-center gap-3">
+            {/* Unified Language Switcher Dropdown */}
+            <LanguageDropdown variant="light" />
+
+            <button
+              onClick={handleSignOut}
+              className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors cursor-pointer border border-transparent hover:border-gray-200"
+              aria-label={t.dashboard?.logout || "Keluar"}
+            >
+              <ArrowLeftOnRectangleIcon className="w-4 h-4 text-gray-400" />
+              <span className="hidden sm:inline">{t.dashboard?.logout || "Keluar"}</span>
+            </button>
+          </div>
         </header>
 
         {/* Content Area: Overflow-y, mobile-first padding */}

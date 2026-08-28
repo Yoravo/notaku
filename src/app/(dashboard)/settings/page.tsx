@@ -26,16 +26,7 @@ export default async function SettingsPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
-      <div>
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900">
-          Pengaturan Akun & Bisnis
-        </h1>
-        <p className="text-xs sm:text-sm text-gray-500 mt-1">
-          Kelola profil usaha, logo & tanda tangan faktur, rekening pembayaran, preferensi template PDF, dan keamanan akun.
-        </p>
-      </div>
-
+    <div className="max-w-4xl mx-auto">
       <SettingsTabsClient
         user={{
           id: user.id,

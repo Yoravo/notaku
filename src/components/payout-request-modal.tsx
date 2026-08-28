@@ -3,13 +3,15 @@
 import { useState } from "react";
 import { requestPayout } from "@/actions/payouts";
 import {
-  BanknotesIcon,
   ExclamationTriangleIcon,
   CheckCircleIcon,
   ArrowDownTrayIcon,
   BuildingLibraryIcon,
+  XMarkIcon,
+  ArrowPathIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { useLanguage } from "@/lib/i18n/context";
 
 interface PayoutRequestModalProps {
   balance: number;
@@ -28,6 +30,7 @@ export function PayoutRequestModal({
   isOpen,
   onClose,
 }: PayoutRequestModalProps) {
+  const { t, locale } = useLanguage();
   const [amount, setAmount] = useState<number>(balance);
   const [notes, setNotes] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -53,92 +56,112 @@ export function PayoutRequestModal({
       });
 
       if (!res.success) {
-        setError(res.error || "Gagal mengajukan penarikan");
+        setError(res.error || (locale === "id" ? "Gagal mengajukan penarikan" : "Failed to request payout"));
       } else {
-        setSuccess(res.message || "Permintaan penarikan berhasil dikirim!");
+        setSuccess(res.message || (locale === "id" ? "Permintaan penarikan berhasil dikirim!" : "Payout request sent successfully!"));
         setTimeout(() => {
           onClose();
           window.location.reload();
         }, 1500);
       }
     } catch {
-      setError("Terjadi kesalahan sistem. Silakan coba lagi.");
+      setError(locale === "id" ? "Terjadi kesalahan sistem. Silakan coba lagi." : "System error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 backdrop-blur-xs p-4">
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl border border-gray-100">
-        <div className="flex items-center gap-3 border-b border-gray-100 pb-4">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
-            <ArrowDownTrayIcon className="h-5 w-5" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity animate-in fade-in"
+        onClick={!isLoading ? onClose : undefined}
+      />
+
+      {/* Modal Card */}
+      <div className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl border border-slate-200 animate-in zoom-in-95 z-10 space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-[#0f6b4f] border border-emerald-200/60 shadow-2xs">
+              <ArrowDownTrayIcon className="h-5 w-5" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-slate-900">
+                {t.wallet?.requestWithdraw || (locale === "id" ? "Tarik Saldo Pendapatan" : "Withdraw Balance")}
+              </h3>
+              <p className="text-xs text-slate-500 font-medium">
+                {locale === "id" ? "Saldo tersedia:" : "Available balance:"}{" "}
+                <span className="font-bold text-slate-900 tabular-nums">Rp{balance.toLocaleString("id-ID")}</span>
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className="text-base font-bold text-gray-900">
-              Tarik Saldo Pendapatan
-            </h3>
-            <p className="text-xs text-gray-500">
-              Saldo tersedia: Rp{balance.toLocaleString("id-ID")}
-            </p>
-          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={isLoading}
+            className="p-1.5 rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors cursor-pointer"
+          >
+            <XMarkIcon className="w-5 h-5" />
+          </button>
         </div>
 
         {error && (
-          <div className="mt-4 flex items-start gap-2.5 rounded-xl bg-rose-50 p-3 text-xs text-rose-800 border border-rose-200/60">
+          <div className="flex items-start gap-2.5 rounded-xl bg-rose-50 p-3.5 text-xs font-semibold text-rose-800 border border-rose-200 shadow-2xs animate-in fade-in">
             <ExclamationTriangleIcon className="h-4 w-4 shrink-0 text-rose-600 mt-0.5" />
             <span>{error}</span>
           </div>
         )}
 
         {success && (
-          <div className="mt-4 flex items-center gap-2.5 rounded-xl bg-emerald-50 p-3 text-xs text-emerald-800 border border-emerald-200/60">
-            <CheckCircleIcon className="h-4 w-4 shrink-0 text-emerald-600" />
+          <div className="flex items-center gap-2.5 rounded-xl bg-emerald-50 p-3.5 text-xs font-bold text-[#0f6b4f] border border-emerald-200 shadow-2xs animate-in fade-in">
+            <CheckCircleIcon className="h-4 w-4 shrink-0 text-[#0f6b4f]" />
             <span>{success}</span>
           </div>
         )}
 
         {!hasBankAccount ? (
-          <div className="mt-5 space-y-4 text-center py-4">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-50 text-amber-600">
+          <div className="space-y-4 text-center py-4">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 border border-amber-200/60 shadow-2xs">
               <BuildingLibraryIcon className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-gray-900">
-                Rekening Bank Belum Didaftarkan
+              <p className="text-sm font-bold text-slate-900">
+                {locale === "id" ? "Rekening Bank Belum Didaftarkan" : "No Bank Account Registered"}
               </p>
-              <p className="mt-1 text-xs text-gray-500 max-w-xs mx-auto">
-                Silakan daftarkan rekening bank tujuan pencairan Anda di menu Pengaturan sebelum mengajukan penarikan.
+              <p className="mt-1 text-xs text-slate-500 max-w-xs mx-auto font-medium leading-relaxed">
+                {locale === "id"
+                  ? "Silakan daftarkan rekening bank tujuan pencairan Anda di menu Pengaturan sebelum mengajukan penarikan."
+                  : "Please configure your verified payout bank account in Settings before submitting a withdrawal."}
               </p>
             </div>
             <Link
-              href="/settings?tab=bank"
+              href="/settings"
               onClick={onClose}
-              className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-emerald-700 transition-colors"
+              className="inline-flex items-center justify-center rounded-xl bg-[#0f6b4f] px-5 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-[#0c553e] active:scale-[0.98] transition-all cursor-pointer min-h-[44px]"
             >
-              Atur Rekening Bank Sekarang
+              {locale === "id" ? "Atur Rekening Bank Sekarang" : "Set Up Bank Account Now"}
             </Link>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {/* Rekening Tujuan Box */}
-            <div className="rounded-xl border border-gray-200 bg-gray-50/80 p-3.5 text-xs">
-              <p className="font-semibold text-gray-700 uppercase tracking-wider text-[10px]">
-                Rekening Tujuan Pencairan
+            <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-3.5 text-xs shadow-2xs space-y-1">
+              <p className="font-bold text-slate-700 uppercase tracking-wider text-[10px]">
+                {locale === "id" ? "Rekening Tujuan Pencairan" : "Payout Destination Account"}
               </p>
-              <p className="mt-1 font-bold text-gray-900 text-sm">
-                {bankName} — {bankAccountNumber}
+              <p className="font-bold text-slate-900 text-sm">
+                {bankName} — <span className="font-mono">{bankAccountNumber}</span>
               </p>
-              <p className="text-gray-500">a/n {bankAccountName}</p>
+              <p className="text-slate-500 font-medium">a/n {bankAccountName}</p>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Nominal Penarikan (Rp)
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                {locale === "id" ? "Nominal Penarikan (Rp)" : "Withdrawal Amount (IDR)"} <span className="text-rose-500">*</span>
               </label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-500">
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">
                   Rp
                 </span>
                 <input
@@ -150,49 +173,56 @@ export function PayoutRequestModal({
                   onChange={(e) => setAmount(Number(e.target.value))}
                   placeholder="100000"
                   required
-                  className="w-full rounded-xl border border-gray-300 pl-9 pr-3 py-2 text-sm font-semibold text-gray-900 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                  className="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-4 py-2.5 text-sm font-bold text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs tabular-nums min-h-[44px]"
                 />
               </div>
-              <div className="mt-1.5 flex items-center justify-between text-[11px] text-gray-500">
-                <span>Minimal Rp10.000</span>
+              <div className="mt-1.5 flex items-center justify-between text-[11px] text-slate-500 font-medium">
+                <span>{locale === "id" ? "Minimal Rp10.000" : "Min IDR 10,000"}</span>
                 <button
                   type="button"
                   onClick={() => setAmount(balance)}
-                  className="font-medium text-emerald-600 hover:text-emerald-700 underline cursor-pointer"
+                  className="font-bold text-[#0f6b4f] hover:underline cursor-pointer min-h-[32px] inline-flex items-center"
                 >
-                  Tarik Semua Saldo
+                  {locale === "id" ? "Tarik Semua Saldo" : "Withdraw All"}
                 </button>
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Catatan (Opsional)
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                {locale === "id" ? "Catatan Pengajuan (Opsional)" : "Notes (Optional)"}
               </label>
               <input
                 type="text"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="Contoh: Pencairan omset mingguan"
-                className="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-900 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                placeholder={locale === "id" ? "Contoh: Pencairan omzet mingguan" : "e.g. Weekly revenue withdrawal"}
+                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-medium min-h-[44px]"
               />
             </div>
 
-            <div className="flex gap-2 pt-2 border-t border-gray-100">
+            <div className="flex gap-2.5 pt-2 border-t border-slate-100">
               <button
                 type="button"
                 onClick={onClose}
                 disabled={isLoading}
-                className="flex-1 rounded-xl border border-gray-300 bg-white py-2.5 text-xs font-medium text-gray-700 hover:bg-gray-50 cursor-pointer"
+                className="flex-1 rounded-xl border border-slate-200 bg-white py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer shadow-2xs transition-colors min-h-[44px]"
               >
-                Batal
+                {locale === "id" ? "Batal" : "Cancel"}
               </button>
               <button
                 type="submit"
                 disabled={isLoading || amount < 10000 || amount > balance}
-                className="flex-1 rounded-xl bg-emerald-600 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-emerald-700 disabled:opacity-50 cursor-pointer"
+                className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-[#0f6b4f] py-2.5 text-xs font-bold text-white shadow-xs hover:bg-[#0c553e] disabled:opacity-50 active:scale-[0.98] transition-all cursor-pointer min-h-[44px]"
               >
-                {isLoading ? "Memproses..." : "Konfirmasi Tarik"}
+                {isLoading ? (
+                  <>
+                    <ArrowPathIcon className="w-4 h-4 animate-spin" />
+                    <span>{locale === "id" ? "Memproses..." : "Processing..."}</span>
+                  </>
+                ) : (
+                  <span>{locale === "id" ? "Konfirmasi Tarik" : "Confirm Withdrawal"}</span>
+                )}
               </button>
             </div>
           </form>
