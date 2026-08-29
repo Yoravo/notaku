@@ -190,6 +190,7 @@ export type PromoData = {
   discountType: "PERCENTAGE" | "FIXED";
   discountValue: number;
   maxUses?: number | null;
+  usedCount?: number;
   expiresAt?: string | null;
   isActive: boolean;
 };
@@ -252,13 +253,34 @@ export async function getPromoCodes(): Promise<PromoData[]> {
           discountType: d.discountType || "PERCENTAGE",
           discountValue: Number(d.discountValue || 0),
           maxUses: d.maxUses ? Number(d.maxUses) : null,
+          usedCount: 0,
           expiresAt: d.expiresAt,
           isActive: d.isActive ?? true,
         });
       }
     }
 
-    return Array.from(promoMap.values());
+    const promos = Array.from(promoMap.values());
+
+    // Hitung real-time usage count untuk setiap promo
+    for (const promo of promos) {
+      try {
+        const count = await prisma.auditLog.count({
+          where: {
+            event: "payment.mayar_settlement",
+            detail: {
+              path: ["promoCode"],
+              equals: promo.code,
+            },
+          },
+        });
+        promo.usedCount = count;
+      } catch {
+        promo.usedCount = 0;
+      }
+    }
+
+    return promos;
   } catch {
     return [];
   }
