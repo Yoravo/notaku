@@ -88,7 +88,7 @@ export function PayoutRequestModal({
             </div>
             <div>
               <h3 className="text-base font-bold text-slate-900">
-                {t.wallet?.requestWithdraw || (locale === "id" ? "Tarik Saldo Pendapatan" : "Withdraw Balance")}
+                {t.wallet?.requestPayout || (locale === "id" ? "Tarik Saldo Pendapatan" : "Withdraw Balance")}
               </h3>
               <p className="text-xs text-slate-500 font-medium">
                 {locale === "id" ? "Saldo tersedia:" : "Available balance:"}{" "}
