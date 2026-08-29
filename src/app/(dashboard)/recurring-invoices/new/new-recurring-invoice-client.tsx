@@ -676,11 +676,10 @@ export function NewRecurringInvoiceClient({
       {/* Quick Customer Modal */}
       {showCustomerModal && (
         <CustomerModal
-          isOpen={showCustomerModal}
+          customer={null}
           onClose={() => setShowCustomerModal(false)}
-          onSuccess={(newCust) => {
+          onSuccess={() => {
             setShowCustomerModal(false);
-            setCustomerId(newCust.id);
             router.refresh();
           }}
         />
