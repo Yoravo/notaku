@@ -1,10 +1,19 @@
-import { getActiveAnnouncement } from "@/actions/admin";
 import Link from "next/link";
 import { MegaphoneIcon } from "@heroicons/react/24/outline";
 
-export async function AnnouncementBanner() {
-  const announcement = await getActiveAnnouncement();
+export interface AnnouncementData {
+  message: string;
+  type: "info" | "warning" | "success";
+  placement?: string;
+  linkText?: string | null;
+  linkUrl?: string | null;
+}
 
+export function AnnouncementBanner({
+  announcement,
+}: {
+  announcement: AnnouncementData | null;
+}) {
   if (!announcement) {
     return null;
   }

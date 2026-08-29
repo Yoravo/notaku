@@ -12,7 +12,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { RecentInvoices } from "@/components/recent-invoices";
 import { SerializedInvoice } from "@/types/invoice";
-import { AnnouncementBanner } from "@/components/announcement-banner";
+import { AnnouncementBanner, AnnouncementData } from "@/components/announcement-banner";
 import { useLanguage } from "@/lib/i18n/context";
 
 interface DashboardClientProps {
@@ -27,6 +27,7 @@ interface DashboardClientProps {
   limit: number;
   totalCustomers: number;
   recentInvoices: SerializedInvoice[];
+  announcement?: AnnouncementData | null;
 }
 
 export function DashboardClient({
@@ -41,6 +42,7 @@ export function DashboardClient({
   limit,
   totalCustomers,
   recentInvoices,
+  announcement = null,
 }: DashboardClientProps) {
   const { t, locale } = useLanguage();
 
@@ -56,7 +58,7 @@ export function DashboardClient({
   return (
     <div className="space-y-6">
       {/* Global Broadcast Announcement */}
-      <AnnouncementBanner />
+      {announcement && <AnnouncementBanner announcement={announcement} />}
 
       {/* Header: Mobile-first stack, desktop row */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -107,142 +109,124 @@ export function DashboardClient({
             prefetch={true}
             className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#0f6b4f] px-4 py-2 text-xs sm:text-sm font-bold text-white transition-all hover:bg-[#0c553e] active:scale-[0.98] shadow-xs"
           >
-            <PlusIcon className="h-4 w-4 shrink-0" />
-            <span>{t.dashboard?.createInvoice || (locale === "id" ? "Buat Invoice" : "Create Invoice")}</span>
+            <PlusIcon className="w-4 h-4" />
+            <span>{t.invoices?.newInvoice || (locale === "id" ? "Buat Invoice" : "New Invoice")}</span>
           </Link>
         </div>
       </div>
 
-      {/* Financial Overview & Range Filter */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs">
-        <div>
-          <h2 className="text-sm font-bold text-slate-900">
-            {locale === "id" ? "Ringkasan Keuangan & Tagihan" : "Financial & Billing Summary"}
-          </h2>
-          <p className="text-xs text-slate-500">
-            {locale === "id" ? (
-              <>
-                Pantau arus kas, total terbayar, dan tagihan aktif periode{" "}
-                <span className="font-semibold text-slate-700 lowercase">{periodLabel}</span>.
-              </>
-            ) : (
-              <>
-                Track cash flow, settled volume, and active billings for{" "}
-                <span className="font-semibold text-slate-700 lowercase">{periodLabel}</span>.
-              </>
-            )}
-          </p>
-        </div>
-
-        {/* Filter Pills */}
-        <div className="inline-flex rounded-xl bg-slate-100/80 p-1 self-start sm:self-auto border border-slate-200/60">
-          {[
-            { id: "month", label: locale === "id" ? "Bulan Ini" : "This Month" },
-            { id: "year", label: locale === "id" ? "Tahun Ini" : "This Year" },
-            { id: "all", label: locale === "id" ? "Semua Waktu" : "All Time" },
-          ].map((tab) => {
-            const active = selectedRange === tab.id;
-            return (
-              <Link
-                key={tab.id}
-                href={`/dashboard?range=${tab.id}`}
-                prefetch={true}
-                className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all ${
-                  active
-                    ? "bg-white text-slate-900 shadow-xs"
-                    : "text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                {tab.label}
-              </Link>
-            );
-          })}
-        </div>
+      {/* Period Filter Selector */}
+      <div className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white p-1 shadow-2xs w-fit">
+        {(["month", "year", "all"] as const).map((r) => (
+          <Link
+            key={r}
+            href={`/dashboard?range=${r}`}
+            prefetch={true}
+            className={`rounded-lg px-3 py-1 text-xs font-semibold transition-colors ${
+              selectedRange === r
+                ? "bg-[#0f6b4f] text-white shadow-2xs"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+            }`}
+          >
+            {rangeLabels[r][locale]}
+          </Link>
+        ))}
       </div>
 
-      {/* Financial Stats: 4 Cards Responsive */}
+      {/* Primary KPI Grid: 4 Metric Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {/* Pendapatan Lunas */}
-        <div className="rounded-2xl border border-emerald-100 bg-emerald-50/50 p-4 sm:p-5 shadow-2xs">
+        {/* Card 1: Total Volume Transaksi */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs transition-all hover:border-slate-300 hover:shadow-xs">
           <div className="flex items-center justify-between">
-            <p className="text-[11px] font-bold text-[#0f6b4f] uppercase tracking-wider">
-              {locale === "id" ? "Pendapatan Terbayar" : "Settled Revenue"}
-            </p>
-            <div className="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center text-[#0f6b4f] border border-emerald-200/60">
-              <CheckBadgeIcon className="w-5 h-5" />
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              {locale === "id" ? "Total Tagihan" : "Total Billed"}
+            </span>
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+              <DocumentTextIcon className="h-5 w-5" />
             </div>
           </div>
-          <p className="mt-2 text-xl sm:text-2xl font-bold text-slate-900 tabular-nums">
-            Rp{paidRevenue.toLocaleString("id-ID")}
-          </p>
-          <p className="mt-1 text-[11px] text-[#0f6b4f] font-semibold">
-            {locale === "id" ? `Status Lunas (${periodLabel})` : `Settled Status (${periodLabel})`}
-          </p>
+          <div className="mt-3">
+            <p className="text-2xl font-bold tracking-tight text-slate-900 tabular-nums">
+              Rp{totalVolume.toLocaleString("id-ID")}
+            </p>
+            <p className="mt-1 text-xs text-slate-400 font-medium">
+              {invoiceCount} invoice • {periodLabel}
+            </p>
+          </div>
         </div>
 
-        {/* Tagihan Tertunda */}
-        <div className="rounded-2xl border border-amber-100 bg-amber-50/50 p-4 sm:p-5 shadow-2xs">
+        {/* Card 2: Pendapatan Lunas */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs transition-all hover:border-slate-300 hover:shadow-xs">
           <div className="flex items-center justify-between">
-            <p className="text-[11px] font-bold text-amber-800 uppercase tracking-wider">
-              {locale === "id" ? "Tagihan Tertunda" : "Pending Invoices"}
-            </p>
-            <div className="w-8 h-8 rounded-xl bg-amber-100 flex items-center justify-center text-amber-700 border border-amber-200/60">
-              <ClockIcon className="w-5 h-5" />
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              {locale === "id" ? "Pendapatan Lunas" : "Paid Revenue"}
+            </span>
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-[#0f6b4f]">
+              <CheckBadgeIcon className="h-5 w-5" />
             </div>
           </div>
-          <p className="mt-2 text-xl sm:text-2xl font-bold text-slate-900 tabular-nums">
-            Rp{pendingRevenue.toLocaleString("id-ID")}
-          </p>
-          <p className="mt-1 text-[11px] text-amber-700 font-semibold">
-            {locale === "id" ? "Terkirim & Lewat Tempo" : "Sent & Overdue"}
-          </p>
+          <div className="mt-3">
+            <p className="text-2xl font-bold tracking-tight text-[#0f6b4f] tabular-nums">
+              Rp{paidRevenue.toLocaleString("id-ID")}
+            </p>
+            <p className="mt-1 text-xs text-slate-400 font-medium">
+              {locale === "id" ? "Berhasil diterima" : "Successfully collected"}
+            </p>
+          </div>
         </div>
 
-        {/* Total Omset/Volume Tagihan */}
-        <div className="rounded-2xl border border-blue-100 bg-blue-50/50 p-4 sm:p-5 shadow-2xs">
+        {/* Card 3: Tagihan Tertunda (Pending / Overdue) */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs transition-all hover:border-slate-300 hover:shadow-xs">
           <div className="flex items-center justify-between">
-            <p className="text-[11px] font-bold text-blue-800 uppercase tracking-wider">
-              {locale === "id" ? "Total Volume Tagihan" : "Total Invoice Volume"}
-            </p>
-            <div className="w-8 h-8 rounded-xl bg-blue-100 flex items-center justify-center text-blue-700 border border-blue-200/60">
-              <BanknotesIcon className="w-5 h-5" />
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              {locale === "id" ? "Menunggu Bayar" : "Pending Payment"}
+            </span>
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+              <ClockIcon className="h-5 w-5" />
             </div>
           </div>
-          <p className="mt-2 text-xl sm:text-2xl font-bold text-slate-900 tabular-nums">
-            Rp{totalVolume.toLocaleString("id-ID")}
-          </p>
-          <p className="mt-1 text-[11px] text-blue-700 font-semibold">
-            {locale === "id" ? `Akumulasi nilai (${periodLabel})` : `Accumulated value (${periodLabel})`}
-          </p>
+          <div className="mt-3">
+            <p className="text-2xl font-bold tracking-tight text-amber-600 tabular-nums">
+              Rp{pendingRevenue.toLocaleString("id-ID")}
+            </p>
+            <p className="mt-1 text-xs text-slate-400 font-medium">
+              {locale === "id" ? "Belum dibayar klien" : "Awaiting settlement"}
+            </p>
+          </div>
         </div>
 
-        {/* Kuota & Total Invoice */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs">
+        {/* Card 4: Kuota Invoice Bulanan */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs transition-all hover:border-slate-300 hover:shadow-xs">
           <div className="flex items-center justify-between">
-            <p className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">
-              {locale === "id" ? "Volume & Kuota" : "Volume & Quota"}
-            </p>
-            <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700 border border-slate-200/60">
-              <DocumentTextIcon className="w-5 h-5" />
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              {locale === "id" ? "Kuota Invoice" : "Invoice Quota"}
+            </span>
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+              <BanknotesIcon className="h-5 w-5" />
             </div>
           </div>
-          <p className="mt-2 text-xl sm:text-2xl font-bold text-slate-900 tabular-nums">
-            {isPro ? String(invoiceCount) : `${used}/${limit}`}
-          </p>
-          <p className="mt-1 text-[11px] text-slate-500 font-medium">
-            {isPro
-              ? locale === "id"
-                ? "Paket Pro (Unlimited Invoice)"
-                : "PRO Plan (Unlimited Invoices)"
-              : locale === "id"
-              ? `Paket Free • ${totalCustomers} Pelanggan`
-              : `Free Plan • ${totalCustomers} Clients`}
-          </p>
+          <div className="mt-3">
+            <p className="text-2xl font-bold tracking-tight text-slate-900 tabular-nums">
+              {used} <span className="text-sm font-normal text-slate-400">/ {limit === Infinity ? "∞" : limit}</span>
+            </p>
+            <div className="mt-2 h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
+              <div
+                className="h-full bg-[#0f6b4f] rounded-full transition-all duration-500"
+                style={{
+                  width: `${limit === Infinity ? 100 : Math.min(100, (used / limit) * 100)}%`,
+                }}
+              />
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Recent Invoices: Card view mobile, table desktop */}
-      <RecentInvoices invoices={recentInvoices} />
+      {/* Recent Invoices Table Component */}
+      <RecentInvoices
+        invoices={recentInvoices}
+        totalCustomers={totalCustomers}
+        isPro={isPro}
+      />
     </div>
   );
 }

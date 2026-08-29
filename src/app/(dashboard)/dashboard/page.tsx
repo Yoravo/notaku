@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { canCreateInvoice } from "@/lib/plan-limits";
 import { DashboardClient } from "./dashboard-client";
 import { SerializedInvoice } from "@/types/invoice";
+import { getActiveAnnouncement } from "@/actions/admin";
 
 export default async function DashboardPage({
   searchParams,
@@ -35,6 +36,7 @@ export default async function DashboardPage({
     totalVolumeAgg,
     user,
     recentInvoices,
+    announcement,
   ] = await Promise.all([
     prisma.invoice.count({
       where: {
@@ -74,6 +76,7 @@ export default async function DashboardPage({
       orderBy: { createdAt: "desc" },
       take: 5,
     }),
+    getActiveAnnouncement("DASHBOARD"),
   ]);
 
   const paidRevenue = Number(paidAgg._sum.total || 0);
@@ -117,6 +120,7 @@ export default async function DashboardPage({
       limit={limit}
       totalCustomers={totalCustomers}
       recentInvoices={serializedInvoices}
+      announcement={announcement}
     />
   );
 }
