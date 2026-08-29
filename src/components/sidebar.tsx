@@ -14,6 +14,7 @@ import {
   BanknotesIcon,
   SparklesIcon,
   ArrowRightStartOnRectangleIcon,
+  ArrowPathIcon,
 } from "@heroicons/react/24/outline";
 import { useLanguage } from "@/lib/i18n/context";
 
@@ -57,6 +58,11 @@ export function Sidebar({
       href: "/invoices",
       label: t.dashboard?.invoices || "Invoice & Tagihan",
       icon: DocumentTextIcon,
+    },
+    {
+      href: "/recurring-invoices",
+      label: t.dashboard?.recurringInvoices || (locale === "id" ? "Invoice Berulang" : "Recurring Invoices"),
+      icon: ArrowPathIcon,
     },
     {
       href: "/customers",
