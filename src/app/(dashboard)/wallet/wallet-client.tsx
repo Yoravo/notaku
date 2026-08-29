@@ -325,7 +325,7 @@ export function WalletClient({
         <PayoutRequestModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          availableBalance={balance}
+          balance={balance}
           bankName={bankName}
           bankAccountNumber={bankAccountNumber}
           bankAccountName={bankAccountName}

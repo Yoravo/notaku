@@ -218,7 +218,7 @@ export async function updateInvoiceStatus(id: string, status: string) {
 
   const invoice = await prisma.invoice.findUnique({
     where: { id, userId: user.id },
-    select: { status: true },
+    select: { status: true, paidAt: true, paymentMethod: true },
   });
   if (!invoice) throw new Error("Invoice tidak ditemukan");
 
@@ -228,9 +228,27 @@ export async function updateInvoiceStatus(id: string, status: string) {
     );
   }
 
+  const updateData: {
+    status: InvoiceStatus;
+    paidAt?: Date;
+    paymentMethod?: string;
+  } = {
+    status: status as InvoiceStatus,
+  };
+
+  // Jika ditandai PAID secara manual oleh user dan belum memiliki paidAt, set tanggal saat ini & direct transfer
+  if (status === "PAID") {
+    if (!invoice.paidAt) {
+      updateData.paidAt = new Date();
+    }
+    if (!invoice.paymentMethod) {
+      updateData.paymentMethod = "DIRECT_TRANSFER";
+    }
+  }
+
   await prisma.invoice.update({
     where: { id, userId: user.id },
-    data: { status: status as InvoiceStatus },
+    data: updateData,
   });
 
   auditLog(

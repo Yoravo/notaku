@@ -9,6 +9,7 @@ import {
   SparklesIcon,
   CheckCircleIcon,
   ArrowTopRightOnSquareIcon,
+  DocumentCheckIcon,
 } from "@heroicons/react/24/outline";
 import { useLanguage } from "@/lib/i18n/context";
 
@@ -89,18 +90,34 @@ export function PublicPaymentBox({
 
   if (isPaid) {
     return (
-      <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-6 text-center space-y-2.5 shadow-2xs">
+      <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-6 text-center space-y-4 shadow-2xs">
         <div className="w-12 h-12 mx-auto rounded-full bg-emerald-100 text-[#0f6b4f] flex items-center justify-center border border-emerald-200/80">
           <CheckCircleIcon className="w-7 h-7 stroke-[2]" />
         </div>
-        <h3 className="text-base sm:text-lg font-bold text-emerald-950">
-          {t.invoices?.publicPaidNotice || (locale === "id" ? "Invoice Ini Telah Lunas" : "This invoice has been settled in full.")}
-        </h3>
-        <p className="text-xs sm:text-sm text-emerald-800 font-medium">
-          {locale === "id"
-            ? `Terima kasih, pembayaran untuk invoice ${invoiceNumber} telah terverifikasi.`
-            : `Thank you, payment for invoice ${invoiceNumber} has been verified.`}
-        </p>
+        <div>
+          <h3 className="text-base sm:text-lg font-bold text-emerald-950">
+            {t.invoices?.publicPaidNotice || (locale === "id" ? "Invoice Ini Telah Lunas" : "This invoice has been settled in full.")}
+          </h3>
+          <p className="mt-1 text-xs sm:text-sm text-emerald-800 font-medium">
+            {locale === "id"
+              ? `Terima kasih, pembayaran untuk invoice ${invoiceNumber} telah terverifikasi.`
+              : `Thank you, payment for invoice ${invoiceNumber} has been verified.`}
+          </p>
+        </div>
+
+        <div className="pt-2 flex justify-center">
+          <a
+            href={`/api/invoices/public/${publicId}/receipt?preview=true`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#0f6b4f] px-4 py-2.5 text-xs sm:text-sm font-bold text-white shadow-xs hover:bg-[#0c553e] active:scale-[0.98] transition-all"
+          >
+            <DocumentCheckIcon className="w-4 h-4" />
+            <span>
+              {t.invoices?.officialReceiptPdf || (locale === "id" ? "Unduh Kuitansi Resmi (PDF)" : "Download Official Receipt (PDF)")}
+            </span>
+          </a>
+        </div>
       </div>
     );
   }

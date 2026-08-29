@@ -40,6 +40,34 @@ export type InvoiceData = {
   template?: "classic" | "modern" | "minimal";
 };
 
+export type ReceiptData = {
+  receiptNumber: string;
+  invoiceNumber: string;
+  paidAt: string;
+  paymentMethod: string;
+  customer: {
+    name: string;
+    email?: string;
+    phone?: string;
+    address?: string;
+  };
+  user: {
+    name: string;
+    businessName?: string;
+    email?: string;
+    phone?: string;
+    address?: string;
+    logoUrl?: string;
+    signatureUrl?: string;
+    stampUrl?: string;
+  };
+  itemsSummary: string;
+  total: number;
+  totalWords: string;
+  notes?: string;
+  isFree: boolean;
+};
+
 export const statusColors: Record<string, { bg: string; text: string }> = {
   DRAFT: { bg: "#f3f4f6", text: "#374151" },
   SENT: { bg: "#eff6ff", text: "#1d4ed8" },

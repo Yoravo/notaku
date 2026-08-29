@@ -12,6 +12,7 @@ import {
   ArrowLeftIcon,
   CalendarDaysIcon,
   UserIcon,
+  DocumentCheckIcon,
 } from "@heroicons/react/24/outline";
 import { useLanguage } from "@/lib/i18n/context";
 
@@ -130,6 +131,30 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
               <ArrowDownTrayIcon className="w-4 h-4" />
             </a>
           </div>
+
+          {/* Quick Receipt PDF Action Group (Hanya saat status PAID) */}
+          {invoice.status === "PAID" && (
+            <div className="inline-flex items-center rounded-xl border border-emerald-200 bg-emerald-50/60 shadow-2xs overflow-hidden">
+              <a
+                href={`/api/invoices/${invoice.id}/receipt?preview=true`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold text-[#0f6b4f] hover:bg-emerald-100/60 transition-colors border-r border-emerald-200"
+                title={t.invoices?.viewReceipt || (locale === "id" ? "Lihat Kuitansi Resmi" : "View Receipt")}
+              >
+                <DocumentCheckIcon className="w-4 h-4 text-[#0f6b4f]" />
+                <span>{t.invoices?.viewReceipt || (locale === "id" ? "Kuitansi" : "Receipt")}</span>
+              </a>
+              <a
+                href={`/api/invoices/${invoice.id}/receipt`}
+                download
+                className="inline-flex items-center p-2 text-[#0f6b4f] hover:bg-emerald-100/80 transition-colors"
+                title={t.invoices?.downloadReceipt || (locale === "id" ? "Unduh Kuitansi PDF" : "Download Receipt PDF")}
+              >
+                <ArrowDownTrayIcon className="w-4 h-4" />
+              </a>
+            </div>
+          )}
 
           {/* Edit Button (jika belum lunas/batal) */}
           {invoice.status !== "PAID" && invoice.status !== "CANCELLED" && (
