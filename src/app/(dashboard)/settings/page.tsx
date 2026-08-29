@@ -25,6 +25,8 @@ export default async function SettingsPage() {
     redirect("/login");
   }
 
+  const baseDomain = process.env.NEXT_PUBLIC_APP_DOMAIN || "notaku.store";
+
   return (
     <div className="max-w-4xl mx-auto">
       <SettingsTabsClient
@@ -44,6 +46,17 @@ export default async function SettingsPage() {
           bankAccountLocked: user.bankAccountLocked,
           plan: user.plan,
           invoiceTemplate: user.invoiceTemplate,
+        }}
+        domainData={{
+          plan: (user.plan as "FREE" | "PRO") || "FREE",
+          customDomain: user.customDomain,
+          customDomainVerified: user.customDomainVerified,
+          customDomainTxt: user.customDomainTxt,
+          subdomainSlug: user.subdomainSlug,
+          cnameTarget: process.env.NEXT_PUBLIC_CNAME_TARGET || "cname.notaku.store",
+          subdomainUrl: user.subdomainSlug ? `https://${user.subdomainSlug}.${baseDomain}` : null,
+          customDomainUrl:
+            user.customDomain && user.customDomainVerified ? `https://${user.customDomain}` : null,
         }}
       />
     </div>

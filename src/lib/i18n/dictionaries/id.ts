@@ -432,6 +432,33 @@ export const id = {
     rewardWaiting: "Menunggu Upgrade PRO",
   },
 
+  // Custom Domain & White-Label Module
+  domains: {
+    title: "Domain & White-Label Bisnis",
+    subtitle: "Hubungkan domain atau subdomain bisnis Anda agar halaman invoice publik tampil dengan alamat identitas Anda sendiri.",
+    tabName: "Domain & White-Label",
+    subdomainLabel: "Subdomain Instan NotaKu",
+    subdomainDesc: "Subdomain langsung aktif tanpa perlu konfigurasi DNS.",
+    customDomainLabel: "Domain Kustom Sendiri",
+    customDomainDesc: "Gunakan subdomain dari domain bisnis Anda (contoh: invoice.brandanda.com).",
+    dnsGuideTitle: "Panduan Konfigurasi DNS",
+    dnsGuideDesc: "Tambahkan DNS Record berikut di panel registrar / DNS manager domain Anda:",
+    dnsType: "Tipe Record",
+    dnsHost: "Nama / Host",
+    dnsTarget: "Nilai Target",
+    dnsAction: "Aksi",
+    copy: "Salin",
+    copied: "Disalin",
+    verifyBtn: "Verifikasi DNS Sekarang",
+    verifying: "Mengecek DNS...",
+    saveBtn: "Simpan Pengaturan Domain",
+    saving: "Menyimpan...",
+    statusVerified: "Terverifikasi & Aktif",
+    statusPending: "Menunggu DNS",
+    proNoticeTitle: "Custom Domain & Subdomain White-Label",
+    proNoticeDesc: "Sajikan invoice bisnis Anda dengan alamat domain kustom sendiri (contoh: invoice.tokosaya.com). Tingkatkan profesionalitas dan kepercayaan klien Anda.",
+  },
+
   // Hero Section
   hero: {
     badge: "Solusi Cerdas Penagihan & Invoice",

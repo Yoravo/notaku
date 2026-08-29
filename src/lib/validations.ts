@@ -38,3 +38,26 @@ export const payoutRequestSchema = z.object({
   amount: z.number().min(10000, "Minimal penarikan saldo adalah Rp 10.000"),
   notes: z.string().max(300).optional(),
 });
+
+export const customDomainSchema = z.object({
+  subdomainSlug: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .regex(/^[a-z0-9-]+$/, "Subdomain hanya boleh berisi huruf kecil, angka, dan tanda hubung (-)")
+    .min(3, "Subdomain minimal 3 karakter")
+    .max(30, "Subdomain maksimal 30 karakter")
+    .optional()
+    .or(z.literal("")),
+  customDomain: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .regex(
+      /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/,
+      "Format domain tidak valid (contoh: invoice.tokosaya.com)"
+    )
+    .optional()
+    .or(z.literal("")),
+});
+

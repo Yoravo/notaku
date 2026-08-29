@@ -47,6 +47,12 @@ model User {
   referrals         User[]    @relation("UserReferrals")
   referralRewards   ReferralReward[] @relation("UserReferralRewards")
 
+  // Custom Domain & Subdomain White-Label (PRO)
+  customDomain         String?   @unique
+  customDomainVerified Boolean   @default(false)
+  customDomainTxt      String?
+  subdomainSlug        String?   @unique
+
   @@map("user")
 }
 

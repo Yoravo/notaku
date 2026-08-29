@@ -17,6 +17,7 @@ type Props = {
   total: number;
   dueDate?: string | null;
   publicId: string;
+  customPublicUrl?: string | null;
   businessName?: string | null;
   status: string;
 };
@@ -28,6 +29,7 @@ export function WhatsAppShareModal({
   total,
   dueDate,
   publicId,
+  customPublicUrl,
   businessName,
   status,
 }: Props) {
@@ -45,7 +47,7 @@ export function WhatsAppShareModal({
       ? window.location.origin
       : process.env.NEXT_PUBLIC_APP_URL || "https://www.notaku.store";
 
-  const invoiceUrl = `${appUrl}/i/${publicId}`;
+  const invoiceUrl = customPublicUrl || `${appUrl}/i/${publicId}`;
   const totalFormatted = `Rp${Number(total).toLocaleString("id-ID")}`;
   const sender = businessName ? `*${businessName}*` : "*NotaKu*";
 

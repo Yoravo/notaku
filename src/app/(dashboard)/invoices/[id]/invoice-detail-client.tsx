@@ -37,6 +37,7 @@ interface InvoiceDetailClientProps {
   invoice: {
     id: string;
     publicId: string;
+    customPublicUrl?: string | null;
     number: string | null;
     status: string;
     dueDate: string | null;
@@ -205,6 +206,7 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
                 : null
             }
             publicId={invoice.publicId}
+            customPublicUrl={invoice.customPublicUrl}
             businessName={invoice.businessName}
             status={invoice.status}
           />

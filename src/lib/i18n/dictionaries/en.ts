@@ -432,6 +432,33 @@ export const en = {
     rewardWaiting: "Waiting for PRO Upgrade",
   },
 
+  // Custom Domain & White-Label Module
+  domains: {
+    title: "Custom Domain & White-Label",
+    subtitle: "Connect your custom domain or subdomain to show public invoices under your own branded address.",
+    tabName: "Domain & White-Label",
+    subdomainLabel: "Instant NotaKu Subdomain",
+    subdomainDesc: "Instant branded subdomain without DNS setup required.",
+    customDomainLabel: "Your Own Custom Domain",
+    customDomainDesc: "Use a subdomain of your primary domain (e.g. invoice.mybusiness.com).",
+    dnsGuideTitle: "DNS Configuration Guide",
+    dnsGuideDesc: "Add the following DNS Record to your domain registrar or DNS manager:",
+    dnsType: "Record Type",
+    dnsHost: "Name / Host",
+    dnsTarget: "Target Value",
+    dnsAction: "Action",
+    copy: "Copy",
+    copied: "Copied",
+    verifyBtn: "Verify DNS Now",
+    verifying: "Checking DNS...",
+    saveBtn: "Save Domain Settings",
+    saving: "Saving...",
+    statusVerified: "Verified & Active",
+    statusPending: "Pending DNS",
+    proNoticeTitle: "Custom Domain & White-Label",
+    proNoticeDesc: "Brand your invoices with your own custom domain (e.g. invoice.mybrand.com). Boost credibility and client trust.",
+  },
+
   // Hero Section
   hero: {
     badge: "Smart Billing & Invoicing Solution",

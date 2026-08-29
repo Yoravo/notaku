@@ -5,6 +5,7 @@ import { ProfileForm } from "@/components/profile-form";
 import { BankSettingsForm } from "@/components/bank-settings-form";
 import { SecurityForm } from "@/components/security-form";
 import { TemplateSelector } from "@/components/template-selector";
+import { CustomDomainForm } from "@/components/custom-domain-form";
 import { UpgradeButton } from "@/components/upgrade-button";
 import { InvoiceTemplate } from "@/generated/prisma/client";
 import {
@@ -13,8 +14,10 @@ import {
   ShieldCheckIcon,
   DocumentTextIcon,
   SparklesIcon,
+  GlobeAltIcon,
 } from "@heroicons/react/24/outline";
 import { useLanguage } from "@/lib/i18n/context";
+import type { CustomDomainData } from "@/actions/domains";
 
 type UserData = {
   id: string;
@@ -34,9 +37,17 @@ type UserData = {
   invoiceTemplate: InvoiceTemplate;
 };
 
-export function SettingsTabsClient({ user }: { user: UserData }) {
+export function SettingsTabsClient({
+  user,
+  domainData,
+}: {
+  user: UserData;
+  domainData: CustomDomainData;
+}) {
   const { t, locale } = useLanguage();
-  const [activeTab, setActiveTab] = useState<"profile" | "bank" | "template" | "security">("profile");
+  const [activeTab, setActiveTab] = useState<
+    "profile" | "bank" | "template" | "domain" | "security"
+  >("profile");
 
   const isPro = user.plan === "PRO";
 
@@ -44,6 +55,7 @@ export function SettingsTabsClient({ user }: { user: UserData }) {
     { id: "profile", label: t.settings?.tabProfile || (locale === "id" ? "Profil & Identitas" : "Profile & Identity"), icon: UserIcon },
     { id: "bank", label: t.settings?.tabBank || (locale === "id" ? "Rekening Pembayaran" : "Bank Account"), icon: BuildingLibraryIcon },
     { id: "template", label: locale === "id" ? "Desain PDF Faktur" : "Invoice PDF Template", icon: DocumentTextIcon },
+    { id: "domain", label: locale === "id" ? "Domain & White-Label" : "Domain & White-Label", icon: GlobeAltIcon },
     { id: "security", label: t.settings?.tabSecurity || (locale === "id" ? "Keamanan Akun" : "Account Security"), icon: ShieldCheckIcon },
   ] as const;
 
@@ -173,7 +185,14 @@ export function SettingsTabsClient({ user }: { user: UserData }) {
           </div>
         )}
 
-        {/* Tab 4: Keamanan & Password */}
+        {/* Tab 4: Domain & White-Label */}
+        {activeTab === "domain" && (
+          <div className="space-y-6 max-w-3xl">
+            <CustomDomainForm initialData={domainData} />
+          </div>
+        )}
+
+        {/* Tab 5: Keamanan & Password */}
         {activeTab === "security" && (
           <div className="space-y-6 max-w-2xl">
             <div>
