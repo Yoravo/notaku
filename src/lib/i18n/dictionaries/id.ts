@@ -323,6 +323,9 @@ export const id = {
     accountNumber: "Nomor Rekening",
     accountHolderName: "Nama Pemilik Rekening",
     accountLockedNotice: "Rekening ini telah dikunci untuk keamanan penarikan dana. Hubungi admin jika ingin mengubah.",
+    currentPassword: "Kata Sandi Saat Ini",
+    newPassword: "Kata Sandi Baru",
+    confirmPassword: "Ulangi Kata Sandi Baru",
   },
 
   // Admin Module

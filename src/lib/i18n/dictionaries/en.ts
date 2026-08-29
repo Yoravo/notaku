@@ -323,6 +323,9 @@ export const en = {
     accountNumber: "Account Number",
     accountHolderName: "Account Holder Name",
     accountLockedNotice: "This bank account is locked for payout security. Contact support if you need to modify it.",
+    currentPassword: "Current Password",
+    newPassword: "New Password",
+    confirmPassword: "Confirm New Password",
   },
 
   // Admin Module
