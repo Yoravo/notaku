@@ -4,11 +4,38 @@ import { nextCookies } from "better-auth/next-js";
 import { prisma } from "./prisma";
 import { sendEmail } from "./email";
 import { escapeHtml } from "./html";
+import { ensureUserReferralCode } from "./referral";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  user: {
+    additionalFields: {
+      referralCode: {
+        type: "string",
+        required: false,
+      },
+      referredById: {
+        type: "string",
+        required: false,
+      },
+    },
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (user) => {
+          // Otomatis buatkan referralCode jika user baru dibuat
+          try {
+            await ensureUserReferralCode(user.id);
+          } catch (e) {
+            console.error("Gagal auto-generate referralCode:", e);
+          }
+        },
+      },
+    },
+  },
   baseURL:
     process.env.BETTER_AUTH_URL ||
     process.env.NEXT_PUBLIC_APP_URL ||

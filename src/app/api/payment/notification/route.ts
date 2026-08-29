@@ -198,6 +198,71 @@ export async function POST(request: Request) {
         }),
       ]);
 
+      // Cek apakah user ini terdaftar dari referral dan beri bonus ke referrer
+      if (user.referredById) {
+        try {
+          const existingReward = await prisma.referralReward.findFirst({
+            where: {
+              referrerId: user.referredById,
+              referredUserId: user.id,
+              status: "COMPLETED",
+            },
+          });
+
+          if (!existingReward) {
+            const rewardAmount = 10000; // Rp 10.000 komisi saldo per upgrade PRO
+            const referrer = await prisma.user.findUnique({
+              where: { id: user.referredById },
+              select: { id: true, name: true, email: true },
+            });
+
+            if (referrer) {
+              await prisma.$transaction(async (tx) => {
+                // 1. Tambah saldo dompet referrer
+                await tx.user.update({
+                  where: { id: referrer.id },
+                  data: {
+                    balance: { increment: rewardAmount },
+                  },
+                });
+
+                // 2. Catat mutasi ledger transaksi
+                await tx.transaction.create({
+                  data: {
+                    userId: referrer.id,
+                    type: "REFERRAL_REWARD",
+                    amount: rewardAmount,
+                    grossAmount: rewardAmount,
+                    feeAmount: 0,
+                    description: `Bonus Komisi Referral: ${user.name || "Teman Anda"} upgrade ke Paket PRO`,
+                    referenceId: `REF-${user.id.slice(0, 8)}`,
+                  },
+                });
+
+                // 3. Catat history reward referral
+                await tx.referralReward.create({
+                  data: {
+                    referrerId: referrer.id,
+                    referredUserId: user.id,
+                    amount: rewardAmount,
+                    status: "COMPLETED",
+                    notes: `Upgrade PRO oleh ${user.name} (${user.email})`,
+                  },
+                });
+              });
+
+              auditLog("referral.reward_settled", {
+                referrerId: referrer.id,
+                referredUserId: user.id,
+                amount: rewardAmount,
+              });
+            }
+          }
+        } catch (refErr) {
+          console.error("Gagal memproses bonus referral:", refErr);
+        }
+      }
+
       auditLog("payment.mayar_settlement", {
         userId: user.id,
         email: user.email,

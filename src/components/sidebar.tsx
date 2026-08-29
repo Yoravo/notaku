@@ -16,6 +16,7 @@ import {
   ArrowRightStartOnRectangleIcon,
   ArrowPathIcon,
   DocumentChartBarIcon,
+  GiftIcon,
 } from "@heroicons/react/24/outline";
 import { useLanguage } from "@/lib/i18n/context";
 
@@ -80,6 +81,11 @@ export function Sidebar({
       href: "/wallet",
       label: t.dashboard?.wallet || "Saldo & Penarikan",
       icon: BanknotesIcon,
+    },
+    {
+      href: "/referrals",
+      label: locale === "id" ? "Program Referral" : "Referrals & Affiliate",
+      icon: GiftIcon,
     },
   ];
 

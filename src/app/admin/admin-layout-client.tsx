@@ -16,6 +16,7 @@ import {
   TagIcon,
   CpuChipIcon,
   BanknotesIcon,
+  GiftIcon,
 } from "@heroicons/react/24/outline";
 import { LanguageDropdown } from "@/components/language-dropdown";
 import { useLanguage } from "@/lib/i18n/context";
@@ -48,6 +49,7 @@ export function AdminLayoutClient({
     { href: "/admin/payouts", label: t.admin?.payouts || "Pencairan Dana", icon: BanknotesIcon },
     { href: "/admin/finance", label: t.admin?.finance || "Laporan Finansial", icon: ChartBarIcon },
     { href: "/admin/promos", label: t.admin?.promos || "Voucher & Promo", icon: TagIcon },
+    { href: "/admin/referrals", label: locale === "id" ? "Program Afiliasi" : "Affiliates & Referrals", icon: GiftIcon },
     { href: "/admin/announcement", label: t.admin?.announcement || "Pengumuman", icon: MegaphoneIcon },
     { href: "/admin/logs", label: t.admin?.logs || "Audit Logs", icon: ClipboardDocumentListIcon },
     { href: "/admin/system", label: t.admin?.system || "System Health", icon: CpuChipIcon },

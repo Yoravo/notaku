@@ -2,7 +2,8 @@
 
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { FormEvent, useState, useEffect, Suspense } from "react";
 import {
   UserIcon,
   EnvelopeIcon,
@@ -12,19 +13,31 @@ import {
   ArrowPathIcon,
   ExclamationCircleIcon,
   CheckCircleIcon,
+  GiftIcon,
 } from "@heroicons/react/24/outline";
 import { useLanguage } from "@/lib/i18n/context";
 import { LanguageDropdown } from "@/components/language-dropdown";
+import { linkUserReferral } from "@/actions/referrals";
 
-export default function RegisterPage() {
+function RegisterForm() {
   const { t, locale } = useLanguage();
+  const searchParams = useSearchParams();
+  const refCodeFromUrl = searchParams.get("ref") || "";
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [referralCode, setReferralCode] = useState(refCodeFromUrl);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    if (refCodeFromUrl) {
+      setReferralCode(refCodeFromUrl.toUpperCase());
+    }
+  }, [refCodeFromUrl]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,7 +45,7 @@ export default function RegisterPage() {
     setError("");
 
     try {
-      const { error } = await authClient.signUp.email({
+      const { data, error } = await authClient.signUp.email({
         name,
         email,
         password,
@@ -44,6 +57,13 @@ export default function RegisterPage() {
             (locale === "id" ? "Registrasi gagal. Silakan coba lagi." : "Registration failed. Please try again.")
         );
       } else {
+        if (referralCode.trim() && data?.user?.id) {
+          try {
+            await linkUserReferral(data.user.id, referralCode.trim());
+          } catch (refErr) {
+            console.error("Gagal menautkan kode referral:", refErr);
+          }
+        }
         setSuccess(true);
       }
     } catch {
@@ -153,6 +173,17 @@ export default function RegisterPage() {
             </p>
           </div>
 
+          {refCodeFromUrl && (
+            <div className="mb-5 p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-semibold flex items-center gap-2.5 shadow-2xs">
+              <GiftIcon className="w-4 h-4 text-[#0f6b4f] shrink-0" />
+              <span>
+                {locale === "id"
+                  ? `Mendaftar melalui referral: ${refCodeFromUrl}`
+                  : `Signing up via referral: ${refCodeFromUrl}`}
+              </span>
+            </div>
+          )}
+
           {error && (
             <div className="mb-5 p-3.5 rounded-2xl bg-rose-50 border border-rose-200/60 text-rose-800 text-xs font-semibold flex items-start gap-2.5 shadow-2xs animate-in fade-in">
               <ExclamationCircleIcon className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
@@ -258,6 +289,27 @@ export default function RegisterPage() {
               </div>
             </div>
 
+            {/* Kode Referral (Opsional) */}
+            <div>
+              <label
+                htmlFor="referralCode"
+                className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5"
+              >
+                {locale === "id" ? "Kode Referral (Opsional)" : "Referral Code (Optional)"}
+              </label>
+              <div className="relative">
+                <GiftIcon className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  id="referralCode"
+                  type="text"
+                  value={referralCode}
+                  onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+                  placeholder={locale === "id" ? "Contoh: NK-7X9K" : "e.g. NK-7X9K"}
+                  className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] transition-colors text-xs sm:text-sm font-medium uppercase min-h-[44px]"
+                />
+              </div>
+            </div>
+
             {/* Submit Button */}
             <button
               type="submit"
@@ -333,3 +385,12 @@ export default function RegisterPage() {
     </div>
   );
 }
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center font-sans text-slate-500 text-sm">Memuat form...</div>}>
+      <RegisterForm />
+    </Suspense>
+  );
+}
+

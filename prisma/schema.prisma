@@ -40,6 +40,13 @@ model User {
   bankAccountLocked Boolean   @default(false)
   balance           Decimal   @default(0)
 
+  // Program Referral & Afiliasi
+  referralCode      String?   @unique
+  referredById      String?
+  referredBy        User?     @relation("UserReferrals", fields: [referredById], references: [id])
+  referrals         User[]    @relation("UserReferrals")
+  referralRewards   ReferralReward[] @relation("UserReferralRewards")
+
   @@map("user")
 }
 
@@ -138,11 +145,29 @@ model Payout {
   @@map("payout")
 }
 
+model ReferralReward {
+  id             String    @id @default(cuid())
+  referrerId     String
+  referredUserId String
+  amount         Decimal   @default(10000)
+  status         String    @default("COMPLETED") // "COMPLETED" | "REJECTED" | "PENDING"
+  notes          String?
+  createdAt      DateTime  @default(now())
+
+  referrer       User      @relation("UserReferralRewards", fields: [referrerId], references: [id], onDelete: Cascade)
+
+  @@index([referrerId])
+  @@index([referredUserId])
+  @@index([createdAt])
+  @@map("referral_reward")
+}
+
 enum TransactionType {
   INVOICE_PAYMENT
   PAYOUT_WITHDRAWAL
   FEE_DEDUCTION
   REFUND
+  REFERRAL_REWARD
 }
 
 enum PayoutStatus {
