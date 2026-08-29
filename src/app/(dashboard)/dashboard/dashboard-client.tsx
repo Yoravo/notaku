@@ -40,7 +40,7 @@ export function DashboardClient({
   invoiceCount,
   used,
   limit,
-  totalCustomers,
+  totalCustomers: _totalCustomers,
   recentInvoices,
   announcement = null,
 }: DashboardClientProps) {
@@ -222,11 +222,7 @@ export function DashboardClient({
       </div>
 
       {/* Recent Invoices Table Component */}
-      <RecentInvoices
-        invoices={recentInvoices}
-        totalCustomers={totalCustomers}
-        isPro={isPro}
-      />
+      <RecentInvoices invoices={recentInvoices} />
     </div>
   );
 }
