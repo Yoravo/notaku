@@ -147,8 +147,8 @@ export function NewRecurringInvoiceClient({
       const next = [...prev];
       if (field === "quantity" || field === "price") {
         next[index] = { ...next[index], [field]: Number(value) || 0 };
-      } else {
-        next[index] = { ...next[index], [field]: value };
+      } else if (field === "description") {
+        next[index] = { ...next[index], description: String(value) };
       }
       return next;
     });
