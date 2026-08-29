@@ -14,6 +14,7 @@ type InvoiceData = {
   discountType?: DiscountType | string;
   discountValue?: number | string;
   taxRate?: number | string;
+  currency?: string;
   enableDirectTransfer?: boolean;
   enableDigitalPayment?: boolean;
   items: { description: string; quantity: number; price: number }[];
