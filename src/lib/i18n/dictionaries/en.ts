@@ -480,4 +480,13 @@ export const en = {
       },
     ],
   },
+
+  // Bottom CTA Banner
+  bottomCta: {
+    title: "Start Creating Professional Invoices Today",
+    desc: "Leave behind time-consuming manual workflows. Join thousands of businesses managing billing and invoicing seamlessly.",
+    ctaUser: "Go to My Dashboard",
+    ctaGuest: "Sign Up Free (Takes 30s)",
+    note: "Free plan available forever • No credit card required • Cancel anytime",
+  },
 };

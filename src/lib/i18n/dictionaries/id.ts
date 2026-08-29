@@ -480,4 +480,13 @@ export const id = {
       },
     ],
   },
+
+  // Bottom CTA Banner
+  bottomCta: {
+    title: "Mulai Buat Invoice Profesional Sekarang",
+    desc: "Tinggalkan cara lama yang memakan waktu. Bergabunglah dengan ribuan pelaku usaha yang mengelola invoice dan tagihan secara cerdas dan rapi.",
+    ctaUser: "Buka Dashboard Saya",
+    ctaGuest: "Daftar Gratis Sekarang (30 Detik)",
+    note: "Paket Free gratis selamanya • Tanpa kartu kredit • Batalkan kapan saja",
+  },
 };
