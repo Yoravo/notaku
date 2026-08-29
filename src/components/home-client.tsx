@@ -164,9 +164,17 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                   <span>{session ? t.hero.ctaDashboard : t.hero.ctaStart}</span>
                 </Link>
 
+                <Link
+                  href="/buat-invoice"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-full border border-emerald/30 bg-emerald/10 px-6 py-3.5 text-sm font-bold text-emerald transition-colors hover:bg-emerald/20"
+                >
+                  <DocumentTextIcon className="w-4 h-4" />
+                  <span>Coba Generator Gratis</span>
+                </Link>
+
                 <a
                   href="#cara-kerja"
-                  className="inline-flex items-center justify-center rounded-full border border-line bg-paper-deep px-6 py-3.5 text-sm font-semibold text-ink transition-colors hover:bg-line"
+                  className="inline-flex items-center justify-center rounded-full border border-line bg-paper-deep px-5 py-3.5 text-sm font-semibold text-ink transition-colors hover:bg-line"
                 >
                   {t.hero.ctaHow}
                 </a>
@@ -574,6 +582,9 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-ink-soft font-medium">
+              <Link href="/buat-invoice" className="text-emerald font-bold hover:underline">
+                Free Invoice Generator
+              </Link>
               <a href="#fitur" className="hover:text-emerald transition-colors">
                 {t.footer.features}
               </a>

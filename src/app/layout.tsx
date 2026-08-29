@@ -16,44 +16,76 @@ const jakarta = Plus_Jakarta_Sans({
   display: "swap",
 });
 
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
+
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-  ),
+  metadataBase: new URL(baseUrl),
   title: {
-    default: "NotaKu - Invoice Generator untuk UMKM & Bisnis",
+    default: "NotaKu - Aplikasi Invoice Generator Online & Kuitansi Digital UMKM",
     template: "%s · NotaKu",
   },
   description:
-    "Bikin invoice profesional dalam 30 detik. Gratis untuk UMKM Indonesia. Buat, kirim via WhatsApp, dan download PDF.",
+    "Buat invoice dan kuitansi profesional dalam 30 detik. Gratis untuk UMKM, freelancer, & bisnis Indonesia. Kirim otomatis via WhatsApp, terima QRIS, dan unduh PDF resmi.",
   keywords: [
-    "invoice",
-    "nota",
-    "UMKM",
-    "invoice generator",
-    "faktur",
-    "tagihan",
-    "bisnis",
+    "aplikasi invoice",
+    "invoice generator online",
+    "buat invoice online gratis",
+    "aplikasi tagihan umkm",
+    "software invoice indonesia",
+    "kuitansi digital resmi",
+    "faktur tagihan",
+    "contoh invoice jasa",
+    "invoice whatsapp otomatis",
+    "pembayaran qris invoice",
+    "nota penjualan online",
   ],
-  authors: [{ name: "NotaKu" }],
+  authors: [{ name: "NotaKu", url: baseUrl }],
+  creator: "NotaKu",
+  publisher: "NotaKu",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  alternates: {
+    canonical: baseUrl,
+  },
   openGraph: {
     type: "website",
     locale: "id_ID",
-    title: "NotaKu - Invoice Generator untuk UMKM & Bisnis",
+    url: baseUrl,
+    title: "NotaKu - Aplikasi Invoice Generator Online & Kuitansi Digital UMKM",
     description:
-      "Bikin invoice profesional dalam 30 detik. Gratis untuk UMKM Indonesia.",
+      "Buat invoice dan kuitansi profesional dalam 30 detik. Gratis untuk UMKM, freelancer, & bisnis Indonesia. Kirim otomatis via WhatsApp, terima QRIS, dan unduh PDF resmi.",
     siteName: "NotaKu",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "NotaKu - Invoice Generator untuk UMKM & Bisnis",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "NotaKu - Invoice Generator untuk UMKM & Bisnis",
+    title: "NotaKu - Aplikasi Invoice Generator Online & Kuitansi Digital UMKM",
     description:
-      "Bikin invoice profesional dalam 30 detik. Gratis untuk UMKM Indonesia.",
+      "Buat invoice dan kuitansi profesional dalam 30 detik. Gratis untuk UMKM, freelancer, & bisnis Indonesia.",
+    images: ["/opengraph-image"],
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
+  category: "finance",
 };
 
 export default function RootLayout({
