@@ -313,7 +313,7 @@ export function ReceiptTemplate({ data }: { data: ReceiptData }) {
               <Text style={styles.amountLabel}>Jumlah Pembayaran</Text>
               <View style={styles.amountBox}>
                 <Text style={styles.amountText}>
-                  {formatCurrency(data.total)},-
+                  {formatCurrency(data.total, data.currency)}
                 </Text>
               </View>
               <Text style={styles.paymentDateMeta}>

@@ -22,6 +22,7 @@ export const invoiceSchema = z.object({
   discountType: z.enum(["FIXED", "PERCENTAGE"]).default("FIXED"),
   discountValue: z.number().min(0, "Nilai diskon tidak boleh negatif").default(0),
   taxRate: z.number().min(0, "Tarif pajak minimal 0%").max(100, "Tarif pajak maksimal 100%").default(0),
+  currency: z.enum(["IDR", "USD", "SGD", "EUR"]).default("IDR"),
   enableDirectTransfer: z.boolean().default(true),
   enableDigitalPayment: z.boolean().default(false),
   items: z.array(invoiceItemSchema).min(1, "Minimal 1 item").max(50, "Maksimal 50 item"),

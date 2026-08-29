@@ -36,6 +36,7 @@ export async function createInvoice(data: {
   discountType?: DiscountType | string;
   discountValue?: number;
   taxRate?: number;
+  currency?: string;
   enableDirectTransfer?: boolean;
   enableDigitalPayment?: boolean;
   items: { description: string; quantity: number; price: number }[];
@@ -88,6 +89,7 @@ export async function createInvoice(data: {
         taxRate: totals.taxRate,
         taxAmount: totals.taxAmount,
         total: totals.total,
+        currency: parsed.data.currency || "IDR",
         enableDirectTransfer: parsed.data.enableDirectTransfer ?? true,
         enableDigitalPayment: parsed.data.enableDigitalPayment ?? false,
         items: {
@@ -121,6 +123,7 @@ export async function updateInvoice(
     discountType?: DiscountType | string;
     discountValue?: number;
     taxRate?: number;
+    currency?: string;
     enableDirectTransfer?: boolean;
     enableDigitalPayment?: boolean;
     items: InvoiceItem[];
@@ -176,6 +179,7 @@ export async function updateInvoice(
       taxRate: totals.taxRate,
       taxAmount: totals.taxAmount,
       total: totals.total,
+      currency: parsed.data.currency || "IDR",
       enableDirectTransfer: parsed.data.enableDirectTransfer ?? true,
       enableDigitalPayment: parsed.data.enableDigitalPayment ?? false,
       items: {

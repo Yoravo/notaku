@@ -11,6 +11,12 @@ import {
   DiscountType,
 } from "@/lib/invoice-calculations";
 import { useLanguage } from "@/lib/i18n/context";
+import {
+  CURRENCY_MAP,
+  SUPPORTED_CURRENCIES,
+  SupportedCurrency,
+  formatMoney,
+} from "@/lib/currencies";
 
 type Customer = { id: string; name: string };
 type InvoiceItem = { description: string; quantity: number; price: number };
@@ -22,6 +28,7 @@ type Invoice = {
   discountType?: DiscountType | string;
   discountValue?: number | string;
   taxRate?: number | string;
+  currency?: string;
   enableDirectTransfer?: boolean;
   enableDigitalPayment?: boolean;
   items: { description: string; quantity: number; price: number }[];
@@ -52,6 +59,9 @@ export function InvoiceForm({
   );
   const [dueDate, setDueDate] = useState(
     invoice?.dueDate ? invoice.dueDate.split("T")[0] : "",
+  );
+  const [currency, setCurrency] = useState<SupportedCurrency>(
+    (invoice?.currency as SupportedCurrency) || "IDR",
   );
   const [notes, setNotes] = useState(invoice?.notes || "");
   const [enableDirectTransfer, setEnableDirectTransfer] = useState(
@@ -93,6 +103,7 @@ export function InvoiceForm({
   const [showCustomerModal, setShowCustomerModal] = useState(false);
   const router = useRouter();
 
+  const currConf = CURRENCY_MAP[currency] || CURRENCY_MAP.IDR;
   const activeTaxRate =
     selectedTaxMode === "custom" ? customTaxRate : selectedTaxMode;
 
@@ -149,6 +160,7 @@ export function InvoiceForm({
       discountType,
       discountValue: totals.discountValue,
       taxRate: activeTaxRate,
+      currency,
       enableDirectTransfer,
       enableDigitalPayment,
       items,
@@ -192,7 +204,7 @@ export function InvoiceForm({
         <h2 className="text-sm font-bold text-slate-900 mb-4">
           {locale === "id" ? "Informasi Pelanggan & Batas Pembayaran" : "Client & Payment Schedule"}
         </h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div>
             <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
               {t.invoices?.customer || (locale === "id" ? "Pelanggan" : "Client")}{" "}
@@ -251,6 +263,23 @@ export function InvoiceForm({
               onChange={(e) => setDueDate(e.target.value)}
               className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-medium"
             />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+              {locale === "id" ? "Mata Uang" : "Currency"}
+            </label>
+            <select
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value as SupportedCurrency)}
+              className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-medium"
+            >
+              {SUPPORTED_CURRENCIES.map((cur) => (
+                <option key={cur} value={cur}>
+                  {CURRENCY_MAP[cur].name} ({CURRENCY_MAP[cur].symbol})
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       </div>
@@ -318,11 +347,12 @@ export function InvoiceForm({
                 </div>
                 <div>
                   <label className="block text-[11px] font-bold text-slate-500 mb-1">
-                    {t.invoices?.price || (locale === "id" ? "Harga Satuan (Rp)" : "Unit Price (Rp)")}
+                    {t.invoices?.price || (locale === "id" ? `Harga Satuan (${currConf.symbol})` : `Unit Price (${currConf.symbol})`)}
                   </label>
                   <input
                     type="number"
                     min="0"
+                    step={currConf.decimalPlaces > 0 ? "0.01" : "1"}
                     placeholder="0"
                     value={item.price || ""}
                     onChange={(e) =>
@@ -339,7 +369,7 @@ export function InvoiceForm({
               <div className="text-right pt-2 border-t border-slate-200 flex items-center justify-between text-xs">
                 <span className="text-slate-500 font-medium">Subtotal:</span>
                 <span className="font-bold text-slate-900 tabular-nums">
-                  Rp{(item.quantity * item.price).toLocaleString("id-ID")}
+                  {formatMoney(item.quantity * item.price, currency)}
                 </span>
               </div>
             </div>
@@ -351,7 +381,7 @@ export function InvoiceForm({
           <div className="grid grid-cols-12 gap-3 text-xs font-bold text-slate-500 uppercase tracking-wider px-1">
             <div className="col-span-5">{t.invoices?.itemName || (locale === "id" ? "Deskripsi" : "Description")}</div>
             <div className="col-span-2 text-center">{t.invoices?.quantity || "Qty"}</div>
-            <div className="col-span-2 text-right">{t.invoices?.price || "Harga (Rp)"}</div>
+            <div className="col-span-2 text-right">{t.invoices?.price || `Harga (${currConf.symbol})`}</div>
             <div className="col-span-2 text-right">{t.invoices?.amount || "Jumlah"}</div>
             <div className="col-span-1 text-center">{t.invoices?.actions || "Aksi"}</div>
           </div>
@@ -388,6 +418,7 @@ export function InvoiceForm({
                 <input
                   type="number"
                   min="0"
+                  step={currConf.decimalPlaces > 0 ? "0.01" : "1"}
                   placeholder="0"
                   value={item.price || ""}
                   onChange={(e) =>
@@ -401,7 +432,7 @@ export function InvoiceForm({
                 />
               </div>
               <div className="col-span-2 text-right font-bold text-sm text-slate-900 tabular-nums">
-                Rp{(item.quantity * item.price).toLocaleString("id-ID")}
+                {formatMoney(item.quantity * item.price, currency)}
               </div>
               <div className="col-span-1 text-center">
                 <button
@@ -451,7 +482,7 @@ export function InvoiceForm({
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                {t.invoices?.discountTypeFixed || "Rp (Nominal)"}
+                {t.invoices?.discountTypeFixed || `${currConf.symbol} (Nominal)`}
               </button>
               <button
                 type="button"
@@ -472,12 +503,13 @@ export function InvoiceForm({
               <div className="relative">
                 {discountType === "FIXED" && (
                   <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-xs font-bold text-slate-400 pointer-events-none">
-                    Rp
+                    {currConf.symbol}
                   </span>
                 )}
                 <input
                   type="number"
                   min="0"
+                  step={currConf.decimalPlaces > 0 ? "0.01" : "1"}
                   max={discountType === "PERCENTAGE" ? "100" : undefined}
                   value={discountValue || ""}
                   onChange={(e) =>
@@ -499,54 +531,37 @@ export function InvoiceForm({
             {/* Quick preset pills for % */}
             {discountType === "PERCENTAGE" && (
               <div className="sm:col-span-5 flex flex-wrap gap-1.5">
-                {DISCOUNT_PERCENT_PRESETS.map((p) => (
+                {DISCOUNT_PERCENT_PRESETS.map((pct) => (
                   <button
-                    key={p}
+                    key={pct}
                     type="button"
-                    onClick={() => setDiscountValue(p)}
-                    className={`rounded-lg px-2.5 py-1 text-xs font-semibold border transition-colors cursor-pointer ${
-                      discountValue === p
-                        ? "bg-emerald-50 border-[#0f6b4f] text-[#0f6b4f]"
-                        : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
+                    onClick={() => setDiscountValue(pct)}
+                    className={`rounded-lg px-2.5 py-1 text-xs font-semibold border transition-all cursor-pointer ${
+                      discountValue === pct
+                        ? "bg-[#0f6b4f] text-white border-[#0f6b4f]"
+                        : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
                     }`}
                   >
-                    {p}%
+                    {pct}%
                   </button>
                 ))}
               </div>
             )}
           </div>
-
-          {totals.discountAmount > 0 && (
-            <p className="text-xs text-[#0f6b4f] font-semibold">
-              {locale === "id" ? "Potongan diskon:" : "Discount deduction:"}{" "}
-              <strong>
-                -Rp{totals.discountAmount.toLocaleString("id-ID")}
-              </strong>{" "}
-              {discountType === "PERCENTAGE" && `(${totals.discountValue}% ${locale === "id" ? "dari subtotal" : "of subtotal"})`}
-            </p>
-          )}
         </div>
 
-        <hr className="border-slate-100" />
-
         {/* Section Pajak (PPN) */}
-        <div className="space-y-3">
+        <div className="space-y-3 pt-4 border-t border-slate-100">
           <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-            {t.invoices?.taxVat || (locale === "id" ? "Pajak Pertambahan Nilai (PPN)" : "Tax (VAT)")}
+            {t.invoices?.taxVat || (locale === "id" ? "Pajak Pertambahan Nilai (PPN)" : "Value Added Tax (VAT)")}
           </label>
 
           <div className="flex flex-wrap gap-2">
             {taxPresets.map((preset) => (
               <button
-                key={preset.label}
+                key={String(preset.value)}
                 type="button"
-                onClick={() => {
-                  setSelectedTaxMode(preset.value);
-                  if (preset.value !== "custom") {
-                    setCustomTaxRate(0);
-                  }
-                }}
+                onClick={() => setSelectedTaxMode(preset.value)}
                 className={`rounded-xl px-3.5 py-2 text-xs font-bold border transition-all cursor-pointer ${
                   selectedTaxMode === preset.value
                     ? "bg-[#0f6b4f]/10 border-[#0f6b4f]/30 text-[#0f6b4f] shadow-2xs"
@@ -589,9 +604,9 @@ export function InvoiceForm({
             <p className="text-xs text-slate-600 font-medium">
               {locale === "id" ? "Pajak dihitung dari" : "Tax calculated from"}{" "}
               <strong>{t.invoices?.taxableBase || "DPP"}</strong> ={" "}
-              <span>Rp{totals.taxableBase.toLocaleString("id-ID")}</span>:{" "}
+              <span>{formatMoney(totals.taxableBase, currency)}</span>:{" "}
               <strong className="text-slate-900">
-                +Rp{totals.taxAmount.toLocaleString("id-ID")}
+                +{formatMoney(totals.taxAmount, currency)}
               </strong>
             </p>
           )}
@@ -703,7 +718,7 @@ export function InvoiceForm({
           <div className="flex justify-between text-slate-600">
             <span className="font-medium">{t.invoices?.subtotal || "Subtotal"}</span>
             <span className="font-bold text-slate-900 tabular-nums">
-              Rp{totals.subtotal.toLocaleString("id-ID")}
+              {formatMoney(totals.subtotal, currency)}
             </span>
           </div>
 
@@ -716,7 +731,7 @@ export function InvoiceForm({
                   : ""}
               </span>
               <span className="tabular-nums">
-                -Rp{totals.discountAmount.toLocaleString("id-ID")}
+                -{formatMoney(totals.discountAmount, currency)}
               </span>
             </div>
           )}
@@ -725,7 +740,7 @@ export function InvoiceForm({
             <div className="flex justify-between text-slate-600">
               <span className="font-medium">{t.invoices?.taxVat || "Pajak"} ({activeTaxRate}%)</span>
               <span className="font-bold text-slate-900 tabular-nums">
-                +Rp{totals.taxAmount.toLocaleString("id-ID")}
+                +{formatMoney(totals.taxAmount, currency)}
               </span>
             </div>
           )}
@@ -737,7 +752,7 @@ export function InvoiceForm({
               {t.invoices?.total || (locale === "id" ? "Total Tagihan" : "Grand Total")}
             </span>
             <p className="text-2xl font-bold text-slate-900 tabular-nums">
-              Rp{totals.total.toLocaleString("id-ID")}
+              {formatMoney(totals.total, currency)}
             </p>
           </div>
 
@@ -771,7 +786,7 @@ export function InvoiceForm({
               {t.invoices?.total || "Total"}
             </span>
             <p className="text-base font-extrabold text-slate-900 tabular-nums">
-              Rp{totals.total.toLocaleString("id-ID")}
+              {formatMoney(totals.total, currency)}
             </p>
           </div>
           <button

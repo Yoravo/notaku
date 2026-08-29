@@ -57,6 +57,7 @@ export default async function EditInvoicePage({
         discountType: invoice.discountType,
         discountValue: Number(invoice.discountValue || 0),
         taxRate: Number(invoice.taxRate || 0),
+        currency: (invoice as any).currency || "IDR",
         enableDirectTransfer: invoice.enableDirectTransfer,
         enableDigitalPayment: invoice.enableDigitalPayment,
         items: invoice.items.map((i) => ({

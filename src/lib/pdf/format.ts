@@ -1,5 +1,5 @@
-export function formatCurrency(amount: number): string {
-  const parts = Math.round(amount).toString().split(".");
-  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  return `Rp${parts.join(",")}`;
+import { formatMoney, SupportedCurrency } from "@/lib/currencies";
+
+export function formatCurrency(amount: number, currency: SupportedCurrency | string = "IDR"): string {
+  return formatMoney(amount, currency);
 }

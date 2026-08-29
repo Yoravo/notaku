@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { formatDateWIB } from "@/lib/invoice-utils";
+import { formatMoney } from "@/lib/currencies";
 import { PublicPaymentBox } from "@/components/invoices/public-payment-box";
 import type { Metadata } from "next";
 
@@ -21,8 +22,9 @@ export async function generateMetadata({
 
   if (!invoice) return { title: "Invoice Tidak Ditemukan — NotaKu" };
 
+  const currency = (invoice as any).currency || "IDR";
   const businessName = invoice.user.businessName || invoice.user.name;
-  const totalFormatted = `Rp${Number(invoice.total).toLocaleString("id-ID")}`;
+  const totalFormatted = formatMoney(Number(invoice.total), currency);
 
   const statusLabel: Record<string, string> = {
     DRAFT: "Draft",
@@ -71,6 +73,8 @@ export default async function PublicInvoicePage({
   });
 
   if (!invoice) notFound();
+
+  const currency = (invoice as any).currency || "IDR";
 
   return (
     <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6">
@@ -205,10 +209,10 @@ export default async function PublicInvoicePage({
                     {item.quantity}
                   </td>
                   <td className="py-3 text-right text-slate-600 tabular-nums">
-                    Rp{Number(item.price).toLocaleString("id-ID")}
+                    {formatMoney(Number(item.price), currency)}
                   </td>
                   <td className="py-3 text-right font-bold text-slate-900 tabular-nums">
-                    Rp{Number(item.amount).toLocaleString("id-ID")}
+                    {formatMoney(Number(item.amount), currency)}
                   </td>
                 </tr>
               ))}
@@ -222,7 +226,7 @@ export default async function PublicInvoicePage({
             <div className="flex justify-between text-xs sm:text-sm text-slate-600">
               <span className="font-medium">Subtotal</span>
               <span className="font-bold text-slate-900 tabular-nums">
-                Rp{Number(invoice.subtotal || invoice.total).toLocaleString("id-ID")}
+                {formatMoney(Number(invoice.subtotal || invoice.total), currency)}
               </span>
             </div>
 
@@ -232,7 +236,7 @@ export default async function PublicInvoicePage({
                   Diskon {invoice.discountType === "PERCENTAGE" ? `(${Number(invoice.discountValue)}%)` : ""}
                 </span>
                 <span className="tabular-nums">
-                  -Rp{Number(invoice.discountAmount).toLocaleString("id-ID")}
+                  -{formatMoney(Number(invoice.discountAmount), currency)}
                 </span>
               </div>
             )}
@@ -241,7 +245,7 @@ export default async function PublicInvoicePage({
               <div className="flex justify-between text-xs sm:text-sm text-slate-600">
                 <span className="font-medium">Pajak (PPN {Number(invoice.taxRate)}%)</span>
                 <span className="font-bold text-slate-900 tabular-nums">
-                  +Rp{Number(invoice.taxAmount).toLocaleString("id-ID")}
+                  +{formatMoney(Number(invoice.taxAmount), currency)}
                 </span>
               </div>
             )}
@@ -251,7 +255,7 @@ export default async function PublicInvoicePage({
                 Total Tagihan
               </span>
               <span className="text-xl sm:text-2xl font-bold text-slate-900 tabular-nums">
-                Rp{Number(invoice.total).toLocaleString("id-ID")}
+                {formatMoney(Number(invoice.total), currency)}
               </span>
             </div>
           </div>

@@ -274,12 +274,12 @@ export function ClassicTemplate({ data }: { data: InvoiceData }) {
                 {item.quantity}
               </Text>
               <Text style={{ ...styles.colPrice, color: "#555" }}>
-                {formatCurrency(item.price)}
+                {formatCurrency(item.price, data.currency)}
               </Text>
               <Text
                 style={{ ...styles.colAmount, ...styles.bold, color: "#111" }}
               >
-                {formatCurrency(item.amount)}
+                {formatCurrency(item.amount, data.currency)}
               </Text>
             </View>
           ))}
@@ -288,7 +288,7 @@ export function ClassicTemplate({ data }: { data: InvoiceData }) {
             <View style={styles.summaryRow}>
               <Text style={styles.summaryLabel}>Subtotal</Text>
               <Text style={styles.summaryValue}>
-                {formatCurrency(data.subtotal || data.total)}
+                {formatCurrency(data.subtotal || data.total, data.currency)}
               </Text>
             </View>
 
@@ -298,7 +298,7 @@ export function ClassicTemplate({ data }: { data: InvoiceData }) {
                   Diskon {data.discountType === "PERCENTAGE" ? `(${data.discountValue}%)` : ""}
                 </Text>
                 <Text style={{ ...styles.summaryValue, color: "#0f6b4f" }}>
-                  -{formatCurrency(data.discountAmount || 0)}
+                  -{formatCurrency(data.discountAmount || 0, data.currency)}
                 </Text>
               </View>
             )}
@@ -309,7 +309,7 @@ export function ClassicTemplate({ data }: { data: InvoiceData }) {
                   Pajak (PPN {data.taxRate || 0}%)
                 </Text>
                 <Text style={styles.summaryValue}>
-                  +{formatCurrency(data.taxAmount || 0)}
+                  +{formatCurrency(data.taxAmount || 0, data.currency)}
                 </Text>
               </View>
             )}
@@ -317,7 +317,7 @@ export function ClassicTemplate({ data }: { data: InvoiceData }) {
             <View style={styles.totalRow}>
               <Text style={styles.totalLabel}>Total Tagihan</Text>
               <Text style={styles.totalValue}>
-                {formatCurrency(data.total)}
+                {formatCurrency(data.total, data.currency)}
               </Text>
             </View>
           </View>

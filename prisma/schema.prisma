@@ -72,6 +72,7 @@ model Invoice {
   taxRate        Decimal       @default(0)
   taxAmount      Decimal       @default(0)
   total          Decimal       @default(0)
+  currency       String        @default("IDR")
   createdAt      DateTime      @default(now())
   user           User          @relation(fields: [userId], references: [id])
   customer       Customer      @relation(fields: [customerId], references: [id])

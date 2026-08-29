@@ -38,6 +38,7 @@ export default async function InvoiceDetailPage({
     taxRate: Number(invoice.taxRate || 0),
     taxAmount: Number(invoice.taxAmount || 0),
     total: Number(invoice.total),
+    currency: (invoice as any).currency || "IDR",
     createdAt: invoice.createdAt.toISOString(),
     items: invoice.items.map((item) => ({
       id: item.id,

@@ -1,5 +1,6 @@
 export type InvoiceData = {
   number: string;
+  currency?: string;
   status: string;
   createdAt: string;
   dueDate: string | null;
@@ -43,6 +44,7 @@ export type InvoiceData = {
 export type ReceiptData = {
   receiptNumber: string;
   invoiceNumber: string;
+  currency?: string;
   paidAt: string;
   paymentMethod: string;
   customer: {

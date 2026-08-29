@@ -15,6 +15,7 @@ import {
   DocumentCheckIcon,
 } from "@heroicons/react/24/outline";
 import { useLanguage } from "@/lib/i18n/context";
+import { formatMoney } from "@/lib/currencies";
 
 interface InvoiceItem {
   id: string;
@@ -47,6 +48,7 @@ interface InvoiceDetailClientProps {
     taxRate: number;
     taxAmount: number;
     total: number;
+    currency?: string;
     createdAt: string;
     items: InvoiceItem[];
     customer: CustomerData;
@@ -288,10 +290,10 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
                     {item.quantity}
                   </td>
                   <td className="px-4 py-3.5 text-right text-slate-600 tabular-nums">
-                    Rp{item.price.toLocaleString("id-ID")}
+                    {formatMoney(item.price, invoice.currency)}
                   </td>
                   <td className="px-6 py-3.5 text-right font-semibold text-slate-900 tabular-nums">
-                    Rp{item.amount.toLocaleString("id-ID")}
+                    {formatMoney(item.amount, invoice.currency)}
                   </td>
                 </tr>
               ))}
@@ -305,7 +307,7 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
                   {t.invoices?.subtotal || "Subtotal"}
                 </td>
                 <td className="px-6 py-3 text-right font-semibold text-slate-900 text-sm tabular-nums">
-                  Rp{(invoice.subtotal || invoice.total).toLocaleString("id-ID")}
+                  {formatMoney(invoice.subtotal || invoice.total, invoice.currency)}
                 </td>
               </tr>
 
@@ -319,7 +321,7 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
                     {invoice.discountType === "PERCENTAGE" ? `(${invoice.discountValue}%)` : ""}
                   </td>
                   <td className="px-6 py-2.5 text-right font-bold text-sm tabular-nums">
-                    -Rp{invoice.discountAmount.toLocaleString("id-ID")}
+                    -{formatMoney(invoice.discountAmount, invoice.currency)}
                   </td>
                 </tr>
               )}
@@ -333,7 +335,7 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
                     {t.invoices?.taxVat || (locale === "id" ? "Pajak (PPN)" : "Tax (VAT)")} ({invoice.taxRate}%)
                   </td>
                   <td className="px-6 py-2.5 text-right font-bold text-slate-900 text-sm tabular-nums">
-                    +Rp{invoice.taxAmount.toLocaleString("id-ID")}
+                    +{formatMoney(invoice.taxAmount, invoice.currency)}
                   </td>
                 </tr>
               )}
@@ -346,7 +348,7 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
                   {t.invoices?.grandTotal || (locale === "id" ? "Total Tagihan" : "Grand Total")}
                 </td>
                 <td className="px-6 py-4 text-right font-bold text-slate-900 text-lg sm:text-xl tabular-nums">
-                  Rp{invoice.total.toLocaleString("id-ID")}
+                  {formatMoney(invoice.total, invoice.currency)}
                 </td>
               </tr>
             </tfoot>
