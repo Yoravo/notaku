@@ -15,6 +15,7 @@ import {
   CalculatorIcon,
   PencilSquareIcon,
   BuildingStorefrontIcon,
+  DocumentTextIcon,
 } from "@heroicons/react/24/outline";
 
 interface HomeClientProps {
