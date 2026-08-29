@@ -489,4 +489,16 @@ export const id = {
     ctaGuest: "Daftar Gratis Sekarang (30 Detik)",
     note: "Paket Free gratis selamanya • Tanpa kartu kredit • Batalkan kapan saja",
   },
+
+  // Footer Section
+  footer: {
+    desc: "Aplikasi invoice generator & billing SaaS modern untuk UMKM, freelancer, dan bisnis Indonesia.",
+    features: "Fitur",
+    howItWorks: "Cara Kerja",
+    pricing: "Harga",
+    faq: "FAQ",
+    login: "Masuk Akun",
+    copyright: "© 2026 NotaKu. Hak cipta dilindungi undang-undang.",
+    paymentSupport: "Didukung oleh Mayar.id & QRIS Nasional",
+  },
 };

@@ -489,4 +489,16 @@ export const en = {
     ctaGuest: "Sign Up Free (Takes 30s)",
     note: "Free plan available forever • No credit card required • Cancel anytime",
   },
+
+  // Footer Section
+  footer: {
+    desc: "Modern invoice generator & billing SaaS application for MSMEs, freelancers, and businesses in Indonesia.",
+    features: "Features",
+    howItWorks: "How It Works",
+    pricing: "Pricing",
+    faq: "FAQ",
+    login: "Log In",
+    copyright: "© 2026 NotaKu. All rights reserved.",
+    paymentSupport: "Powered by Mayar.id & QRIS National",
+  },
 };
