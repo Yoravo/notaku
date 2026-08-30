@@ -584,7 +584,13 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
 
             <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-ink-soft font-medium">
               <Link href="/buat-invoice" className="text-emerald font-bold hover:underline">
-                Free Invoice Generator
+                Generator Invoice Gratis
+              </Link>
+              <Link href="/kalkulator-ppn" className="text-emerald font-bold hover:underline">
+                Kalkulator PPN
+              </Link>
+              <Link href="/terbilang-rupiah" className="text-emerald font-bold hover:underline">
+                Konverter Terbilang
               </Link>
               <a href="#fitur" className="hover:text-emerald transition-colors">
                 {t.footer.features}

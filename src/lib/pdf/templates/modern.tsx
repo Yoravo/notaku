@@ -395,9 +395,16 @@ export function ModernTemplate({ data }: { data: InvoiceData }) {
           </View>
         </View>
 
-        <Text style={styles.footer}>
-          {data.user.businessName || data.user.name}
-        </Text>
+        {/* Footer */}
+        {data.isFree ? (
+          <Text style={styles.footer}>
+            Dibuat dengan NotaKu — Aplikasi Invoice & Billing UMKM Indonesia (notaku.store)
+          </Text>
+        ) : (
+          <Text style={styles.footer}>
+            {data.user.businessName || data.user.name}
+          </Text>
+        )}
       </Page>
     </Document>
   );

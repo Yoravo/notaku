@@ -365,7 +365,9 @@ export function MinimalTemplate({ data }: { data: InvoiceData }) {
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            {data.user.businessName || data.user.name}
+            {data.isFree
+              ? "Dibuat dengan NotaKu — Aplikasi Invoice & Kuitansi (notaku.store)"
+              : data.user.businessName || data.user.name}
           </Text>
           <Text style={styles.footerText}>{data.number}</Text>
         </View>

@@ -6,7 +6,16 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: ["/", "/login", "/register", "/buat-invoice", "/tools", "/templates"],
+        allow: [
+          "/",
+          "/login",
+          "/register",
+          "/buat-invoice",
+          "/kalkulator-ppn",
+          "/terbilang-rupiah",
+          "/tools",
+          "/templates",
+        ],
         disallow: [
           "/dashboard",
           "/dashboard/",
@@ -32,7 +41,16 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: "Googlebot",
-        allow: ["/", "/login", "/register", "/buat-invoice", "/tools", "/templates"],
+        allow: [
+          "/",
+          "/login",
+          "/register",
+          "/buat-invoice",
+          "/kalkulator-ppn",
+          "/terbilang-rupiah",
+          "/tools",
+          "/templates",
+        ],
         disallow: [
           "/dashboard",
           "/invoices",
@@ -51,4 +69,3 @@ export default function robots(): MetadataRoute.Robots {
     sitemap: `${baseUrl}/sitemap.xml`,
   };
 }
-

@@ -373,7 +373,7 @@ export function ClassicTemplate({ data }: { data: InvoiceData }) {
         {/* Footer */}
         {data.isFree ? (
           <Text style={styles.footer}>
-            Dibuat dengan NotaKu — notaku.vercel.app
+            Dibuat resmi dengan NotaKu — Aplikasi Invoice & Kuitansi Online (notaku.store)
           </Text>
         ) : (
           <Text style={styles.footer}>

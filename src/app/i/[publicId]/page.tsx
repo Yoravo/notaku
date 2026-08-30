@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { formatDateWIB } from "@/lib/invoice-utils";
 import { formatMoney } from "@/lib/currencies";
 import { PublicPaymentBox } from "@/components/invoices/public-payment-box";
@@ -290,11 +291,41 @@ export default async function PublicInvoicePage({
           </div>
         )}
 
-        {/* Watermark for free tier */}
-        {invoice.user.plan === "FREE" && (
-          <p className="mt-8 text-center text-xs text-slate-400">
-            Diterbitkan secara digital dengan <span className="font-bold text-slate-600">NotaKu</span>
-          </p>
+        {/* Viral Branding & Structured Backlink Badge */}
+        {invoice.user.plan === "FREE" ? (
+          <div className="mt-8 border-t border-slate-100 pt-6 text-center space-y-1.5">
+            <p className="text-xs text-slate-500 font-medium">
+              Dokumen tagihan ini dibuat secara otomatis dengan{" "}
+              <Link
+                href="https://notaku.store"
+                target="_blank"
+                rel="noopener"
+                className="font-bold text-[#0f6b4f] hover:underline"
+              >
+                NotaKu
+              </Link>
+            </p>
+            <p className="text-[11px] text-slate-400">
+              Kelola invoice bisnis, kirim via WhatsApp, & terima QRIS tanpa ribet.{" "}
+              <Link
+                href="https://notaku.store/register"
+                target="_blank"
+                rel="noopener"
+                className="text-slate-600 font-semibold hover:text-[#0f6b4f] underline ml-1"
+              >
+                Buat Invoice Anda Gratis
+              </Link>
+            </p>
+          </div>
+        ) : (
+          <div className="mt-8 border-t border-slate-100 pt-4 text-center">
+            <p className="text-[11px] text-slate-400">
+              Invoice resmi diterbitkan oleh{" "}
+              <span className="font-semibold text-slate-600">
+                {invoice.user.businessName || invoice.user.name}
+              </span>
+            </p>
+          </div>
         )}
       </div>
     </div>
