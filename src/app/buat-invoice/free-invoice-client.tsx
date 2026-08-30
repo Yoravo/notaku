@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
   DocumentTextIcon,
@@ -20,6 +21,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { calculateInvoiceTotals, type DiscountType } from "@/lib/invoice-calculations";
 import { formatMoney, SUPPORTED_CURRENCIES, type SupportedCurrency } from "@/lib/currencies";
+import { NICHE_TEMPLATES } from "@/lib/templates-data";
 
 interface InvoiceItem {
   id: string;
@@ -29,6 +31,9 @@ interface InvoiceItem {
 }
 
 export function FreeInvoiceGeneratorClient() {
+  const searchParams = useSearchParams();
+  const templateSlug = searchParams.get("template");
+
   // 1. State Form
   const [currency, setCurrency] = useState<SupportedCurrency>("IDR");
   const [template, setTemplate] = useState<"classic" | "modern" | "minimal">("classic");
@@ -64,6 +69,31 @@ export function FreeInvoiceGeneratorClient() {
   const [discountType, setDiscountType] = useState<DiscountType>("FIXED");
   const [discountValue, setDiscountValue] = useState<number>(0);
   const [taxRate, setTaxRate] = useState<number>(0);
+
+  // Auto-populate from template slug query parameter
+  useEffect(() => {
+    if (!templateSlug) return;
+    const foundTemplate = NICHE_TEMPLATES.find((t) => t.slug === templateSlug);
+    if (foundTemplate) {
+      setTemplate(foundTemplate.pdfTemplate);
+      setCurrency(foundTemplate.currency);
+      setNumber(foundTemplate.sampleData.invoiceNumber);
+      setBusinessName(foundTemplate.sampleData.businessName);
+      setCustomerName(foundTemplate.sampleData.customerName);
+      setNotes(foundTemplate.sampleData.notes);
+      if (foundTemplate.taxRate) {
+        setTaxRate(foundTemplate.taxRate);
+      }
+      setItems(
+        foundTemplate.sampleData.items.map((it, idx) => ({
+          id: (idx + 1).toString(),
+          description: it.description,
+          quantity: it.quantity,
+          price: it.price,
+        }))
+      );
+    }
+  }, [templateSlug]);
 
   // Status Download Loading
   const [isGenerating, setIsGenerating] = useState(false);

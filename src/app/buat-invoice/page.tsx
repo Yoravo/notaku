@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { FreeInvoiceGeneratorClient } from "./free-invoice-client";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
@@ -62,7 +63,19 @@ export default function FreeInvoicePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <FreeInvoiceGeneratorClient />
+      <Suspense
+        fallback={
+          <div className="min-h-screen bg-paper flex items-center justify-center py-20">
+            <div className="flex flex-col items-center gap-3">
+              <div className="h-8 w-8 animate-spin rounded-full border-3 border-emerald border-t-transparent" />
+              <p className="text-xs font-bold text-ink-soft">Memuat Generator Invoice...</p>
+            </div>
+          </div>
+        }
+      >
+        <FreeInvoiceGeneratorClient />
+      </Suspense>
     </>
   );
 }
+

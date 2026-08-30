@@ -586,6 +586,9 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
               <Link href="/buat-invoice" className="text-emerald font-bold hover:underline">
                 Generator Invoice Gratis
               </Link>
+              <Link href="/templates" className="text-emerald font-bold hover:underline">
+                Template Invoice
+              </Link>
               <Link href="/kalkulator-ppn" className="text-emerald font-bold hover:underline">
                 Kalkulator PPN
               </Link>
