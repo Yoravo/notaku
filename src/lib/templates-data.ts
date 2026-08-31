@@ -361,4 +361,226 @@ export const NICHE_TEMPLATES: NicheTemplate[] = [
       },
     ],
   },
+  {
+    slug: "invoice-catering-kuliner",
+    title: "Template Invoice Katering, Prasmanan & Nasi Box",
+    category: "Bisnis & UKM",
+    shortDesc:
+      "Contoh tagihan pesanan katering pernikahan, nasi box event kantor, coffee break, dan langganan makan siang.",
+    keywords: [
+      "template invoice katering",
+      "contoh nota pesanan katering",
+      "tagihan nasi box kantor",
+      "format invoice prasmanan wedding",
+      "invoice katering makanan online",
+    ],
+    pdfTemplate: "modern",
+    currency: "IDR",
+    sampleData: {
+      businessName: "Berkah Rasa Catering & Bakery",
+      customerName: "Panitia Seminar Nasional PT Sinar Jaya",
+      invoiceNumber: "INV/CAT/2026/08/091",
+      items: [
+        {
+          description: "Paket Nasi Box Premium (Ayam Bakar Madu + Sayur + Buah)",
+          quantity: 150,
+          price: 35000,
+          amount: 5250000,
+        },
+        {
+          description: "Paket Coffee Break & Snack Box Sore (3 Macam Kue)",
+          quantity: 150,
+          price: 20000,
+          amount: 3000000,
+        },
+        {
+          description: "Ongkos Kirim & Setup Meja Prasmanan di Lokasi Acara",
+          quantity: 1,
+          price: 250000,
+          amount: 250000,
+        },
+      ],
+      notes: "DP 50% telah diterima. Tagihan ini merupakan pelunasan H-1 sebelum tanggal pengantaran pesanan.",
+    },
+    overview:
+      "Bisnis kuliner dan katering membutuhkan penagihan dengan rincian jumlah porsi, menu, waktu pengantaran, dan status uang muka (DP).",
+    whyNeedGuide:
+      "Dokumen tagihan katering yang rinci mencegah kesalahpahaman menu dan memastikan pembayaran lunas sebelum makanan dimasak.",
+    checklist: [
+      "Cantumkan tanggal, jam, dan lokasi pengantaran makanan secara spesifik",
+      "Rincikan jumlah porsi, menu makanan, dan harga per porsi",
+      "Jelaskan ketentuan uang muka (DP) dan batas pembatalan pesanan",
+    ],
+    faq: [
+      {
+        q: "Bisa cantumkan DP pada invoice katering?",
+        a: "Bisa, Anda dapat menggunakan fitur diskon/potongan nominal sebagai pengurang DP di generator invoice NotaKu.",
+      },
+    ],
+  },
+  {
+    slug: "invoice-fotografi-videografi",
+    title: "Template Invoice Fotografi, Prewedding & Video Shooting",
+    category: "Kreatif & IT",
+    shortDesc:
+      "Format tagihan jasa dokumentasi foto/video wedding, event perusahaan, produk katalog, dan photoshoot studio.",
+    keywords: [
+      "template invoice fotografi",
+      "contoh invoice fotografer",
+      "invoice video shooting event",
+      "format tagihan jasa foto wedding",
+      "invoice prewedding pdf",
+    ],
+    pdfTemplate: "minimal",
+    currency: "IDR",
+    sampleData: {
+      businessName: "Lensa Cerita Visual Works",
+      customerName: "Aditya & Clarissa (Wedding Event)",
+      invoiceNumber: "INV/FOTO/2026/077",
+      items: [
+        {
+          description: "Paket Dokumentasi Wedding 1 Hari Penuh (2 Fotografer + 1 Videografer)",
+          quantity: 1,
+          price: 6000000,
+          amount: 6000000,
+        },
+        {
+          description: "Cetak Album Kolase Magazine 20 Halaman + Box Kayu Eksklusif",
+          quantity: 1,
+          price: 1500000,
+          amount: 1500000,
+        },
+        {
+          description: "Video Cinematic Teaser 1 Menit & Video Highlight 5 Menit (4K)",
+          quantity: 1,
+          price: 2000000,
+          amount: 2000000,
+        },
+      ],
+      notes: "Hasil foto editan final dan video master diserahkan via Google Drive maksimal 14 hari kerja.",
+    },
+    overview:
+      "Fotografer dan videografer memerlukan tagihan yang menguraikan deliverables secara transparan: jumlah kru, cetak album, hingga format video master.",
+    whyNeedGuide:
+      "Format tagihan profesional menaikkan perceived value jasa visual dan mencegah sengketa batas waktu editing foto/video.",
+    checklist: [
+      "Tuliskan durasi liputan dan jumlah kru di lapangan",
+      "Cantumkan rincian hasil akhir (jumlah foto diedit, durasi video, album fisik)",
+      "Jelaskan estimasi waktu pengerjaan editing hingga penyerahan",
+    ],
+    faq: [
+      {
+        q: "Apakah bisa kirim invoice foto langsung ke WhatsApp pengantin?",
+        a: "Bisa, NotaKu menyediakan tombol Share WhatsApp 1-klik dengan teks ramah dan link PDF invoice resmi.",
+      },
+    ],
+  },
+  {
+    slug: "invoice-kontraktor-arsitek",
+    title: "Template Invoice Kontraktor, Renovasi & Jasa Arsitek",
+    category: "Operasional & Properti",
+    shortDesc:
+      "Contoh penagihan progress pekerjaan proyek konstruksi (termin fisik), desain gambar IMB, dan material bangunan.",
+    keywords: [
+      "template invoice kontraktor",
+      "contoh invoice renovasi rumah",
+      "format tagihan arsitek",
+      "invoice progress proyek konstruksi",
+      "tagihan termin kontraktor bangunan",
+    ],
+    pdfTemplate: "classic",
+    currency: "IDR",
+    taxRate: 11,
+    sampleData: {
+      businessName: "PT Reka Bangun Perkasa",
+      customerName: "Bpk. Ir. Bambang Trihatmojo",
+      invoiceNumber: "INV/PROJ/2026/031",
+      items: [
+        {
+          description: "Pembayaran Termin II (Progress Fisik Lapangan 50% - Struktur Lantai 2)",
+          quantity: 1,
+          price: 45000000,
+          amount: 45000000,
+        },
+        {
+          description: "Pengadaan Material Tambahan Besi Beton Ulir 13mm & Semen",
+          quantity: 1,
+          price: 8500000,
+          amount: 8500000,
+        },
+      ],
+      notes: "Pembayaran termin II dilakukan setelah Berita Acara Pemeriksaan Pekerjaan (BAPP) ditandatangani.",
+    },
+    overview:
+      "Proyek konstruksi, renovasi, dan arsitektur wajib menggunakan sistem penagihan bertahap (termin) sesuai capaian progress fisik di lapangan.",
+    whyNeedGuide:
+      "Penagihan yang menyertakan referensi Berita Acara Progress Proyek mempermudah persetujuan pembayaran dari pemilik proyek.",
+    checklist: [
+      "Cantumkan nama proyek, lokasi, dan nomor kontrak kerja (SPK)",
+      "Tuliskan persentase progress fisik pekerjaan yang ditagihkan",
+      "Lampirkan Berita Acara Progress Fisik Lapangan",
+    ],
+    faq: [
+      {
+        q: "Apakah invoice kontraktor bisa dicetak format kuitansi saat lunas?",
+        a: "Ya, NotaKu secara otomatis membuat Kuitansi Resmi tanda terima lunas berstempel saat pembayaran selesai.",
+      },
+    ],
+  },
+  {
+    slug: "invoice-event-organizer",
+    title: "Template Invoice Event Organizer (EO) & Promotor Acara",
+    category: "Freelance & Jasa",
+    shortDesc:
+      "Format tagihan manajemen acara konser, seminar, gathering perusahaan, sewa sound system, panggung, dan talent.",
+    keywords: [
+      "template invoice event organizer",
+      "contoh invoice eo gathering",
+      "format tagihan vendor panggung sound system",
+      "invoice promotor acara",
+    ],
+    pdfTemplate: "modern",
+    currency: "IDR",
+    sampleData: {
+      businessName: "Kreasi Megah Event Planner",
+      customerName: "PT Mandiri Sukses Internasional",
+      invoiceNumber: "INV/EO/2026/064",
+      items: [
+        {
+          description: "Manajemen & Pelaksanaan Acara Annual Corporate Gathering (300 Peserta)",
+          quantity: 1,
+          price: 15000000,
+          amount: 15000000,
+        },
+        {
+          description: "Sewa Panggung Rigging, Sound System 10.000 Watt & Lighting Panggung",
+          quantity: 1,
+          price: 12000000,
+          amount: 12000000,
+        },
+        {
+          description: "Honorarium Master of Ceremony (MC) & Live Band Acoustic (3 Jam)",
+          quantity: 1,
+          price: 7500000,
+          amount: 7500000,
+        },
+      ],
+      notes: "Pelunasan tagihan wajib dilakukan maksimal H-3 sebelum hari pelaksanaan acara.",
+    },
+    overview:
+      "Event Organizer mengelola banyak pos biaya (venue, lighting, talent, panggung). Invoice yang terperinci mempermudah approval dari direksi perusahaan klien.",
+    whyNeedGuide:
+      "Penyusunan pos item yang jelas mempercepat pencairan anggaran dana operasional event dari bagian finance klien.",
+    checklist: [
+      "Cantumkan nama event, tanggal acara, dan lokasi venue",
+      "Rincikan pengadaan perlengkapan (audio, panggung, visual)",
+      "Sertakan klausul batas akhir pelunasan sebelum pelaksanaan event",
+    ],
+    faq: [
+      {
+        q: "Bagaimana cara mencantumkan PPN pada invoice EO?",
+        a: "Anda cukup mengaktifkan opsi PPN (11% atau 12%) pada form generator invoice NotaKu.",
+      },
+    ],
+  },
 ];

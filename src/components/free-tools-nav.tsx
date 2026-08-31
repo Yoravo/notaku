@@ -38,6 +38,13 @@ export function FreeToolsNav() {
       icon: CalculatorIcon,
     },
     {
+      title: "Kalkulator PPh 23 Jasa",
+      desc: "Hitung potongan pajak 2% ber-NPWP / 4% tanpa NPWP & PPN.",
+      href: "/kalkulator-pph23",
+      icon: CalculatorIcon,
+      badge: "Baru",
+    },
+    {
       title: "Konverter Terbilang Rupiah",
       desc: "Ubah angka ke kalimat ejaan rupiah resmi Indonesia.",
       href: "/terbilang-rupiah",

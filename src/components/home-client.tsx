@@ -598,6 +598,12 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
               <Link href="/kalkulator-ppn" className="text-emerald font-bold hover:underline">
                 Kalkulator PPN
               </Link>
+              <Link href="/kalkulator-pph23" className="text-emerald font-bold hover:underline">
+                Kalkulator PPh 23
+              </Link>
+              <Link href="/tools" className="text-emerald font-bold hover:underline">
+                Semua Tools
+              </Link>
               <Link href="/terbilang-rupiah" className="text-emerald font-bold hover:underline">
                 Terbilang Rupiah
               </Link>
