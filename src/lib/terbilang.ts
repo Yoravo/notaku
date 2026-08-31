@@ -83,3 +83,9 @@ export function terbilangRupiah(nominal: number): string {
   if (text === "Nol") return "Nol Rupiah";
   return `${text} Rupiah`;
 }
+
+/**
+ * Alias helper untuk kuitansi & PDF
+ */
+export const numberToWordsRupiah = terbilangRupiah;
+

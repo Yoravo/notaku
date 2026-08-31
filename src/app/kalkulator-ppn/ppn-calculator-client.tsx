@@ -11,6 +11,7 @@ import {
   ArrowRightIcon,
   InformationCircleIcon,
 } from "@heroicons/react/24/outline";
+import { FreeToolsNav } from "@/components/free-tools-nav";
 
 export function PpnCalculatorClient() {
   const [calculationMode, setCalculationMode] = useState<"EXCLUDE_PPN" | "INCLUDE_PPN">("EXCLUDE_PPN");
@@ -337,6 +338,9 @@ export function PpnCalculatorClient() {
             </div>
           </div>
         </section>
+
+        {/* Cross-linking Free Tools Navigation */}
+        <FreeToolsNav />
       </main>
     </div>
   );

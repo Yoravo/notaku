@@ -22,6 +22,7 @@ import {
 import { calculateInvoiceTotals, type DiscountType } from "@/lib/invoice-calculations";
 import { formatMoney, SUPPORTED_CURRENCIES, type SupportedCurrency } from "@/lib/currencies";
 import { NICHE_TEMPLATES } from "@/lib/templates-data";
+import { FreeToolsNav } from "@/components/free-tools-nav";
 
 interface InvoiceItem {
   id: string;
@@ -792,6 +793,9 @@ export function FreeInvoiceGeneratorClient() {
             </div>
           </div>
         </section>
+
+        {/* Cross-linking Free Tools Navigation */}
+        <FreeToolsNav />
       </main>
     </div>
   );

@@ -582,18 +582,24 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-ink-soft font-medium">
+            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs text-ink-soft font-medium">
               <Link href="/buat-invoice" className="text-emerald font-bold hover:underline">
-                Generator Invoice Gratis
+                Invoice Gratis
+              </Link>
+              <Link href="/buat-kuitansi" className="text-emerald font-bold hover:underline">
+                Kuitansi Gratis
+              </Link>
+              <Link href="/buat-surat-jalan" className="text-emerald font-bold hover:underline">
+                Surat Jalan
               </Link>
               <Link href="/templates" className="text-emerald font-bold hover:underline">
-                Template Invoice
+                Template
               </Link>
               <Link href="/kalkulator-ppn" className="text-emerald font-bold hover:underline">
                 Kalkulator PPN
               </Link>
               <Link href="/terbilang-rupiah" className="text-emerald font-bold hover:underline">
-                Konverter Terbilang
+                Terbilang Rupiah
               </Link>
               <a href="#fitur" className="hover:text-emerald transition-colors">
                 {t.footer.features}

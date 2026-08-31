@@ -11,6 +11,7 @@ import {
   CurrencyDollarIcon,
 } from "@heroicons/react/24/outline";
 import { terbilangRupiah, terbilang } from "@/lib/terbilang";
+import { FreeToolsNav } from "@/components/free-tools-nav";
 
 export function TerbilangConverterClient() {
   const [amountInput, setAmountInput] = useState<string>("25500000");
@@ -252,6 +253,9 @@ export function TerbilangConverterClient() {
             </div>
           </div>
         </section>
+
+        {/* Cross-linking Free Tools Navigation */}
+        <FreeToolsNav />
       </main>
     </div>
   );

@@ -10,6 +10,7 @@ import {
   FolderOpenIcon,
 } from "@heroicons/react/24/outline";
 import { NICHE_TEMPLATES, NicheTemplate } from "@/lib/templates-data";
+import { FreeToolsNav } from "@/components/free-tools-nav";
 
 export function TemplatesCatalogClient() {
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
@@ -181,6 +182,9 @@ export function TemplatesCatalogClient() {
             <p className="text-xs text-ink-soft mt-1">Coba gunakan kata kunci lain atau pilih &quot;Semua Kategori&quot;.</p>
           </div>
         )}
+
+        {/* Cross-linking Free Tools Navigation */}
+        <FreeToolsNav />
       </main>
     </div>
   );

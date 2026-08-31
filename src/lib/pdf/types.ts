@@ -70,6 +70,36 @@ export type ReceiptData = {
   isFree: boolean;
 };
 
+export type DeliveryOrderItem = {
+  description: string;
+  quantity: number;
+  unit: string; // e.g. "Pcs", "Box", "Kg", "Unit", "Set"
+  notes?: string;
+};
+
+export type DeliveryOrderData = {
+  orderNumber: string; // e.g. "SJ-202608-001"
+  date: string;
+  poNumber?: string; // No. PO/Pesanan Ref jika ada
+  vehicleNumber?: string; // Plat nomor / Ekspedisi
+  driverName?: string;
+  sender: {
+    name: string;
+    businessName?: string;
+    phone?: string;
+    address?: string;
+  };
+  recipient: {
+    name: string;
+    company?: string;
+    phone?: string;
+    address?: string;
+  };
+  items: DeliveryOrderItem[];
+  notes?: string;
+  isFree: boolean;
+};
+
 export const statusColors: Record<string, { bg: string; text: string }> = {
   DRAFT: { bg: "#f3f4f6", text: "#374151" },
   SENT: { bg: "#eff6ff", text: "#1d4ed8" },
