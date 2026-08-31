@@ -16,6 +16,10 @@ import {
   PencilSquareIcon,
   BuildingStorefrontIcon,
   DocumentTextIcon,
+  DocumentCheckIcon,
+  TruckIcon,
+  LanguageIcon,
+  ArrowRightIcon,
 } from "@heroicons/react/24/outline";
 
 interface HomeClientProps {
@@ -366,6 +370,110 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Free Business Tools & Calculators Showcase */}
+      <section id="tools" className="border-t border-line bg-paper py-20 sm:py-28">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-12">
+            <div className="max-w-2xl">
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald">
+                100% Gratis • Tanpa Login
+              </span>
+              <h2 className="mt-2 font-display text-3xl font-bold tracking-tight sm:text-4xl text-ink">
+                Pusat Alat & Kalkulator Bisnis Online
+              </h2>
+              <p className="mt-3 text-base text-ink-soft">
+                Koleksi generator dokumen resmi dan kalkulator pajak untuk mempermudah operasional usaha Anda kapan saja.
+              </p>
+            </div>
+            <Link
+              href="/tools"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-emerald hover:text-emerald-bright transition-colors"
+            >
+              <span>Lihat Semua 7 Tools</span>
+              <ArrowRightIcon className="w-4 h-4" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[
+              {
+                title: "Invoice Generator Gratis",
+                desc: "Buat faktur tagihan bisnis online dalam 30 detik tanpa daftar, hitung PPN otomatis, dan download PDF.",
+                href: "/buat-invoice",
+                icon: DocumentTextIcon,
+                badge: "Populer",
+              },
+              {
+                title: "Kuitansi Pembayaran Online",
+                desc: "Generator tanda terima sah dengan ejaan terbilang rupiah otomatis, stempel lunas, dan ekspor PDF resmi.",
+                href: "/buat-kuitansi",
+                icon: DocumentCheckIcon,
+                badge: "Baru",
+              },
+              {
+                title: "Surat Jalan (Delivery Order)",
+                desc: "Dokumen pengiriman barang standar ekspedisi logistik dengan rincian barang dan 3 kolom tanda tangan.",
+                href: "/buat-surat-jalan",
+                icon: TruckIcon,
+                badge: "Baru",
+              },
+              {
+                title: "Kalkulator PPN 11% / 12%",
+                desc: "Hitung nilai Dasar Pengenaan Pajak (DPP) serta PPN sistem include maupun exclude harga secara akurat.",
+                href: "/kalkulator-ppn",
+                icon: CalculatorIcon,
+              },
+              {
+                title: "Kalkulator PPh 23 Jasa",
+                desc: "Kalkulasi potongan pajak PPh 23 (2% NPWP / 4% Non-NPWP) dan nilai kas bersih yang diterima vendor.",
+                href: "/kalkulator-pph23",
+                icon: CalculatorIcon,
+                badge: "Baru",
+              },
+              {
+                title: "Konverter Terbilang Rupiah",
+                desc: "Ubah angka nominal uang menjadi kalimat ejaan huruf rupiah standar formal perbankan dan kuitansi.",
+                href: "/terbilang-rupiah",
+                icon: LanguageIcon,
+              },
+            ].map((tool) => {
+              const Icon = tool.icon;
+              return (
+                <Link
+                  key={tool.href}
+                  href={tool.href}
+                  className="group relative p-6 rounded-3xl border border-line bg-paper-deep/30 hover:bg-white hover:border-emerald/40 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 rounded-2xl bg-emerald/10 text-emerald group-hover:bg-emerald group-hover:text-paper transition-colors">
+                        <Icon className="w-6 h-6" />
+                      </div>
+                      {tool.badge && (
+                        <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald/10 text-emerald border border-emerald/20">
+                          {tool.badge}
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="text-base font-bold text-ink group-hover:text-emerald transition-colors">
+                      {tool.title}
+                    </h3>
+                    <p className="mt-2 text-xs text-ink-soft leading-relaxed line-clamp-2">
+                      {tool.desc}
+                    </p>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-line/60 flex items-center justify-between text-xs font-bold text-emerald">
+                    <span>Gunakan Sekarang</span>
+                    <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>

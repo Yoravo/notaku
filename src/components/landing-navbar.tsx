@@ -17,6 +17,7 @@ export function LandingNavbar({ session }: NavbarProps) {
   const navLinks = [
     { name: t.nav.features, href: "/#fitur" },
     { name: t.nav.howItWorks, href: "/#cara-kerja" },
+    { name: t.nav.freeTools || "Tools Gratis", href: "/tools" },
     { name: t.nav.templates || "Template", href: "/templates" },
     { name: t.nav.pricing, href: "/#pricing" },
     { name: t.nav.faq, href: "/#faq" },
