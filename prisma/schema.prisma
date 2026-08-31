@@ -93,6 +93,9 @@ model Invoice {
   // Opsi & Integrasi Pembayaran
   enableDirectTransfer Boolean   @default(true)
   enableDigitalPayment Boolean   @default(false)
+  enableReminder       Boolean   @default(true)
+  lastReminderType     String?   // "reminder_h3" | "reminder_today" | "reminder_overdue"
+  lastReminderAt       DateTime?
   mayarPaymentUrl      String?
   mayarPaymentId       String?
   paidAt               DateTime?

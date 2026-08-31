@@ -39,6 +39,7 @@ export async function createInvoice(data: {
   currency?: string;
   enableDirectTransfer?: boolean;
   enableDigitalPayment?: boolean;
+  enableReminder?: boolean;
   items: { description: string; quantity: number; price: number }[];
 }) {
   const user = await getUser();
@@ -92,6 +93,7 @@ export async function createInvoice(data: {
         currency: parsed.data.currency || "IDR",
         enableDirectTransfer: parsed.data.enableDirectTransfer ?? true,
         enableDigitalPayment: parsed.data.enableDigitalPayment ?? false,
+        enableReminder: parsed.data.enableReminder ?? true,
         items: {
           create: parsed.data.items.map((item) => ({
             description: item.description,
@@ -126,6 +128,7 @@ export async function updateInvoice(
     currency?: string;
     enableDirectTransfer?: boolean;
     enableDigitalPayment?: boolean;
+    enableReminder?: boolean;
     items: InvoiceItem[];
   },
 ) {
@@ -182,6 +185,7 @@ export async function updateInvoice(
       currency: parsed.data.currency || "IDR",
       enableDirectTransfer: parsed.data.enableDirectTransfer ?? true,
       enableDigitalPayment: parsed.data.enableDigitalPayment ?? false,
+      enableReminder: parsed.data.enableReminder ?? true,
       items: {
         create: parsed.data.items.map((item) => ({
           description: item.description,

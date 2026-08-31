@@ -66,10 +66,11 @@ export async function GET(request: Request) {
   const hTodayStr = todayStr;              // Hari ini (H-0 jatuh tempo)
   const hPlus3Str = getOffsetDateStr(-3);  // 3 hari lalu (H+3 lewat jatuh tempo)
 
-  // Ambil semua invoice belum lunas (SENT & OVERDUE) yang memiliki dueDate dan customer dengan email
+  // Ambil semua invoice belum lunas (SENT & OVERDUE) yang mengaktifkan enableReminder, memiliki dueDate dan customer dengan email
   const candidateInvoices = await prisma.invoice.findMany({
     where: {
       status: { in: ["SENT", "OVERDUE"] },
+      enableReminder: true,
       dueDate: { not: null },
       customer: {
         email: { not: null },
@@ -114,7 +115,7 @@ export async function GET(request: Request) {
       reminderType = "reminder_h3";
     } else if (invoiceDueDateStr === hTodayStr) {
       reminderType = "reminder_today";
-    } else if (invoiceDueDateStr <= hPlus3Str) {
+    } else if (invoiceDueDateStr === hPlus3Str || invoiceDueDateStr <= hPlus3Str) {
       reminderType = "reminder_overdue";
     }
 
@@ -135,24 +136,57 @@ export async function GET(request: Request) {
       continue;
     }
 
-    // Cek apakah pengingat untuk tipe ini pada tanggal hari ini sudah pernah dikirim (mencegah spam)
-    const existingLog = await prisma.auditLog.findFirst({
-      where: {
-        event: "invoice.automated_reminder_sent",
-        detail: {
-          path: ["invoiceId"],
-          equals: invoice.id,
-        },
-      },
-      orderBy: { createdAt: "desc" },
-    });
-
-    if (existingLog && existingLog.detail) {
-      const detail = existingLog.detail as { reminderType?: string; sentDateStr?: string };
-      if (detail.reminderType === reminderType && detail.sentDateStr === todayStr) {
+    // Deduplikasi Ketat:
+    // 1. Cek field lastReminderType & lastReminderAt pada model Invoice
+    // 2. reminder_h3 dan reminder_today hanya dikirim 1 kali pada milestone masing-masing
+    // 3. reminder_overdue hanya dikirim 1 kali setelah melewati H+3
+    if (invoice.lastReminderType === reminderType) {
+      // Jika reminderType sama dan sudah dikirim dalam 24 jam terakhir atau untuk overdue sudah pernah dikirim
+      if (reminderType === "reminder_overdue") {
         results.skippedDuplicateOrNoEmail++;
         continue;
       }
+      if (invoice.lastReminderAt) {
+        const lastSentDateStr = new Intl.DateTimeFormat("en-CA", {
+          timeZone: "Asia/Jakarta",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }).format(new Date(invoice.lastReminderAt));
+        if (lastSentDateStr === todayStr) {
+          results.skippedDuplicateOrNoEmail++;
+          continue;
+        }
+      }
+    }
+
+    // Cek juga audit log sebagai fallback layer perlindungan ganda
+    const existingLogs = await prisma.auditLog.findMany({
+      where: {
+        event: "invoice.automated_reminder_sent",
+        userId: invoice.userId,
+      },
+      orderBy: { createdAt: "desc" },
+      take: 20,
+    });
+
+    const alreadySentInLogs = existingLogs.some((log) => {
+      if (!log.detail) return false;
+      const detail = log.detail as {
+        invoiceId?: string;
+        reminderType?: string;
+        sentDateStr?: string;
+      };
+      if (detail.invoiceId !== invoice.id) return false;
+      if (reminderType === "reminder_overdue" && detail.reminderType === "reminder_overdue") {
+        return true;
+      }
+      return detail.reminderType === reminderType && detail.sentDateStr === todayStr;
+    });
+
+    if (alreadySentInLogs) {
+      results.skippedDuplicateOrNoEmail++;
+      continue;
     }
 
     // Susun subjek dan konten email
@@ -204,6 +238,15 @@ export async function GET(request: Request) {
         to: invoice.customer.email,
         subject: subjectMap[reminderType],
         html: emailHtml,
+      });
+
+      // Update state reminder pada invoice untuk idempotency mutlak
+      await prisma.invoice.update({
+        where: { id: invoice.id },
+        data: {
+          lastReminderType: reminderType,
+          lastReminderAt: now,
+        },
       });
 
       await auditLog(

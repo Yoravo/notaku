@@ -15,10 +15,11 @@ export function LandingNavbar({ session }: NavbarProps) {
   const { t } = useLanguage();
 
   const navLinks = [
-    { name: t.nav.features, href: "#fitur" },
-    { name: t.nav.howItWorks, href: "#cara-kerja" },
-    { name: t.nav.pricing, href: "#pricing" },
-    { name: t.nav.faq, href: "#faq" },
+    { name: t.nav.features, href: "/#fitur" },
+    { name: t.nav.howItWorks, href: "/#cara-kerja" },
+    { name: t.nav.templates || "Template", href: "/templates" },
+    { name: t.nav.pricing, href: "/#pricing" },
+    { name: t.nav.faq, href: "/#faq" },
   ];
 
   return (

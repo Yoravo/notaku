@@ -60,6 +60,7 @@ export default async function EditInvoicePage({
         currency: (invoice as any).currency || "IDR",
         enableDirectTransfer: invoice.enableDirectTransfer,
         enableDigitalPayment: invoice.enableDigitalPayment,
+        enableReminder: (invoice as any).enableReminder ?? true,
         items: invoice.items.map((i) => ({
           description: i.description,
           quantity: Number(i.quantity),

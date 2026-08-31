@@ -31,6 +31,7 @@ type Invoice = {
   currency?: string;
   enableDirectTransfer?: boolean;
   enableDigitalPayment?: boolean;
+  enableReminder?: boolean;
   items: { description: string; quantity: number; price: number }[];
 };
 
@@ -69,6 +70,9 @@ export function InvoiceForm({
   );
   const [enableDigitalPayment, setEnableDigitalPayment] = useState(
     invoice?.enableDigitalPayment ?? false
+  );
+  const [enableReminder, setEnableReminder] = useState(
+    invoice?.enableReminder ?? true
   );
   const [items, setItems] = useState<InvoiceItem[]>(
     invoice?.items.length
@@ -163,6 +167,7 @@ export function InvoiceForm({
       currency,
       enableDirectTransfer,
       enableDigitalPayment,
+      enableReminder,
       items,
     };
 
@@ -682,6 +687,32 @@ export function InvoiceForm({
                   (locale === "id"
                     ? "Pelanggan scan QRIS atau bayar Virtual Account secara instan. Dana masuk ke Saldo NotaKu Anda dan invoice otomatis berstatus Lunas (MDR 0.7% dipotong saat settlement)."
                     : "Client scans QRIS or pays via Virtual Account instantly. Funds go to your NotaKu Wallet and the invoice is automatically settled (0.7% MDR applies).")}
+              </p>
+            </div>
+          </label>
+
+          {/* Option 3: Automated Payment Reminders */}
+          <label className="flex items-start gap-3 p-4 rounded-xl border border-slate-200 hover:border-slate-300 transition-colors cursor-pointer bg-slate-50/60">
+            <input
+              type="checkbox"
+              checked={enableReminder}
+              onChange={(e) => setEnableReminder(e.target.checked)}
+              className="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#0f6b4f] focus:ring-[#0f6b4f]"
+            />
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-slate-900">
+                  {t.invoices?.automatedReminderTitle || (locale === "id" ? "Pengingat Pembayaran Otomatis (Email)" : "Automated Payment Reminders (Email)")}
+                </span>
+                <span className="rounded-md bg-slate-200/80 px-2 py-0.5 text-[10px] font-bold text-slate-700">
+                  {locale === "id" ? "H-3, Hari H, H+3" : "D-3, Due Date, D+3"}
+                </span>
+              </div>
+              <p className="text-xs text-slate-500">
+                {t.invoices?.automatedReminderDesc ||
+                  (locale === "id"
+                    ? "Kirim email pengingat ramah secara otomatis ke pelanggan pada H-3, hari H jatuh tempo, dan H+3 jika belum lunas."
+                    : "Automatically send gentle reminder emails to clients at D-3, due date, and D+3 if unpaid.")}
               </p>
             </div>
           </label>

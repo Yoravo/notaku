@@ -17,6 +17,7 @@ type InvoiceData = {
   currency?: string;
   enableDirectTransfer?: boolean;
   enableDigitalPayment?: boolean;
+  enableReminder?: boolean;
   items: { description: string; quantity: number; price: number }[];
 };
 

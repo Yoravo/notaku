@@ -25,6 +25,7 @@ export const invoiceSchema = z.object({
   currency: z.enum(["IDR", "USD", "SGD", "EUR"]).default("IDR"),
   enableDirectTransfer: z.boolean().default(true),
   enableDigitalPayment: z.boolean().default(false),
+  enableReminder: z.boolean().default(true),
   items: z.array(invoiceItemSchema).min(1, "Minimal 1 item").max(50, "Maksimal 50 item"),
 });
 
