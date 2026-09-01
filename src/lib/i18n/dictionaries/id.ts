@@ -59,6 +59,14 @@ export const id = {
     sendResetLink: "Kirim Link Reset",
     rememberPassword: "Sudah ingat kata sandi?",
     resetEmailSent: "Link reset kata sandi telah dikirim ke email Anda.",
+    resetPasswordTitle: "Buat Kata Sandi Baru",
+    resetPasswordSubtitle: "Masukkan kata sandi baru untuk akun NotaKu Anda.",
+    newPassword: "Kata Sandi Baru",
+    confirmPassword: "Konfirmasi Kata Sandi Baru",
+    resetPasswordBtn: "Simpan Kata Sandi Baru",
+    passwordResetSuccess: "Kata sandi Anda berhasil diperbarui! Silakan masuk dengan kata sandi baru.",
+    passwordMismatch: "Konfirmasi kata sandi tidak cocok.",
+    invalidResetToken: "Tautan reset kata sandi tidak valid atau sudah kedaluwarsa.",
   },
 
   // User Dashboard Overview & Common Nav

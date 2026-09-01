@@ -59,6 +59,14 @@ export const en = {
     sendResetLink: "Send Reset Link",
     rememberPassword: "Remember your password?",
     resetEmailSent: "Password reset link has been sent to your email.",
+    resetPasswordTitle: "Create New Password",
+    resetPasswordSubtitle: "Enter a new password for your NotaKu account.",
+    newPassword: "New Password",
+    confirmPassword: "Confirm New Password",
+    resetPasswordBtn: "Save New Password",
+    passwordResetSuccess: "Your password has been reset successfully! Please sign in with your new password.",
+    passwordMismatch: "Password confirmation does not match.",
+    invalidResetToken: "Password reset link is invalid or has expired.",
   },
 
   // Dashboard Common & Navigation
