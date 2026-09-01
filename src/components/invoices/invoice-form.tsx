@@ -40,6 +40,7 @@ const DISCOUNT_PERCENT_PRESETS = [5, 10, 15, 20, 50];
 export function InvoiceForm({
   customers,
   invoice,
+  isCloneMode = false,
   defaultCustomerId,
   userBankName,
   userBankAccountNumber,
@@ -47,13 +48,14 @@ export function InvoiceForm({
 }: {
   customers: Customer[];
   invoice?: Invoice;
+  isCloneMode?: boolean;
   defaultCustomerId?: string;
   userBankName?: string | null;
   userBankAccountNumber?: string | null;
   userBankAccountName?: string | null;
 }) {
   const { t, locale } = useLanguage();
-  const isEdit = !!invoice;
+  const isEdit = !!invoice && !isCloneMode;
 
   const [customerId, setCustomerId] = useState(
     invoice?.customerId || defaultCustomerId || "",

@@ -336,6 +336,10 @@ export async function cloneInvoice(id: string) {
         taxRate: source.taxRate,
         taxAmount: source.taxAmount,
         total: source.total,
+        currency: source.currency,
+        enableDirectTransfer: source.enableDirectTransfer,
+        enableDigitalPayment: source.enableDigitalPayment,
+        enableReminder: source.enableReminder,
         items: {
           create: source.items.map((it) => ({
             description: it.description,

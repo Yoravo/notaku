@@ -10,6 +10,8 @@ type Customer = { id: string; name: string };
 type NewInvoiceClientProps = {
   customers: Customer[];
   initialCustomerId?: string;
+  initialInvoiceData?: any;
+  isCloning?: boolean;
   userBankName?: string | null;
   userBankAccountNumber?: string | null;
   userBankAccountName?: string | null;
@@ -21,6 +23,8 @@ type NewInvoiceClientProps = {
 export function NewInvoiceClient({
   customers,
   initialCustomerId,
+  initialInvoiceData,
+  isCloning = false,
   userBankName,
   userBankAccountNumber,
   userBankAccountName,
@@ -35,10 +39,18 @@ export function NewInvoiceClient({
       <div>
         <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
           <DocumentPlusIcon className="w-6 h-6 sm:w-7 sm:h-7 text-[#0f6b4f]" />
-          <span>{t.invoices?.newInvoice || (locale === "id" ? "Buat Invoice Baru" : "Create New Invoice")}</span>
+          <span>
+            {isCloning
+              ? (locale === "id" ? "Duplikasi Invoice (Salin Data)" : "Duplicate Invoice (Copy Data)")
+              : t.invoices?.newInvoice || (locale === "id" ? "Buat Invoice Baru" : "Create New Invoice")}
+          </span>
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 mt-1">
-          {locale === "id"
+          {isCloning
+            ? (locale === "id"
+                ? "Data produk, pelanggan, diskon, dan catatan telah disalin otomatis. Sesuaikan rincian jika diperlukan sebelum menyimpan."
+                : "Product items, client, discount, and notes have been copied. Adjust details if needed before saving.")
+            : locale === "id"
             ? `Penggunaan kuota: ${used} dari ${limit === Infinity ? "Unlimited" : limit} invoice bulan ini.`
             : `Monthly quota usage: ${used} of ${limit === Infinity ? "Unlimited" : limit} invoices.`}
         </p>
@@ -67,6 +79,8 @@ export function NewInvoiceClient({
         <div className="mt-2">
           <InvoiceForm
             customers={customers}
+            invoice={initialInvoiceData}
+            isCloneMode={isCloning}
             defaultCustomerId={initialCustomerId}
             userBankName={userBankName}
             userBankAccountNumber={userBankAccountNumber}
