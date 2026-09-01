@@ -242,6 +242,9 @@ export const id = {
     deleteSuccess: "Pelanggan berhasil dihapus.",
     freeLimitNotice: "Batas 5 Pelanggan Tercapai (Paket FREE)",
     freeLimitDesc: "Tingkatkan ke paket PRO untuk menyimpan pelanggan tanpa batas.",
+    clientPortal: "Portal Tagihan Klien",
+    sharePortal: "Bagikan Portal Tagihan",
+    portalLinkCopied: "Tautan Portal Klien berhasil disalin ke clipboard!",
   },
 
   // Recurring Invoices Module (PRO)

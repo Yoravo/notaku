@@ -11,6 +11,8 @@ import {
   PencilSquareIcon,
   TrashIcon,
   UsersIcon,
+  ArrowTopRightOnSquareIcon,
+  CheckIcon,
 } from "@heroicons/react/24/outline";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useLanguage } from "@/lib/i18n/context";
@@ -36,6 +38,14 @@ export function CustomerList({
   // Delete Confirm Dialog State
   const [deletingCustomer, setDeletingCustomer] = useState<Customer | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const handleCopyPortal = (customerId: string) => {
+    const url = `${window.location.origin}/portal/${customerId}`;
+    navigator.clipboard.writeText(url);
+    setCopiedId(customerId);
+    setTimeout(() => setCopiedId(null), 2500);
+  };
 
   // Filter instan berbasis nama, email, telepon, dan alamat
   const filteredCustomers = useMemo(() => {
@@ -163,6 +173,30 @@ export function CustomerList({
                     </td>
                     <td className="px-5 py-3.5 text-right">
                       <div className="inline-flex items-center gap-1.5">
+                        <Link
+                          href={`/portal/${customer.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={locale === "id" ? "Buka Portal Tagihan Klien" : "Open Client Billing Portal"}
+                          className="p-1.5 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors border border-transparent hover:border-slate-200"
+                        >
+                          <ArrowTopRightOnSquareIcon className="w-4 h-4" />
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => handleCopyPortal(customer.id)}
+                          title={locale === "id" ? "Salin Link Portal Tagihan Klien" : "Copy Client Portal Link"}
+                          className="inline-flex items-center gap-1 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 px-2.5 py-1.5 text-xs font-semibold transition-all border border-slate-200/80 cursor-pointer"
+                        >
+                          {copiedId === customer.id ? (
+                            <>
+                              <CheckIcon className="w-3.5 h-3.5 text-[#0f6b4f]" />
+                              <span className="text-[#0f6b4f] font-bold">Tersalin</span>
+                            </>
+                          ) : (
+                            <span>{locale === "id" ? "Link Portal" : "Portal Link"}</span>
+                          )}
+                        </button>
                         <Link
                           href={`/invoices/new?customerId=${customer.id}`}
                           title={locale === "id" ? "Buat invoice untuk pelanggan ini" : "Create invoice for this client"}

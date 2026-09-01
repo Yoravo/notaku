@@ -140,9 +140,19 @@ export default async function PublicInvoicePage({
         {/* Customer & dates */}
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 rounded-xl bg-slate-50/70 p-4 border border-slate-200/60">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              Ditagihkan kepada:
-            </p>
+            <div className="flex items-center justify-between">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                Ditagihkan kepada:
+              </p>
+              <Link
+                href={`/portal/${invoice.customerId}`}
+                className="text-[11px] font-bold text-[#0f6b4f] hover:underline inline-flex items-center gap-1"
+                title="Lihat semua riwayat tagihan & kuitansi Anda"
+              >
+                <span>Portal Riwayat Tagihan</span>
+                <span aria-hidden="true">&rarr;</span>
+              </Link>
+            </div>
             <p className="mt-1 font-bold text-slate-900 text-sm">
               {invoice.customer.name}
             </p>

@@ -242,6 +242,9 @@ export const en = {
     deleteSuccess: "Client deleted successfully.",
     freeLimitNotice: "Client Limit Reached (FREE Plan)",
     freeLimitDesc: "Upgrade to PRO plan to save unlimited client contacts.",
+    clientPortal: "Client Billing Portal",
+    sharePortal: "Share Billing Portal",
+    portalLinkCopied: "Client Portal link copied to clipboard!",
   },
 
   // Recurring Invoices Module (PRO)
