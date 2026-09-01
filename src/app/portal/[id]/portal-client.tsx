@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import {
   DocumentTextIcon,
   DocumentArrowDownIcon,
@@ -10,7 +9,6 @@ import {
   MagnifyingGlassIcon,
   ClockIcon,
   CheckCircleIcon,
-  ExclamationCircleIcon,
   BuildingStorefrontIcon,
   EnvelopeIcon,
   PhoneIcon,
@@ -18,6 +16,8 @@ import {
 } from "@heroicons/react/24/outline";
 import { formatMoney } from "@/lib/currencies";
 import { formatDateWIB } from "@/lib/invoice-utils";
+import { useLanguage } from "@/lib/i18n/context";
+import { LanguageDropdown } from "@/components/language-dropdown";
 
 interface InvoiceItem {
   id: string;
@@ -57,6 +57,7 @@ export function PortalClient({
   seller: SellerData;
   invoices: InvoiceItem[];
 }) {
+  const { t, locale } = useLanguage();
   const [activeTab, setActiveTab] = useState<"ALL" | "UNPAID" | "PAID" | "OVERDUE">("ALL");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -125,7 +126,7 @@ export function PortalClient({
             )}
             <div>
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block leading-none">
-                Portal Tagihan Pelanggan
+                {t.portal.badge}
               </span>
               <h1 className="text-sm sm:text-base font-extrabold text-slate-900 tracking-tight mt-0.5">
                 {sellerDisplayName}
@@ -133,11 +134,14 @@ export function PortalClient({
             </div>
           </div>
 
-          <div className="text-right hidden sm:block">
-            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-              Klien Terdaftar
-            </span>
-            <p className="text-xs font-bold text-[#0f6b4f]">{customer.name}</p>
+          <div className="flex items-center gap-4">
+            <div className="text-right hidden sm:block">
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                {t.portal.clientLabel}
+              </span>
+              <p className="text-xs font-bold text-[#0f6b4f]">{customer.name}</p>
+            </div>
+            <LanguageDropdown variant="light" />
           </div>
         </div>
       </header>
@@ -149,14 +153,14 @@ export function PortalClient({
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-50 text-[#0f6b4f] text-[11px] font-bold border border-emerald-100">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Portal Tagihan Aktif</span>
+              <span>{t.portal.activeBadge}</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900">
-              Halo, {customer.name}
+              {t.portal.greeting} {customer.name}
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 max-w-xl leading-relaxed">
-              Berikut adalah riwayat seluruh invoice, status pembayaran, dan kuitansi resmi yang diterbitkan oleh{" "}
-              <strong className="text-slate-800">{sellerDisplayName}</strong> untuk Anda.
+              {t.portal.description}{" "}
+              <strong className="text-slate-800">{sellerDisplayName}</strong> {t.portal.forYou}
             </p>
 
             <div className="pt-1 flex flex-wrap items-center gap-y-2 gap-x-4 text-xs text-slate-500 font-medium">
@@ -184,10 +188,13 @@ export function PortalClient({
           <div className="flex sm:flex-col justify-between sm:justify-center border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 md:pl-6 shrink-0 gap-3">
             <div>
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                Total Riwayat Tagihan
+                {t.portal.totalHistory}
               </span>
               <p className="text-xl sm:text-2xl font-extrabold text-slate-900 font-mono mt-0.5">
-                {metrics.totalInvoices} <span className="text-xs font-sans font-semibold text-slate-500">Invoice</span>
+                {metrics.totalInvoices}{" "}
+                <span className="text-xs font-sans font-semibold text-slate-500">
+                  {t.portal.invoicesCount}
+                </span>
               </p>
             </div>
           </div>
@@ -200,10 +207,10 @@ export function PortalClient({
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
                 <ClockIcon className="w-4 h-4 text-amber-600" />
-                <span>Menunggu Pembayaran</span>
+                <span>{t.portal.unpaidTitle}</span>
               </span>
               <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-bold">
-                {metrics.countUnpaid} Tagihan
+                {metrics.countUnpaid} {t.portal.unpaidCount}
               </span>
             </div>
             <p className="text-2xl sm:text-3xl font-extrabold text-amber-950 font-mono tracking-tight">
@@ -211,8 +218,8 @@ export function PortalClient({
             </p>
             <p className="text-xs text-amber-700 font-medium">
               {metrics.countUnpaid > 0
-                ? "Silakan lunasi tagihan aktif Anda melalui tautan invoice di bawah."
-                : "Semua tagihan Anda telah lunas. Terima kasih!"}
+                ? t.portal.unpaidDescHas
+                : t.portal.unpaidDescEmpty}
             </p>
           </div>
 
@@ -221,17 +228,17 @@ export function PortalClient({
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold uppercase tracking-wider text-[#0f6b4f] flex items-center gap-1.5">
                 <CheckCircleIcon className="w-4 h-4 text-[#0f6b4f]" />
-                <span>Telah Dilunasi</span>
+                <span>{t.portal.paidTitle}</span>
               </span>
               <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-[#0f6b4f] text-[11px] font-bold">
-                {metrics.countPaid} Tagihan
+                {metrics.countPaid} {t.portal.paidCount}
               </span>
             </div>
             <p className="text-2xl sm:text-3xl font-extrabold text-emerald-950 font-mono tracking-tight">
               {formatMoney(metrics.totalPaid, primaryCurrency)}
             </p>
             <p className="text-xs text-emerald-700 font-medium">
-              Kuitansi resmi dapat diunduh langsung untuk keperluan pembukuan Anda.
+              {t.portal.paidDesc}
             </p>
           </div>
         </div>
@@ -250,7 +257,7 @@ export function PortalClient({
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                Semua ({invoices.length})
+                {t.portal.tabAll} ({invoices.length})
               </button>
               <button
                 type="button"
@@ -261,7 +268,7 @@ export function PortalClient({
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                Belum Lunas ({metrics.countUnpaid})
+                {t.portal.tabUnpaid} ({metrics.countUnpaid})
               </button>
               <button
                 type="button"
@@ -272,7 +279,7 @@ export function PortalClient({
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                Lunas ({metrics.countPaid})
+                {t.portal.tabPaid} ({metrics.countPaid})
               </button>
             </div>
 
@@ -283,7 +290,7 @@ export function PortalClient({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Cari nomor invoice..."
+                placeholder={t.portal.searchPlaceholder}
                 className="w-full rounded-xl border border-slate-200 bg-white pl-9 pr-4 py-2 text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs"
               />
             </div>
@@ -293,11 +300,11 @@ export function PortalClient({
           {filteredInvoices.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-slate-300 p-8 sm:p-12 text-center bg-white shadow-2xs">
               <DocumentTextIcon className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-              <p className="text-sm font-bold text-slate-700">Tidak ada tagihan yang ditemukan</p>
+              <p className="text-sm font-bold text-slate-700">{t.portal.emptyTitle}</p>
               <p className="text-xs text-slate-400 mt-1">
                 {searchQuery
-                  ? `Tidak ada invoice yang cocok dengan kata kunci "${searchQuery}".`
-                  : "Belum ada invoice pada kategori ini."}
+                  ? `${t.portal.emptyDescSearch} "${searchQuery}".`
+                  : t.portal.emptyDescCategory}
               </p>
             </div>
           ) : (
@@ -306,12 +313,12 @@ export function PortalClient({
                 <table className="w-full text-left text-xs sm:text-sm">
                   <thead className="border-b border-slate-200 bg-slate-50/80 text-slate-500 uppercase text-[11px] font-bold tracking-wider">
                     <tr>
-                      <th className="px-5 py-3.5">No. Invoice</th>
-                      <th className="px-5 py-3.5">Tanggal Terbit</th>
-                      <th className="px-5 py-3.5">Jatuh Tempo</th>
-                      <th className="px-5 py-3.5">Status</th>
-                      <th className="px-5 py-3.5 text-right">Total Tagihan</th>
-                      <th className="px-5 py-3.5 text-right">Aksi & Dokumen</th>
+                      <th className="px-5 py-3.5">{t.portal.thNumber}</th>
+                      <th className="px-5 py-3.5">{t.portal.thIssueDate}</th>
+                      <th className="px-5 py-3.5">{t.portal.thDueDate}</th>
+                      <th className="px-5 py-3.5">{t.portal.thStatus}</th>
+                      <th className="px-5 py-3.5 text-right">{t.portal.thTotal}</th>
+                      <th className="px-5 py-3.5 text-right">{t.portal.thActions}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -379,11 +386,11 @@ export function PortalClient({
                               }`}
                             />
                             {inv.status === "PAID"
-                              ? "Lunas"
+                              ? t.portal.statusPaid
                               : inv.status === "SENT"
-                                ? "Menunggu Bayar"
+                                ? t.portal.statusSent
                                 : inv.status === "OVERDUE"
-                                  ? "Jatuh Tempo"
+                                  ? t.portal.statusOverdue
                                   : inv.status}
                           </span>
                         </td>
@@ -407,7 +414,7 @@ export function PortalClient({
                                   : "bg-[#0f6b4f] text-white hover:bg-[#0c553e]"
                               }`}
                             >
-                              <span>{inv.status === "PAID" ? "Lihat Invoice" : "Bayar Sekarang"}</span>
+                              <span>{inv.status === "PAID" ? t.portal.btnViewInvoice : t.portal.btnPayNow}</span>
                               <ArrowTopRightOnSquareIcon className="w-3.5 h-3.5" />
                             </Link>
 
@@ -415,7 +422,7 @@ export function PortalClient({
                             <a
                               href={`/api/invoices/public/${inv.publicId}/pdf`}
                               download={`Invoice-${inv.number}.pdf`}
-                              title="Download PDF Tagihan"
+                              title={t.portal.downloadInvoice}
                               className="p-1.5 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors border border-transparent hover:border-slate-200"
                             >
                               <DocumentArrowDownIcon className="w-4 h-4" />
@@ -426,10 +433,10 @@ export function PortalClient({
                               <a
                                 href={`/api/invoices/public/${inv.publicId}/receipt`}
                                 download={`Kuitansi-${inv.number}.pdf`}
-                                title="Download Kuitansi Lunas Resmi (PDF)"
+                                title={t.portal.downloadReceipt}
                                 className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-emerald-50 text-[#0f6b4f] hover:bg-emerald-100 text-xs font-bold transition-all border border-emerald-200/60"
                               >
-                                <span>Kuitansi</span>
+                                <span>{t.portal.receiptLabel}</span>
                                 <DocumentArrowDownIcon className="w-3.5 h-3.5" />
                               </a>
                             )}
@@ -449,10 +456,10 @@ export function PortalClient({
       <footer className="border-t border-slate-200/80 bg-white py-6 mt-12 text-center text-xs text-slate-500">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p>
-            Portal ditagihkan oleh <strong className="text-slate-800">{sellerDisplayName}</strong>.
+            {t.portal.footerBilledBy} <strong className="text-slate-800">{sellerDisplayName}</strong>.
           </p>
           <div className="flex items-center gap-1.5 text-slate-400">
-            <span>Didukung oleh</span>
+            <span>{t.portal.footerPoweredBy}</span>
             <Link
               href="https://notaku.store"
               target="_blank"
@@ -467,3 +474,4 @@ export function PortalClient({
     </div>
   );
 }
+
