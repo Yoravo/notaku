@@ -53,6 +53,10 @@ model User {
   customDomainTxt      String?
   subdomainSlug        String?   @unique
 
+  // Developer API Keys & Webhooks (PRO)
+  apiKeys              ApiKey[]
+  webhooks             WebhookEndpoint[]
+
   @@map("user")
 }
 
@@ -309,4 +313,58 @@ model PageView {
   @@index([path])
   @@index([createdAt])
   @@map("page_view")
+}
+
+model ApiKey {
+  id          String    @id @default(cuid())
+  userId      String
+  name        String
+  keyPrefix   String    // e.g. "ntk_live_abcd..." (first 12 chars visible for display)
+  keyHash     String    @unique // SHA-256 hash of full API key
+  lastUsedAt  DateTime?
+  expiresAt   DateTime?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([keyHash])
+  @@map("api_key")
+}
+
+model WebhookEndpoint {
+  id          String        @id @default(cuid())
+  userId      String
+  url         String
+  secret      String        // Signing secret: whsec_...
+  events      String[]      // ["invoice.created", "invoice.paid", "invoice.overdue"]
+  isActive    Boolean       @default(true)
+  description String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  logs        WebhookLog[]
+
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("webhook_endpoint")
+}
+
+model WebhookLog {
+  id          String          @id @default(cuid())
+  endpointId  String
+  event       String          // e.g. "invoice.paid"
+  payload     Json
+  statusCode  Int?
+  response    String?
+  durationMs  Int?
+  success     Boolean         @default(false)
+  createdAt   DateTime        @default(now())
+
+  endpoint    WebhookEndpoint @relation(fields: [endpointId], references: [id], onDelete: Cascade)
+
+  @@index([endpointId])
+  @@index([createdAt])
+  @@map("webhook_log")
 }

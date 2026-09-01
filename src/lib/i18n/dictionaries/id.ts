@@ -403,6 +403,8 @@ export const id = {
     tabBusiness: "Profil Usaha & Logo",
     tabBank: "Rekening Pembayaran",
     tabTemplate: "Desain PDF Faktur",
+    tabDomain: "Domain & White-Label",
+    tabDeveloper: "Developer & API",
     tabSecurity: "Keamanan Akun",
     businessName: "Nama Usaha / Brand",
     businessEmail: "Email Bisnis",

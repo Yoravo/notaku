@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { auditLog } from "@/lib/audit-log";
+import { dispatchWebhook } from "@/lib/webhook-dispatcher";
 import crypto from "crypto";
 
 export async function GET() {
@@ -130,6 +131,23 @@ export async function POST(request: Request) {
           feeAmount,
           netAmount,
           paymentId: String(paymentId || orderId),
+        });
+
+        // Trigger user-configured webhook
+        dispatchWebhook(invoice.userId, "invoice.paid", {
+          id: invoice.id,
+          publicId: invoice.publicId,
+          number: invoice.number,
+          status: "PAID",
+          total: Number(invoice.total),
+          currency: invoice.currency,
+          customer: {
+            id: invoice.customer.id,
+            name: invoice.customer.name,
+            email: invoice.customer.email,
+          },
+          paidAt: new Date().toISOString(),
+          paymentMethod: "NOTAKU_DIGITAL",
         });
 
         return NextResponse.json({

@@ -6,6 +6,7 @@ import { BankSettingsForm } from "@/components/bank-settings-form";
 import { SecurityForm } from "@/components/security-form";
 import { TemplateSelector } from "@/components/template-selector";
 import { CustomDomainForm } from "@/components/custom-domain-form";
+import { DeveloperSettingsForm } from "@/components/developer-settings-form";
 import { UpgradeButton } from "@/components/upgrade-button";
 import { InvoiceTemplate } from "@/generated/prisma/client";
 import {
@@ -15,9 +16,11 @@ import {
   DocumentTextIcon,
   SparklesIcon,
   GlobeAltIcon,
+  CodeBracketIcon,
 } from "@heroicons/react/24/outline";
 import { useLanguage } from "@/lib/i18n/context";
 import type { CustomDomainData } from "@/actions/domains";
+import type { ApiKeyData, WebhookEndpointData } from "@/actions/developer";
 
 type UserData = {
   id: string;
@@ -40,13 +43,19 @@ type UserData = {
 export function SettingsTabsClient({
   user,
   domainData,
+  developerData,
 }: {
   user: UserData;
   domainData: CustomDomainData;
+  developerData: {
+    isPro: boolean;
+    apiKeys: ApiKeyData[];
+    webhooks: WebhookEndpointData[];
+  };
 }) {
   const { t, locale } = useLanguage();
   const [activeTab, setActiveTab] = useState<
-    "profile" | "bank" | "template" | "domain" | "security"
+    "profile" | "bank" | "template" | "domain" | "developer" | "security"
   >("profile");
 
   const isPro = user.plan === "PRO";
@@ -54,8 +63,9 @@ export function SettingsTabsClient({
   const tabs = [
     { id: "profile", label: t.settings?.tabProfile || (locale === "id" ? "Profil & Identitas" : "Profile & Identity"), icon: UserIcon },
     { id: "bank", label: t.settings?.tabBank || (locale === "id" ? "Rekening Pembayaran" : "Bank Account"), icon: BuildingLibraryIcon },
-    { id: "template", label: locale === "id" ? "Desain PDF Faktur" : "Invoice PDF Template", icon: DocumentTextIcon },
-    { id: "domain", label: locale === "id" ? "Domain & White-Label" : "Domain & White-Label", icon: GlobeAltIcon },
+    { id: "template", label: t.settings?.tabTemplate || (locale === "id" ? "Desain PDF Faktur" : "Invoice PDF Template"), icon: DocumentTextIcon },
+    { id: "domain", label: t.settings?.tabDomain || (locale === "id" ? "Domain & White-Label" : "Domain & White-Label"), icon: GlobeAltIcon },
+    { id: "developer", label: t.settings?.tabDeveloper || (locale === "id" ? "Developer & API" : "Developer & API"), icon: CodeBracketIcon },
     { id: "security", label: t.settings?.tabSecurity || (locale === "id" ? "Keamanan Akun" : "Account Security"), icon: ShieldCheckIcon },
   ] as const;
 
@@ -192,7 +202,18 @@ export function SettingsTabsClient({
           </div>
         )}
 
-        {/* Tab 5: Keamanan & Password */}
+        {/* Tab 5: Developer & API */}
+        {activeTab === "developer" && (
+          <div className="space-y-6 max-w-3xl">
+            <DeveloperSettingsForm
+              isPro={developerData.isPro}
+              initialApiKeys={developerData.apiKeys}
+              initialWebhooks={developerData.webhooks}
+            />
+          </div>
+        )}
+
+        {/* Tab 6: Keamanan & Password */}
         {activeTab === "security" && (
           <div className="space-y-6 max-w-2xl">
             <div>

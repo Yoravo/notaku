@@ -403,6 +403,8 @@ export const en = {
     tabBusiness: "Business & Logo",
     tabBank: "Bank Account",
     tabTemplate: "Invoice PDF Template",
+    tabDomain: "Domain & White-Label",
+    tabDeveloper: "Developer & API",
     tabSecurity: "Account Security",
     businessName: "Business / Brand Name",
     businessEmail: "Business Email",

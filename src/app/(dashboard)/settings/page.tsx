@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { SettingsTabsClient } from "./settings-tabs-client";
+import { getDeveloperSettings } from "@/actions/developer";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -17,9 +18,12 @@ export default async function SettingsPage() {
     redirect("/login");
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-  });
+  const [user, devSettings] = await Promise.all([
+    prisma.user.findUnique({
+      where: { id: session.user.id },
+    }),
+    getDeveloperSettings(),
+  ]);
 
   if (!user) {
     redirect("/login");
@@ -58,7 +62,13 @@ export default async function SettingsPage() {
           customDomainUrl:
             user.customDomain && user.customDomainVerified ? `https://${user.customDomain}` : null,
         }}
+        developerData={{
+          isPro: devSettings.isPro,
+          apiKeys: devSettings.apiKeys,
+          webhooks: devSettings.webhooks,
+        }}
       />
     </div>
   );
 }
+
