@@ -136,6 +136,7 @@ export default async function ToolsHubPage() {
               <Link
                 key={tool.href}
                 href={tool.href}
+                prefetch={true}
                 className="group relative p-6 rounded-3xl bg-surface border border-border-light hover:border-emerald-500/40 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
               >
                 <div>

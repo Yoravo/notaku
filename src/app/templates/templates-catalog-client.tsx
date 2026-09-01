@@ -106,7 +106,7 @@ export function TemplatesCatalogClient({ session }: { session?: any }) {
                 </div>
 
                 <h3 className="font-display text-lg font-bold text-ink group-hover:text-emerald transition-colors">
-                  <Link href={`/templates/${template.slug}`}>
+                  <Link href={`/templates/${template.slug}`} prefetch={true}>
                     {template.title}
                   </Link>
                 </h3>
@@ -134,6 +134,7 @@ export function TemplatesCatalogClient({ session }: { session?: any }) {
               <div className="mt-6 pt-4 border-t border-line/60 flex items-center justify-between">
                 <Link
                   href={`/templates/${template.slug}`}
+                  prefetch={true}
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-ink hover:text-emerald transition-colors"
                 >
                   <span>Lihat Detail Template</span>
@@ -142,6 +143,7 @@ export function TemplatesCatalogClient({ session }: { session?: any }) {
 
                 <Link
                   href={`/buat-invoice?template=${template.slug}`}
+                  prefetch={true}
                   className="inline-flex items-center gap-1 rounded-xl bg-emerald/10 px-3 py-1.5 text-xs font-bold text-emerald hover:bg-emerald hover:text-paper transition-all"
                 >
                   <DocumentTextIcon className="w-3.5 h-3.5" />

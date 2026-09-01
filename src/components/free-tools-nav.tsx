@@ -76,6 +76,7 @@ export function FreeToolsNav() {
             <Link
               key={tool.href}
               href={tool.href}
+              prefetch={true}
               className="group p-4 rounded-2xl bg-surface border border-border-light hover:border-emerald-500/40 hover:shadow-md transition-all duration-200 flex items-start gap-3.5"
             >
               <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-colors shrink-0">

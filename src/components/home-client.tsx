@@ -404,6 +404,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
             </div>
             <Link
               href="/tools"
+              prefetch={true}
               className="inline-flex items-center gap-1.5 text-sm font-bold text-emerald hover:text-emerald-bright transition-colors"
             >
               <span>Lihat Semua 7 Tools</span>
@@ -459,6 +460,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                 <Link
                   key={tool.href}
                   href={tool.href}
+                  prefetch={true}
                   className="group relative p-6 rounded-3xl border border-line bg-paper-deep/30 hover:bg-white hover:border-emerald/40 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
                 >
                   <div>

@@ -127,6 +127,7 @@ export function LandingNavbar({ session }: NavbarProps) {
               <Link
                 key={item.name}
                 href={item.href}
+                prefetch={true}
                 className={`text-sm font-medium transition-all relative py-1 ${
                   active
                     ? "text-emerald font-bold"
