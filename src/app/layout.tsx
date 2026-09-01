@@ -49,12 +49,11 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/icon.png", type: "image/png" },
-      { url: "/logo-notaku.png", type: "image/png" },
+      { url: "/logo.png", type: "image/png" },
       { url: "/favicon.ico" },
     ],
-    shortcut: [{ url: "/logo-notaku.png" }],
-    apple: [{ url: "/apple-icon.png" }],
+    shortcut: [{ url: "/logo.png" }],
+    apple: [{ url: "/logo.png" }],
   },
   alternates: {
     canonical: baseUrl,
