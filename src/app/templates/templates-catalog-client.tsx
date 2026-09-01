@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   DocumentTextIcon,
   SparklesIcon,
@@ -11,8 +12,9 @@ import {
 } from "@heroicons/react/24/outline";
 import { NICHE_TEMPLATES, NicheTemplate } from "@/lib/templates-data";
 import { FreeToolsNav } from "@/components/free-tools-nav";
+import { LandingNavbar } from "@/components/landing-navbar";
 
-export function TemplatesCatalogClient() {
+export function TemplatesCatalogClient({ session }: { session?: any }) {
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -36,33 +38,7 @@ export function TemplatesCatalogClient() {
   return (
     <div className="min-h-screen bg-paper text-ink selection:bg-emerald/20">
       {/* Top Header */}
-      <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 py-3.5">
-          <Link href="/" className="font-display text-xl font-bold tracking-tight text-ink flex items-center gap-1.5">
-            <span>Nota</span>
-            <span className="text-emerald">Ku</span>
-            <span className="ml-2 rounded-full bg-emerald/10 px-2 py-0.5 text-[10px] font-bold text-emerald border border-emerald/20">
-              Templates Hub
-            </span>
-          </Link>
-
-          <div className="flex items-center gap-2.5">
-            <Link
-              href="/buat-invoice"
-              className="text-xs font-bold text-ink-soft hover:text-ink transition-colors px-3 py-2"
-            >
-              Invoice Generator
-            </Link>
-            <Link
-              href="/register"
-              className="inline-flex items-center gap-1.5 rounded-xl bg-emerald px-4 py-2 text-xs font-bold text-paper shadow-sm hover:bg-emerald-bright transition-all"
-            >
-              <span>Daftar Gratis</span>
-              <SparklesIcon className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-        </div>
-      </header>
+      <LandingNavbar session={session} />
 
       {/* Hero Section */}
       <section className="border-b border-line bg-paper-deep/40 py-10 sm:py-16">

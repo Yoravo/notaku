@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { FreeInvoiceGeneratorClient } from "./free-invoice-client";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
 
@@ -40,7 +42,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function FreeInvoicePage() {
+export default async function FreeInvoicePage() {
+  const session = await auth.api.getSession({ headers: await headers() });
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -73,7 +77,7 @@ export default function FreeInvoicePage() {
           </div>
         }
       >
-        <FreeInvoiceGeneratorClient />
+        <FreeInvoiceGeneratorClient session={session} />
       </Suspense>
     </>
   );

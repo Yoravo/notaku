@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import {
   DocumentTextIcon,
   PlusIcon,
@@ -23,6 +24,7 @@ import { calculateInvoiceTotals, type DiscountType } from "@/lib/invoice-calcula
 import { formatMoney, SUPPORTED_CURRENCIES, type SupportedCurrency } from "@/lib/currencies";
 import { NICHE_TEMPLATES } from "@/lib/templates-data";
 import { FreeToolsNav } from "@/components/free-tools-nav";
+import { LandingNavbar } from "@/components/landing-navbar";
 
 interface InvoiceItem {
   id: string;
@@ -31,7 +33,7 @@ interface InvoiceItem {
   price: number;
 }
 
-export function FreeInvoiceGeneratorClient() {
+export function FreeInvoiceGeneratorClient({ session }: { session?: any }) {
   const searchParams = useSearchParams();
   const templateSlug = searchParams.get("template");
 
@@ -190,33 +192,7 @@ export function FreeInvoiceGeneratorClient() {
   return (
     <div className="min-h-screen bg-paper text-ink selection:bg-emerald/20">
       {/* Top Header & Breadcrumb */}
-      <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 py-3.5">
-          <Link href="/" className="font-display text-xl font-bold tracking-tight text-ink flex items-center gap-1.5">
-            <span>Nota</span>
-            <span className="text-emerald">Ku</span>
-            <span className="ml-2 rounded-full bg-emerald/10 px-2 py-0.5 text-[10px] font-bold text-emerald border border-emerald/20">
-              Free Tool
-            </span>
-          </Link>
-
-          <div className="flex items-center gap-2.5">
-            <Link
-              href="/login"
-              className="hidden sm:inline-block text-xs font-bold text-ink-soft hover:text-ink transition-colors px-3 py-2"
-            >
-              Masuk
-            </Link>
-            <Link
-              href="/register"
-              className="inline-flex items-center gap-1.5 rounded-xl bg-emerald px-4 py-2 text-xs font-bold text-paper shadow-sm hover:bg-emerald-bright transition-all"
-            >
-              <span>Daftar Gratis</span>
-              <SparklesIcon className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-        </div>
-      </header>
+      <LandingNavbar session={session} />
 
       {/* Hero Intro Header */}
       <section className="border-b border-line bg-paper-deep/40 py-8 sm:py-12">

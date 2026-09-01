@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   CalculatorIcon,
   SparklesIcon,
@@ -14,8 +15,9 @@ import {
   DocumentTextIcon,
 } from "@heroicons/react/24/outline";
 import { FreeToolsNav } from "@/components/free-tools-nav";
+import { LandingNavbar } from "@/components/landing-navbar";
 
-export function Pph23CalculatorClient() {
+export function Pph23CalculatorClient({ session }: { session?: any }) {
   const [grossAmount, setGrossAmount] = useState<string>("5000000");
   const [hasNpwp, setHasNpwp] = useState<boolean>(true);
   const [includePpn, setIncludePpn] = useState<boolean>(false);
@@ -61,31 +63,8 @@ Dihitung via Kalkulator Pajak NotaKu (notaku.store/kalkulator-pph23)`;
 
   return (
     <div className="min-h-screen bg-paper text-ink font-sans">
-      {/* Top Header */}
-      <header className="border-b border-border-light bg-surface/80 backdrop-blur sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link
-              href="/"
-              className="text-lg sm:text-xl font-bold tracking-tight text-ink hover:opacity-80 transition"
-            >
-              Nota<span className="text-emerald-500">Ku</span>
-            </Link>
-            <span className="text-border">/</span>
-            <span className="text-xs sm:text-sm font-semibold text-emerald-600 bg-emerald-500/10 px-2.5 py-0.5 rounded-full">
-              Kalkulator PPh 23
-            </span>
-          </div>
-
-          <Link
-            href="/buat-invoice"
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition"
-          >
-            <DocumentTextIcon className="w-3.5 h-3.5" />
-            Buat Invoice Jasa
-          </Link>
-        </div>
-      </header>
+      {/* Top Navbar */}
+      <LandingNavbar session={session} />
 
       {/* Main Container */}
       <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">

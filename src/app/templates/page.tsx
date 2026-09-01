@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { TemplatesCatalogClient } from "./templates-catalog-client";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
 
@@ -37,7 +39,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function TemplatesPage() {
+export default async function TemplatesPage() {
+  const session = await auth.api.getSession({ headers: await headers() });
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
@@ -53,7 +57,7 @@ export default function TemplatesPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <TemplatesCatalogClient />
+      <TemplatesCatalogClient session={session} />
     </>
   );
 }

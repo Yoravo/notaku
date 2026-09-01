@@ -10,6 +10,9 @@ import {
   ArrowRightIcon,
   BuildingOffice2Icon,
 } from "@heroicons/react/24/outline";
+import { LandingNavbar } from "@/components/landing-navbar";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
 
@@ -46,7 +49,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ToolsHubPage() {
+export default async function ToolsHubPage() {
+  const session = await auth.api.getSession({ headers: await headers() });
+
   const tools = [
     {
       title: "Free Invoice Generator",
@@ -106,31 +111,7 @@ export default function ToolsHubPage() {
   return (
     <div className="min-h-screen bg-paper text-ink font-sans">
       {/* Top Navbar */}
-      <header className="border-b border-border-light bg-surface/80 backdrop-blur sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
-          <Link
-            href="/"
-            className="text-lg sm:text-xl font-bold tracking-tight text-ink hover:opacity-80 transition"
-          >
-            Nota<span className="text-emerald-500">Ku</span>
-          </Link>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className="text-xs font-bold text-ink-soft hover:text-ink transition"
-            >
-              Masuk
-            </Link>
-            <Link
-              href="/register"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition"
-            >
-              Daftar Gratis
-            </Link>
-          </div>
-        </div>
-      </header>
+      <LandingNavbar session={session} />
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">

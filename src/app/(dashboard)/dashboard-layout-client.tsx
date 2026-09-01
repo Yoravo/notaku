@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Sidebar } from "@/components/sidebar";
 import {
   Bars3Icon,
@@ -103,20 +104,38 @@ export function DashboardLayoutClient({
             {!desktopOpen && (
               <Link
                 href="/"
-                className="hidden md:flex items-center text-lg font-bold font-display tracking-tight text-gray-900 transition-opacity hover:opacity-80 ml-1"
+                className="hidden md:flex items-center gap-1.5 text-lg font-bold font-display tracking-tight text-gray-900 transition-opacity hover:opacity-80 ml-1"
               >
-                <span>Nota</span>
-                <span className="text-[#0f6b4f]">Ku</span>
+                <Image
+                  src="/logo.png"
+                  alt="NotaKu Logo"
+                  width={24}
+                  height={24}
+                  className="w-6 h-6 object-contain shrink-0"
+                />
+                <span>
+                  <span>Nota</span>
+                  <span className="text-[#0f6b4f]">Ku</span>
+                </span>
               </Link>
             )}
 
             {/* Mobile Brand */}
             <Link
               href="/"
-              className="md:hidden text-lg font-bold font-display tracking-tight text-gray-900 transition-opacity hover:opacity-80"
+              className="md:hidden flex items-center gap-1.5 text-lg font-bold font-display tracking-tight text-gray-900 transition-opacity hover:opacity-80"
             >
-              <span>Nota</span>
-              <span className="text-[#0f6b4f]">Ku</span>
+              <Image
+                src="/logo.png"
+                alt="NotaKu Logo"
+                width={24}
+                height={24}
+                className="w-6 h-6 object-contain shrink-0"
+              />
+              <span>
+                <span>Nota</span>
+                <span className="text-[#0f6b4f]">Ku</span>
+              </span>
             </Link>
           </div>
 

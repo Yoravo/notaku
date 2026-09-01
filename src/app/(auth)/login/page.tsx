@@ -2,6 +2,7 @@
 
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import {
@@ -89,8 +90,15 @@ export default function LoginPage() {
       <header className="w-full max-w-6xl mx-auto flex items-center justify-between py-2">
         <Link
           href="/"
-          className="flex items-center gap-2 group text-slate-600 hover:text-slate-900 transition-colors min-h-[44px]"
+          className="flex items-center gap-1.5 group text-slate-600 hover:text-slate-900 transition-colors min-h-[44px]"
         >
+          <Image
+            src="/logo.png"
+            alt="NotaKu Logo"
+            width={28}
+            height={28}
+            className="w-7 h-7 object-contain shrink-0"
+          />
           <span className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
             Nota<span className="text-[#0f6b4f]">Ku</span>
           </span>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   DocumentCheckIcon,
   SparklesIcon,
@@ -12,8 +13,9 @@ import {
 } from "@heroicons/react/24/outline";
 import { terbilangRupiah, terbilang } from "@/lib/terbilang";
 import { FreeToolsNav } from "@/components/free-tools-nav";
+import { LandingNavbar } from "@/components/landing-navbar";
 
-export function TerbilangConverterClient() {
+export function TerbilangConverterClient({ session }: { session?: any }) {
   const [amountInput, setAmountInput] = useState<string>("25500000");
   const [casingFormat, setCasingFormat] = useState<"Title" | "UPPER" | "lower">("Title");
   const [includeRupiah, setIncludeRupiah] = useState<boolean>(true);
@@ -46,40 +48,8 @@ export function TerbilangConverterClient() {
 
   return (
     <div className="min-h-screen bg-paper text-ink selection:bg-emerald/20">
-      {/* Top Header */}
-      <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 py-3.5">
-          <Link href="/" className="font-display text-xl font-bold tracking-tight text-ink flex items-center gap-1.5">
-            <span>Nota</span>
-            <span className="text-emerald">Ku</span>
-            <span className="ml-2 rounded-full bg-emerald/10 px-2 py-0.5 text-[10px] font-bold text-emerald border border-emerald/20">
-              Finance Tool
-            </span>
-          </Link>
-
-          <div className="flex items-center gap-2.5">
-            <Link
-              href="/buat-invoice"
-              className="text-xs font-bold text-ink-soft hover:text-ink transition-colors px-3 py-2"
-            >
-              Invoice Generator
-            </Link>
-            <Link
-              href="/kalkulator-ppn"
-              className="hidden sm:inline-block text-xs font-bold text-ink-soft hover:text-ink transition-colors px-3 py-2"
-            >
-              Kalkulator PPN
-            </Link>
-            <Link
-              href="/register"
-              className="inline-flex items-center gap-1.5 rounded-xl bg-emerald px-4 py-2 text-xs font-bold text-paper shadow-sm hover:bg-emerald-bright transition-all"
-            >
-              <span>Daftar Gratis</span>
-              <SparklesIcon className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-        </div>
-      </header>
+      {/* Top Navbar */}
+      <LandingNavbar session={session} />
 
       {/* Hero Header */}
       <section className="border-b border-line bg-paper-deep/40 py-8 sm:py-12">

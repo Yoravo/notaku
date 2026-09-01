@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { FreeReceiptGeneratorClient } from "./free-receipt-client";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
 
@@ -39,7 +41,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function FreeReceiptPage() {
+export default async function FreeReceiptPage() {
+  const session = await auth.api.getSession({ headers: await headers() });
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -72,7 +76,7 @@ export default function FreeReceiptPage() {
           </div>
         }
       >
-        <FreeReceiptGeneratorClient />
+        <FreeReceiptGeneratorClient session={session} />
       </Suspense>
     </>
   );

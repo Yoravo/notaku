@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { LandingNavbar } from "@/components/landing-navbar";
 import { LandingFAQ } from "@/components/landing-faq";
 import { useLanguage } from "@/lib/i18n/context";
@@ -210,9 +211,21 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
               <div className="tilt-in mx-auto w-full max-w-md rounded-2xl border border-line bg-white p-6 sm:p-7 shadow-2xl shadow-ink/10 transition-transform">
                 {/* Header Mockup */}
                 <div className="flex items-start justify-between border-b border-line pb-4">
-                  <Link href="/" className="flex items-center gap-1.5 font-display text-lg font-bold">
-                    <span>Nota</span>
-                    <span className="text-emerald">Ku</span>
+                  <Link
+                    href="/"
+                    className="flex items-center gap-1.5 font-display text-lg font-bold transition-opacity hover:opacity-80"
+                  >
+                    <Image
+                      src="/logo.png"
+                      alt="NotaKu Logo"
+                      width={24}
+                      height={24}
+                      className="w-6 h-6 object-contain shrink-0"
+                    />
+                    <span>
+                      <span>Nota</span>
+                      <span className="text-emerald">Ku</span>
+                    </span>
                   </Link>
                   <span className="rounded-full bg-emerald/15 px-3 py-1 text-xs font-bold text-emerald">
                     {t.mockup.paid}
@@ -680,10 +693,19 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
             <div className="flex flex-col items-center md:items-start gap-2">
               <Link
                 href="/"
-                className="font-display text-2xl font-bold tracking-tight text-ink"
+                className="font-display text-2xl font-bold tracking-tight text-ink flex items-center gap-1.5"
               >
-                <span>Nota</span>
-                <span className="text-emerald">Ku</span>
+                <Image
+                  src="/logo.png"
+                  alt="NotaKu Logo"
+                  width={30}
+                  height={30}
+                  className="w-7 h-7 object-contain shrink-0"
+                />
+                <span>
+                  <span>Nota</span>
+                  <span className="text-emerald">Ku</span>
+                </span>
               </Link>
               <p className="text-xs text-ink-soft text-center md:text-left">
                 {t.footer.desc}

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
@@ -110,10 +111,19 @@ export function Sidebar({
       <div className="flex h-14 items-center justify-between border-b border-slate-200 px-5 shrink-0">
         <Link
           href="/"
-          className="font-display text-2xl font-bold tracking-tight text-slate-900 transition-opacity hover:opacity-80 flex items-center whitespace-nowrap"
+          className="font-display text-2xl font-bold tracking-tight text-slate-900 transition-opacity hover:opacity-80 flex items-center gap-1.5 whitespace-nowrap"
         >
-          <span>Nota</span>
-          <span className="text-[#0f6b4f]">Ku</span>
+          <Image
+            src="/logo.png"
+            alt="NotaKu Logo"
+            width={30}
+            height={30}
+            className="w-7 h-7 object-contain shrink-0"
+          />
+          <span>
+            <span>Nota</span>
+            <span className="text-[#0f6b4f]">Ku</span>
+          </span>
         </Link>
 
         {/* Mobile Close Button */}

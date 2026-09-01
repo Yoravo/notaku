@@ -12,6 +12,9 @@ import {
 } from "@heroicons/react/24/outline";
 import { NICHE_TEMPLATES, NicheTemplate } from "@/lib/templates-data";
 import { formatMoney } from "@/lib/currencies";
+import { LandingNavbar } from "@/components/landing-navbar";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
 
@@ -70,6 +73,7 @@ export default async function NicheTemplateDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const session = await auth.api.getSession({ headers: await headers() });
   const template = NICHE_TEMPLATES.find((t) => t.slug === slug);
 
   if (!template) {
@@ -104,33 +108,7 @@ export default async function NicheTemplateDetailPage({
       />
 
       {/* Top Header */}
-      <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 py-3.5">
-          <Link href="/" className="font-display text-xl font-bold tracking-tight text-ink flex items-center gap-1.5">
-            <span>Nota</span>
-            <span className="text-emerald">Ku</span>
-            <span className="ml-2 rounded-full bg-emerald/10 px-2 py-0.5 text-[10px] font-bold text-emerald border border-emerald/20">
-              Template Guide
-            </span>
-          </Link>
-
-          <div className="flex items-center gap-2.5">
-            <Link
-              href="/templates"
-              className="text-xs font-bold text-ink-soft hover:text-ink transition-colors px-3 py-2"
-            >
-              Semua Template
-            </Link>
-            <Link
-              href={`/buat-invoice?template=${template.slug}`}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-emerald px-4 py-2 text-xs font-bold text-paper shadow-sm hover:bg-emerald-bright transition-all"
-            >
-              <span>Gunakan Template</span>
-              <SparklesIcon className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-        </div>
-      </header>
+      <LandingNavbar session={session} />
 
       {/* Breadcrumbs & Title */}
       <section className="border-b border-line bg-paper-deep/40 py-8 sm:py-12">

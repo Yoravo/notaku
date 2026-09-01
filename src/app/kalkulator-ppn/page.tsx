@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { PpnCalculatorClient } from "./ppn-calculator-client";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
 
@@ -38,7 +40,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function PpnCalculatorPage() {
+export default async function PpnCalculatorPage() {
+  const session = await auth.api.getSession({ headers: await headers() });
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -61,7 +65,7 @@ export default function PpnCalculatorPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <PpnCalculatorClient />
+      <PpnCalculatorClient session={session} />
     </>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   DocumentCheckIcon,
   ArrowDownTrayIcon,
@@ -19,8 +20,9 @@ import {
 import { numberToWordsRupiah } from "@/lib/terbilang";
 import { formatMoney, SUPPORTED_CURRENCIES, type SupportedCurrency } from "@/lib/currencies";
 import { FreeToolsNav } from "@/components/free-tools-nav";
+import { LandingNavbar } from "@/components/landing-navbar";
 
-export function FreeReceiptGeneratorClient() {
+export function FreeReceiptGeneratorClient({ session }: { session?: any }) {
   const [currency, setCurrency] = useState<SupportedCurrency>("IDR");
   const [receiptNumber, setReceiptNumber] = useState("KW-202608-001");
   const [invoiceNumber, setInvoiceNumber] = useState("INV/2026/08/01");
@@ -114,51 +116,8 @@ export function FreeReceiptGeneratorClient() {
 
   return (
     <div className="min-h-screen bg-paper text-ink font-sans">
-      {/* Top Breadcrumb & Hero */}
-      <header className="border-b border-border-light bg-surface/80 backdrop-blur sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link
-              href="/"
-              className="text-lg sm:text-xl font-bold tracking-tight text-ink hover:opacity-80 transition"
-            >
-              Nota<span className="text-emerald-500">Ku</span>
-            </Link>
-            <span className="text-border">/</span>
-            <span className="text-xs sm:text-sm font-semibold text-emerald-600 bg-emerald-500/10 px-2.5 py-0.5 rounded-full">
-              Kuitansi Gratis
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2.5">
-            <Link
-              href="/register"
-              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 hover:text-emerald-700 px-3 py-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/5 transition"
-            >
-              <SparklesIcon className="w-3.5 h-3.5" />
-              Simpan & Rekap Otomatis
-            </Link>
-            <button
-              type="button"
-              onClick={handleDownloadPdf}
-              disabled={isGeneratingPdf}
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm hover:shadow transition disabled:opacity-50"
-            >
-              {isGeneratingPdf ? (
-                <>
-                  <ArrowPathIcon className="w-3.5 h-3.5 animate-spin" />
-                  Memproses PDF...
-                </>
-              ) : (
-                <>
-                  <ArrowDownTrayIcon className="w-3.5 h-3.5" />
-                  Unduh Kuitansi PDF
-                </>
-              )}
-            </button>
-          </div>
-        </div>
-      </header>
+      {/* Top Navbar */}
+      <LandingNavbar session={session} />
 
       {/* Main Container */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

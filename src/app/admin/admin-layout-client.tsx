@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   ChartBarIcon,
@@ -83,12 +84,19 @@ export function AdminLayoutClient({
         <div className="flex h-16 items-center justify-between border-b border-slate-800 px-5 shrink-0">
           <Link
             href="/"
-            className="flex items-center gap-2 transition-opacity hover:opacity-80 overflow-hidden"
+            className="flex items-center gap-1.5 transition-opacity hover:opacity-80 overflow-hidden"
           >
+            <Image
+              src="/logo.png"
+              alt="NotaKu Logo"
+              width={28}
+              height={28}
+              className="w-7 h-7 object-contain shrink-0"
+            />
             <span className="font-display text-2xl font-bold tracking-tight text-white flex items-center whitespace-nowrap">
               <span>Nota</span>
               <span className="text-emerald-400">Ku</span>
-              <span className="ml-2.5 rounded-md bg-rose-500/20 text-rose-400 text-xs font-semibold px-2 py-0.5 border border-rose-500/30 font-sans flex items-center gap-1">
+              <span className="ml-2 rounded-md bg-rose-500/20 text-rose-400 text-xs font-semibold px-2 py-0.5 border border-rose-500/30 font-sans flex items-center gap-1">
                 <ShieldCheckIcon className="w-3.5 h-3.5" />
                 ADMIN
               </span>
@@ -190,10 +198,19 @@ export function AdminLayoutClient({
                 href="/"
                 className="hidden md:flex items-center gap-1.5 font-display text-xl font-bold tracking-tight text-slate-900 transition-opacity hover:opacity-80 ml-1"
               >
-                <span>Nota</span>
-                <span className="text-[#0f6b4f]">Ku</span>
-                <span className="text-[10px] bg-rose-500/10 text-rose-600 border border-rose-500/20 px-1.5 py-0.5 rounded font-sans font-bold ml-1">
-                  ADMIN
+                <Image
+                  src="/logo.png"
+                  alt="NotaKu Logo"
+                  width={24}
+                  height={24}
+                  className="w-6 h-6 object-contain shrink-0"
+                />
+                <span>
+                  <span>Nota</span>
+                  <span className="text-[#0f6b4f]">Ku</span>
+                  <span className="text-[10px] bg-rose-500/10 text-rose-600 border border-rose-500/20 px-1.5 py-0.5 rounded font-sans font-bold ml-1">
+                    ADMIN
+                  </span>
                 </span>
               </Link>
             )}
@@ -201,12 +218,21 @@ export function AdminLayoutClient({
             {/* Mobile Brand */}
             <Link
               href="/"
-              className="md:hidden font-display text-lg font-bold tracking-tight text-slate-900 flex items-center gap-1"
+              className="md:hidden font-display text-lg font-bold tracking-tight text-slate-900 flex items-center gap-1.5"
             >
-              <span>Nota</span>
-              <span className="text-[#0f6b4f]">Ku</span>
-              <span className="text-[10px] bg-rose-500/10 text-rose-600 border border-rose-500/20 px-1.5 py-0.2 rounded font-sans font-bold">
-                ADMIN
+              <Image
+                src="/logo.png"
+                alt="NotaKu Logo"
+                width={24}
+                height={24}
+                className="w-6 h-6 object-contain shrink-0"
+              />
+              <span>
+                <span>Nota</span>
+                <span className="text-[#0f6b4f]">Ku</span>
+                <span className="text-[10px] bg-rose-500/10 text-rose-600 border border-rose-500/20 px-1.5 py-0.2 rounded font-sans font-bold ml-1">
+                  ADMIN
+                </span>
               </span>
             </Link>
           </div>

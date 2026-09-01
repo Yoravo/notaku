@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { TerbilangConverterClient } from "./terbilang-converter-client";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
 
@@ -38,7 +40,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function TerbilangConverterPage() {
+export default async function TerbilangConverterPage() {
+  const session = await auth.api.getSession({ headers: await headers() });
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -61,7 +65,7 @@ export default function TerbilangConverterPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <TerbilangConverterClient />
+      <TerbilangConverterClient session={session} />
     </>
   );
 }
