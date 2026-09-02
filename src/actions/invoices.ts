@@ -14,6 +14,7 @@ import { checkServerActionRateLimit } from "@/lib/rate-limit";
 import { sendEmail } from "@/lib/email";
 import { renderInvoiceEmailHtml } from "@/lib/email-templates";
 import { formatDateWIB } from "@/lib/invoice-utils";
+import { notifySellerInvoicePaid } from "@/lib/bot-notifications";
 
 import { calculateInvoiceTotals, DiscountType } from "@/lib/invoice-calculations";
 
@@ -254,10 +255,23 @@ export async function updateInvoiceStatus(id: string, status: string) {
     }
   }
 
-  await prisma.invoice.update({
+  const updatedInvoice = await prisma.invoice.update({
     where: { id, userId: user.id },
     data: updateData,
+    include: { customer: true },
   });
+
+  if (status === "PAID") {
+    notifySellerInvoicePaid(user.id, {
+      number: updatedInvoice.number,
+      publicId: updatedInvoice.publicId,
+      total: Number(updatedInvoice.total),
+      currency: updatedInvoice.currency,
+      customerName: updatedInvoice.customer.name,
+      paymentMethod: updatedInvoice.paymentMethod || "DIRECT_TRANSFER",
+      paidAt: updatedInvoice.paidAt || new Date(),
+    }).catch((e) => console.error("[NOTIF_MANUAL_PAID_ERROR]", e));
+  }
 
   auditLog(
     "invoice.status_changed",

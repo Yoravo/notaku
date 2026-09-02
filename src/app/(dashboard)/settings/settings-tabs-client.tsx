@@ -7,6 +7,7 @@ import { SecurityForm } from "@/components/security-form";
 import { TemplateSelector } from "@/components/template-selector";
 import { CustomDomainForm } from "@/components/custom-domain-form";
 import { DeveloperSettingsForm } from "@/components/developer-settings-form";
+import { NotificationSettingsForm } from "@/components/notification-settings-form";
 import { UpgradeButton } from "@/components/upgrade-button";
 import { InvoiceTemplate } from "@/generated/prisma/client";
 import {
@@ -17,10 +18,12 @@ import {
   SparklesIcon,
   GlobeAltIcon,
   CodeBracketIcon,
+  BellAlertIcon,
 } from "@heroicons/react/24/outline";
 import { useLanguage } from "@/lib/i18n/context";
 import type { CustomDomainData } from "@/actions/domains";
 import type { ApiKeyData, WebhookEndpointData } from "@/actions/developer";
+import type { BotNotificationSettings } from "@/actions/notifications";
 
 type UserData = {
   id: string;
@@ -44,6 +47,7 @@ export function SettingsTabsClient({
   user,
   domainData,
   developerData,
+  botNotificationData,
 }: {
   user: UserData;
   domainData: CustomDomainData;
@@ -52,10 +56,11 @@ export function SettingsTabsClient({
     apiKeys: ApiKeyData[];
     webhooks: WebhookEndpointData[];
   };
+  botNotificationData: BotNotificationSettings;
 }) {
   const { t, locale } = useLanguage();
   const [activeTab, setActiveTab] = useState<
-    "profile" | "bank" | "template" | "domain" | "developer" | "security"
+    "profile" | "bank" | "template" | "domain" | "developer" | "notifications" | "security"
   >("profile");
 
   const isPro = user.plan === "PRO";
@@ -66,6 +71,7 @@ export function SettingsTabsClient({
     { id: "template", label: t.settings?.tabTemplate || (locale === "id" ? "Desain PDF Faktur" : "Invoice PDF Template"), icon: DocumentTextIcon },
     { id: "domain", label: t.settings?.tabDomain || (locale === "id" ? "Domain & White-Label" : "Domain & White-Label"), icon: GlobeAltIcon },
     { id: "developer", label: t.settings?.tabDeveloper || (locale === "id" ? "Developer & API" : "Developer & API"), icon: CodeBracketIcon },
+    { id: "notifications", label: t.settings?.tabNotifications || (locale === "id" ? "Bot Notifikasi" : "Bot Notifications"), icon: BellAlertIcon },
     { id: "security", label: t.settings?.tabSecurity || (locale === "id" ? "Keamanan Akun" : "Account Security"), icon: ShieldCheckIcon },
   ] as const;
 
@@ -213,7 +219,14 @@ export function SettingsTabsClient({
           </div>
         )}
 
-        {/* Tab 6: Keamanan & Password */}
+        {/* Tab 6: Bot Notifikasi Telegram & Discord */}
+        {activeTab === "notifications" && (
+          <div className="space-y-6 max-w-3xl">
+            <NotificationSettingsForm initialData={botNotificationData} />
+          </div>
+        )}
+
+        {/* Tab 7: Keamanan & Password */}
         {activeTab === "security" && (
           <div className="space-y-6 max-w-2xl">
             <div>

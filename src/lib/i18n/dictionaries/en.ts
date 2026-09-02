@@ -405,6 +405,7 @@ export const en = {
     tabTemplate: "Invoice PDF Template",
     tabDomain: "Domain & White-Label",
     tabDeveloper: "Developer & API",
+    tabNotifications: "Bot Notifications",
     tabSecurity: "Account Security",
     businessName: "Business / Brand Name",
     businessEmail: "Business Email",

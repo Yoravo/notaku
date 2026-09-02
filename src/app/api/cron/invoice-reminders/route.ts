@@ -5,6 +5,7 @@ import { renderInvoiceEmailHtml } from "@/lib/email-templates";
 import { sendEmail } from "@/lib/email";
 import { formatDateWIB } from "@/lib/invoice-utils";
 import { auditLog } from "@/lib/audit-log";
+import { notifySellerDueToday } from "@/lib/bot-notifications";
 
 /**
  * Automated Payment Reminders Cron Job
@@ -96,6 +97,15 @@ export async function GET(request: Request) {
     errors: 0,
   };
 
+  const dueTodayByUser = new Map<string, Array<{
+    number: string;
+    publicId: string;
+    total: number | string;
+    currency?: string;
+    customerName: string;
+    dueDate: Date;
+  }>>();
+
   for (const invoice of candidateInvoices) {
     if (!invoice.dueDate || !invoice.customer.email) {
       results.skippedDuplicateOrNoEmail++;
@@ -115,6 +125,18 @@ export async function GET(request: Request) {
       reminderType = "reminder_h3";
     } else if (invoiceDueDateStr === hTodayStr) {
       reminderType = "reminder_today";
+      // Kumpulkan invoice jatuh tempo hari ini per seller untuk notifikasi Bot
+      if (!dueTodayByUser.has(invoice.userId)) {
+        dueTodayByUser.set(invoice.userId, []);
+      }
+      dueTodayByUser.get(invoice.userId)!.push({
+        number: invoice.number,
+        publicId: invoice.publicId,
+        total: Number(invoice.total),
+        currency: invoice.currency,
+        customerName: invoice.customer.name,
+        dueDate: new Date(invoice.dueDate),
+      });
     } else if (invoiceDueDateStr === hPlus3Str || invoiceDueDateStr <= hPlus3Str) {
       reminderType = "reminder_overdue";
     }
@@ -266,6 +288,15 @@ export async function GET(request: Request) {
     } catch (err) {
       console.error(`[CRON_REMINDER_SEND_ERROR] Invoice ${invoice.id}:`, err);
       results.errors++;
+    }
+  }
+
+  // Kirim rangkuman notifikasi bot (Telegram & Discord) untuk penjual yang memiliki invoice jatuh tempo hari ini
+  for (const [sellerId, dueInvoices] of dueTodayByUser.entries()) {
+    try {
+      await notifySellerDueToday(sellerId, dueInvoices);
+    } catch (botErr) {
+      console.error(`[CRON_BOT_NOTIF_ERROR] Seller ${sellerId}:`, botErr);
     }
   }
 

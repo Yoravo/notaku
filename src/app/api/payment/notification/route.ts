@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { auditLog } from "@/lib/audit-log";
 import { dispatchWebhook } from "@/lib/webhook-dispatcher";
+import { notifySellerInvoicePaid } from "@/lib/bot-notifications";
 import crypto from "crypto";
 
 export async function GET() {
@@ -149,6 +150,17 @@ export async function POST(request: Request) {
           paidAt: new Date().toISOString(),
           paymentMethod: "NOTAKU_DIGITAL",
         });
+
+        // Trigger Bot Telegram & Discord Notifikasi Penjual (PRO)
+        notifySellerInvoicePaid(invoice.userId, {
+          number: invoice.number,
+          publicId: invoice.publicId,
+          total: Number(invoice.total),
+          currency: invoice.currency,
+          customerName: invoice.customer.name,
+          paymentMethod: "NOTAKU_DIGITAL",
+          paidAt: new Date(),
+        }).catch((e) => console.error("[NOTIF_SELLER_ERROR]", e));
 
         return NextResponse.json({
           message: "Success: Invoice settled and seller balance credited",

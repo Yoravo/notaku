@@ -13,6 +13,7 @@ import { sendEmail } from "@/lib/email";
 import { renderInvoiceEmailHtml } from "@/lib/email-templates";
 import { formatDateWIB } from "@/lib/invoice-utils";
 import { auditLog } from "@/lib/audit-log";
+import { notifySellerRecurringGenerated } from "@/lib/bot-notifications";
 
 /**
  * Recurring Invoices Automated Cron Job
@@ -224,6 +225,25 @@ export async function GET(request: Request) {
           );
         }
       }
+
+      // Notifikasi Bot Telegram & Discord Penjual (PRO)
+      notifySellerRecurringGenerated(
+        profile.userId,
+        {
+          title: profile.title,
+          frequency: profile.frequency,
+        },
+        {
+          number: invoice.number,
+          publicId: invoice.publicId,
+          total: Number(invoice.total),
+          currency: invoice.currency,
+          customerName: customer.name,
+          dueDate: invoice.dueDate,
+        }
+      ).catch((botErr) => {
+        console.error(`[CRON_RECURRING_BOT_ERROR] Profile ${profile.id}:`, botErr);
+      });
     } catch (profileErr) {
       console.error(
         `[CRON_RECURRING_EXEC_ERROR] Profile ${profile.id}:`,

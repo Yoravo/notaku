@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { SettingsTabsClient } from "./settings-tabs-client";
 import { getDeveloperSettings } from "@/actions/developer";
+import { getBotNotificationSettings } from "@/actions/notifications";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -18,11 +19,12 @@ export default async function SettingsPage() {
     redirect("/login");
   }
 
-  const [user, devSettings] = await Promise.all([
+  const [user, devSettings, botSettings] = await Promise.all([
     prisma.user.findUnique({
       where: { id: session.user.id },
     }),
     getDeveloperSettings(),
+    getBotNotificationSettings(),
   ]);
 
   if (!user) {
@@ -67,6 +69,7 @@ export default async function SettingsPage() {
           apiKeys: devSettings.apiKeys,
           webhooks: devSettings.webhooks,
         }}
+        botNotificationData={botSettings}
       />
     </div>
   );

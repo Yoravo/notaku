@@ -405,6 +405,7 @@ export const id = {
     tabTemplate: "Desain PDF Faktur",
     tabDomain: "Domain & White-Label",
     tabDeveloper: "Developer & API",
+    tabNotifications: "Bot Notifikasi",
     tabSecurity: "Keamanan Akun",
     businessName: "Nama Usaha / Brand",
     businessEmail: "Email Bisnis",

@@ -57,6 +57,16 @@ model User {
   apiKeys              ApiKey[]
   webhooks             WebhookEndpoint[]
 
+  // Bot Notifikasi Penjual (Telegram & Discord - PRO)
+  telegramChatId       String?
+  telegramBotToken     String?
+  telegramEnabled      Boolean   @default(false)
+  discordWebhookUrl    String?
+  discordEnabled       Boolean   @default(false)
+  notifyOnPayment      Boolean   @default(true)
+  notifyOnDueDate      Boolean   @default(true)
+  notifyOnRecurring    Boolean   @default(true)
+
   @@map("user")
 }
 
