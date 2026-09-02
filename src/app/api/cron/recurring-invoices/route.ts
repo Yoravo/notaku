@@ -49,7 +49,7 @@ export async function GET(request: Request) {
   }
 
   const todayStr = getTodayDateStrWIB();
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.notaku.store";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
 
   // Ambil semua log recurring invoice
   const logs = await prisma.auditLog.findMany({

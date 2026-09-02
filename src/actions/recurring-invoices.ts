@@ -297,7 +297,7 @@ export async function triggerRecurringInvoiceNow(id: string) {
   // Kirim email jika autoSendEmail aktif dan customer memiliki email
   if (current.autoSendEmail && invoice.customer.email) {
     try {
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.notaku.store";
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
       const businessName = invoice.user.businessName || invoice.user.name || "NotaKu";
       const formattedDueDate = formatDateWIB(invoice.dueDate!, {
         day: "numeric",

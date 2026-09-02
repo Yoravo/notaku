@@ -738,7 +738,7 @@ export function DeveloperSettingsForm({
         </div>
 
         <div className="bg-slate-950 rounded-xl p-3.5 font-mono text-[11px] text-slate-300 overflow-x-auto border border-slate-800">
-          <pre>{`curl -X POST https://www.notaku.store/api/v1/invoices \\
+          <pre>{`curl -X POST https://notaku.store/api/v1/invoices \\
   -H "Authorization: Bearer ntk_live_your_api_key_here" \\
   -H "Content-Type: application/json" \\
   -d '{

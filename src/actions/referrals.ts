@@ -39,7 +39,7 @@ export async function getReferralStats(): Promise<ReferralStats | null> {
   const baseUrl =
     process.env.NEXT_PUBLIC_APP_URL ||
     process.env.BETTER_AUTH_URL ||
-    "https://www.notaku.store";
+    "https://notaku.store";
   const referralUrl = `${baseUrl}/register?ref=${referralCode}`;
 
   const [user, referrals, rewards] = await Promise.all([

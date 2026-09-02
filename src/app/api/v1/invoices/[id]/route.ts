@@ -62,7 +62,7 @@ export async function GET(
     return NextResponse.json({ success: false, error: "Invoice not found" }, { status: 404 });
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.notaku.store";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
   const publicUrl = `${baseUrl}/i/${invoice.publicId}`;
   const pdfUrl = `${baseUrl}/api/invoices/public/${invoice.publicId}/pdf`;
   const receiptUrl =

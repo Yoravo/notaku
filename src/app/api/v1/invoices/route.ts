@@ -103,7 +103,7 @@ export async function GET(request: Request) {
     prisma.invoice.count({ where: whereClause }),
   ]);
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.notaku.store";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
 
   return NextResponse.json({
     success: true,
@@ -245,7 +245,7 @@ export async function POST(request: Request) {
     });
   });
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.notaku.store";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
   const publicUrl = `${baseUrl}/i/${invoice.publicId}`;
   const pdfUrl = `${baseUrl}/api/invoices/public/${invoice.publicId}/pdf`;
 

@@ -39,10 +39,10 @@ export const auth = betterAuth({
   baseURL:
     process.env.BETTER_AUTH_URL ||
     process.env.NEXT_PUBLIC_APP_URL ||
-    "https://www.notaku.store",
-  trustedOrigins: [
-    "https://www.notaku.store",
     "https://notaku.store",
+  trustedOrigins: [
+    "https://notaku.store",
+    "https://www.notaku.store",
     "http://localhost:3000",
   ],
   emailAndPassword: {

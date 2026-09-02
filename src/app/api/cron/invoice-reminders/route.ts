@@ -42,7 +42,7 @@ export async function GET(request: Request) {
   }
 
   const now = new Date();
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.notaku.store";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
 
   // Waktu WIB: Hitung range tanggal start dan end hari ini di zona waktu Asia/Jakarta
   const todayStr = new Intl.DateTimeFormat("en-CA", {

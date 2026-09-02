@@ -37,7 +37,15 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 2. Multi-Tenant Domain Header Injection
+  // 2. Canonical Apex Domain Redirect: www.notaku.store -> notaku.store
+  if (cleanHost === "www.notaku.store") {
+    const url = request.nextUrl.clone();
+    url.host = "notaku.store";
+    url.port = "";
+    return NextResponse.redirect(url, { status: 301 });
+  }
+
+  // 3. Multi-Tenant Domain Header Injection
   const isRootDomain =
     ROOT_DOMAINS.includes(cleanHost) ||
     cleanHost.endsWith(".vercel.app") ||

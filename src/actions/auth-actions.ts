@@ -51,7 +51,7 @@ export async function requestPasswordResetAction(email: string): Promise<{
     const baseUrl =
       process.env.NEXT_PUBLIC_APP_URL ||
       process.env.BETTER_AUTH_URL ||
-      "https://www.notaku.store";
+      "https://notaku.store";
 
     await auth.api.requestPasswordReset({
       body: {

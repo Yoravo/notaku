@@ -418,7 +418,7 @@ export async function sendInvoiceEmail(data: {
       return { success: false, error: "Format alamat email tidak valid" };
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.notaku.store";
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
     const invoiceUrl = `${baseUrl}/i/${invoice.publicId}`;
     const businessName = invoice.user.businessName || invoice.user.name || "NotaKu";
     const formattedDueDate = invoice.dueDate
