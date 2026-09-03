@@ -39,6 +39,7 @@ type UserData = {
   bankAccountNumber?: string | null;
   bankAccountName?: string | null;
   bankAccountLocked?: boolean;
+  receiveNewsletter?: boolean;
   plan: string;
   invoiceTemplate: InvoiceTemplate;
 };
@@ -138,6 +139,7 @@ export function SettingsTabsClient({
               signatureUrl={user.signatureUrl}
               stampUrl={user.stampUrl}
               email={user.email}
+              receiveNewsletter={user.receiveNewsletter ?? true}
             />
           </div>
         )}

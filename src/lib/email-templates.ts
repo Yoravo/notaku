@@ -263,3 +263,118 @@ export function renderInvoiceEmailHtml({
 </html>
 `;
 }
+
+export type BroadcastEmailTemplateProps = {
+  subject: string;
+  badge?: string;
+  badgeBg?: string;
+  badgeColor?: string;
+  content: string; // Markdown or HTML string
+  ctaText?: string;
+  ctaUrl?: string;
+};
+
+export function renderBroadcastEmailHtml({
+  subject,
+  badge = "Pengumuman Resmi",
+  badgeBg = "#ecfdf5",
+  badgeColor = "#0f6b4f",
+  content,
+  ctaText,
+  ctaUrl,
+}: BroadcastEmailTemplateProps): string {
+  // Ubah line-breaks menjadi <p> atau <br> jika format plain text
+  const safeContent = content
+    .split("\n\n")
+    .map((paragraph) => `<p style="margin: 0 0 16px 0; line-height: 1.6;">${paragraph.replace(/\n/g, "<br>")}</p>`)
+    .join("");
+
+  const safeCtaText = ctaText ? escapeHtml(ctaText) : "Buka NotaKu";
+  const safeCtaUrl = ctaUrl ? encodeURI(ctaUrl) : "";
+
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${escapeHtml(subject)}</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+  <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f8fafc; padding: 32px 16px;">
+    <tr>
+      <td align="center">
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 580px; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); border: 1px solid #e2e8f0;">
+
+          <!-- Header Branding -->
+          <tr>
+            <td style="padding: 28px 32px; background-color: #0f172a; text-align: center;">
+              <a href="https://notaku.store" style="text-decoration: none;">
+                <span style="font-size: 24px; font-weight: 800; color: #ffffff; letter-spacing: -0.5px;">Nota<span style="color: #34d399;">Ku</span></span>
+              </a>
+              <div style="margin-top: 8px;">
+                <span style="display: inline-block; background-color: ${badgeBg}; color: ${badgeColor}; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.5px;">
+                  ${badge}
+                </span>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Main Content -->
+          <tr>
+            <td style="padding: 36px 32px;">
+              <h1 style="margin: 0 0 16px 0; font-size: 20px; font-weight: 800; color: #0f172a; line-height: 1.3;">
+                ${escapeHtml(subject)}
+              </h1>
+
+              <div style="font-size: 14px; line-height: 1.6; color: #334155; margin-bottom: 24px;">
+                ${safeContent}
+              </div>
+
+              ${
+                safeCtaUrl
+                  ? `
+              <!-- CTA Button -->
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-top: 28px; margin-bottom: 28px;">
+                <tr>
+                  <td align="center">
+                    <a href="${safeCtaUrl}" target="_blank" style="display: inline-block; background-color: #0f6b4f; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 13px 32px; border-radius: 10px; box-shadow: 0 2px 4px rgba(15, 107, 79, 0.2);">
+                      ${safeCtaText} →
+                    </a>
+                  </td>
+                </tr>
+              </table>
+              `
+                  : ""
+              }
+
+              <div style="padding-top: 20px; border-top: 1px solid #f1f5f9; font-size: 12px; color: #64748b; line-height: 1.5;">
+                <p style="margin: 0;">
+                  Salam hangat,<br>
+                  <strong>Tim NotaKu Indonesia</strong>
+                </p>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 20px 32px; background-color: #f8fafc; border-top: 1px solid #f1f5f9; text-align: center;">
+              <p style="margin: 0; font-size: 11px; color: #64748b; line-height: 1.5;">
+                Anda menerima email ini karena terdaftar sebagai pengguna resmi di <a href="https://notaku.store" style="color: #0f6b4f; text-decoration: none; font-weight: 600;">NotaKu</a>.<br>
+                Kelola preferensi notifikasi di <a href="https://notaku.store/settings" style="color: #0f6b4f; text-decoration: underline;">Pengaturan Akun</a>.
+              </p>
+              <p style="margin: 6px 0 0 0; font-size: 11px; color: #94a3b8;">
+                &copy; ${new Date().getFullYear()} NotaKu &bull; Simple & Fast Invoicing
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+}

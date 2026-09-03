@@ -48,4 +48,20 @@ export async function updateProfile(data: {
   });
 
   revalidatePath("/settings");
+  return { success: true };
+}
+
+export async function updateNewsletterPreference(receiveNewsletter: boolean) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) throw new Error("Unauthorized");
+
+  await checkServerActionRateLimit(session.user.id, "write");
+
+  await prisma.user.update({
+    where: { id: session.user.id },
+    data: { receiveNewsletter },
+  });
+
+  revalidatePath("/settings");
+  return { success: true };
 }

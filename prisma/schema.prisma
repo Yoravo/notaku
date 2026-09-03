@@ -67,6 +67,9 @@ model User {
   notifyOnDueDate      Boolean   @default(true)
   notifyOnRecurring    Boolean   @default(true)
 
+  // Preferensi Email & Komunikasi Resmi
+  receiveNewsletter    Boolean   @default(true)
+
   @@map("user")
 }
 

@@ -50,6 +50,7 @@ export default async function SettingsPage() {
           bankAccountNumber: user.bankAccountNumber,
           bankAccountName: user.bankAccountName,
           bankAccountLocked: user.bankAccountLocked,
+          receiveNewsletter: user.receiveNewsletter,
           plan: user.plan,
           invoiceTemplate: user.invoiceTemplate,
         }}

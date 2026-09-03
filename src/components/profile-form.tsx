@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { updateProfile } from "@/actions/user";
+import { updateProfile, updateNewsletterPreference } from "@/actions/user";
 import {
   UserIcon,
   BuildingOfficeIcon,
@@ -15,6 +15,7 @@ import {
   XMarkIcon,
   ArrowsPointingOutIcon,
   PencilSquareIcon,
+  EnvelopeIcon,
 } from "@heroicons/react/24/outline";
 import { SignaturePadModal } from "@/components/signature-pad-modal";
 import { useLanguage } from "@/lib/i18n/context";
@@ -28,6 +29,7 @@ type Props = {
   signatureUrl?: string | null;
   stampUrl?: string | null;
   email: string;
+  receiveNewsletter?: boolean;
 };
 
 export function ProfileForm({
@@ -39,6 +41,7 @@ export function ProfileForm({
   signatureUrl,
   stampUrl,
   email,
+  receiveNewsletter = true,
 }: Props) {
   const { t, locale } = useLanguage();
   const [form, setForm] = useState({
@@ -50,6 +53,7 @@ export function ProfileForm({
     signatureUrl: signatureUrl ?? "",
     stampUrl: stampUrl ?? "",
   });
+  const [optInNewsletter, setOptInNewsletter] = useState(receiveNewsletter);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -149,15 +153,18 @@ export function ProfileForm({
     setSuccess(false);
 
     try {
-      await updateProfile({
-        name: form.name.trim(),
-        businessName: form.businessName.trim() || null,
-        phone: form.phone.trim() || null,
-        address: form.address.trim() || null,
-        logoUrl: form.logoUrl.trim() || null,
-        signatureUrl: form.signatureUrl.trim() || null,
-        stampUrl: form.stampUrl.trim() || null,
-      });
+      await Promise.all([
+        updateProfile({
+          name: form.name.trim(),
+          businessName: form.businessName.trim() || null,
+          phone: form.phone.trim() || null,
+          address: form.address.trim() || null,
+          logoUrl: form.logoUrl.trim() || null,
+          signatureUrl: form.signatureUrl.trim() || null,
+          stampUrl: form.stampUrl.trim() || null,
+        }),
+        updateNewsletterPreference(optInNewsletter),
+      ]);
       setSuccess(true);
       setTimeout(() => setSuccess(false), 4000);
     } catch (err) {
@@ -626,6 +633,33 @@ export function ProfileForm({
           }
           className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 font-medium focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] resize-none shadow-2xs leading-relaxed"
         />
+      </div>
+
+      {/* Preferensi Email & Komunikasi Resmi */}
+      <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 sm:p-5 space-y-2">
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={optInNewsletter}
+            onChange={(e) => setOptInNewsletter(e.target.checked)}
+            className="mt-1 rounded border-slate-300 text-[#0f6b4f] focus:ring-[#0f6b4f]"
+          />
+          <div>
+            <span className="text-xs sm:text-sm font-bold text-slate-900 block flex items-center gap-1.5">
+              <EnvelopeIcon className="w-4 h-4 text-slate-500" />
+              <span>
+                {locale === "id"
+                  ? "Terima Email Pengumuman & Berita Berkala dari NotaKu"
+                  : "Receive Official Announcements & Periodic News from NotaKu"}
+              </span>
+            </span>
+            <span className="text-xs text-slate-500 block mt-0.5 leading-relaxed">
+              {locale === "id"
+                ? "Dapatkan info rilis fitur baru, tips mengelola invoice bisnis, dan promo voucher diskon yang dikirim langsung ke email Anda."
+                : "Get notified about new product features, invoicing best practices, and special discount vouchers directly in your inbox."}
+            </span>
+          </div>
+        </label>
       </div>
 
       <div className="pt-2">
