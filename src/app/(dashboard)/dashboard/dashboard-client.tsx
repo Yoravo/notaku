@@ -14,6 +14,9 @@ import { RecentInvoices } from "@/components/recent-invoices";
 import { SerializedInvoice } from "@/types/invoice";
 import { AnnouncementBanner, AnnouncementData } from "@/components/announcement-banner";
 import { useLanguage } from "@/lib/i18n/context";
+import { AdvancedAnalyticsData } from "@/lib/analytics";
+import { CashflowChart } from "@/components/dashboard/cashflow-chart";
+import { ClientPerformanceMetrics } from "@/components/dashboard/client-performance-metrics";
 
 interface DashboardClientProps {
   userName: string;
@@ -28,6 +31,7 @@ interface DashboardClientProps {
   totalCustomers: number;
   recentInvoices: SerializedInvoice[];
   announcement?: AnnouncementData | null;
+  analytics: AdvancedAnalyticsData;
 }
 
 export function DashboardClient({
@@ -43,6 +47,7 @@ export function DashboardClient({
   totalCustomers: _totalCustomers,
   recentInvoices,
   announcement = null,
+  analytics,
 }: DashboardClientProps) {
   const { t, locale } = useLanguage();
 
@@ -56,7 +61,7 @@ export function DashboardClient({
     rangeLabels[selectedRange]?.[locale] || (locale === "id" ? "Bulan Ini" : "This Month");
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 sm:space-y-8">
       {/* Global Broadcast Announcement */}
       {announcement && <AnnouncementBanner announcement={announcement} />}
 
@@ -220,6 +225,12 @@ export function DashboardClient({
           </div>
         </div>
       </div>
+
+      {/* Cashflow Bar Chart Component */}
+      <CashflowChart data={analytics.monthlyCashflow} />
+
+      {/* Advanced Client Performance & DSO Metrics (PRO) */}
+      <ClientPerformanceMetrics analytics={analytics} isPro={isPro} />
 
       {/* Recent Invoices Table Component */}
       <RecentInvoices invoices={recentInvoices} />
