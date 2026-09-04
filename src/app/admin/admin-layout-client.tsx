@@ -21,6 +21,7 @@ import {
   EnvelopeIcon,
 } from "@heroicons/react/24/outline";
 import { LanguageDropdown } from "@/components/language-dropdown";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { useLanguage } from "@/lib/i18n/context";
 
 type AdminUser = {
@@ -171,14 +172,14 @@ export function AdminLayoutClient({
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex flex-1 flex-col overflow-hidden bg-gray-50 text-slate-900">
+      <div className="flex flex-1 flex-col overflow-hidden bg-slate-50 dark:bg-slate-900/50 text-slate-900 dark:text-slate-100">
         {/* Top Navbar Header with Sidebar Toggle (Both Desktop & Mobile) */}
-        <header className="flex h-14 items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-6 shadow-xs shrink-0">
+        <header className="flex h-14 items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 sm:px-6 shadow-xs shrink-0">
           <div className="flex items-center gap-3">
             {/* Desktop Toggle Button (Icon 3 baris konsisten) */}
             <button
               onClick={() => setDesktopOpen(!desktopOpen)}
-              className="hidden md:inline-flex items-center justify-center p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer border border-slate-200 shadow-xs"
+              className="hidden md:inline-flex items-center justify-center p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer border border-slate-200 dark:border-slate-700 shadow-xs"
               title={desktopOpen ? "Sembunyikan Sidebar" : "Tampilkan Sidebar"}
               aria-label="Toggle Desktop Sidebar"
             >
@@ -188,7 +189,7 @@ export function AdminLayoutClient({
             {/* Mobile Toggle Button */}
             <button
               onClick={() => setMobileOpen(true)}
-              className="md:hidden p-1.5 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="md:hidden p-1.5 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               aria-label="Buka menu"
             >
               <Bars3Icon className="w-6 h-6" />
@@ -198,7 +199,7 @@ export function AdminLayoutClient({
             {!desktopOpen && (
               <Link
                 href="/"
-                className="hidden md:flex items-center gap-1.5 font-display text-xl font-bold tracking-tight text-slate-900 transition-opacity hover:opacity-80 ml-1"
+                className="hidden md:flex items-center gap-1.5 font-display text-xl font-bold tracking-tight text-slate-900 dark:text-white transition-opacity hover:opacity-80 ml-1"
               >
                 <Image
                   src="/logo.png"
@@ -209,7 +210,7 @@ export function AdminLayoutClient({
                 />
                 <span>
                   <span>Nota</span>
-                  <span className="text-[#0f6b4f]">Ku</span>
+                  <span className="text-[#0f6b4f] dark:text-emerald-400">Ku</span>
                   <span className="text-[10px] bg-rose-500/10 text-rose-600 border border-rose-500/20 px-1.5 py-0.5 rounded font-sans font-bold ml-1">
                     ADMIN
                   </span>
@@ -220,7 +221,7 @@ export function AdminLayoutClient({
             {/* Mobile Brand */}
             <Link
               href="/"
-              className="md:hidden font-display text-lg font-bold tracking-tight text-slate-900 flex items-center gap-1.5"
+              className="md:hidden font-display text-lg font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5"
             >
               <Image
                 src="/logo.png"
@@ -231,7 +232,7 @@ export function AdminLayoutClient({
               />
               <span>
                 <span>Nota</span>
-                <span className="text-[#0f6b4f]">Ku</span>
+                <span className="text-[#0f6b4f] dark:text-emerald-400">Ku</span>
                 <span className="text-[10px] bg-rose-500/10 text-rose-600 border border-rose-500/20 px-1.5 py-0.2 rounded font-sans font-bold ml-1">
                   ADMIN
                 </span>
@@ -239,20 +240,23 @@ export function AdminLayoutClient({
             </Link>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            {/* Theme Toggle (Light / Dark / System) */}
+            <ThemeToggle />
+
             {/* Global Language Switcher */}
             <LanguageDropdown variant="light" />
 
             <div className="text-right hidden md:block">
               <span className="text-xs text-slate-400">Logged in as: </span>
-              <span className="text-xs font-mono font-semibold text-slate-700">
+              <span className="text-xs font-mono font-semibold text-slate-700 dark:text-slate-200">
                 {adminUser.email}
               </span>
             </div>
 
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg transition-colors shadow-xs"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white px-3 py-1.5 rounded-xl transition-colors shadow-xs"
             >
               <ArrowLeftOnRectangleIcon className="w-4 h-4 text-slate-400" />
               <span className="hidden sm:inline">{t.admin?.backToUserApp || "Ke App User"}</span>

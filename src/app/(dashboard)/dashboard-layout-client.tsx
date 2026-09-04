@@ -12,6 +12,7 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { LanguageDropdown } from "@/components/language-dropdown";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { useLanguage } from "@/lib/i18n/context";
 
 type User = {
@@ -45,7 +46,7 @@ export function DashboardLayoutClient({
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-white">
+    <div className="flex h-screen overflow-hidden bg-white dark:bg-slate-950">
       {/* Mobile Backdrop */}
       {sidebarOpen && (
         <div
@@ -72,14 +73,14 @@ export function DashboardLayoutClient({
       />
 
       {/* Main Content Area */}
-      <main className="flex flex-1 flex-col overflow-hidden bg-gray-50">
+      <main className="flex flex-1 flex-col overflow-hidden bg-slate-50 dark:bg-slate-900/50">
         {/* Top Header Bar (Desktop & Mobile) */}
-        <header className="flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4 sm:px-6 shrink-0 shadow-2xs">
+        <header className="flex h-14 items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 sm:px-6 shrink-0 shadow-2xs">
           <div className="flex items-center gap-2.5">
             {/* Desktop 3-Bar Toggle Button */}
             <button
               onClick={() => setDesktopOpen(!desktopOpen)}
-              className="hidden md:inline-flex items-center justify-center rounded-lg p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors cursor-pointer border border-gray-200 shadow-xs"
+              className="hidden md:inline-flex items-center justify-center rounded-lg p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer border border-slate-200 dark:border-slate-700 shadow-xs"
               title={desktopOpen ? "Sembunyikan Sidebar" : "Tampilkan Sidebar"}
               aria-label="Toggle Sidebar"
             >
@@ -89,7 +90,7 @@ export function DashboardLayoutClient({
             {/* Mobile Toggle Button */}
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="md:hidden inline-flex items-center justify-center rounded-md p-1.5 hover:bg-gray-100 transition-colors text-gray-900 cursor-pointer"
+              className="md:hidden inline-flex items-center justify-center rounded-md p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-900 dark:text-white cursor-pointer"
               aria-label="Toggle sidebar"
               aria-expanded={sidebarOpen}
             >
@@ -104,7 +105,7 @@ export function DashboardLayoutClient({
             {!desktopOpen && (
               <Link
                 href="/"
-                className="hidden md:flex items-center gap-1.5 text-lg font-bold font-display tracking-tight text-gray-900 transition-opacity hover:opacity-80 ml-1"
+                className="hidden md:flex items-center gap-1.5 text-lg font-bold font-display tracking-tight text-slate-900 dark:text-white transition-opacity hover:opacity-80 ml-1"
               >
                 <Image
                   src="/logo.png"
@@ -115,7 +116,7 @@ export function DashboardLayoutClient({
                 />
                 <span>
                   <span>Nota</span>
-                  <span className="text-[#0f6b4f]">Ku</span>
+                  <span className="text-[#0f6b4f] dark:text-emerald-400">Ku</span>
                 </span>
               </Link>
             )}
@@ -123,7 +124,7 @@ export function DashboardLayoutClient({
             {/* Mobile Brand */}
             <Link
               href="/"
-              className="md:hidden flex items-center gap-1.5 text-lg font-bold font-display tracking-tight text-gray-900 transition-opacity hover:opacity-80"
+              className="md:hidden flex items-center gap-1.5 text-lg font-bold font-display tracking-tight text-slate-900 dark:text-white transition-opacity hover:opacity-80"
             >
               <Image
                 src="/logo.png"
@@ -134,21 +135,24 @@ export function DashboardLayoutClient({
               />
               <span>
                 <span>Nota</span>
-                <span className="text-[#0f6b4f]">Ku</span>
+                <span className="text-[#0f6b4f] dark:text-emerald-400">Ku</span>
               </span>
             </Link>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            {/* Theme Toggle (Light / Dark / System) */}
+            <ThemeToggle />
+
             {/* Unified Language Switcher Dropdown */}
             <LanguageDropdown variant="light" />
 
             <button
               onClick={handleSignOut}
-              className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors cursor-pointer border border-transparent hover:border-gray-200"
+              className="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white transition-colors cursor-pointer border border-transparent hover:border-gray-200 dark:hover:border-slate-700"
               aria-label={t.dashboard?.logout || "Keluar"}
             >
-              <ArrowLeftOnRectangleIcon className="w-4 h-4 text-gray-400" />
+              <ArrowLeftOnRectangleIcon className="w-4 h-4 text-gray-400 dark:text-slate-400" />
               <span className="hidden sm:inline">{t.dashboard?.logout || "Keluar"}</span>
             </button>
           </div>

@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+  @custom-variant dark (&:is(.dark *));
+
   :root {
     --paper: #faf7f0;
     --paper-deep: #f2ebdd;
@@ -9,6 +11,18 @@
     --emerald-bright: #138a64;
     --ochre: #b45309;
     --line: #e7dfce;
+  }
+
+  :root[data-theme="dark"],
+  .dark {
+    --paper: #090d16;
+    --paper-deep: #0f172a;
+    --ink: #f8fafc;
+    --ink-soft: #94a3b8;
+    --emerald: #10b981;
+    --emerald-bright: #34d399;
+    --ochre: #f59e0b;
+    --line: #1e293b;
   }
 /*  */
   @theme inline {
