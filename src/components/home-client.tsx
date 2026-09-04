@@ -208,7 +208,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
 
             {/* Right Interactive Mockup */}
             <div className="lg:col-span-5 relative">
-              <div className="tilt-in mx-auto w-full max-w-md rounded-2xl border border-line bg-white p-6 sm:p-7 shadow-2xl shadow-ink/10 transition-transform">
+              <div className="tilt-in mx-auto w-full max-w-md rounded-2xl border border-line bg-white mockup-paper-preview p-6 sm:p-7 shadow-2xl shadow-ink/10 transition-transform">
                 {/* Header Mockup */}
                 <div className="flex items-start justify-between border-b border-line pb-4">
                   <Link

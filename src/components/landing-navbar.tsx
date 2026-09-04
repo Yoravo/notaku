@@ -6,6 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { useLanguage } from "@/lib/i18n/context";
 
 interface NavbarProps {
@@ -143,8 +144,9 @@ export function LandingNavbar({ session }: NavbarProps) {
           })}
         </nav>
 
-        {/* Desktop Auth Buttons & Language Switcher */}
+        {/* Desktop Auth Buttons & Language Switcher & Theme */}
         <div className="hidden items-center gap-3 md:flex">
+          <ThemeToggle />
           <LanguageSwitcher />
 
           {session ? (
@@ -172,8 +174,9 @@ export function LandingNavbar({ session }: NavbarProps) {
           )}
         </div>
 
-        {/* Mobile Controls (Language + Hamburger) */}
+        {/* Mobile Controls (Theme + Language + Hamburger) */}
         <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle />
           <LanguageSwitcher />
           <button
             type="button"
