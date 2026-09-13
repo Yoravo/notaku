@@ -13,7 +13,7 @@ import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { LanguageDropdown } from "@/components/language-dropdown";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 
 type User = {
   id: string;
@@ -35,7 +35,7 @@ export function DashboardLayoutClient({
   // Desktop collapse state (default: show/expanded)
   const [desktopOpen, setDesktopOpen] = useState(true);
   const router = useRouter();
-  const { t } = useLanguage();
+  const tDash = useTranslations("dashboard");
 
   const handleSignOut = async () => {
     await authClient.signOut({
@@ -81,7 +81,7 @@ export function DashboardLayoutClient({
             <button
               onClick={() => setDesktopOpen(!desktopOpen)}
               className="hidden md:inline-flex items-center justify-center rounded-lg p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer border border-slate-200 dark:border-slate-700 shadow-xs"
-              title={desktopOpen ? "Sembunyikan Sidebar" : "Tampilkan Sidebar"}
+              title={desktopOpen ? tDash("hideSidebar") : tDash("showSidebar")}
               aria-label="Toggle Sidebar"
             >
               <Bars3Icon className="h-5 w-5" />
@@ -150,10 +150,10 @@ export function DashboardLayoutClient({
             <button
               onClick={handleSignOut}
               className="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white transition-colors cursor-pointer border border-transparent hover:border-gray-200 dark:hover:border-slate-700"
-              aria-label={t.dashboard?.logout || "Keluar"}
+              aria-label={tDash("logout")}
             >
               <ArrowLeftOnRectangleIcon className="w-4 h-4 text-gray-400 dark:text-slate-400" />
-              <span className="hidden sm:inline">{t.dashboard?.logout || "Keluar"}</span>
+              <span className="hidden sm:inline">{tDash("logout")}</span>
             </button>
           </div>
         </header>

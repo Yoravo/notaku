@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { TrafficTracker } from "@/components/traffic-tracker";
-import { LanguageProvider } from "@/lib/i18n/context";
 import { ThemeProvider } from "@/lib/theme/context";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -97,12 +98,15 @@ export const metadata: Metadata = {
   category: "finance",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
     <html
-      lang="id"
+      lang={locale}
       suppressHydrationWarning
       className={`${fraunces.variable} ${jakarta.variable} h-full antialiased`}
     >
@@ -128,7 +132,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200">
         <TrafficTracker />
         <ThemeProvider>
-          <LanguageProvider>{children}</LanguageProvider>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            {children}
+          </NextIntlClientProvider>
         </ThemeProvider>
       </body>
     </html>

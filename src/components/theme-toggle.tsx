@@ -3,11 +3,11 @@
 import { useState, useRef, useEffect } from "react";
 import { SunIcon, MoonIcon, ComputerDesktopIcon } from "@heroicons/react/24/outline";
 import { useTheme, Theme } from "@/lib/theme/context";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 
 export function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme();
-  const { locale } = useLanguage();
+  const tTheme = useTranslations("theme");
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -23,9 +23,9 @@ export function ThemeToggle() {
   }, []);
 
   const options: { id: Theme; label: string; icon: typeof SunIcon }[] = [
-    { id: "light", label: locale === "id" ? "Terang (Light)" : "Light", icon: SunIcon },
-    { id: "dark", label: locale === "id" ? "Gelap (Dark)" : "Dark", icon: MoonIcon },
-    { id: "system", label: locale === "id" ? "Sistem (Auto)" : "System", icon: ComputerDesktopIcon },
+    { id: "light", label: tTheme("light"), icon: SunIcon },
+    { id: "dark", label: tTheme("dark"), icon: MoonIcon },
+    { id: "system", label: tTheme("system"), icon: ComputerDesktopIcon },
   ];
 
   return (
@@ -34,7 +34,7 @@ export function ThemeToggle() {
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-2xs hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-        title={locale === "id" ? "Ganti Tema" : "Toggle Theme"}
+        title={tTheme("toggleTheme")}
         aria-label="Toggle Theme"
       >
         {resolvedTheme === "dark" ? (

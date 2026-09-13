@@ -19,7 +19,7 @@ import {
   DocumentChartBarIcon,
   GiftIcon,
 } from "@heroicons/react/24/outline";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 
 type User = {
   name: string;
@@ -41,7 +41,7 @@ export function Sidebar({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { t, locale } = useLanguage();
+  const tDash = useTranslations("dashboard");
 
   const handleSignOut = async () => {
     await authClient.signOut({
@@ -54,38 +54,38 @@ export function Sidebar({
   const mainNavItems = [
     {
       href: "/dashboard",
-      label: t.dashboard?.overview || "Dashboard",
+      label: tDash("overview"),
       icon: RectangleGroupIcon,
       exact: true,
     },
     {
       href: "/invoices",
-      label: t.dashboard?.invoices || "Invoice & Tagihan",
+      label: tDash("invoices"),
       icon: DocumentTextIcon,
     },
     {
       href: "/recurring-invoices",
-      label: t.dashboard?.recurringInvoices || (locale === "id" ? "Invoice Berulang" : "Recurring Invoices"),
+      label: tDash("recurringInvoices"),
       icon: ArrowPathIcon,
     },
     {
       href: "/tax-reports",
-      label: locale === "id" ? "Rekap Pajak & Omset" : "Tax & Turnover",
+      label: tDash("taxReports"),
       icon: DocumentChartBarIcon,
     },
     {
       href: "/customers",
-      label: t.dashboard?.customers || "Pelanggan",
+      label: tDash("customers"),
       icon: UsersIcon,
     },
     {
       href: "/wallet",
-      label: t.dashboard?.wallet || "Saldo & Penarikan",
+      label: tDash("wallet"),
       icon: BanknotesIcon,
     },
     {
       href: "/referrals",
-      label: locale === "id" ? "Program Referral" : "Referrals & Affiliate",
+      label: tDash("referrals"),
       icon: GiftIcon,
     },
   ];
@@ -93,12 +93,12 @@ export function Sidebar({
   const secondaryNavItems = [
     {
       href: "/billing",
-      label: locale === "id" ? "Paket & Kuota" : "Billing & Plan",
+      label: tDash("billing"),
       icon: SparklesIcon,
     },
     {
       href: "/settings",
-      label: t.dashboard?.settings || "Pengaturan Akun",
+      label: tDash("settings"),
       icon: Cog6ToothIcon,
     },
   ];
@@ -143,7 +143,7 @@ export function Sidebar({
         {/* Main Business Menu */}
         <div className="space-y-1">
           <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 whitespace-nowrap">
-            {locale === "id" ? "Menu Utama" : "Main Menu"}
+            {tDash("mainMenu")}
           </p>
           {mainNavItems.map((item) => {
             const isActive = item.exact
@@ -176,7 +176,7 @@ export function Sidebar({
         {/* Settings & Secondary Menu */}
         <div className="space-y-1">
           <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 whitespace-nowrap">
-            {locale === "id" ? "Pengaturan" : "Preferences"}
+            {tDash("preferences")}
           </p>
           {secondaryNavItems.map((item) => {
             const isActive =
@@ -228,7 +228,7 @@ export function Sidebar({
                     : "text-slate-400 dark:text-slate-500"
                 }`}
               />
-              <span className="truncate">{t.dashboard?.adminPanel || "Admin Panel"}</span>
+              <span className="truncate">{tDash("adminPanel")}</span>
             </Link>
           </div>
         )}
@@ -262,8 +262,8 @@ export function Sidebar({
           <button
             onClick={handleSignOut}
             className="p-1.5 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg transition-colors cursor-pointer shrink-0"
-            title={t.dashboard?.logout || (locale === "id" ? "Keluar Akun" : "Sign Out")}
-            aria-label="Keluar Akun"
+            title={tDash("logout")}
+            aria-label={tDash("logout")}
           >
             <ArrowRightStartOnRectangleIcon className="w-4 h-4" />
           </button>
