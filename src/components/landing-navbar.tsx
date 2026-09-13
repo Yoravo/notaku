@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 
 interface NavbarProps {
   session: any;
@@ -17,15 +17,16 @@ export function LandingNavbar({ session }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeHash, setActiveHash] = useState("");
   const pathname = usePathname();
-  const { t } = useLanguage();
+  const tNav = useTranslations("nav");
+  const tTools = useTranslations("tools");
 
   const navLinks = [
-    { name: t.nav.features, href: "/#fitur", hash: "fitur", isRoute: false },
-    { name: t.nav.howItWorks, href: "/#cara-kerja", hash: "cara-kerja", isRoute: false },
-    { name: t.nav.pricing, href: "/#pricing", hash: "pricing", isRoute: false },
-    { name: t.nav.faq, href: "/#faq", hash: "faq", isRoute: false },
-    { name: t.nav.freeTools || "Tools Gratis", href: "/tools", hash: "", isRoute: true, matchPattern: "/tools" },
-    { name: t.nav.templates || "Template", href: "/templates", hash: "", isRoute: true, matchPattern: "/templates" },
+    { name: tNav("features"), href: "/#fitur", hash: "fitur", isRoute: false },
+    { name: tNav("howItWorks"), href: "/#cara-kerja", hash: "cara-kerja", isRoute: false },
+    { name: tNav("pricing"), href: "/#pricing", hash: "pricing", isRoute: false },
+    { name: tNav("faq"), href: "/#faq", hash: "faq", isRoute: false },
+    { name: tTools("allTools"), href: "/tools", hash: "", isRoute: true, matchPattern: "/tools" },
+    { name: tTools("templates"), href: "/templates", hash: "", isRoute: true, matchPattern: "/templates" },
   ];
 
   // Scroll spy & hash change observer for in-page anchors on home page
@@ -104,6 +105,7 @@ export function LandingNavbar({ session }: NavbarProps) {
         {/* Brand Logo - NotaKu two-tone with logo emblem */}
         <Link
           href="/"
+          prefetch={true}
           className="flex items-center gap-1.5 text-2xl font-bold tracking-tight text-ink transition-transform hover:scale-[1.02]"
         >
           <Image
@@ -152,23 +154,26 @@ export function LandingNavbar({ session }: NavbarProps) {
           {session ? (
             <Link
               href="/dashboard"
+              prefetch={true}
               className="inline-flex items-center justify-center rounded-full bg-ink px-5 py-2 text-sm font-semibold text-paper transition-all hover:bg-emerald hover:shadow-md hover:shadow-emerald/20"
             >
-              {t.nav.dashboard}
+              {tNav("dashboard")}
             </Link>
           ) : (
             <>
               <Link
                 href="/login"
+                prefetch={true}
                 className="text-sm font-medium text-ink-soft transition-colors hover:text-ink px-2"
               >
-                {t.nav.login}
+                {tNav("login")}
               </Link>
               <Link
                 href="/register"
+                prefetch={true}
                 className="inline-flex items-center justify-center rounded-full bg-emerald px-5 py-2 text-sm font-semibold text-paper shadow-sm transition-all hover:bg-emerald-bright hover:shadow-md hover:shadow-emerald/25"
               >
-                {t.nav.register}
+                {tNav("register")}
               </Link>
             </>
           )}
@@ -203,6 +208,7 @@ export function LandingNavbar({ session }: NavbarProps) {
                 <Link
                   key={item.name}
                   href={item.href}
+                  prefetch={true}
                   onClick={() => setMobileMenuOpen(false)}
                   className={`text-base font-medium transition-colors py-1.5 flex items-center justify-between ${
                     active
@@ -221,26 +227,29 @@ export function LandingNavbar({ session }: NavbarProps) {
             {session ? (
               <Link
                 href="/dashboard"
+                prefetch={true}
                 onClick={() => setMobileMenuOpen(false)}
                 className="block w-full rounded-full bg-ink py-2.5 text-center text-sm font-semibold text-paper hover:bg-emerald transition-colors"
               >
-                {t.nav.dashboard}
+                {tNav("dashboard")}
               </Link>
             ) : (
               <div className="flex flex-col gap-2.5">
                 <Link
                   href="/login"
+                  prefetch={true}
                   onClick={() => setMobileMenuOpen(false)}
                   className="block w-full rounded-full border border-line bg-paper-deep py-2.5 text-center text-sm font-medium text-ink hover:bg-line transition-colors"
                 >
-                  {t.nav.login}
+                  {tNav("login")}
                 </Link>
                 <Link
                   href="/register"
+                  prefetch={true}
                   onClick={() => setMobileMenuOpen(false)}
                   className="block w-full rounded-full bg-emerald py-2.5 text-center text-sm font-semibold text-paper hover:bg-emerald-bright transition-colors shadow-sm"
                 >
-                  {t.nav.register}
+                  {tNav("register")}
                 </Link>
               </div>
             )}
