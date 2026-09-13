@@ -11,7 +11,8 @@ import {
   ArrowPathIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { useLanguage } from "@/lib/i18n/context";
+import { formatMoney } from "@/lib/currencies";
+import { useLocale, useTranslations } from "next-intl";
 
 interface PayoutRequestModalProps {
   balance: number;
@@ -30,7 +31,8 @@ export function PayoutRequestModal({
   isOpen,
   onClose,
 }: PayoutRequestModalProps) {
-  const { t, locale } = useLanguage();
+  const locale = useLocale() as "id" | "en";
+  const tWallet = useTranslations("wallet");
   const [amount, setAmount] = useState<number>(balance);
   const [notes, setNotes] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -56,16 +58,16 @@ export function PayoutRequestModal({
       });
 
       if (!res.success) {
-        setError(res.error || (locale === "id" ? "Gagal mengajukan penarikan" : "Failed to request payout"));
+        setError(res.error || tWallet("requestFailed"));
       } else {
-        setSuccess(res.message || (locale === "id" ? "Permintaan penarikan berhasil dikirim!" : "Payout request sent successfully!"));
+        setSuccess(res.message || tWallet("requestSuccess"));
         setTimeout(() => {
           onClose();
           window.location.reload();
         }, 1500);
       }
     } catch {
-      setError(locale === "id" ? "Terjadi kesalahan sistem. Silakan coba lagi." : "System error occurred. Please try again.");
+      setError(tWallet("systemError"));
     } finally {
       setIsLoading(false);
     }
@@ -88,11 +90,13 @@ export function PayoutRequestModal({
             </div>
             <div>
               <h3 className="text-base font-bold text-slate-900">
-                {t.wallet?.requestPayout || (locale === "id" ? "Tarik Saldo Pendapatan" : "Withdraw Balance")}
+                {tWallet("modalTitle")}
               </h3>
               <p className="text-xs text-slate-500 font-medium">
-                {locale === "id" ? "Saldo tersedia:" : "Available balance:"}{" "}
-                <span className="font-bold text-slate-900 tabular-nums">Rp{balance.toLocaleString("id-ID")}</span>
+                {tWallet("modalAvailableBalance")}{" "}
+                <span className="font-bold text-slate-900 tabular-nums">
+                  {formatMoney(balance, "IDR", locale)}
+                </span>
               </p>
             </div>
           </div>
@@ -127,12 +131,10 @@ export function PayoutRequestModal({
             </div>
             <div>
               <p className="text-sm font-bold text-slate-900">
-                {locale === "id" ? "Rekening Bank Belum Didaftarkan" : "No Bank Account Registered"}
+                {tWallet("noBankTitle")}
               </p>
               <p className="mt-1 text-xs text-slate-500 max-w-xs mx-auto font-medium leading-relaxed">
-                {locale === "id"
-                  ? "Silakan daftarkan rekening bank tujuan pencairan Anda di menu Pengaturan sebelum mengajukan penarikan."
-                  : "Please configure your verified payout bank account in Settings before submitting a withdrawal."}
+                {tWallet("noBankDesc")}
               </p>
             </div>
             <Link
@@ -140,7 +142,7 @@ export function PayoutRequestModal({
               onClick={onClose}
               className="inline-flex items-center justify-center rounded-xl bg-[#0f6b4f] px-5 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-[#0c553e] active:scale-[0.98] transition-all cursor-pointer min-h-[44px]"
             >
-              {locale === "id" ? "Atur Rekening Bank Sekarang" : "Set Up Bank Account Now"}
+              {tWallet("setUpBankBtn")}
             </Link>
           </div>
         ) : (
@@ -148,7 +150,7 @@ export function PayoutRequestModal({
             {/* Rekening Tujuan Box */}
             <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-3.5 text-xs shadow-2xs space-y-1">
               <p className="font-bold text-slate-700 uppercase tracking-wider text-[10px]">
-                {locale === "id" ? "Rekening Tujuan Pencairan" : "Payout Destination Account"}
+                {tWallet("destinationAccountBox")}
               </p>
               <p className="font-bold text-slate-900 text-sm">
                 {bankName} — <span className="font-mono">{bankAccountNumber}</span>
@@ -158,7 +160,7 @@ export function PayoutRequestModal({
 
             <div>
               <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                {locale === "id" ? "Nominal Penarikan (Rp)" : "Withdrawal Amount (IDR)"} <span className="text-rose-500">*</span>
+                {tWallet("amountLabel")} <span className="text-rose-500">*</span>
               </label>
               <div className="relative">
                 <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">
@@ -177,26 +179,26 @@ export function PayoutRequestModal({
                 />
               </div>
               <div className="mt-1.5 flex items-center justify-between text-[11px] text-slate-500 font-medium">
-                <span>{locale === "id" ? "Minimal Rp10.000" : "Min IDR 10,000"}</span>
+                <span>{tWallet("minAmount")}</span>
                 <button
                   type="button"
                   onClick={() => setAmount(balance)}
                   className="font-bold text-[#0f6b4f] hover:underline cursor-pointer min-h-[32px] inline-flex items-center"
                 >
-                  {locale === "id" ? "Tarik Semua Saldo" : "Withdraw All"}
+                  {tWallet("withdrawAll")}
                 </button>
               </div>
             </div>
 
             <div>
               <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                {locale === "id" ? "Catatan Pengajuan (Opsional)" : "Notes (Optional)"}
+                {tWallet("notesLabel")}
               </label>
               <input
                 type="text"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder={locale === "id" ? "Contoh: Pencairan omzet mingguan" : "e.g. Weekly revenue withdrawal"}
+                placeholder={tWallet("notesPlaceholder")}
                 className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-medium min-h-[44px]"
               />
             </div>
@@ -208,7 +210,7 @@ export function PayoutRequestModal({
                 disabled={isLoading}
                 className="flex-1 rounded-xl border border-slate-200 bg-white py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer shadow-2xs transition-colors min-h-[44px]"
               >
-                {locale === "id" ? "Batal" : "Cancel"}
+                {tWallet("cancel")}
               </button>
               <button
                 type="submit"
@@ -218,10 +220,10 @@ export function PayoutRequestModal({
                 {isLoading ? (
                   <>
                     <ArrowPathIcon className="w-4 h-4 animate-spin" />
-                    <span>{locale === "id" ? "Memproses..." : "Processing..."}</span>
+                    <span>{tWallet("processing")}</span>
                   </>
                 ) : (
-                  <span>{locale === "id" ? "Konfirmasi Tarik" : "Confirm Withdrawal"}</span>
+                  <span>{tWallet("confirmWithdrawal")}</span>
                 )}
               </button>
             </div>

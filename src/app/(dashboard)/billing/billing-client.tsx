@@ -9,7 +9,7 @@ import {
   UsersIcon,
   BoltIcon,
 } from "@heroicons/react/24/outline";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 
 type UserBillingData = {
   id: string;
@@ -39,7 +39,7 @@ export function BillingClient({
   invoiceUsage,
   customerUsage,
 }: BillingClientProps) {
-  const { t, locale } = useLanguage();
+  const tBilling = useTranslations("billing");
   const isPro = user.plan === "PRO";
 
   const invoicePercent = isPro
@@ -55,13 +55,10 @@ export function BillingClient({
       {/* Page Header (Reactive Translation) */}
       <div>
         <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-          {t.billing?.title || (locale === "id" ? "Paket Langganan & Kuota" : "Subscription & Usage Limits")}
+          {tBilling("title")}
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 mt-1">
-          {t.billing?.subtitle ||
-            (locale === "id"
-              ? "Pantau sisa kuota invoice bulanan, jumlah pelanggan terdaftar, dan upgrade ke NotaKu PRO."
-              : "Monitor monthly invoice quota, saved client contacts, and upgrade to NotaKu PRO.")}
+          {tBilling("subtitle")}
         </p>
       </div>
 
@@ -85,9 +82,7 @@ export function BillingClient({
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-lg font-bold text-slate-900">
-                  {isPro
-                    ? t.billing?.proMember || "NotaKu PRO Member"
-                    : t.billing?.freeMember || (locale === "id" ? "Paket Free (Starter)" : "Free Plan (Starter)")}
+                  {isPro ? tBilling("proMember") : tBilling("freeMember")}
                 </h2>
                 <span
                   className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold ${
@@ -96,21 +91,11 @@ export function BillingClient({
                       : "bg-slate-100 text-slate-700 border border-slate-200"
                   }`}
                 >
-                  {isPro
-                    ? t.billing?.activeBadge || (locale === "id" ? "AKTIF" : "ACTIVE")
-                    : t.billing?.freeBadge || (locale === "id" ? "GRATIS" : "FREE")}
+                  {isPro ? tBilling("activeBadge") : tBilling("freeBadge")}
                 </span>
               </div>
               <p className="text-xs text-slate-500 mt-0.5">
-                {isPro
-                  ? t.billing?.proDesc ||
-                    (locale === "id"
-                      ? "Akses penuh tanpa batas seluruh fitur bisnis & pembayaran digital"
-                      : "Unlimited access to all business features & automated digital payments")
-                  : t.billing?.freeDesc ||
-                    (locale === "id"
-                      ? "Cocok untuk freelancer dan bisnis yang baru merintis"
-                      : "Perfect for freelancers and early-stage business owners")}
+                {isPro ? tBilling("proDesc") : tBilling("freeDesc")}
               </p>
             </div>
           </div>
@@ -126,7 +111,7 @@ export function BillingClient({
             <div className="flex items-center gap-2 text-amber-900 font-medium">
               <CheckBadgeIcon className="w-4 h-4 text-amber-600 shrink-0" />
               <span>
-                {t.billing?.activeUntil || (locale === "id" ? "Masa aktif langganan PRO berlaku hingga:" : "PRO active subscription valid until:")}{" "}
+                {tBilling("activeUntil")}{" "}
                 <strong className="font-bold text-slate-900">
                   {formatDateWIB(user.subscription.currentPeriodEnd, {
                     day: "numeric",
@@ -137,7 +122,7 @@ export function BillingClient({
               </span>
             </div>
             <span className="text-[11px] text-amber-700">
-              {t.billing?.autoRenewNote || (locale === "id" ? "Perpanjangan otomatis via Mayar Gateway" : "Automatic renewal via Mayar Gateway")}
+              {tBilling("autoRenewNote")}
             </span>
           </div>
         )}
@@ -150,12 +135,12 @@ export function BillingClient({
               <div className="flex items-center gap-2">
                 <DocumentTextIcon className="w-4 h-4 text-slate-500" />
                 <span className="text-xs font-bold text-slate-700">
-                  {t.billing?.invoicesQuota || (locale === "id" ? "Invoice Bulan Ini" : "Invoices This Month")}
+                  {tBilling("invoicesQuota")}
                 </span>
               </div>
               <span className="text-xs font-bold font-mono text-slate-900">
                 {isPro ? (
-                  <span className="text-emerald-700">{locale === "id" ? "Unlimited (∞)" : "Unlimited (∞)"}</span>
+                  <span className="text-emerald-700">{tBilling("quotaUnlimited")}</span>
                 ) : (
                   `${invoiceUsage.used} / ${invoiceUsage.limit}`
                 )}
@@ -173,7 +158,7 @@ export function BillingClient({
                   />
                 </div>
                 <p className="text-[11px] text-slate-500">
-                  {t.billing?.quotaResetNote || (locale === "id" ? "Kuota direset otomatis setiap tanggal 1 awal bulan (WIB)." : "Quota resets automatically on the 1st of every month (WIB).")}
+                  {tBilling("quotaResetNote")}
                 </p>
               </>
             )}
@@ -181,7 +166,7 @@ export function BillingClient({
             {isPro && (
               <p className="text-[11px] text-emerald-700 flex items-center gap-1 font-medium">
                 <CheckBadgeIcon className="w-3.5 h-3.5" />
-                {t.billing?.proBenefitInvoices || (locale === "id" ? "Bebas buat invoice sebanyak apa pun tanpa watermark" : "Create unlimited invoices without any watermark")}
+                {tBilling("proBenefitInvoices")}
               </p>
             )}
           </div>
@@ -192,12 +177,12 @@ export function BillingClient({
               <div className="flex items-center gap-2">
                 <UsersIcon className="w-4 h-4 text-slate-500" />
                 <span className="text-xs font-bold text-slate-700">
-                  {t.billing?.customersQuota || (locale === "id" ? "Total Pelanggan Terdaftar" : "Total Saved Clients")}
+                  {tBilling("customersQuota")}
                 </span>
               </div>
               <span className="text-xs font-bold font-mono text-slate-900">
                 {isPro ? (
-                  <span className="text-emerald-700">{locale === "id" ? "Unlimited (∞)" : "Unlimited (∞)"}</span>
+                  <span className="text-emerald-700">{tBilling("quotaUnlimited")}</span>
                 ) : (
                   `${customerUsage.used} / ${customerUsage.limit}`
                 )}
@@ -215,7 +200,7 @@ export function BillingClient({
                   />
                 </div>
                 <p className="text-[11px] text-slate-500">
-                  {t.billing?.freeLimitCustomers || (locale === "id" ? "Maksimal 20 kontak pelanggan tersimpan di paket gratis." : "Up to 20 client contacts saved on the free plan.")}
+                  {tBilling("freeLimitCustomers")}
                 </p>
               </>
             )}
@@ -223,7 +208,7 @@ export function BillingClient({
             {isPro && (
               <p className="text-[11px] text-emerald-700 flex items-center gap-1 font-medium">
                 <CheckBadgeIcon className="w-3.5 h-3.5" />
-                {t.billing?.proBenefitCustomers || (locale === "id" ? "Database kontak pelanggan tidak terbatas" : "Unlimited client contact database")}
+                {tBilling("proBenefitCustomers")}
               </p>
             )}
           </div>
@@ -234,10 +219,10 @@ export function BillingClient({
       <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-7 shadow-2xs space-y-5">
         <div>
           <h3 className="text-base font-bold text-slate-900">
-            {t.billing?.compareTitle || (locale === "id" ? "Perbandingan Fitur Paket" : "Plan Feature Comparison")}
+            {tBilling("compareTitle")}
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
-            {t.billing?.compareSubtitle || (locale === "id" ? "Tingkatkan produktivitas bisnis Anda dengan fitur eksklusif NotaKu PRO." : "Elevate your business productivity with exclusive NotaKu PRO features.")}
+            {tBilling("compareSubtitle")}
           </p>
         </div>
 
@@ -245,76 +230,76 @@ export function BillingClient({
           <table className="w-full text-left text-xs">
             <thead>
               <tr className="border-b border-slate-200 text-slate-500 font-semibold">
-                <th className="py-3 px-3">{t.billing?.tableFeature || (locale === "id" ? "Fitur & Keunggulan" : "Features & Benefits")}</th>
-                <th className="py-3 px-3 text-center">{t.billing?.tableFree || (locale === "id" ? "Paket Free" : "Free Plan")}</th>
+                <th className="py-3 px-3">{tBilling("tableFeature")}</th>
+                <th className="py-3 px-3 text-center">{tBilling("tableFree")}</th>
                 <th className="py-3 px-3 text-center text-[#0f6b4f] bg-emerald-50/50 rounded-t-lg">
-                  {t.billing?.tablePro || "NotaKu PRO"}
+                  {tBilling("tablePro")}
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               <tr>
                 <td className="py-3 px-3 font-medium text-slate-900">
-                  {locale === "id" ? "Batas Invoice per Bulan" : "Monthly Invoice Limit"}
+                  {tBilling("monthlyInvoiceLimit")}
                 </td>
                 <td className="py-3 px-3 text-center text-slate-600">
-                  {locale === "id" ? "5 Invoice" : "5 Invoices"}
+                  {tBilling("fiveInvoices")}
                 </td>
                 <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] bg-emerald-50/50">
-                  {locale === "id" ? "Unlimited (Tanpa Batas)" : "Unlimited"}
+                  {tBilling("unlimited")}
                 </td>
               </tr>
               <tr>
                 <td className="py-3 px-3 font-medium text-slate-900">
-                  {locale === "id" ? "Watermark & Branding NotaKu" : "NotaKu Watermark & Branding"}
+                  {tBilling("watermarkBranding")}
                 </td>
                 <td className="py-3 px-3 text-center text-slate-600">
-                  {locale === "id" ? "Ada Watermark" : "With Watermark"}
+                  {tBilling("withWatermark")}
                 </td>
                 <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] bg-emerald-50/50">
-                  {locale === "id" ? "Bersih / Tanpa Watermark" : "Clean / No Watermark"}
+                  {tBilling("noWatermark")}
                 </td>
               </tr>
               <tr>
                 <td className="py-3 px-3 font-medium text-slate-900">
-                  {locale === "id" ? "Pilihan Template PDF Invoice" : "PDF Layout Templates"}
+                  {tBilling("pdfTemplates")}
                 </td>
                 <td className="py-3 px-3 text-center text-slate-600">
-                  {locale === "id" ? "Hanya Template Classic" : "Classic Only"}
+                  {tBilling("classicOnly")}
                 </td>
                 <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] bg-emerald-50/50">
-                  Classic, Modern, Minimal
+                  {tBilling("allTemplates")}
                 </td>
               </tr>
               <tr>
                 <td className="py-3 px-3 font-medium text-slate-900">
-                  {locale === "id" ? "Pembayaran Digital Otomatis (QRIS / VA)" : "Automated Digital Payments (QRIS / VA)"}
+                  {tBilling("automatedPayments")}
                 </td>
                 <td className="py-3 px-3 text-center text-emerald-600 font-bold">
-                  {locale === "id" ? "Tersedia" : "Available"}
+                  {tBilling("available")}
                 </td>
                 <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] bg-emerald-50/50">
-                  {locale === "id" ? "Tersedia + Notifikasi Instan" : "Available + Instant Alerts"}
+                  {tBilling("availableWithAlerts")}
                 </td>
               </tr>
               <tr>
                 <td className="py-3 px-3 font-medium text-slate-900">
-                  {locale === "id" ? "Batas Database Pelanggan" : "Saved Client Limit"}
+                  {tBilling("savedClientLimit")}
                 </td>
                 <td className="py-3 px-3 text-center text-slate-600">
-                  {locale === "id" ? "20 Pelanggan" : "20 Clients"}
+                  {tBilling("twentyClients")}
                 </td>
                 <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] bg-emerald-50/50">
-                  {locale === "id" ? "Unlimited" : "Unlimited"}
+                  {tBilling("unlimited")}
                 </td>
               </tr>
               <tr>
                 <td className="py-3 px-3 font-medium text-slate-900">
-                  {locale === "id" ? "Tanda Tangan Digital & Stempel Usaha" : "Digital Signature & Company Stamp"}
+                  {tBilling("digitalSignatureStamp")}
                 </td>
                 <td className="py-3 px-3 text-center text-slate-400">—</td>
                 <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] bg-emerald-50/50 rounded-b-lg">
-                  {locale === "id" ? "Tersedia" : "Available"}
+                  {tBilling("available")}
                 </td>
               </tr>
             </tbody>

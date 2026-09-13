@@ -10,7 +10,8 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { formatDateWIB } from "@/lib/invoice-utils";
-import { useLanguage } from "@/lib/i18n/context";
+import { formatMoney } from "@/lib/currencies";
+import { useLocale, useTranslations } from "next-intl";
 
 interface TransactionItem {
   id: string;
@@ -30,7 +31,7 @@ interface PayoutItem {
   netAmount: number;
   bankName: string;
   accountNumber: string;
-  status: string;
+  status: "PENDING" | "PROCESSING" | "COMPLETED" | "REJECTED";
   createdAt: string;
   processedAt?: string | null;
 }
@@ -52,7 +53,8 @@ export function WalletClient({
   transactions,
   payouts,
 }: WalletClientProps) {
-  const { t, locale } = useLanguage();
+  const locale = useLocale() as "id" | "en";
+  const tWallet = useTranslations("wallet");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"transactions" | "payouts">("transactions");
 
@@ -61,13 +63,10 @@ export function WalletClient({
       {/* Page Header (Reactive Translation) */}
       <div>
         <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-          {t.wallet?.title || (locale === "id" ? "Saldo & Mutasi Pembayaran" : "Balance & Transaction Ledger")}
+          {tWallet("title")}
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 mt-1">
-          {t.wallet?.subtitle ||
-            (locale === "id"
-              ? "Kelola penerimaan pembayaran digital invoice pelanggan dan pengajuan penarikan dana ke rekening Anda."
-              : "Manage digital payment collections and request fund payouts to your bank account.")}
+          {tWallet("subtitle")}
         </p>
       </div>
 
@@ -76,21 +75,18 @@ export function WalletClient({
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="space-y-1">
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-              {t.wallet?.availableBalance || (locale === "id" ? "Saldo Pendapatan Tersedia" : "Available Revenue Balance")}
+              {tWallet("availableBalance")}
             </span>
             <div className="flex items-baseline gap-2.5">
               <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight tabular-nums">
-                Rp{balance.toLocaleString("id-ID")}
+                {formatMoney(balance, "IDR", locale)}
               </h2>
               <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-bold text-[#0f6b4f] border border-emerald-200/60 shadow-2xs">
-                {t.wallet?.readyToWithdraw || (locale === "id" ? "Siap Ditarik" : "Ready to Withdraw")}
+                {tWallet("readyToWithdraw")}
               </span>
             </div>
             <p className="text-xs text-slate-500 font-medium">
-              {t.wallet?.balanceDesc ||
-                (locale === "id"
-                  ? "Akumulasi pembayaran digital (QRIS/VA) dari invoice pelanggan Anda."
-                  : "Accumulated digital payments (QRIS/VA) from your clients' invoices.")}
+              {tWallet("balanceDesc")}
             </p>
           </div>
 
@@ -101,14 +97,14 @@ export function WalletClient({
               className="inline-flex items-center gap-2 rounded-xl bg-[#0f6b4f] px-4 py-2.5 text-xs sm:text-sm font-bold text-white shadow-xs hover:bg-[#0c553e] disabled:opacity-50 transition-all cursor-pointer active:scale-[0.98]"
             >
               <ArrowDownTrayIcon className="h-4 w-4" />
-              <span>{t.wallet?.requestPayoutBtn || (locale === "id" ? "Tarik Saldo" : "Withdraw Funds")}</span>
+              <span>{tWallet("requestPayoutBtn")}</span>
             </button>
             <Link
               href="/settings"
               className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all shadow-2xs"
             >
               <BuildingLibraryIcon className="h-4 w-4 text-slate-400" />
-              <span>{t.settings?.tabBank || (locale === "id" ? "Rekening Bank" : "Bank Account")}</span>
+              <span>{tWallet("bankAccountBtn")}</span>
             </Link>
           </div>
         </div>
@@ -117,15 +113,15 @@ export function WalletClient({
         <div className="mt-5 border-t border-slate-100 pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-600">
           <div className="flex items-center gap-2">
             <span className="text-slate-400 font-medium">
-              {locale === "id" ? "Rekening Tujuan:" : "Destination Account:"}
+              {tWallet("destinationAccount")}
             </span>
             {bankName && bankAccountNumber ? (
               <span className="font-bold text-slate-900">
-                {bankName} - {bankAccountNumber} ({locale === "id" ? "a/n" : "a.n."} {bankAccountName})
+                {bankName} - {bankAccountNumber} ({tWallet("accountHolderAbbr")} {bankAccountName})
               </span>
             ) : (
               <span className="text-amber-700 font-bold">
-                {locale === "id" ? "Belum diatur" : "Not configured"}
+                {tWallet("notConfigured")}
               </span>
             )}
           </div>
@@ -133,7 +129,7 @@ export function WalletClient({
             href="/settings"
             className="text-[#0f6b4f] font-bold hover:underline"
           >
-            {locale === "id" ? "Ubah Pengaturan" : "Change Settings"}
+            {tWallet("changeSettings")}
           </Link>
         </div>
       </div>
@@ -149,7 +145,7 @@ export function WalletClient({
                 : "text-slate-500 hover:text-slate-900"
             }`}
           >
-            {locale === "id" ? "Mutasi Transaksi" : "Transaction Ledger"} ({transactions.length})
+            {tWallet("tabTransactions", { count: transactions.length })}
           </button>
           <button
             onClick={() => setActiveTab("payouts")}
@@ -159,7 +155,7 @@ export function WalletClient({
                 : "text-slate-500 hover:text-slate-900"
             }`}
           >
-            {t.wallet?.payoutHistory || (locale === "id" ? "Riwayat Penarikan" : "Payout History")} ({payouts.length})
+            {tWallet("tabPayouts", { count: payouts.length })}
           </button>
         </div>
 
@@ -168,20 +164,18 @@ export function WalletClient({
           <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-2xs">
             {transactions.length === 0 ? (
               <div className="p-12 text-center text-xs text-slate-500 font-medium">
-                {locale === "id"
-                  ? "Belum ada riwayat transaksi mutasi saldo."
-                  : "No balance mutation history recorded yet."}
+                {tWallet("emptyTransactions")}
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs sm:text-sm">
                   <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-500 uppercase text-[11px] font-bold tracking-wider">
                     <tr>
-                      <th className="px-5 py-3.5">{locale === "id" ? "Tanggal" : "Date"}</th>
-                      <th className="px-5 py-3.5">{locale === "id" ? "Deskripsi" : "Description"}</th>
-                      <th className="px-5 py-3.5 text-right">{locale === "id" ? "Nominal Kotor" : "Gross Amount"}</th>
-                      <th className="px-5 py-3.5 text-right">MDR (0.7%)</th>
-                      <th className="px-5 py-3.5 text-right">{locale === "id" ? "Nominal Bersih" : "Net Amount"}</th>
+                      <th className="px-5 py-3.5">{tWallet("tableDate")}</th>
+                      <th className="px-5 py-3.5">{tWallet("tableDescription")}</th>
+                      <th className="px-5 py-3.5 text-right">{tWallet("tableGross")}</th>
+                      <th className="px-5 py-3.5 text-right">{tWallet("tableMdr")}</th>
+                      <th className="px-5 py-3.5 text-right">{tWallet("tableNet")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -214,12 +208,12 @@ export function WalletClient({
                           </td>
                           <td className="px-5 py-3.5 text-right text-slate-500 tabular-nums font-mono text-xs">
                             {tx.grossAmount > 0
-                              ? `Rp${tx.grossAmount.toLocaleString("id-ID")}`
+                              ? formatMoney(tx.grossAmount, "IDR", locale)
                               : "-"}
                           </td>
                           <td className="px-5 py-3.5 text-right text-rose-600 tabular-nums font-mono text-xs">
                             {tx.feeAmount > 0
-                              ? `-Rp${tx.feeAmount.toLocaleString("id-ID")}`
+                              ? `-${formatMoney(tx.feeAmount, "IDR", locale)}`
                               : "-"}
                           </td>
                           <td
@@ -228,7 +222,7 @@ export function WalletClient({
                             }`}
                           >
                             {isCredit ? "+" : ""}
-                            Rp{Math.abs(tx.amount).toLocaleString("id-ID")}
+                            {formatMoney(Math.abs(tx.amount), "IDR", locale)}
                           </td>
                         </tr>
                       );
@@ -245,44 +239,44 @@ export function WalletClient({
           <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-2xs">
             {payouts.length === 0 ? (
               <div className="p-12 text-center text-xs text-slate-500 font-medium">
-                {t.wallet?.emptyPayoutHistory || (locale === "id" ? "Belum ada riwayat penarikan dana." : "No payout requests recorded yet.")}
+                {tWallet("emptyPayouts")}
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs sm:text-sm">
                   <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-500 uppercase text-[11px] font-bold tracking-wider">
                     <tr>
-                      <th className="px-5 py-3.5">{locale === "id" ? "Tanggal Diajukan" : "Requested Date"}</th>
-                      <th className="px-5 py-3.5">{locale === "id" ? "Rekening Tujuan" : "Destination Account"}</th>
-                      <th className="px-5 py-3.5 text-right">{locale === "id" ? "Nominal" : "Amount"}</th>
-                      <th className="px-5 py-3.5 text-center">Status</th>
+                      <th className="px-5 py-3.5">{tWallet("tableRequestedDate")}</th>
+                      <th className="px-5 py-3.5">{tWallet("tablePayoutDestination")}</th>
+                      <th className="px-5 py-3.5 text-right">{tWallet("tableAmount")}</th>
+                      <th className="px-5 py-3.5 text-center">{tWallet("tableStatus")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {payouts.map((p) => {
-                      const statusMap: Record<string, { label: string; badge: string; dot: string }> = {
+                      const statusMap: Record<"PENDING" | "PROCESSING" | "COMPLETED" | "REJECTED", { label: string; badge: string; dot: string }> = {
                         PENDING: {
-                          label: locale === "id" ? "Menunggu Approval" : "Pending Approval",
+                          label: tWallet("statusPending"),
                           badge: "bg-amber-50 text-amber-700 border-amber-200/60",
                           dot: "bg-amber-500",
                         },
                         PROCESSING: {
-                          label: locale === "id" ? "Sedang Ditransfer" : "Processing Transfer",
+                          label: tWallet("statusProcessing"),
                           badge: "bg-blue-50 text-blue-700 border-blue-200/60",
                           dot: "bg-blue-500",
                         },
                         COMPLETED: {
-                          label: locale === "id" ? "Berhasil Ditransfer" : "Completed",
+                          label: tWallet("statusCompleted"),
                           badge: "bg-emerald-50 text-[#0f6b4f] border-emerald-200/60",
                           dot: "bg-emerald-500",
                         },
                         REJECTED: {
-                          label: locale === "id" ? "Ditolak" : "Rejected",
+                          label: tWallet("statusRejected"),
                           badge: "bg-rose-50 text-rose-700 border-rose-200/60",
                           dot: "bg-rose-500",
                         },
                       };
-                      const s = statusMap[p.status] || statusMap.PENDING;
+                      const s = statusMap[p.status];
 
                       return (
                         <tr key={p.id} className="hover:bg-slate-50/80 transition-colors">
@@ -299,7 +293,7 @@ export function WalletClient({
                             <span className="font-bold">{p.bankName}</span> - <span className="font-mono text-xs text-slate-600">{p.accountNumber}</span>
                           </td>
                           <td className="px-5 py-3.5 text-right font-bold text-slate-900 tabular-nums text-sm">
-                            Rp{p.amount.toLocaleString("id-ID")}
+                            {formatMoney(p.amount, "IDR", locale)}
                           </td>
                           <td className="px-5 py-3.5 text-center whitespace-nowrap">
                             <span
