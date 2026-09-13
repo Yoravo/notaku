@@ -11,12 +11,12 @@ import {
   ArrowLeftIcon,
   PaperAirplaneIcon,
 } from "@heroicons/react/24/outline";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 import { LanguageDropdown } from "@/components/language-dropdown";
 import { requestPasswordResetAction } from "@/actions/auth-actions";
 
 export default function ForgotPasswordPage() {
-  const { t, locale } = useLanguage();
+  const tAuth = useTranslations("auth");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -31,23 +31,13 @@ export default function ForgotPasswordPage() {
     try {
       const res = await requestPasswordResetAction(email);
       if (!res.success) {
-        setError(res.error || (locale === "id" ? "Gagal memproses permintaan." : "Failed to process request."));
+        setError(res.error || tAuth("invalidResetToken"));
       } else {
         setSubmittedEmail(email);
-        setSuccessMessage(
-          res.message ||
-            t.auth?.resetEmailSent ||
-            (locale === "id"
-              ? "Link reset kata sandi telah dikirim ke email Anda."
-              : "Password reset link has been sent to your email.")
-        );
+        setSuccessMessage(res.message || tAuth("resetEmailSent"));
       }
     } catch {
-      setError(
-        locale === "id"
-          ? "Terjadi kesalahan sistem. Silakan coba lagi."
-          : "System error occurred. Please try again."
-      );
+      setError(tAuth("invalidResetToken"));
     } finally {
       setLoading(false);
     }
@@ -60,21 +50,12 @@ export default function ForgotPasswordPage() {
     try {
       const res = await requestPasswordResetAction(submittedEmail);
       if (!res.success) {
-        setError(res.error || (locale === "id" ? "Gagal mengirim ulang." : "Failed to resend."));
+        setError(res.error || tAuth("invalidResetToken"));
       } else {
-        setSuccessMessage(
-          res.message ||
-            (locale === "id"
-              ? "Link baru berhasil dikirimkan ke email Anda."
-              : "A new link has been sent to your email.")
-        );
+        setSuccessMessage(res.message || tAuth("verificationLinkSent"));
       }
     } catch {
-      setError(
-        locale === "id"
-          ? "Terjadi kesalahan sistem. Silakan coba lagi."
-          : "System error occurred. Please try again."
-      );
+      setError(tAuth("invalidResetToken"));
     } finally {
       setLoading(false);
     }
@@ -86,6 +67,7 @@ export default function ForgotPasswordPage() {
       <header className="w-full max-w-6xl mx-auto flex items-center justify-between py-2">
         <Link
           href="/"
+          prefetch={true}
           className="flex items-center gap-1.5 group text-slate-600 hover:text-slate-900 transition-colors min-h-[44px]"
         >
           <Image
@@ -114,14 +96,10 @@ export default function ForgotPasswordPage() {
                   <EnvelopeIcon className="w-6 h-6" />
                 </div>
                 <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">
-                  {t.auth?.forgotPasswordTitle ||
-                    (locale === "id" ? "Lupa Kata Sandi?" : "Forgot Password?")}
+                  {tAuth("forgotPasswordTitle")}
                 </h1>
                 <p className="text-xs sm:text-sm text-slate-500 mt-1.5 font-medium leading-relaxed">
-                  {t.auth?.forgotPasswordSubtitle ||
-                    (locale === "id"
-                      ? "Masukkan email terdaftar Anda untuk menerima tautan pembuatan kata sandi baru."
-                      : "Enter your registered email address to receive a password reset link.")}
+                  {tAuth("forgotPasswordSubtitle")}
                 </p>
               </div>
 
@@ -138,7 +116,7 @@ export default function ForgotPasswordPage() {
                     htmlFor="email"
                     className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5"
                   >
-                    {t.auth?.email || (locale === "id" ? "Alamat Email" : "Email Address")}
+                    {tAuth("email")}
                   </label>
                   <div className="relative">
                     <EnvelopeIcon className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -148,10 +126,7 @@ export default function ForgotPasswordPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      placeholder={
-                        t.auth?.emailPlaceholder ||
-                        (locale === "id" ? "nama@bisnis.com" : "name@company.com")
-                      }
+                      placeholder={tAuth("emailPlaceholder")}
                       className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] transition-colors text-xs sm:text-sm font-medium min-h-[44px]"
                     />
                   </div>
@@ -168,10 +143,7 @@ export default function ForgotPasswordPage() {
                     <PaperAirplaneIcon className="w-4 h-4 -rotate-45" />
                   )}
                   <span>
-                    {loading
-                      ? t.auth?.sending || (locale === "id" ? "Mengirim..." : "Sending...")
-                      : t.auth?.sendResetLink ||
-                        (locale === "id" ? "Kirim Link Reset" : "Send Reset Link")}
+                    {loading ? tAuth("sending") : tAuth("sendResetLink")}
                   </span>
                 </button>
               </form>
@@ -182,20 +154,11 @@ export default function ForgotPasswordPage() {
                 <CheckCircleIcon className="w-6 h-6 text-[#0f6b4f]" />
               </div>
               <h2 className="text-xl font-extrabold tracking-tight text-slate-900">
-                {locale === "id" ? "Periksa Kotak Masuk Email" : "Check Your Inbox"}
+                {tAuth("checkEmailTitle")}
               </h2>
               <p className="text-xs sm:text-sm text-slate-500 mt-2 leading-relaxed">
-                {locale === "id" ? (
-                  <>
-                    Kami telah mengirimkan instruksi dan tautan reset kata sandi ke{" "}
-                    <strong className="text-slate-900 break-all">{submittedEmail}</strong>.
-                  </>
-                ) : (
-                  <>
-                    We have sent password reset instructions and link to{" "}
-                    <strong className="text-slate-900 break-all">{submittedEmail}</strong>.
-                  </>
-                )}
+                {tAuth("checkEmailDesc")}{" "}
+                <strong className="text-slate-900 break-all">{submittedEmail}</strong>.
               </p>
 
               {error && (
@@ -219,21 +182,7 @@ export default function ForgotPasswordPage() {
                   className="w-full py-2.5 px-4 border border-slate-200 rounded-xl hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold transition-colors cursor-pointer disabled:opacity-50 min-h-[44px] flex items-center justify-center gap-2"
                 >
                   {loading && <ArrowPathIcon className="w-4 h-4 animate-spin" />}
-                  <span>
-                    {locale === "id" ? "Kirim Ulang Link Reset" : "Resend Reset Link"}
-                  </span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSubmittedEmail("");
-                    setError("");
-                    setSuccessMessage("");
-                  }}
-                  className="text-xs font-semibold text-slate-500 hover:text-slate-800 min-h-[40px] inline-flex items-center"
-                >
-                  {locale === "id" ? "Gunakan email lain" : "Use a different email"}
+                  <span>{tAuth("resendVerification")}</span>
                 </button>
               </div>
             </div>
@@ -243,13 +192,11 @@ export default function ForgotPasswordPage() {
           <div className="mt-6 pt-5 border-t border-slate-100 text-center">
             <Link
               href="/login"
+              prefetch={true}
               className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0f6b4f] hover:text-[#0c553e] hover:underline min-h-[44px]"
             >
               <ArrowLeftIcon className="w-3.5 h-3.5" />
-              <span>
-                {t.auth?.backToLogin ||
-                  (locale === "id" ? "Kembali ke Halaman Masuk" : "Back to Sign In")}
-              </span>
+              <span>{tAuth("backToLogin")}</span>
             </Link>
           </div>
         </div>
@@ -259,12 +206,11 @@ export default function ForgotPasswordPage() {
       <footer className="w-full max-w-6xl mx-auto py-2 text-center">
         <Link
           href="/"
+          prefetch={true}
           className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-600 transition-colors font-medium min-h-[44px]"
         >
           <ArrowLeftIcon className="w-3.5 h-3.5" />
-          <span>
-            {locale === "id" ? "Kembali ke Beranda Utama" : "Back to Home"}
-          </span>
+          <span>{tAuth("backToLogin")}</span>
         </Link>
       </footer>
     </div>

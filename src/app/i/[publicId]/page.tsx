@@ -279,6 +279,7 @@ export default async function PublicInvoicePage({
             publicId={invoice.publicId}
             invoiceNumber={invoice.number}
             total={Number(invoice.total)}
+            currency={currency}
             status={invoice.status}
             enableDirectTransfer={invoice.enableDirectTransfer}
             enableDigitalPayment={invoice.enableDigitalPayment}

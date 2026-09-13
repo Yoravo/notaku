@@ -16,8 +16,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { formatMoney } from "@/lib/currencies";
 import { formatDateWIB } from "@/lib/invoice-utils";
-import { useLanguage } from "@/lib/i18n/context";
-import { LanguageDropdown } from "@/components/language-dropdown";
+import { useTranslations } from "next-intl";
 
 interface InvoiceItem {
   id: string;
@@ -57,12 +56,22 @@ export function PortalClient({
   seller: SellerData;
   invoices: InvoiceItem[];
 }) {
-  const { t, locale } = useLanguage();
+  const tPortal = useTranslations("portal");
+  const tStatus = useTranslations("common.status");
   const [activeTab, setActiveTab] = useState<"ALL" | "UNPAID" | "PAID" | "OVERDUE">("ALL");
   const [searchQuery, setSearchQuery] = useState("");
 
   const sellerDisplayName = seller.businessName || seller.name;
   const primaryCurrency = invoices[0]?.currency || "IDR";
+
+  // Konteks Portal Klien (Customer View): DB enum SENT dipetakan ke waitingPayment ("Menunggu Bayar")
+  const portalStatusLabelMap: Record<string, string> = {
+    PAID: tStatus("paid"),
+    SENT: tStatus("waitingPayment"),
+    OVERDUE: tStatus("overdue"),
+    CANCELLED: tStatus("cancelled"),
+    DRAFT: tStatus("draft"),
+  };
 
   // Hitung ringkasan statistik keuangan klien
   const metrics = useMemo(() => {
@@ -126,7 +135,7 @@ export function PortalClient({
             )}
             <div>
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block leading-none">
-                {t.portal.badge}
+                {tPortal("badge")}
               </span>
               <h1 className="text-sm sm:text-base font-extrabold text-slate-900 tracking-tight mt-0.5">
                 {sellerDisplayName}
@@ -137,11 +146,10 @@ export function PortalClient({
           <div className="flex items-center gap-4">
             <div className="text-right hidden sm:block">
               <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                {t.portal.clientLabel}
+                {tPortal("clientLabel")}
               </span>
               <p className="text-xs font-bold text-[#0f6b4f]">{customer.name}</p>
             </div>
-            <LanguageDropdown variant="light" />
           </div>
         </div>
       </header>
@@ -153,14 +161,14 @@ export function PortalClient({
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-50 text-[#0f6b4f] text-[11px] font-bold border border-emerald-100">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span>{t.portal.activeBadge}</span>
+              <span>{tPortal("activeBadge")}</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900">
-              {t.portal.greeting} {customer.name}
+              {tPortal("greeting")} {customer.name}
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 max-w-xl leading-relaxed">
-              {t.portal.description}{" "}
-              <strong className="text-slate-800">{sellerDisplayName}</strong> {t.portal.forYou}
+              {tPortal("description")}{" "}
+              <strong className="text-slate-800">{sellerDisplayName}</strong> {tPortal("forYou")}
             </p>
 
             <div className="pt-1 flex flex-wrap items-center gap-y-2 gap-x-4 text-xs text-slate-500 font-medium">
@@ -179,73 +187,62 @@ export function PortalClient({
               {customer.address && (
                 <div className="flex items-center gap-1.5">
                   <MapPinIcon className="w-4 h-4 text-slate-400" />
-                  <span className="truncate max-w-xs">{customer.address}</span>
+                  <span>{customer.address}</span>
                 </div>
               )}
             </div>
           </div>
-
-          <div className="flex sm:flex-col justify-between sm:justify-center border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 md:pl-6 shrink-0 gap-3">
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                {t.portal.totalHistory}
-              </span>
-              <p className="text-xl sm:text-2xl font-extrabold text-slate-900 font-mono mt-0.5">
-                {metrics.totalInvoices}{" "}
-                <span className="text-xs font-sans font-semibold text-slate-500">
-                  {t.portal.invoicesCount}
-                </span>
-              </p>
-            </div>
-          </div>
         </div>
 
-        {/* Summary Metric Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* Unpaid Card */}
-          <div className="rounded-2xl border border-amber-200/80 bg-linear-to-br from-amber-50/70 to-white p-5 shadow-sm space-y-3">
+        {/* Metrics Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-2xs">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
-                <ClockIcon className="w-4 h-4 text-amber-600" />
-                <span>{t.portal.unpaidTitle}</span>
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                {tPortal("totalHistory")}
               </span>
-              <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-bold">
-                {metrics.countUnpaid} {t.portal.unpaidCount}
-              </span>
+              <DocumentTextIcon className="w-5 h-5 text-slate-400" />
             </div>
-            <p className="text-2xl sm:text-3xl font-extrabold text-amber-950 font-mono tracking-tight">
+            <p className="mt-2 text-2xl font-black text-slate-900 font-mono">
+              {metrics.totalInvoices}{" "}
+              <span className="text-xs font-normal text-slate-400 font-sans">{tPortal("invoicesCount")}</span>
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-amber-200/80 bg-amber-50/40 p-5 shadow-2xs">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-amber-900 uppercase tracking-wider">
+                {tPortal("unpaidTitle")}
+              </span>
+              <ClockIcon className="w-5 h-5 text-amber-600" />
+            </div>
+            <p className="mt-2 text-2xl font-black text-amber-950 font-mono">
               {formatMoney(metrics.totalUnpaid, primaryCurrency)}
             </p>
-            <p className="text-xs text-amber-700 font-medium">
-              {metrics.countUnpaid > 0
-                ? t.portal.unpaidDescHas
-                : t.portal.unpaidDescEmpty}
+            <p className="text-[11px] text-amber-700 font-medium mt-1">
+              {metrics.countUnpaid} {tPortal("unpaidCount")}
             </p>
           </div>
 
-          {/* Paid Card */}
-          <div className="rounded-2xl border border-emerald-200/80 bg-linear-to-br from-emerald-50/70 to-white p-5 shadow-sm space-y-3">
+          <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/40 p-5 shadow-2xs">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#0f6b4f] flex items-center gap-1.5">
-                <CheckCircleIcon className="w-4 h-4 text-[#0f6b4f]" />
-                <span>{t.portal.paidTitle}</span>
+              <span className="text-xs font-bold text-emerald-900 uppercase tracking-wider">
+                {tPortal("paidTitle")}
               </span>
-              <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-[#0f6b4f] text-[11px] font-bold">
-                {metrics.countPaid} {t.portal.paidCount}
-              </span>
+              <CheckCircleIcon className="w-5 h-5 text-emerald-600" />
             </div>
-            <p className="text-2xl sm:text-3xl font-extrabold text-emerald-950 font-mono tracking-tight">
+            <p className="mt-2 text-2xl font-black text-emerald-950 font-mono">
               {formatMoney(metrics.totalPaid, primaryCurrency)}
             </p>
-            <p className="text-xs text-emerald-700 font-medium">
-              {t.portal.paidDesc}
+            <p className="text-[11px] text-emerald-700 font-medium mt-1">
+              {metrics.countPaid} {tPortal("paidCount")}
             </p>
           </div>
         </div>
 
-        {/* Invoice Filters & List */}
+        {/* Invoices List Section */}
         <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             {/* Filter Tabs */}
             <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl overflow-x-auto">
               <button
@@ -257,7 +254,7 @@ export function PortalClient({
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                {t.portal.tabAll} ({invoices.length})
+                {tPortal("tabAll")} ({invoices.length})
               </button>
               <button
                 type="button"
@@ -268,7 +265,7 @@ export function PortalClient({
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                {t.portal.tabUnpaid} ({metrics.countUnpaid})
+                {tPortal("tabUnpaid")} ({metrics.countUnpaid})
               </button>
               <button
                 type="button"
@@ -279,7 +276,7 @@ export function PortalClient({
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                {t.portal.tabPaid} ({metrics.countPaid})
+                {tPortal("tabPaid")} ({metrics.countPaid})
               </button>
             </div>
 
@@ -290,7 +287,7 @@ export function PortalClient({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t.portal.searchPlaceholder}
+                placeholder={tPortal("searchPlaceholder")}
                 className="w-full rounded-xl border border-slate-200 bg-white pl-9 pr-4 py-2 text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs"
               />
             </div>
@@ -300,11 +297,11 @@ export function PortalClient({
           {filteredInvoices.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-slate-300 p-8 sm:p-12 text-center bg-white shadow-2xs">
               <DocumentTextIcon className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-              <p className="text-sm font-bold text-slate-700">{t.portal.emptyTitle}</p>
+              <p className="text-sm font-bold text-slate-700">{tPortal("emptyTitle")}</p>
               <p className="text-xs text-slate-400 mt-1">
                 {searchQuery
-                  ? `${t.portal.emptyDescSearch} "${searchQuery}".`
-                  : t.portal.emptyDescCategory}
+                  ? `${tPortal("emptyDescSearch")} "${searchQuery}".`
+                  : tPortal("emptyDescCategory")}
               </p>
             </div>
           ) : (
@@ -313,12 +310,12 @@ export function PortalClient({
                 <table className="w-full text-left text-xs sm:text-sm">
                   <thead className="border-b border-slate-200 bg-slate-50/80 text-slate-500 uppercase text-[11px] font-bold tracking-wider">
                     <tr>
-                      <th className="px-5 py-3.5">{t.portal.thNumber}</th>
-                      <th className="px-5 py-3.5">{t.portal.thIssueDate}</th>
-                      <th className="px-5 py-3.5">{t.portal.thDueDate}</th>
-                      <th className="px-5 py-3.5">{t.portal.thStatus}</th>
-                      <th className="px-5 py-3.5 text-right">{t.portal.thTotal}</th>
-                      <th className="px-5 py-3.5 text-right">{t.portal.thActions}</th>
+                      <th className="px-5 py-3.5">{tPortal("thNumber")}</th>
+                      <th className="px-5 py-3.5">{tPortal("thIssueDate")}</th>
+                      <th className="px-5 py-3.5">{tPortal("thDueDate")}</th>
+                      <th className="px-5 py-3.5">{tPortal("thStatus")}</th>
+                      <th className="px-5 py-3.5 text-right">{tPortal("thTotal")}</th>
+                      <th className="px-5 py-3.5 text-right">{tPortal("thActions")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -385,13 +382,7 @@ export function PortalClient({
                                       : "bg-slate-400"
                               }`}
                             />
-                            {inv.status === "PAID"
-                              ? t.portal.statusPaid
-                              : inv.status === "SENT"
-                                ? t.portal.statusSent
-                                : inv.status === "OVERDUE"
-                                  ? t.portal.statusOverdue
-                                  : inv.status}
+                            {portalStatusLabelMap[inv.status] || inv.status}
                           </span>
                         </td>
 
@@ -414,7 +405,7 @@ export function PortalClient({
                                   : "bg-[#0f6b4f] text-white hover:bg-[#0c553e]"
                               }`}
                             >
-                              <span>{inv.status === "PAID" ? t.portal.btnViewInvoice : t.portal.btnPayNow}</span>
+                              <span>{inv.status === "PAID" ? tPortal("btnViewInvoice") : tPortal("btnPayNow")}</span>
                               <ArrowTopRightOnSquareIcon className="w-3.5 h-3.5" />
                             </Link>
 
@@ -422,7 +413,7 @@ export function PortalClient({
                             <a
                               href={`/api/invoices/public/${inv.publicId}/pdf`}
                               download={`Invoice-${inv.number}.pdf`}
-                              title={t.portal.downloadInvoice}
+                              title={tPortal("downloadInvoice")}
                               className="p-1.5 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors border border-transparent hover:border-slate-200"
                             >
                               <DocumentArrowDownIcon className="w-4 h-4" />
@@ -433,10 +424,10 @@ export function PortalClient({
                               <a
                                 href={`/api/invoices/public/${inv.publicId}/receipt`}
                                 download={`Kuitansi-${inv.number}.pdf`}
-                                title={t.portal.downloadReceipt}
+                                title={tPortal("downloadReceipt")}
                                 className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-emerald-50 text-[#0f6b4f] hover:bg-emerald-100 text-xs font-bold transition-all border border-emerald-200/60"
                               >
-                                <span>{t.portal.receiptLabel}</span>
+                                <span>{tPortal("receiptLabel")}</span>
                                 <DocumentArrowDownIcon className="w-3.5 h-3.5" />
                               </a>
                             )}
@@ -456,10 +447,10 @@ export function PortalClient({
       <footer className="border-t border-slate-200/80 bg-white py-6 mt-12 text-center text-xs text-slate-500">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p>
-            {t.portal.footerBilledBy} <strong className="text-slate-800">{sellerDisplayName}</strong>.
+            {tPortal("footerBilledBy")} <strong className="text-slate-800">{sellerDisplayName}</strong>.
           </p>
           <div className="flex items-center gap-1.5 text-slate-400">
-            <span>{t.portal.footerPoweredBy}</span>
+            <span>{tPortal("footerPoweredBy")}</span>
             <Link
               href="https://notaku.store"
               target="_blank"
@@ -474,4 +465,3 @@ export function PortalClient({
     </div>
   );
 }
-

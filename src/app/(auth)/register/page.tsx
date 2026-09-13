@@ -16,12 +16,12 @@ import {
   CheckCircleIcon,
   GiftIcon,
 } from "@heroicons/react/24/outline";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 import { LanguageDropdown } from "@/components/language-dropdown";
 import { linkUserReferral } from "@/actions/referrals";
 
 function RegisterForm() {
-  const { t, locale } = useLanguage();
+  const tAuth = useTranslations("auth");
   const searchParams = useSearchParams();
   const refCodeFromUrl = searchParams.get("ref") || "";
 
@@ -53,10 +53,7 @@ function RegisterForm() {
         callbackURL: "/dashboard",
       });
       if (error) {
-        setError(
-          error.message ||
-            (locale === "id" ? "Registrasi gagal. Silakan coba lagi." : "Registration failed. Please try again.")
-        );
+        setError(error.message || tAuth("invalidCredentialsError"));
       } else {
         if (referralCode.trim() && data?.user?.id) {
           try {
@@ -68,9 +65,7 @@ function RegisterForm() {
         setSuccess(true);
       }
     } catch {
-      setError(
-        locale === "id" ? "Terjadi kesalahan sistem. Coba lagi." : "A system error occurred. Please try again."
-      );
+      setError(tAuth("invalidCredentialsError"));
     } finally {
       setLoading(false);
     }
@@ -83,10 +78,7 @@ function RegisterForm() {
         callbackURL: "/dashboard",
       });
     } catch {
-      setError(
-        t.auth?.googleError ||
-          (locale === "id" ? "Gagal terhubung ke Google. Coba lagi." : "Failed to connect to Google. Please try again.")
-      );
+      setError(tAuth("googleError"));
     }
   };
 
@@ -97,6 +89,7 @@ function RegisterForm() {
         <header className="w-full max-w-6xl mx-auto flex items-center justify-between py-2">
           <Link
             href="/"
+            prefetch={true}
             className="flex items-center gap-1.5 group text-slate-600 hover:text-slate-900 transition-colors min-h-[44px]"
           >
             <Image
@@ -119,31 +112,29 @@ function RegisterForm() {
               <CheckCircleIcon className="w-8 h-8" />
             </div>
             <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">
-              {t.auth?.checkEmailTitle || (locale === "id" ? "Cek Email Anda" : "Check Your Email")}
+              {tAuth("checkEmailTitle")}
             </h1>
             <p className="text-xs sm:text-sm text-slate-600 mt-2.5 font-medium leading-relaxed">
-              {t.auth?.checkEmailDesc || (locale === "id" ? "Kami sudah mengirim link verifikasi ke" : "We have sent a verification link to")}{" "}
+              {tAuth("checkEmailDesc")}{" "}
               <strong className="text-slate-900 font-bold">{email}</strong>.
             </p>
             <p className="text-xs text-slate-500 mt-2 font-medium">
-              {t.auth?.checkEmailAction ||
-                (locale === "id"
-                  ? "Klik link di dalam email tersebut untuk mengaktifkan akun NotaKu Anda."
-                  : "Click the link in the email to activate your NotaKu account.")}
+              {tAuth("checkEmailAction")}
             </p>
             <div className="mt-6 pt-4 border-t border-slate-100">
               <Link
                 href="/login"
+                prefetch={true}
                 className="w-full py-2.5 px-4 bg-[#0f6b4f] hover:bg-[#0c553e] text-white font-bold rounded-xl flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer active:scale-[0.98] min-h-[44px] text-xs sm:text-sm"
               >
-                <span>{t.auth?.backToLogin || (locale === "id" ? "Kembali ke Halaman Masuk" : "Back to Login Page")}</span>
+                <span>{tAuth("backToLogin")}</span>
               </Link>
             </div>
           </div>
         </main>
 
         <footer className="text-center py-2 text-[11px] text-slate-400 font-medium">
-          © 2026 NotaKu · {t.tagline || (locale === "id" ? "Invoice Generator untuk UMKM & Bisnis Indonesia" : "Professional Invoice Generator")}
+          &copy; {new Date().getFullYear()} NotaKu &bull; Simple & Fast Invoicing
         </footer>
       </div>
     );
@@ -155,6 +146,7 @@ function RegisterForm() {
       <header className="w-full max-w-6xl mx-auto flex items-center justify-between py-2">
         <Link
           href="/"
+          prefetch={true}
           className="flex items-center gap-2.5 group text-slate-600 hover:text-slate-900 transition-colors min-h-[44px]"
         >
           <Image
@@ -178,13 +170,10 @@ function RegisterForm() {
         <div className="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-xl shadow-slate-200/40">
           <div className="text-center mb-6">
             <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">
-              {t.auth?.registerTitle || (locale === "id" ? "Daftar Akun NotaKu" : "Create NotaKu Account")}
+              {tAuth("registerTitle")}
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 mt-1.5 font-medium">
-              {t.auth?.registerSubtitle ||
-                (locale === "id"
-                  ? "Mulai buat invoice profesional dalam 30 detik. Gratis!"
-                  : "Start creating professional invoices in 30 seconds. Free!")}
+              {tAuth("registerSubtitle")}
             </p>
           </div>
 
@@ -192,9 +181,7 @@ function RegisterForm() {
             <div className="mb-5 p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-semibold flex items-center gap-2.5 shadow-2xs">
               <GiftIcon className="w-4 h-4 text-[#0f6b4f] shrink-0" />
               <span>
-                {locale === "id"
-                  ? `Mendaftar melalui referral: ${refCodeFromUrl}`
-                  : `Signing up via referral: ${refCodeFromUrl}`}
+                Referral: {refCodeFromUrl}
               </span>
             </div>
           )}
@@ -213,7 +200,7 @@ function RegisterForm() {
                 htmlFor="name"
                 className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5"
               >
-                {t.auth?.fullName || (locale === "id" ? "Nama Lengkap" : "Full Name")}
+                {tAuth("fullName")}
               </label>
               <div className="relative">
                 <UserIcon className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -223,10 +210,7 @@ function RegisterForm() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  placeholder={
-                    t.auth?.fullNamePlaceholder ||
-                    (locale === "id" ? "Contoh: Budi Santoso" : "e.g. John Doe")
-                  }
+                  placeholder={tAuth("fullNamePlaceholder")}
                   className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] transition-colors text-xs sm:text-sm font-medium min-h-[44px]"
                 />
               </div>
@@ -238,7 +222,7 @@ function RegisterForm() {
                 htmlFor="email"
                 className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5"
               >
-                {t.auth?.email || (locale === "id" ? "Alamat Email" : "Email Address")}
+                {tAuth("email")}
               </label>
               <div className="relative">
                 <EnvelopeIcon className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -248,10 +232,7 @@ function RegisterForm() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  placeholder={
-                    t.auth?.emailPlaceholder ||
-                    (locale === "id" ? "nama@bisnis.com" : "name@company.com")
-                  }
+                  placeholder={tAuth("emailPlaceholder")}
                   className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] transition-colors text-xs sm:text-sm font-medium min-h-[44px]"
                 />
               </div>
@@ -264,10 +245,10 @@ function RegisterForm() {
                   htmlFor="password"
                   className="block text-[11px] font-bold uppercase tracking-wider text-slate-700"
                 >
-                  {t.auth?.password || (locale === "id" ? "Password" : "Password")}
+                  {tAuth("password")}
                 </label>
                 <span className="text-[10px] text-slate-400 font-medium">
-                  {t.auth?.passwordMinLength || (locale === "id" ? "Min. 8 karakter" : "Min. 8 chars")}
+                  {tAuth("passwordMinLength")}
                 </span>
               </div>
               <div className="relative">
@@ -279,21 +260,14 @@ function RegisterForm() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   minLength={8}
-                  placeholder={
-                    t.auth?.passwordPlaceholder ||
-                    (locale === "id" ? "Masukkan kata sandi baru" : "Create a strong password")
-                  }
+                  placeholder={tAuth("passwordPlaceholder")}
                   className="w-full pl-10 pr-11 py-2.5 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] transition-colors text-xs sm:text-sm font-medium min-h-[44px]"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-0 inset-y-0 px-3.5 flex items-center text-slate-400 hover:text-slate-700 cursor-pointer min-h-[44px]"
-                  aria-label={
-                    showPassword
-                      ? locale === "id" ? "Sembunyikan password" : "Hide password"
-                      : locale === "id" ? "Tampilkan password" : "Show password"
-                  }
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
                     <EyeSlashIcon className="w-4 h-4" />
@@ -301,27 +275,6 @@ function RegisterForm() {
                     <EyeIcon className="w-4 h-4" />
                   )}
                 </button>
-              </div>
-            </div>
-
-            {/* Kode Referral (Opsional) */}
-            <div>
-              <label
-                htmlFor="referralCode"
-                className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5"
-              >
-                {locale === "id" ? "Kode Referral (Opsional)" : "Referral Code (Optional)"}
-              </label>
-              <div className="relative">
-                <GiftIcon className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  id="referralCode"
-                  type="text"
-                  value={referralCode}
-                  onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
-                  placeholder={locale === "id" ? "Contoh: NK-7X9K" : "e.g. NK-7X9K"}
-                  className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] transition-colors text-xs sm:text-sm font-medium uppercase min-h-[44px]"
-                />
               </div>
             </div>
 
@@ -333,9 +286,7 @@ function RegisterForm() {
             >
               {loading && <ArrowPathIcon className="w-4 h-4 animate-spin" />}
               <span>
-                {loading
-                  ? t.auth?.processing || (locale === "id" ? "Memproses..." : "Processing...")
-                  : t.auth?.registerBtn || (locale === "id" ? "Daftar Gratis" : "Sign Up Free")}
+                {loading ? tAuth("processing") : tAuth("registerBtn")}
               </span>
             </button>
           </form>
@@ -344,7 +295,7 @@ function RegisterForm() {
           <div className="my-5 flex items-center">
             <div className="flex-1 border-t border-slate-200" />
             <span className="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              {t.auth?.orDivider || (locale === "id" ? "atau daftar dengan" : "or sign up with")}
+              {tAuth("orDivider")}
             </span>
             <div className="flex-1 border-t border-slate-200" />
           </div>
@@ -373,21 +324,18 @@ function RegisterForm() {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            <span>
-              {t.auth?.googleSignIn ||
-                (locale === "id" ? "Lanjutkan dengan Google" : "Continue with Google")}
-            </span>
+            <span>{tAuth("googleSignIn")}</span>
           </button>
 
           {/* Footer Login Link */}
           <p className="mt-6 text-center text-xs text-slate-500 font-medium">
-            {t.auth?.haveAccount ||
-              (locale === "id" ? "Sudah punya akun?" : "Already have an account?")}{" "}
+            {tAuth("haveAccount")}{" "}
             <Link
               href="/login"
+              prefetch={true}
               className="text-[#0f6b4f] font-bold hover:underline min-h-[32px] inline-flex items-center cursor-pointer"
             >
-              {t.auth?.signInLink || (locale === "id" ? "Masuk di Sini" : "Sign In Here")}
+              {tAuth("signInLink")}
             </Link>
           </p>
         </div>
@@ -395,7 +343,7 @@ function RegisterForm() {
 
       {/* Subtle Bottom Footer */}
       <footer className="text-center py-2 text-[11px] text-slate-400 font-medium">
-        © 2026 NotaKu · {t.tagline || (locale === "id" ? "Invoice Generator untuk UMKM & Bisnis Indonesia" : "Professional Invoice Generator")}
+        &copy; {new Date().getFullYear()} NotaKu &bull; Simple & Fast Invoicing
       </footer>
     </div>
   );
@@ -403,9 +351,8 @@ function RegisterForm() {
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center font-sans text-slate-500 text-sm">Memuat form...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center font-sans text-slate-500 text-sm">Memuat...</div>}>
       <RegisterForm />
     </Suspense>
   );
 }
-
