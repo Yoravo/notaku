@@ -88,7 +88,7 @@ export function ClientPerformanceMetrics({
             <div className="mt-3">
               <div className="flex items-baseline gap-2">
                 <p className="text-2xl font-bold tracking-tight text-slate-900 tabular-nums">
-                  {dsoDays !== null ? `${dsoDays} hari` : "—"}
+                  {dsoDays !== null ? tPerf("dsoDays", { count: dsoDays }) : "—"}
                 </p>
                 <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-bold border ${dsoBadgeClass}`}>
                   {dsoStatusLabel}

@@ -351,7 +351,13 @@ function RegisterForm() {
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center font-sans text-slate-500 text-sm">Memuat...</div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center font-sans text-slate-500 text-sm">
+          <div className="w-6 h-6 border-2 border-[#0f6b4f] border-t-transparent rounded-full animate-spin" />
+        </div>
+      }
+    >
       <RegisterForm />
     </Suspense>
   );

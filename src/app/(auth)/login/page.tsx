@@ -244,7 +244,7 @@ export default function LoginPage() {
           className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-600 transition-colors font-medium min-h-[44px]"
         >
           <ArrowLeftIcon className="w-3.5 h-3.5" />
-          <span>{tAuth("backToLogin")}</span>
+          <span>{tAuth("backToHome")}</span>
         </Link>
       </footer>
     </div>

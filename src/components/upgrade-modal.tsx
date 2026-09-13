@@ -9,6 +9,7 @@ import {
   ArrowPathIcon,
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
 
 type PromoState = {
   code: string;
@@ -21,6 +22,7 @@ type PromoState = {
 } | null;
 
 export function UpgradeModal({ onClose }: { onClose: () => void }) {
+  const t = useTranslations("upgradeModal");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,14 +46,14 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
 
       const data = await res.json();
       if (!res.ok) {
-        setPromoError(data.error || "Kode voucher tidak valid");
+        setPromoError(data.error || t("invalidVoucher"));
         setAppliedPromo(null);
       } else {
         setAppliedPromo(data);
         setPromoError(null);
       }
     } catch {
-      setPromoError("Gagal memeriksa voucher");
+      setPromoError(t("failedCheckVoucher"));
     } finally {
       setValidatingPromo(false);
     }
@@ -78,7 +80,7 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
       const data = await res.json();
 
       if (!res.ok || !data.paymentUrl) {
-        setError(data.error || "Gagal membuat tautan pembayaran. Coba lagi.");
+        setError(data.error || t("failedPaymentLink"));
         setLoading(false);
         return;
       }
@@ -86,7 +88,7 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
       // Redirect ke checkout Mayar
       window.location.href = data.paymentUrl;
     } catch {
-      setError("Terjadi kesalahan koneksi. Silakan coba lagi.");
+      setError(t("connectionError"));
       setLoading(false);
     }
   };
@@ -107,10 +109,10 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
             </div>
             <div>
               <h2 className="text-lg font-bold text-gray-900">
-                Upgrade ke Nota<span className="text-[#0f6b4f]">Ku</span> PRO
+                {t("titlePrefix")} Nota<span className="text-[#0f6b4f]">Ku</span> PRO
               </h2>
               <p className="text-xs text-gray-500">
-                Buka seluruh potensi bisnis Anda tanpa batas
+                {t("subtitle")}
               </p>
             </div>
           </div>
@@ -127,13 +129,13 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
           <div className="flex items-baseline justify-between">
             <div>
               <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800">
-                Akses Penuh Unlimited
+                {t("unlimitedAccess")}
               </span>
               <div className="flex items-baseline gap-2 mt-1">
                 <p className="text-2xl sm:text-3xl font-extrabold text-gray-900">
                   Rp{currentPrice.toLocaleString("id-ID")}
                   <span className="text-xs font-medium text-gray-500 ml-1">
-                    / 30 hari
+                    {t("per30Days")}
                   </span>
                 </p>
                 {appliedPromo && (
@@ -146,9 +148,9 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
             <span className="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-bold text-emerald-800">
               {appliedPromo
                 ? appliedPromo.discountType === "PERCENTAGE"
-                  ? `Hemat ${appliedPromo.discountValue}%`
-                  : `Hemat Rp${appliedPromo.discountAmount.toLocaleString("id-ID")}`
-                : "Diskon Peluncuran"}
+                  ? t("savePercent", { value: appliedPromo.discountValue })
+                  : t("saveAmount", { amount: appliedPromo.discountAmount.toLocaleString("id-ID") })
+                : t("launchDiscount")}
             </span>
           </div>
         </div>
@@ -158,7 +160,7 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
           <div className="flex items-center justify-between">
             <label className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
               <TagIcon className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Punya Kode Voucher Promo?</span>
+              <span>{t("hasPromoCode")}</span>
             </label>
             {appliedPromo && (
               <button
@@ -166,7 +168,7 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
                 onClick={handleRemovePromo}
                 className="text-[11px] text-rose-600 hover:underline font-semibold cursor-pointer"
               >
-                Hapus Promo
+                {t("removePromo")}
               </button>
             )}
           </div>
@@ -177,7 +179,7 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
                 type="text"
                 value={inputCode}
                 onChange={(e) => setInputCode(e.target.value.toUpperCase())}
-                placeholder="MASUKKAN KODE VOUCHER"
+                placeholder={t("voucherPlaceholder")}
                 className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-mono font-bold tracking-wider uppercase placeholder:text-gray-400 focus:border-[#0f6b4f] focus:ring-1 focus:ring-[#0f6b4f]"
               />
               <button
@@ -189,7 +191,7 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
                 {validatingPromo ? (
                   <ArrowPathIcon className="w-3.5 h-3.5 animate-spin" />
                 ) : (
-                  "Terapkan"
+                  t("apply")
                 )}
               </button>
             </div>
@@ -202,7 +204,7 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
                     {appliedPromo.code}
                   </span>
                   <span className="text-[11px] text-emerald-700 ml-1.5">
-                    (Potongan Rp{appliedPromo.discountAmount.toLocaleString("id-ID")})
+                    ({t("discountCut", { amount: appliedPromo.discountAmount.toLocaleString("id-ID") })})
                   </span>
                 </div>
               </div>
@@ -225,12 +227,12 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
         {/* Feature List */}
         <ul className="space-y-2 text-xs text-gray-700">
           {[
-            "Pembuatan invoice & kuota pelanggan Unlimited",
-            "Ekspor PDF resmi tanpa watermark NotaKu",
-            "Kustomisasi Logo Bisnis, TTD Digital & Cap Stempel",
-            "Pilihan Template Premium (Classic, Modern, Minimal)",
-            "Kirim Pengingat Tagihan WhatsApp & Email Otomatis",
-            "Laporan rekap keuangan & ekspor data lengkap (CSV)",
+            t("feature1"),
+            t("feature2"),
+            t("feature3"),
+            t("feature4"),
+            t("feature5"),
+            t("feature6"),
           ].map((item, idx) => (
             <li key={idx} className="flex items-center gap-2 font-medium">
               <div className="w-4 h-4 rounded-full bg-emerald-100 text-[#0f6b4f] flex items-center justify-center shrink-0">
@@ -243,7 +245,9 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
 
         {/* Payment Methods Info */}
         <div className="text-[11px] text-gray-400 text-center border-t border-gray-100 pt-2.5">
-          Didukung pembayaran resmi via <strong>QRIS</strong>, <strong>Virtual Account</strong>, <strong>E-Wallet</strong>, dan <strong>Kartu Kredit</strong>.
+          {t.rich("supportedPayments", {
+            strong: (chunks) => <strong>{chunks}</strong>,
+          })}
         </div>
 
         {/* Actions */}
@@ -253,7 +257,7 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
             onClick={onClose}
             className="flex-1 rounded-xl px-4 py-2.5 text-xs font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
           >
-            Nanti Saja
+            {t("cancelBtn")}
           </button>
           <button
             type="button"
@@ -261,7 +265,7 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
             disabled={loading}
             className="flex-1 rounded-xl bg-[#0f6b4f] px-4 py-2.5 text-xs font-bold text-white hover:bg-[#0c5740] disabled:opacity-50 transition-colors cursor-pointer shadow-xs"
           >
-            {loading ? "Menyiapkan Pembayaran..." : `Bayar Rp${currentPrice.toLocaleString("id-ID")}`}
+            {loading ? t("preparingPayment") : t("payBtn", { price: currentPrice.toLocaleString("id-ID") })}
           </button>
         </div>
       </div>

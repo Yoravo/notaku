@@ -162,6 +162,9 @@
     "note": "Paket Free gratis selamanya • Tanpa kartu kredit • Batalkan kapan saja"
   },
   "common": {
+    "confirm": "Konfirmasi",
+    "cancel": "Batal",
+    "processing": "Memproses...",
     "status": {
       "paid": "Lunas",
       "sent": "Terkirim",
@@ -202,6 +205,7 @@
     "checkEmailDesc": "Kami sudah mengirim link verifikasi ke",
     "checkEmailAction": "Klik link di dalam email tersebut untuk mengaktifkan akun NotaKu Anda.",
     "backToLogin": "Kembali ke Halaman Masuk",
+    "backToHome": "Kembali ke Beranda",
     "verificationLinkSent": "Tautan verifikasi baru berhasil dikirim.",
     "resendVerification": "Kirim Ulang Email Verifikasi",
     "sending": "Mengirim...",
@@ -212,6 +216,7 @@
     "resetEmailSent": "Link reset kata sandi telah dikirim ke email Anda.",
     "resetPasswordTitle": "Buat Kata Sandi Baru",
     "resetPasswordSubtitle": "Masukkan kata sandi baru untuk akun NotaKu Anda.",
+    "resetPasswordLoading": "Memuat halaman reset kata sandi...",
     "newPassword": "Kata Sandi Baru",
     "confirmPassword": "Konfirmasi Kata Sandi Baru",
     "resetPasswordBtn": "Simpan Kata Sandi Baru",
@@ -283,6 +288,8 @@
     "unpaidAmount": "Belum Dibayar",
     "overdueAmount": "Jatuh Tempo",
     "recentInvoices": "Invoice Terbaru",
+    "recentInvoicesSubtitle": "{count} tagihan terakhir yang dibuat di akun Anda",
+    "recentInvoicesSubtitleEmpty": "Daftar tagihan transaksi Anda",
     "viewAll": "Lihat Semua",
     "emptyInvoicesTitle": "Belum ada invoice",
     "emptyInvoicesDesc": "Buat invoice pertama Anda dalam 30 detik dan kirim ke pelanggan.",
@@ -321,6 +328,7 @@
     "title": "Performa Pembayaran & Loyalitas Klien",
     "subtitle": "Analisis kecepatan pembayaran dan kontribusi omset pelanggan bisnis Anda",
     "dsoTitle": "Rata-rata Durasi Bayar (DSO)",
+    "dsoDays": "{count} hari",
     "dsoDesc": "Rata-rata jumlah hari yang dibutuhkan klien untuk melunasi tagihan sejak invoice terbit",
     "dsoHealthy": "Normal & Sehat",
     "dsoNoData": "Belum Ada Data",
@@ -732,7 +740,8 @@
     "verifyError": "Gagal melakukan verifikasi DNS.",
     "confirmRemove": "Apakah Anda yakin ingin menghapus custom domain ini?",
     "removeSuccess": "Custom domain berhasil dihapus.",
-    "removeError": "Gagal menghapus domain."
+    "removeError": "Gagal menghapus domain.",
+    "deleteDomain": "Hapus domain"
   },
   "developer": {
     "title": "Developer & API Keys",
@@ -1327,5 +1336,38 @@
     "setFree": "Set Free",
     "setPro": "Set Pro",
     "activeAccount": "Akun aktif"
+  },
+  "upgradeModal": {
+    "titlePrefix": "Upgrade ke",
+    "subtitle": "Buka seluruh potensi bisnis Anda tanpa batas",
+    "unlimitedAccess": "Akses Penuh Unlimited",
+    "per30Days": "/ 30 hari",
+    "launchDiscount": "Diskon Peluncuran",
+    "savePercent": "Hemat {value}%",
+    "saveAmount": "Hemat Rp{amount}",
+    "hasPromoCode": "Punya Kode Voucher Promo?",
+    "removePromo": "Hapus Promo",
+    "voucherPlaceholder": "MASUKKAN KODE VOUCHER",
+    "apply": "Terapkan",
+    "discountCut": "Potongan Rp{amount}",
+    "invalidVoucher": "Kode voucher tidak valid",
+    "failedCheckVoucher": "Gagal memeriksa voucher",
+    "failedPaymentLink": "Gagal membuat tautan pembayaran. Coba lagi.",
+    "connectionError": "Terjadi kesalahan koneksi. Silakan coba lagi.",
+    "feature1": "Pembuatan invoice & kuota pelanggan Unlimited",
+    "feature2": "Ekspor PDF resmi tanpa watermark NotaKu",
+    "feature3": "Kustomisasi Logo Bisnis, TTD Digital & Cap Stempel",
+    "feature4": "Pilihan Template Premium (Classic, Modern, Minimal)",
+    "feature5": "Kirim Pengingat Tagihan WhatsApp & Email Otomatis",
+    "feature6": "Laporan rekap keuangan & ekspor data lengkap (CSV)",
+    "supportedPayments": "Didukung pembayaran resmi via <strong>QRIS</strong>, <strong>Virtual Account</strong>, <strong>E-Wallet</strong>, dan <strong>Kartu Kredit</strong>.",
+    "cancelBtn": "Nanti Saja",
+    "preparingPayment": "Menyiapkan Pembayaran...",
+    "payBtn": "Bayar Rp{price}"
+  },
+  "notFound": {
+    "title": "Halaman tidak ditemukan",
+    "desc": "Halaman yang Anda cari tidak ada atau telah dipindahkan.",
+    "backToDashboard": "Kembali ke Dashboard"
   }
 }

@@ -244,7 +244,7 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
                 onClick={handleRemove}
                 disabled={isPending}
                 className="p-2.5 rounded-xl text-rose-600 hover:bg-rose-50 border border-slate-200 transition-colors cursor-pointer"
-                title="Hapus domain"
+                title={tDom("deleteDomain")}
               >
                 <TrashIcon className="w-5 h-5" />
               </button>

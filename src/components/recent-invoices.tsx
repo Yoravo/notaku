@@ -24,8 +24,8 @@ export function RecentInvoices({ invoices }: RecentInvoicesProps) {
           </h2>
           <p className="text-xs text-slate-500 hidden sm:block">
             {invoices.length > 0
-              ? `${invoices.length} tagihan terakhir yang dibuat di akun Anda`
-              : "Daftar tagihan transaksi Anda"}
+              ? tDash("recentInvoicesSubtitle", { count: invoices.length })
+              : tDash("recentInvoicesSubtitleEmpty")}
           </p>
         </div>
         <Link

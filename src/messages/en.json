@@ -162,6 +162,9 @@
     "note": "Free plan available forever • No credit card required • Cancel anytime"
   },
   "common": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "processing": "Processing...",
     "status": {
       "paid": "Paid",
       "sent": "Sent",
@@ -202,6 +205,7 @@
     "checkEmailDesc": "We have sent a verification link to",
     "checkEmailAction": "Click the link in the email to activate your NotaKu account.",
     "backToLogin": "Back to Login Page",
+    "backToHome": "Back to Home",
     "verificationLinkSent": "A new verification link has been sent.",
     "resendVerification": "Resend Verification Email",
     "sending": "Sending...",
@@ -212,6 +216,7 @@
     "resetEmailSent": "Password reset link has been sent to your email.",
     "resetPasswordTitle": "Create New Password",
     "resetPasswordSubtitle": "Enter a new password for your NotaKu account.",
+    "resetPasswordLoading": "Loading password reset page...",
     "newPassword": "New Password",
     "confirmPassword": "Confirm New Password",
     "resetPasswordBtn": "Save New Password",
@@ -283,6 +288,8 @@
     "unpaidAmount": "Unpaid Amount",
     "overdueAmount": "Overdue Amount",
     "recentInvoices": "Recent Invoices",
+    "recentInvoicesSubtitle": "Last {count} invoices created in your account",
+    "recentInvoicesSubtitleEmpty": "List of your transaction invoices",
     "viewAll": "View All",
     "emptyInvoicesTitle": "No invoices yet",
     "emptyInvoicesDesc": "Create your first invoice in 30 seconds and send it to your client.",
@@ -321,6 +328,7 @@
     "title": "Client Payment & Cash Performance",
     "subtitle": "Analyze settlement speed and revenue contribution across your client directory",
     "dsoTitle": "Payment Velocity (DSO)",
+    "dsoDays": "{count, plural, one {# day} other {# days}}",
     "dsoDesc": "Average number of days clients take to settle invoices since issuance date",
     "dsoHealthy": "Healthy",
     "dsoNoData": "No Data Yet",
@@ -732,7 +740,8 @@
     "verifyError": "Failed to verify DNS.",
     "confirmRemove": "Are you sure you want to remove this custom domain?",
     "removeSuccess": "Custom domain removed successfully.",
-    "removeError": "Failed to remove domain."
+    "removeError": "Failed to remove domain.",
+    "deleteDomain": "Delete domain"
   },
   "developer": {
     "title": "Developer & API Keys",
@@ -1327,5 +1336,38 @@
     "setFree": "Set Free",
     "setPro": "Set Pro",
     "activeAccount": "Active account"
+  },
+  "upgradeModal": {
+    "titlePrefix": "Upgrade to",
+    "subtitle": "Unlock your full business potential without limits",
+    "unlimitedAccess": "Full Unlimited Access",
+    "per30Days": "/ 30 days",
+    "launchDiscount": "Launch Discount",
+    "savePercent": "Save {value}%",
+    "saveAmount": "Save Rp{amount}",
+    "hasPromoCode": "Have a Promo Voucher Code?",
+    "removePromo": "Remove Promo",
+    "voucherPlaceholder": "ENTER VOUCHER CODE",
+    "apply": "Apply",
+    "discountCut": "Discount Rp{amount}",
+    "invalidVoucher": "Invalid voucher code",
+    "failedCheckVoucher": "Failed to check voucher",
+    "failedPaymentLink": "Failed to create payment link. Please try again.",
+    "connectionError": "Connection error. Please try again.",
+    "feature1": "Unlimited invoice creation & customer quota",
+    "feature2": "Official PDF export without NotaKu watermark",
+    "feature3": "Custom Business Logo, Digital Signature & Official Stamp",
+    "feature4": "Premium Template Selection (Classic, Modern, Minimal)",
+    "feature5": "Automated WhatsApp & Email Payment Reminders",
+    "feature6": "Financial summary report & complete data export (CSV)",
+    "supportedPayments": "Official payments supported via <strong>QRIS</strong>, <strong>Virtual Account</strong>, <strong>E-Wallet</strong>, and <strong>Credit Card</strong>.",
+    "cancelBtn": "Maybe Later",
+    "preparingPayment": "Preparing Payment...",
+    "payBtn": "Pay Rp{price}"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "desc": "The page you are looking for does not exist or has been moved.",
+    "backToDashboard": "Back to Dashboard"
   }
 }

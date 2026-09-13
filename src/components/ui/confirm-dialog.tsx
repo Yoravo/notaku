@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 import {
   ExclamationTriangleIcon,
   InformationCircleIcon,
@@ -39,13 +40,16 @@ export function ConfirmDialog({
   onConfirm,
   title,
   description,
-  confirmLabel = "Konfirmasi",
-  cancelLabel = "Batal",
+  confirmLabel,
+  cancelLabel,
   variant = "primary",
   isLoading = false,
   itemDetails,
   children,
 }: ConfirmDialogProps) {
+  const tCommon = useTranslations("common");
+  const finalConfirmLabel = confirmLabel ?? tCommon("confirm");
+  const finalCancelLabel = cancelLabel ?? tCommon("cancel");
   // Lock body scroll when open & handle ESC
   useEffect(() => {
     if (!isOpen) return;
@@ -176,7 +180,7 @@ export function ConfirmDialog({
             disabled={isLoading}
             className="w-full sm:w-auto rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-50 cursor-pointer text-center"
           >
-            {cancelLabel}
+            {finalCancelLabel}
           </button>
           <button
             type="button"
@@ -206,10 +210,10 @@ export function ConfirmDialog({
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
                 </svg>
-                <span>Memproses...</span>
+                <span>{tCommon("processing")}</span>
               </>
             ) : (
-              <span>{confirmLabel}</span>
+              <span>{finalConfirmLabel}</span>
             )}
           </button>
         </div>
