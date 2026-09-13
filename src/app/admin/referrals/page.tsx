@@ -8,11 +8,13 @@ import {
   BanknotesIcon,
   TrophyIcon,
 } from "@heroicons/react/24/outline";
+import { getTranslations } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminReferralsPage() {
   await requireAdmin();
+  const t = await getTranslations("admin.referralAdmin");
 
   const [totalRewards, allReferralsCount, proReferralsCount, topReferrers, recentRewards] =
     await Promise.all([
@@ -95,11 +97,11 @@ export default async function AdminReferralsPage() {
               <GiftIcon className="w-6 h-6" />
             </span>
             <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white">
-              Manajemen Program Afiliasi & Referral
+              {t("title")}
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-slate-400 mt-1 font-medium">
-            Pantau performa pendaftaran referral, konversi upgrade PRO, dan total pencairan komisi pengguna.
+            {t("subtitle")}
           </p>
         </div>
       </div>
@@ -110,7 +112,7 @@ export default async function AdminReferralsPage() {
         <div className="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-4 sm:p-5 shadow-xs">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              Total Komisi Diberikan
+              {t("totalCommissionsPaid")}
             </span>
             <span className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400">
               <BanknotesIcon className="w-4 h-4" />
@@ -120,7 +122,7 @@ export default async function AdminReferralsPage() {
             Rp {totalCommissionsPaid.toLocaleString("id-ID")}
           </p>
           <p className="text-[11px] text-slate-400 mt-1">
-            {totalRewards._count} transaksi reward sukses
+            {t("successfulRewardsCount", { count: totalRewards._count })}
           </p>
         </div>
 
@@ -128,7 +130,7 @@ export default async function AdminReferralsPage() {
         <div className="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-4 sm:p-5 shadow-xs">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              Pendaftar via Referral
+              {t("registeredViaReferral")}
             </span>
             <span className="p-2 rounded-xl bg-blue-500/10 text-blue-400">
               <UsersIcon className="w-4 h-4" />
@@ -138,7 +140,7 @@ export default async function AdminReferralsPage() {
             {allReferralsCount}
           </p>
           <p className="text-[11px] text-slate-400 mt-1">
-            User mendaftar dari link teman
+            {t("registeredFromLink")}
           </p>
         </div>
 
@@ -146,7 +148,7 @@ export default async function AdminReferralsPage() {
         <div className="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-4 sm:p-5 shadow-xs">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              Konversi Upgrade PRO
+              {t("proConversion")}
             </span>
             <span className="p-2 rounded-xl bg-purple-500/10 text-purple-400">
               <SparklesIcon className="w-4 h-4" />
@@ -156,7 +158,7 @@ export default async function AdminReferralsPage() {
             {proReferralsCount}
           </p>
           <p className="text-[11px] text-slate-400 mt-1">
-            Rate konversi: {conversionRate}%
+            {t("conversionRate", { rate: conversionRate })}
           </p>
         </div>
 
@@ -164,7 +166,7 @@ export default async function AdminReferralsPage() {
         <div className="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-4 sm:p-5 shadow-xs">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              Afiliator Aktif
+              {t("activeAffiliates")}
             </span>
             <span className="p-2 rounded-xl bg-amber-500/10 text-amber-400">
               <TrophyIcon className="w-4 h-4" />
@@ -174,7 +176,7 @@ export default async function AdminReferralsPage() {
             {sortedTopReferrers.length}
           </p>
           <p className="text-[11px] text-slate-400 mt-1">
-            User dengan pendaftar aktif
+            {t("usersWithReferrals")}
           </p>
         </div>
       </div>
@@ -185,24 +187,24 @@ export default async function AdminReferralsPage() {
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm sm:text-base font-extrabold text-white flex items-center gap-2">
               <TrophyIcon className="w-5 h-5 text-amber-400" />
-              <span>Top 10 Pengguna Afiliasi</span>
+              <span>{t("top10Title")}</span>
             </h3>
-            <span className="text-xs text-slate-400 font-medium">Berdasarkan komisi</span>
+            <span className="text-xs text-slate-400 font-medium">{t("byCommission")}</span>
           </div>
 
           {sortedTopReferrers.length === 0 ? (
             <div className="text-center py-10 text-slate-500 text-xs font-medium">
-              Belum ada data afiliator aktif.
+              {t("emptyAffiliates")}
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead className="text-[10px] uppercase tracking-wider text-slate-400 border-b border-slate-700">
                   <tr>
-                    <th className="pb-2.5">User</th>
-                    <th className="pb-2.5">Kode</th>
-                    <th className="pb-2.5 text-center">Teman</th>
-                    <th className="pb-2.5 text-right">Total Komisi</th>
+                    <th className="pb-2.5">{t("colUser")}</th>
+                    <th className="pb-2.5">{t("colCode")}</th>
+                    <th className="pb-2.5 text-center">{t("colFriends")}</th>
+                    <th className="pb-2.5 text-right">{t("colTotalCommission")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-700/50">
@@ -239,24 +241,24 @@ export default async function AdminReferralsPage() {
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm sm:text-base font-extrabold text-white flex items-center gap-2">
               <SparklesIcon className="w-5 h-5 text-purple-400" />
-              <span>Pemberian Bonus Terbaru</span>
+              <span>{t("recentRewardsTitle")}</span>
             </h3>
-            <span className="text-xs text-slate-400 font-medium">Real-time</span>
+            <span className="text-xs text-slate-400 font-medium">{t("realtime")}</span>
           </div>
 
           {recentRewards.length === 0 ? (
             <div className="text-center py-10 text-slate-500 text-xs font-medium">
-              Belum ada reward komisi yang tercatat.
+              {t("emptyRewards")}
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead className="text-[10px] uppercase tracking-wider text-slate-400 border-b border-slate-700">
                   <tr>
-                    <th className="pb-2.5">Penerima (Referrer)</th>
-                    <th className="pb-2.5">Keterangan</th>
-                    <th className="pb-2.5">Tanggal</th>
-                    <th className="pb-2.5 text-right">Nominal</th>
+                    <th className="pb-2.5">{t("colRecipient")}</th>
+                    <th className="pb-2.5">{t("colDesc")}</th>
+                    <th className="pb-2.5">{t("colDate")}</th>
+                    <th className="pb-2.5 text-right">{t("colAmount")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-700/50">
@@ -266,7 +268,7 @@ export default async function AdminReferralsPage() {
                         {rw.referrer.name}
                       </td>
                       <td className="py-2.5 text-slate-400 text-[11px]">
-                        {rw.notes || "Bonus Referral"}
+                        {rw.notes || t("bonusReferralFallback")}
                       </td>
                       <td className="py-2.5 text-slate-400 whitespace-nowrap text-[11px]">
                         {formatDateWIB(rw.createdAt)}

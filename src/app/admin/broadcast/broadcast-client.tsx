@@ -6,9 +6,6 @@ import {
   EyeIcon,
   CheckCircleIcon,
   ExclamationCircleIcon,
-  UsersIcon,
-  SparklesIcon,
-  ClockIcon,
   InboxStackIcon,
 } from "@heroicons/react/24/outline";
 import {
@@ -17,6 +14,7 @@ import {
   sendBroadcastEmail,
 } from "@/actions/broadcast";
 import { formatDateWIB } from "@/lib/invoice-utils";
+import { useTranslations } from "next-intl";
 
 interface BroadcastClientProps {
   estimates: {
@@ -28,11 +26,12 @@ interface BroadcastClientProps {
 }
 
 export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
+  const t = useTranslations("admin.broadcast");
   const [subject, setSubject] = useState("");
   const [badgeType, setBadgeType] = useState<"announcement" | "update" | "promo" | "security">("announcement");
-  const [badgeText, setBadgeText] = useState("Pengumuman Resmi");
+  const [badgeText, setBadgeText] = useState(t("badgeOfficial"));
   const [content, setContent] = useState("");
-  const [ctaText, setCtaText] = useState("Buka NotaKu");
+  const [ctaText, setCtaText] = useState(t("defaultCta"));
   const [ctaUrl, setCtaUrl] = useState("https://notaku.store");
   const [audience, setAudience] = useState<BroadcastAudience>("ALL");
   const [respectOptIn, setRespectOptIn] = useState(true);
@@ -47,16 +46,16 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!subject.trim() || !content.trim()) {
-      setFeedback({ type: "error", message: "Subjek dan konten email wajib diisi." });
+      setFeedback({ type: "error", message: t("validationRequired") });
       return;
     }
 
     if (currentAudienceCount === 0) {
-      setFeedback({ type: "error", message: "Tidak ada penerima untuk audiens yang dipilih." });
+      setFeedback({ type: "error", message: t("validationEmptyAudience") });
       return;
     }
 
-    const confirmMsg = `Konfirmasi pengiriman email broadcast ke ${currentAudienceCount} pengguna terdaftar (${audience})?`;
+    const confirmMsg = t("confirmSend", { count: currentAudienceCount, audience });
     if (!window.confirm(confirmMsg)) return;
 
     setIsPending(true);
@@ -76,7 +75,7 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
 
       setFeedback({
         type: "success",
-        message: `Berhasil mengirim email ke ${res.sentCount} pengguna! (Gagal: ${res.failedCount})`,
+        message: t("sendSuccess", { sent: res.sentCount, failed: res.failedCount }),
       });
 
       // Reset form
@@ -85,7 +84,7 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
     } catch (err: any) {
       setFeedback({
         type: "error",
-        message: err.message || "Gagal memproses pengiriman email broadcast.",
+        message: err.message || t("sendFailed"),
       });
     } finally {
       setIsPending(false);
@@ -118,27 +117,27 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
           {/* Audience Segment Selection */}
           <div>
             <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-              Target Audiens Penerima:
+              {t("targetAudience")}
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {[
                 {
                   id: "ALL" as const,
-                  label: "Semua User",
+                  label: t("allUsers"),
                   count: estimates.all,
-                  desc: "Seluruh pendaftar aktif",
+                  desc: t("allUsersDesc"),
                 },
                 {
                   id: "PRO_ONLY" as const,
-                  label: "Khusus PRO",
+                  label: t("proUsers"),
                   count: estimates.pro,
-                  desc: "Pelanggan berbayar aktif",
+                  desc: t("proUsersDesc"),
                 },
                 {
                   id: "FREE_ONLY" as const,
-                  label: "Khusus Free",
+                  label: t("freeUsers"),
                   count: estimates.free,
-                  desc: "Potensial upgrade PRO",
+                  desc: t("freeUsersDesc"),
                 },
               ].map((opt) => (
                 <button
@@ -154,7 +153,7 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-900">{opt.label}</span>
                     <span className="text-xs font-mono font-bold text-[#0f6b4f]">
-                      {opt.count} user
+                      {t("userCount", { count: opt.count })}
                     </span>
                   </div>
                   <p className="text-[11px] text-slate-500 mt-1">{opt.desc}</p>
@@ -170,7 +169,7 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
                 onChange={(e) => setRespectOptIn(e.target.checked)}
                 className="rounded text-[#0f6b4f] focus:ring-[#0f6b4f]"
               />
-              <span>Hanya kirim ke pengguna yang mengaktifkan opsi menerima email pengumuman</span>
+              <span>{t("respectOptIn")}</span>
             </label>
           </div>
 
@@ -178,36 +177,36 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-medium text-slate-700 mb-1.5">
-                Kategori Badge:
+                {t("badgeCategory")}
               </label>
               <select
                 value={badgeType}
                 onChange={(e) => {
                   const val = e.target.value as any;
                   setBadgeType(val);
-                  if (val === "announcement") setBadgeText("Pengumuman Resmi");
-                  if (val === "update") setBadgeText("Pembaruan Fitur");
-                  if (val === "promo") setBadgeText("Promo Spesial");
-                  if (val === "security") setBadgeText("Pemberitahuan Sistem");
+                  if (val === "announcement") setBadgeText(t("badgeOfficial"));
+                  if (val === "update") setBadgeText(t("badgeFeature"));
+                  if (val === "promo") setBadgeText(t("badgeSpecial"));
+                  if (val === "security") setBadgeText(t("badgeSystem"));
                 }}
                 className="w-full text-xs sm:text-sm rounded-xl border border-slate-300 px-3.5 py-2.5 bg-white focus:border-[#0f6b4f] focus:ring-1 focus:ring-[#0f6b4f]"
               >
-                <option value="announcement">Pengumuman Resmi (Hijau Emerald)</option>
-                <option value="update">Pembaruan Fitur (Biru)</option>
-                <option value="promo">Promo & Diskon (Kuning / Amber)</option>
-                <option value="security">Pemberitahuan Sistem (Slate)</option>
+                <option value="announcement">{t("badgeAnnouncement")}</option>
+                <option value="update">{t("badgeUpdate")}</option>
+                <option value="promo">{t("badgePromo")}</option>
+                <option value="security">{t("badgeSecurity")}</option>
               </select>
             </div>
 
             <div>
               <label className="block text-xs font-medium text-slate-700 mb-1.5">
-                Teks Badge (Label):
+                {t("badgeTextLabel")}
               </label>
               <input
                 type="text"
                 value={badgeText}
                 onChange={(e) => setBadgeText(e.target.value)}
-                placeholder="Misal: Update v2.5 / Promo Akhir Pekan"
+                placeholder={t("badgeTextPlaceholder")}
                 className="w-full text-xs sm:text-sm rounded-xl border border-slate-300 px-3.5 py-2.5 bg-white focus:border-[#0f6b4f] focus:ring-1 focus:ring-[#0f6b4f]"
               />
             </div>
@@ -216,14 +215,14 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
           {/* Subject */}
           <div>
             <label className="block text-xs font-medium text-slate-700 mb-1.5">
-              Subjek Email (Subject Line): <span className="text-red-500">*</span>
+              {t("subjectLabel")} <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               required
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              placeholder="Misal: 🎉 Fitur Baru: Bot Telegram & Integrasi Discord Kini Hadir di NotaKu!"
+              placeholder={t("subjectPlaceholder")}
               className="w-full text-xs sm:text-sm rounded-xl border border-slate-300 px-3.5 py-2.5 bg-white focus:border-[#0f6b4f] focus:ring-1 focus:ring-[#0f6b4f]"
             />
           </div>
@@ -231,18 +230,18 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
           {/* Content Body */}
           <div>
             <label className="block text-xs font-medium text-slate-700 mb-1.5">
-              Isi Pesan Email: <span className="text-red-500">*</span>
+              {t("contentLabel")} <span className="text-red-500">*</span>
             </label>
             <textarea
               required
               rows={7}
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder={`Halo Rekan Pengguna NotaKu,\n\nKami dengan bangga mengumumkan peluncuran fitur terbaru...\n\nGunakan kode promo DISKON50 untuk upgrade paket PRO!`}
+              placeholder={t("contentPlaceholder")}
               className="w-full text-xs sm:text-sm rounded-xl border border-slate-300 p-3.5 bg-white focus:border-[#0f6b4f] focus:ring-1 focus:ring-[#0f6b4f] leading-relaxed font-sans"
             />
             <p className="text-[11px] text-slate-400 mt-1">
-              Gunakan enter 2x untuk memisahkan paragraf baru.
+              {t("contentHint")}
             </p>
           </div>
 
@@ -250,20 +249,20 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-medium text-slate-700 mb-1.5">
-                Teks Tombol Aksi (CTA):
+                {t("ctaTextLabel")}
               </label>
               <input
                 type="text"
                 value={ctaText}
                 onChange={(e) => setCtaText(e.target.value)}
-                placeholder="Misal: Buka Dashboard / Coba Sekarang"
+                placeholder={t("ctaTextPlaceholder")}
                 className="w-full text-xs sm:text-sm rounded-xl border border-slate-300 px-3.5 py-2.5 bg-white focus:border-[#0f6b4f] focus:ring-1 focus:ring-[#0f6b4f]"
               />
             </div>
 
             <div>
               <label className="block text-xs font-medium text-slate-700 mb-1.5">
-                URL Tombol Aksi:
+                {t("ctaUrlLabel")}
               </label>
               <input
                 type="url"
@@ -283,7 +282,7 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
               className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 text-xs font-semibold hover:bg-slate-50 transition-colors cursor-pointer"
             >
               <EyeIcon className="w-4 h-4 text-slate-500" />
-              <span>{showPreview ? "Sembunyikan Pratinjau" : "Pratinjau Tampilan Email"}</span>
+              <span>{showPreview ? t("hidePreview") : t("showPreview")}</span>
             </button>
 
             <button
@@ -294,8 +293,8 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
               <PaperAirplaneIcon className="w-4 h-4" />
               <span>
                 {isPending
-                  ? "Mengirim via Resend..."
-                  : `Kirim Broadcast ke ${currentAudienceCount} User`}
+                  ? t("sending")
+                  : t("sendBtn", { count: currentAudienceCount })}
               </span>
             </button>
           </div>
@@ -305,7 +304,7 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
         {showPreview && (
           <div className="rounded-2xl border border-slate-200 bg-slate-100 p-4 sm:p-6 space-y-3">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-              Pratinjau Email HTML:
+              {t("htmlPreview")}
             </span>
             <div className="max-w-[540px] mx-auto bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-md">
               {/* Header */}
@@ -315,22 +314,22 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
                 </span>
                 <div className="mt-2">
                   <span className="inline-block px-3 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-[#0f6b4f]">
-                    {badgeText || "Pengumuman Resmi"}
+                    {badgeText || t("badgeOfficial")}
                   </span>
                 </div>
               </div>
               {/* Body */}
               <div className="p-6 space-y-4">
                 <h2 className="text-base font-bold text-slate-900 leading-snug">
-                  {subject || "Judul Subjek Email Anda..."}
+                  {subject || t("previewTitleFallback")}
                 </h2>
                 <div className="text-xs sm:text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">
-                  {content || "Isi konten pengumuman email Anda akan tampil rapi di sini..."}
+                  {content || t("previewContentFallback")}
                 </div>
                 {ctaUrl && (
                   <div className="text-center pt-3">
                     <span className="inline-block px-6 py-2.5 rounded-xl bg-[#0f6b4f] text-white text-xs font-bold shadow-xs">
-                      {ctaText || "Buka NotaKu"} →
+                      {ctaText || t("defaultCta")} →
                     </span>
                   </div>
                 )}
@@ -349,12 +348,12 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs space-y-4">
           <div className="flex items-center gap-2">
             <InboxStackIcon className="w-5 h-5 text-[#0f6b4f]" />
-            <h3 className="text-sm font-bold text-slate-900">Riwayat Email Terkirim</h3>
+            <h3 className="text-sm font-bold text-slate-900">{t("historyTitle")}</h3>
           </div>
 
           {history.length === 0 ? (
             <div className="p-6 text-center text-slate-400 text-xs">
-              Belum ada riwayat email broadcast yang dikirim.
+              {t("emptyHistory")}
             </div>
           ) : (
             <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1">
@@ -376,10 +375,10 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
                   </h4>
                   <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
                     <span>
-                      Target: <strong className="text-slate-700">{log.audience}</strong>
+                      {t("targetLabel")} <strong className="text-slate-700">{log.audience}</strong>
                     </span>
-                    <span className="font-semibold text-[#0f6b4f]">
-                      {log.recipientsCount} penerima
+                    <span className="text-emerald-600 font-medium">
+                      ✓ {log.recipientsCount}
                     </span>
                   </div>
                 </div>

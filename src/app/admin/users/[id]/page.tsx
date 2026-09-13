@@ -19,13 +19,17 @@ import {
   CheckBadgeIcon,
 } from "@heroicons/react/24/outline";
 import { UserRowActions } from "../user-row-actions";
+import { getTranslations } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminUserDetailPage(props: {
   params: Promise<{ id: string }>;
 }) {
-  const currentAdmin = await requireAdmin();
+  const [currentAdmin, tAdmin] = await Promise.all([
+    requireAdmin(),
+    getTranslations("admin.userDetail"),
+  ]);
   const { id } = await props.params;
 
   const targetUser = await prisma.user.findUnique({
@@ -87,14 +91,14 @@ export default async function AdminUserDetailPage(props: {
           <Link
             href="/admin/users"
             className="p-2.5 bg-white rounded-xl border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors shadow-2xs"
-            title="Kembali ke Manajemen User"
+            title={tAdmin("backToList")}
           >
             <ArrowLeftIcon className="w-5 h-5" />
           </Link>
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-                {targetUser.name || "Tanpa Nama"}
+                {targetUser.name || tAdmin("unnamed")}
               </h1>
               <span
                 className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
@@ -140,7 +144,7 @@ export default async function AdminUserDetailPage(props: {
         <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs">
           <div className="flex items-center justify-between">
             <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-              Total Invoices
+              {tAdmin("totalInvoices")}
             </p>
             <div className="p-2 rounded-xl bg-blue-50 text-blue-600 border border-blue-200/60">
               <DocumentTextIcon className="w-5 h-5" />
@@ -149,14 +153,14 @@ export default async function AdminUserDetailPage(props: {
           <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2 tabular-nums">
             {targetUser._count.invoices}
           </p>
-          <p className="text-[11px] text-slate-400 mt-1 font-medium">Dibuat sepanjang waktu</p>
+          <p className="text-[11px] text-slate-400 mt-1 font-medium">{tAdmin("createdAllTime")}</p>
         </div>
 
         {/* Total Paid Volume */}
         <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs">
           <div className="flex items-center justify-between">
             <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-              Volume Invoice Terbayar
+              {tAdmin("paidVolume")}
             </p>
             <div className="p-2 rounded-xl bg-emerald-50 text-[#0f6b4f] border border-emerald-200/60">
               <CheckBadgeIcon className="w-5 h-5" />
@@ -166,7 +170,7 @@ export default async function AdminUserDetailPage(props: {
             {formatCurrency(Number(totalPaidInvoices._sum.total || 0))}
           </p>
           <p className="text-[11px] text-slate-400 mt-1 font-medium">
-            Dari {totalPaidInvoices._count.id || 0} invoice PAID
+            {tAdmin("paidInvoicesCount", { count: totalPaidInvoices._count.id || 0 })}
           </p>
         </div>
 
@@ -174,7 +178,7 @@ export default async function AdminUserDetailPage(props: {
         <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs">
           <div className="flex items-center justify-between">
             <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-              Total Pelanggan
+              {tAdmin("totalCustomers")}
             </p>
             <div className="p-2 rounded-xl bg-purple-50 text-purple-600 border border-purple-200/60">
               <UsersIcon className="w-5 h-5" />
@@ -183,14 +187,14 @@ export default async function AdminUserDetailPage(props: {
           <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2 tabular-nums">
             {targetUser._count.customers}
           </p>
-          <p className="text-[11px] text-slate-400 mt-1 font-medium">Pelanggan tersimpan</p>
+          <p className="text-[11px] text-slate-400 mt-1 font-medium">{tAdmin("savedCustomers")}</p>
         </div>
 
         {/* Join Date */}
         <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs">
           <div className="flex items-center justify-between">
             <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-              Tanggal Bergabung
+              {tAdmin("joinDate")}
             </p>
             <div className="p-2 rounded-xl bg-slate-100 text-slate-600 border border-slate-200">
               <ClockIcon className="w-5 h-5" />
@@ -215,7 +219,7 @@ export default async function AdminUserDetailPage(props: {
         <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-2xs space-y-4">
           <h2 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
             <UserIcon className="w-4 h-4 text-slate-600" />
-            <span>Informasi Profil & Kontak</span>
+            <span>{tAdmin("profileInfo")}</span>
           </h2>
 
           <div className="space-y-3.5 text-xs sm:text-sm">
@@ -233,7 +237,7 @@ export default async function AdminUserDetailPage(props: {
                       : "bg-amber-50 text-amber-700 border border-amber-200/60"
                   }`}
                 >
-                  {targetUser.emailVerified ? "Email Terverifikasi" : "Belum Verifikasi"}
+                  {targetUser.emailVerified ? tAdmin("emailVerified") : tAdmin("notVerified")}
                 </span>
               </div>
             </div>
@@ -241,7 +245,7 @@ export default async function AdminUserDetailPage(props: {
             <div className="flex items-start gap-3">
               <BuildingOfficeIcon className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
               <div>
-                <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">Nama Bisnis</p>
+                <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">{tAdmin("businessName")}</p>
                 <p className="text-slate-800 font-semibold mt-0.5">
                   {targetUser.businessName || "-"}
                 </p>
@@ -251,7 +255,7 @@ export default async function AdminUserDetailPage(props: {
             <div className="flex items-start gap-3">
               <PhoneIcon className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
               <div>
-                <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">Nomor WhatsApp</p>
+                <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">{tAdmin("whatsappNumber")}</p>
                 <p className="font-mono text-slate-800 font-semibold mt-0.5">
                   {targetUser.phone || "-"}
                 </p>
@@ -261,7 +265,7 @@ export default async function AdminUserDetailPage(props: {
             <div className="flex items-start gap-3">
               <MapPinIcon className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
               <div>
-                <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">Alamat</p>
+                <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">{tAdmin("address")}</p>
                 <p className="text-slate-800 font-medium mt-0.5">
                   {targetUser.address || "-"}
                 </p>
@@ -275,25 +279,25 @@ export default async function AdminUserDetailPage(props: {
           <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
             <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
               <DocumentTextIcon className="w-4 h-4 text-slate-600" />
-              <span>Invoice Terkini Pengguna ({targetUser.invoices.length})</span>
+              <span>{tAdmin("recentInvoices", { count: targetUser.invoices.length })}</span>
             </h2>
-            <span className="text-xs text-slate-400 font-medium">Maks 10 terakhir</span>
+            <span className="text-xs text-slate-400 font-medium">{tAdmin("max10Recent")}</span>
           </div>
 
           <div className="flex-1 overflow-x-auto">
             {targetUser.invoices.length === 0 ? (
               <p className="p-8 text-center text-xs text-slate-400 font-medium">
-                Pengguna ini belum pernah membuat invoice.
+                {tAdmin("emptyInvoices")}
               </p>
             ) : (
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="border-b border-slate-100 bg-slate-50/80 text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-                    <th className="py-3 px-4">No. Invoice</th>
-                    <th className="py-3 px-4">Pelanggan</th>
-                    <th className="py-3 px-4">Status</th>
-                    <th className="py-3 px-4 text-right">Total</th>
-                    <th className="py-3 px-4 text-right">Aksi</th>
+                    <th className="py-3 px-4">{tAdmin("colInvoiceNumber")}</th>
+                    <th className="py-3 px-4">{tAdmin("colCustomer")}</th>
+                    <th className="py-3 px-4">{tAdmin("colStatus")}</th>
+                    <th className="py-3 px-4 text-right">{tAdmin("colTotal")}</th>
+                    <th className="py-3 px-4 text-right">{tAdmin("colAction")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -303,7 +307,7 @@ export default async function AdminUserDetailPage(props: {
                         {inv.number}
                       </td>
                       <td className="py-3 px-4 text-slate-600 font-medium">
-                        {inv.customer?.name || "Umum"}
+                        {inv.customer?.name || tAdmin("generalCustomer")}
                       </td>
                       <td className="py-3 px-4">
                         <span
@@ -330,7 +334,7 @@ export default async function AdminUserDetailPage(props: {
                           rel="noopener noreferrer"
                           className="text-xs text-[#0f6b4f] hover:underline font-bold"
                         >
-                          Lihat Publik &rarr;
+                          {tAdmin("viewPublic")}
                         </a>
                       </td>
                     </tr>
@@ -347,15 +351,15 @@ export default async function AdminUserDetailPage(props: {
         <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
           <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
             <ClockIcon className="w-4 h-4 text-slate-600" />
-            <span>Riwayat Aktivitas & Audit Akun Ini</span>
+            <span>{tAdmin("activityLogs")}</span>
           </h2>
-          <span className="text-xs text-slate-400 font-medium">10 aktivitas terakhir</span>
+          <span className="text-xs text-slate-400 font-medium">{tAdmin("last10Activities")}</span>
         </div>
 
         <div className="divide-y divide-slate-100">
           {userLogs.length === 0 ? (
             <p className="p-6 text-center text-xs text-slate-400 font-medium">
-              Belum ada catatan aktivitas tercatat untuk user ini.
+              {tAdmin("emptyLogs")}
             </p>
           ) : (
             userLogs.map((log) => (

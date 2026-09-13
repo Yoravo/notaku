@@ -1,3 +1,7 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+
 interface DailyTrafficPoint {
   dateKey: string;
   label: string;
@@ -6,6 +10,7 @@ interface DailyTrafficPoint {
 }
 
 export function TrafficBarChart({ data }: { data: DailyTrafficPoint[] }) {
+  const t = useTranslations("admin");
   const maxVal = Math.max(...data.map((d) => Math.max(d.views, d.uniques)), 1);
 
   return (
@@ -19,10 +24,10 @@ export function TrafficBarChart({ data }: { data: DailyTrafficPoint[] }) {
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded bg-emerald-500 inline-block" />
-            <span className="text-slate-600 font-medium">Pengunjung Unik</span>
+            <span className="text-slate-600 font-medium">{t("uniqueVisitors")}</span>
           </div>
         </div>
-        <span className="text-slate-400">14 Hari Terakhir</span>
+        <span className="text-slate-400">{t("last14Days")}</span>
       </div>
 
       {/* Chart Canvas */}
@@ -40,7 +45,7 @@ export function TrafficBarChart({ data }: { data: DailyTrafficPoint[] }) {
               <div className="absolute -top-12 z-20 hidden group-hover:flex flex-col items-center bg-slate-900 text-white text-[10px] py-1 px-2 rounded shadow-lg whitespace-nowrap pointer-events-none">
                 <span className="font-bold">{item.label}</span>
                 <span>
-                  {item.views} views · {item.uniques} unik
+                  {item.views} {t("views")} · {item.uniques} {t("uniques")}
                 </span>
                 <div className="w-1.5 h-1.5 bg-slate-900 rotate-45 -mb-1 mt-0.5" />
               </div>

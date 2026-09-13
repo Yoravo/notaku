@@ -14,6 +14,7 @@ import {
   BanknotesIcon,
   SparklesIcon,
 } from "@heroicons/react/24/outline";
+import { getTranslations } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
 
@@ -23,12 +24,12 @@ type SearchParams = Promise<{
   page?: string;
 }>;
 
-function getEventBadge(event: string) {
+function getEventBadge(event: string, tLogs: (key: any) => string) {
   if (event.startsWith("admin.user_plan")) {
     return (
       <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-[#0f6b4f] border border-emerald-200/60 shadow-2xs">
         <CheckCircleIcon className="w-3 h-3 text-[#0f6b4f]" />
-        Plan Upgrade
+        {tLogs("badgePlanUpgrade")}
       </span>
     );
   }
@@ -36,7 +37,7 @@ function getEventBadge(event: string) {
     return (
       <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200/60 shadow-2xs">
         <ShieldCheckIcon className="w-3 h-3 text-purple-600" />
-        Role Privilege
+        {tLogs("badgeRolePrivilege")}
       </span>
     );
   }
@@ -44,7 +45,7 @@ function getEventBadge(event: string) {
     return (
       <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200/60 shadow-2xs">
         <ExclamationTriangleIcon className="w-3 h-3 text-amber-600" />
-        Pengumuman
+        {tLogs("badgeAnnouncement")}
       </span>
     );
   }
@@ -52,7 +53,7 @@ function getEventBadge(event: string) {
     return (
       <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/60 shadow-2xs">
         <SparklesIcon className="w-3 h-3 text-indigo-600" />
-        Voucher Promo
+        {tLogs("badgePromo")}
       </span>
     );
   }
@@ -60,7 +61,7 @@ function getEventBadge(event: string) {
     return (
       <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200/60 shadow-2xs">
         <BanknotesIcon className="w-3 h-3 text-blue-600" />
-        Payment
+        {tLogs("badgePayment")}
       </span>
     );
   }
@@ -76,6 +77,7 @@ export default async function AdminLogsPage(props: {
 }) {
   await requireAdmin();
   const searchParams = await props.searchParams;
+  const tLogs = await getTranslations("admin.logs");
 
   const searchQuery = searchParams.q?.trim() || "";
   const eventFilter = searchParams.event?.trim() || "";
@@ -123,10 +125,10 @@ export default async function AdminLogsPage(props: {
             </div>
             <div>
               <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-                Audit Logs & Jejak Sistem
+                {tLogs("title")}
               </h1>
               <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-                Log jejak audit keamanan, perubahan paket PRO, role admin, dan aktivitas sistem.
+                {tLogs("subtitle")}
               </p>
             </div>
           </div>
@@ -139,7 +141,7 @@ export default async function AdminLogsPage(props: {
             className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all shadow-2xs w-full sm:w-auto cursor-pointer"
           >
             <ArrowDownTrayIcon className="w-4 h-4 text-slate-500" />
-            <span>Ekspor CSV</span>
+            <span>{tLogs("exportCsv")}</span>
           </a>
         </div>
       </div>
@@ -154,7 +156,7 @@ export default async function AdminLogsPage(props: {
               type="text"
               name="q"
               defaultValue={searchQuery}
-              placeholder="Cari event, IP address, atau User ID..."
+              placeholder={tLogs("searchPlaceholder")}
               className="w-full pl-9 pr-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] text-slate-900 placeholder:text-slate-400 bg-slate-50/50 focus:bg-white transition-colors"
             />
           </div>
@@ -166,7 +168,7 @@ export default async function AdminLogsPage(props: {
               defaultValue={eventFilter}
               className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] text-slate-800 bg-slate-50/50 focus:bg-white font-medium"
             >
-              <option value="">Semua Event ({totalLogs})</option>
+              <option value="">{tLogs("allEvents", { count: totalLogs })}</option>
               {distinctEvents.map((e) => (
                 <option key={e.event} value={e.event}>
                   {e.event} ({e._count.id})
@@ -182,15 +184,15 @@ export default async function AdminLogsPage(props: {
               className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2.5 bg-[#0f6b4f] hover:bg-[#0c553e] text-white text-xs sm:text-sm font-bold rounded-xl shadow-xs transition-all cursor-pointer active:scale-[0.98]"
             >
               <FunnelIcon className="w-4 h-4" />
-              <span>Filter</span>
+              <span>{tLogs("filterBtn")}</span>
             </button>
             {(searchQuery || eventFilter) && (
               <Link
                 href="/admin/logs"
                 className="px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs sm:text-sm font-bold rounded-xl transition-colors flex items-center justify-center shadow-2xs"
-                title="Reset Filter"
+                title={tLogs("resetFilterTitle")}
               >
-                Reset
+                {tLogs("resetFilter")}
               </Link>
             )}
           </div>
@@ -201,28 +203,28 @@ export default async function AdminLogsPage(props: {
       <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden flex flex-col">
         <div className="px-5 py-3.5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
           <p className="text-xs font-bold text-slate-700">
-            Menampilkan <span className="font-mono text-[#0f6b4f]">{logs.length}</span> dari <span className="font-mono">{totalLogs}</span> log
+            {tLogs("showingLogs", { shown: logs.length, total: totalLogs })}
           </p>
           <span className="text-xs font-mono text-slate-400 font-semibold">
-            Halaman {currentPage} dari {totalPages || 1}
+            {tLogs("pageIndicator", { current: currentPage, total: totalPages || 1 })}
           </span>
         </div>
 
         {logs.length === 0 ? (
           <div className="p-12 text-center">
             <ClipboardDocumentListIcon className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-            <p className="text-sm font-bold text-slate-700">Tidak ada log aktivitas ditemukan</p>
-            <p className="text-xs text-slate-400 mt-1">Coba gunakan filter atau kata kunci pencarian yang lain.</p>
+            <p className="text-sm font-bold text-slate-700">{tLogs("emptyLogs")}</p>
+            <p className="text-xs text-slate-400 mt-1">{tLogs("emptyLogsDesc")}</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse min-w-[700px]">
               <thead>
                 <tr className="border-b border-slate-100 bg-slate-50/80 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                  <th className="py-3.5 px-4">Waktu (WIB)</th>
-                  <th className="py-3.5 px-4">Event</th>
-                  <th className="py-3.5 px-4">Detail Aktivitas</th>
-                  <th className="py-3.5 px-4">IP Address</th>
+                  <th className="py-3.5 px-4">{tLogs("colTime")}</th>
+                  <th className="py-3.5 px-4">{tLogs("colEvent")}</th>
+                  <th className="py-3.5 px-4">{tLogs("colDetail")}</th>
+                  <th className="py-3.5 px-4">{tLogs("colIp")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -250,7 +252,7 @@ export default async function AdminLogsPage(props: {
 
                       <td className="py-3.5 px-4 whitespace-nowrap">
                         <div className="space-y-1">
-                          {getEventBadge(log.event)}
+                          {getEventBadge(log.event, tLogs)}
                           <p className="text-[10px] font-mono text-slate-400 mt-0.5">{log.event}</p>
                         </div>
                       </td>
@@ -268,7 +270,7 @@ export default async function AdminLogsPage(props: {
                             ))}
                           </div>
                         ) : (
-                          <span className="text-slate-400 text-xs italic font-medium">Tanpa payload detail</span>
+                          <span className="text-slate-400 text-xs italic font-medium">{tLogs("noPayload")}</span>
                         )}
                       </td>
 
@@ -296,11 +298,11 @@ export default async function AdminLogsPage(props: {
                   : "bg-white text-slate-700 hover:bg-slate-50"
               }`}
             >
-              &larr; Sebelumnya
+              &larr; {tLogs("prevPage")}
             </Link>
 
             <span className="text-xs font-bold text-slate-600">
-              Halaman <span className="font-mono text-[#0f6b4f]">{currentPage}</span> / {totalPages}
+              {tLogs("pageIndicator", { current: currentPage, total: totalPages })}
             </span>
 
             <Link
@@ -313,7 +315,7 @@ export default async function AdminLogsPage(props: {
                   : "bg-white text-slate-700 hover:bg-slate-50"
               }`}
             >
-              Berikutnya &rarr;
+              {tLogs("nextPage")} &rarr;
             </Link>
           </div>
         )}

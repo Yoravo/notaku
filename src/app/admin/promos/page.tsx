@@ -2,12 +2,16 @@ import { requireAdmin } from "@/lib/admin";
 import { getPromoCodes } from "@/actions/admin";
 import { TagIcon } from "@heroicons/react/24/outline";
 import { PromoManager } from "./promo-manager";
+import { getTranslations } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminPromosPage() {
   await requireAdmin();
-  const promos = await getPromoCodes();
+  const [promos, tAdmin] = await Promise.all([
+    getPromoCodes(),
+    getTranslations("admin"),
+  ]);
 
   return (
     <div className="space-y-6">
@@ -18,10 +22,10 @@ export default async function AdminPromosPage() {
         </div>
         <div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-            Manajemen Kode Voucher & Promo
+            {tAdmin("promoTitle")}
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-            Buat dan kelola kupon diskon untuk langganan paket Pro pengguna NotaKu via Mayar Checkout.
+            {tAdmin("promoSubtitle")}
           </p>
         </div>
       </div>

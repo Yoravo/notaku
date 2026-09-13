@@ -8,15 +8,15 @@ import {
   EnvelopeIcon,
   CheckCircleIcon,
   XCircleIcon,
-  ClockIcon,
   CircleStackIcon,
-  ShieldCheckIcon,
 } from "@heroicons/react/24/outline";
+import { getTranslations } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminSystemHealthPage() {
   await requireAdmin();
+  const t = await getTranslations("admin.system");
 
   // Test Database (PostgreSQL) Latency
   let dbStatus = { ok: false, latencyMs: 0, error: "" };
@@ -103,10 +103,10 @@ export default async function AdminSystemHealthPage() {
         </div>
         <div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-            System Health & Status Layanan
+            {t("title")}
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-            Monitoring konektivitas real-time, latensi microservices, dan kesehatan database platform.
+            {t("subtitle")}
           </p>
         </div>
       </div>
@@ -122,24 +122,24 @@ export default async function AdminSystemHealthPage() {
               </div>
               <div>
                 <h2 className="text-sm font-bold text-slate-900">PostgreSQL DB</h2>
-                <p className="text-[11px] text-slate-500 font-medium">Database Utama (Neon / PG)</p>
+                <p className="text-[11px] text-slate-500 font-medium">{t("primaryDb")}</p>
               </div>
             </div>
             {dbStatus.ok ? (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-[#0f6b4f] border border-emerald-200/60 shadow-2xs">
                 <CheckCircleIcon className="w-3 h-3" />
-                Operational
+                {t("operational")}
               </span>
             ) : (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200/60 shadow-2xs">
                 <XCircleIcon className="w-3 h-3" />
-                Degraded
+                {t("degraded")}
               </span>
             )}
           </div>
 
           <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-            <span className="text-slate-500 font-medium">Query Latency:</span>
+            <span className="text-slate-500 font-medium">{t("queryLatency")}</span>
             <span className="font-mono font-bold text-[#0f6b4f] tabular-nums bg-emerald-50/50 px-2 py-0.5 rounded-md border border-emerald-200/40">
               {dbStatus.latencyMs} ms
             </span>
@@ -155,25 +155,25 @@ export default async function AdminSystemHealthPage() {
               </div>
               <div>
                 <h2 className="text-sm font-bold text-slate-900">Upstash Redis</h2>
-                <p className="text-[11px] text-slate-500 font-medium">Rate Limiter & Cache</p>
+                <p className="text-[11px] text-slate-500 font-medium">{t("rateLimiter")}</p>
               </div>
             </div>
             {redisStatus.ok ? (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-[#0f6b4f] border border-emerald-200/60 shadow-2xs">
                 <CheckCircleIcon className="w-3 h-3" />
-                Operational
+                {t("operational")}
               </span>
             ) : (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200/60 shadow-2xs">
-                {redisStatus.isConfigured ? "Warning" : "Not Set"}
+                {redisStatus.isConfigured ? t("warning") : t("notSet")}
               </span>
             )}
           </div>
 
           <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-            <span className="text-slate-500 font-medium">Ping Latency:</span>
+            <span className="text-slate-500 font-medium">{t("pingLatency")}</span>
             <span className="font-mono font-bold text-slate-900 tabular-nums">
-              {redisStatus.ok ? `${redisStatus.latencyMs} ms` : "Fallback In-Memory"}
+              {redisStatus.ok ? `${redisStatus.latencyMs} ms` : t("fallbackMemory")}
             </span>
           </div>
         </div>
@@ -187,25 +187,25 @@ export default async function AdminSystemHealthPage() {
               </div>
               <div>
                 <h2 className="text-sm font-bold text-slate-900">Resend Email</h2>
-                <p className="text-[11px] text-slate-500 font-medium">Transactional Mail</p>
+                <p className="text-[11px] text-slate-500 font-medium">{t("transactionalMail")}</p>
               </div>
             </div>
             {resendConfigured ? (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-[#0f6b4f] border border-emerald-200/60 shadow-2xs">
                 <CheckCircleIcon className="w-3 h-3" />
-                Connected
+                {t("connected")}
               </span>
             ) : (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200 shadow-2xs">
-                Mock Mode
+                {t("mockMode")}
               </span>
             )}
           </div>
 
           <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-            <span className="text-slate-500 font-medium">Sender Address:</span>
+            <span className="text-slate-500 font-medium">{t("senderAddress")}</span>
             <span className="font-mono text-slate-700 font-semibold truncate max-w-[150px]">
-              {process.env.EMAIL_FROM || "Belum diset"}
+              {process.env.EMAIL_FROM || t("notConfigured")}
             </span>
           </div>
         </div>
@@ -214,85 +214,46 @@ export default async function AdminSystemHealthPage() {
       {/* Database Breakdown & Server Specs */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Table Records Capacity */}
-        <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden flex flex-col">
+        <div className="lg:col-span-12 bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden flex flex-col">
           <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
             <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
               <CircleStackIcon className="w-4 h-4 text-slate-600" />
-              <span>Kapasitas & Distribusi Baris Tabel</span>
+              <span>{t("tableCapacity")}</span>
             </h2>
             <span className="text-xs font-bold text-slate-700 font-mono bg-slate-100 px-2.5 py-0.5 rounded-lg border border-slate-200 shadow-2xs">
-              Total {totalRecords.toLocaleString("id-ID")} Baris
+              {t("totalRows", { count: totalRecords.toLocaleString("id-ID") })}
             </span>
           </div>
 
           <div className="divide-y divide-slate-100 text-xs sm:text-sm">
             <div className="p-3.5 px-4 flex items-center justify-between hover:bg-slate-50/80 transition-colors">
-              <span className="font-semibold text-slate-700">user (Tabel Pengguna)</span>
+              <span className="font-semibold text-slate-700">{t("tableUser")}</span>
               <span className="font-mono font-bold text-slate-900 tabular-nums">{userCount.toLocaleString("id-ID")}</span>
             </div>
             <div className="p-3.5 px-4 flex items-center justify-between hover:bg-slate-50/80 transition-colors">
-              <span className="font-semibold text-slate-700">Customer (Pelanggan)</span>
+              <span className="font-semibold text-slate-700">{t("tableCustomer")}</span>
               <span className="font-mono font-bold text-slate-900 tabular-nums">{customerCount.toLocaleString("id-ID")}</span>
             </div>
             <div className="p-3.5 px-4 flex items-center justify-between hover:bg-slate-50/80 transition-colors">
-              <span className="font-semibold text-slate-700">Invoice & Items</span>
+              <span className="font-semibold text-slate-700">{t("tableInvoice")}</span>
               <span className="font-mono font-bold text-slate-900 tabular-nums">
                 {(invoiceCount + itemCount).toLocaleString("id-ID")}{" "}
                 <span className="text-[11px] font-normal text-slate-400">
-                  ({invoiceCount} inv / {itemCount} item)
+                  {t("invItemsDetail", { invoices: invoiceCount, items: itemCount })}
                 </span>
               </span>
             </div>
             <div className="p-3.5 px-4 flex items-center justify-between hover:bg-slate-50/80 transition-colors">
-              <span className="font-semibold text-slate-700">page_view (Trafik Pengunjung)</span>
+              <span className="font-semibold text-slate-700">{t("tablePageView")}</span>
               <span className="font-mono font-bold text-slate-900 tabular-nums">{viewCount.toLocaleString("id-ID")}</span>
             </div>
             <div className="p-3.5 px-4 flex items-center justify-between hover:bg-slate-50/80 transition-colors">
-              <span className="font-semibold text-slate-700">audit_log (Catatan Aktivitas)</span>
+              <span className="font-semibold text-slate-700">{t("tableAuditLog")}</span>
               <span className="font-mono font-bold text-slate-900 tabular-nums">{logCount.toLocaleString("id-ID")}</span>
             </div>
             <div className="p-3.5 px-4 flex items-center justify-between hover:bg-slate-50/80 transition-colors">
-              <span className="font-semibold text-slate-700">session (Sesi Login Aktif)</span>
+              <span className="font-semibold text-slate-700">{t("tableSession")}</span>
               <span className="font-mono font-bold text-slate-900 tabular-nums">{sessionCount.toLocaleString("id-ID")}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Server Runtime Environment */}
-        <div className="lg:col-span-5 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-2xs space-y-4">
-          <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
-            <ClockIcon className="w-4 h-4 text-slate-600" />
-            <span>Environment & Runtime</span>
-          </h2>
-
-          <div className="space-y-3.5 text-xs sm:text-sm">
-            <div className="flex items-center justify-between">
-              <span className="text-slate-500 font-medium">Node.js Environment:</span>
-              <span className="font-mono font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200 text-xs">
-                {process.env.NODE_ENV || "development"}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-slate-500 font-medium">Application Framework:</span>
-              <span className="font-bold text-slate-800">Next.js 16 (App Router)</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-slate-500 font-medium">Auth Engine:</span>
-              <span className="font-bold text-slate-800">Better-Auth (Prisma PG)</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-slate-500 font-medium">Payment Gateway:</span>
-              <span className="font-bold text-[#0f6b4f] bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200/60 text-xs">
-                Mayar.id Official
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-slate-500 font-medium">PDF Engine:</span>
-              <span className="font-bold text-slate-800">@react-pdf/renderer</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-slate-500 font-medium">Timezone Acuan:</span>
-              <span className="font-mono font-bold text-slate-800">Asia/Jakarta (WIB)</span>
             </div>
           </div>
         </div>
