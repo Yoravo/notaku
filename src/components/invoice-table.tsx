@@ -2,22 +2,26 @@
 
 import Link from "next/link";
 import { SerializedInvoice } from "@/types/invoice";
-import { statusLabel, formatDateWIB } from "@/lib/invoice-utils";
-import { useLanguage } from "@/lib/i18n/context";
+import type { InvoiceStatus } from "@/generated/prisma/client";
+import { statusConfig, formatDateWIB } from "@/lib/invoice-utils";
+import { formatMoney } from "@/lib/currencies";
+import { useLocale, useTranslations } from "next-intl";
 
 interface InvoiceTableProps {
   invoices: SerializedInvoice[];
 }
 
 export function InvoiceTable({ invoices }: InvoiceTableProps) {
-  const { t } = useLanguage();
+  const locale = useLocale() as "id" | "en";
+  const tInv = useTranslations("invoices");
+  const tStatus = useTranslations("common.status");
 
-  const statusTextMap: Record<string, string> = {
-    DRAFT: t.invoices?.statusDraft || "Draft",
-    SENT: t.invoices?.statusSent || "Terkirim",
-    PAID: t.invoices?.statusPaid || "Lunas",
-    OVERDUE: t.invoices?.statusOverdue || "Lewat Tempo",
-    CANCELLED: t.invoices?.statusCancelled || "Dibatalkan",
+  const sellerStatusLabelMap: Record<InvoiceStatus, string> = {
+    DRAFT: tStatus("draft"),
+    SENT: tStatus("sent"),
+    PAID: tStatus("paid"),
+    OVERDUE: tStatus("overdue"),
+    CANCELLED: tStatus("cancelled"),
   };
 
   return (
@@ -25,26 +29,26 @@ export function InvoiceTable({ invoices }: InvoiceTableProps) {
       <thead className="border-b border-slate-200 bg-slate-50/80">
         <tr>
           <th className="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500">
-            {t.invoices?.invoiceNumber || "No. Invoice"}
+            {tInv("invoiceNumber")}
           </th>
           <th className="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500">
-            {t.invoices?.customer || "Pelanggan"}
+            {tInv("customer")}
           </th>
           <th className="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500">
-            {t.invoices?.issueDate || "Tanggal"}
+            {tInv("issueDate")}
           </th>
           <th className="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500">
-            {t.invoices?.status || "Status"}
+            {tInv("status")}
           </th>
           <th className="px-5 py-3.5 text-right text-xs font-bold uppercase tracking-wider text-slate-500">
-            {t.invoices?.total || "Total"}
+            {tInv("total")}
           </th>
         </tr>
       </thead>
       <tbody className="divide-y divide-slate-100 bg-white">
         {invoices.map((inv) => {
-          const s = statusLabel[inv.status] || statusLabel.DRAFT;
-          const displayStatus = statusTextMap[inv.status] || s.text;
+          const s = statusConfig[inv.status];
+          const displayStatus = sellerStatusLabelMap[inv.status];
 
           return (
             <tr
@@ -78,7 +82,7 @@ export function InvoiceTable({ invoices }: InvoiceTableProps) {
                 </span>
               </td>
               <td className="px-5 py-3.5 text-right font-bold text-slate-900 tabular-nums">
-                Rp{inv.total.toLocaleString("id-ID")}
+                {formatMoney(inv.total, inv.currency, locale)}
               </td>
             </tr>
           );

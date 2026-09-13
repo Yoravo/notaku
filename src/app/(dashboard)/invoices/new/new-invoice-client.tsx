@@ -3,7 +3,7 @@
 import { InvoiceForm } from "@/components/invoices/invoice-form";
 import { UpgradeButton } from "@/components/upgrade-button";
 import { SparklesIcon, DocumentPlusIcon } from "@heroicons/react/24/outline";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 
 type Customer = { id: string; name: string };
 
@@ -32,27 +32,22 @@ export function NewInvoiceClient({
   used,
   limit,
 }: NewInvoiceClientProps) {
-  const { t, locale } = useLanguage();
+  const tInv = useTranslations("invoices");
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
           <DocumentPlusIcon className="w-6 h-6 sm:w-7 sm:h-7 text-[#0f6b4f]" />
-          <span>
-            {isCloning
-              ? (locale === "id" ? "Duplikasi Invoice (Salin Data)" : "Duplicate Invoice (Copy Data)")
-              : t.invoices?.newInvoice || (locale === "id" ? "Buat Invoice Baru" : "Create New Invoice")}
-          </span>
+          <span>{isCloning ? tInv("cloneTitle") : tInv("createTitle")}</span>
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 mt-1">
           {isCloning
-            ? (locale === "id"
-                ? "Data produk, pelanggan, diskon, dan catatan telah disalin otomatis. Sesuaikan rincian jika diperlukan sebelum menyimpan."
-                : "Product items, client, discount, and notes have been copied. Adjust details if needed before saving.")
-            : locale === "id"
-            ? `Penggunaan kuota: ${used} dari ${limit === Infinity ? "Unlimited" : limit} invoice bulan ini.`
-            : `Monthly quota usage: ${used} of ${limit === Infinity ? "Unlimited" : limit} invoices.`}
+            ? tInv("cloneDesc")
+            : tInv("quotaUsage", {
+                used,
+                limit: limit === Infinity ? tInv("quotaUnlimited") : limit,
+              })}
         </p>
       </div>
 
@@ -60,16 +55,10 @@ export function NewInvoiceClient({
         <div className="rounded-2xl border border-amber-200 bg-amber-50/80 p-5 sm:p-6 shadow-2xs space-y-3">
           <div className="flex items-center gap-2 text-amber-900 font-bold text-sm sm:text-base">
             <SparklesIcon className="w-5 h-5 text-amber-600 shrink-0" />
-            <span>
-              {locale === "id"
-                ? "Batas Kuota Invoice Gratis Telah Tercapai"
-                : "Free Invoice Monthly Limit Reached"}
-            </span>
+            <span>{tInv("limitTitle")}</span>
           </div>
           <p className="text-xs sm:text-sm text-amber-800 leading-relaxed">
-            {locale === "id"
-              ? `Anda telah membuat ${used}/${limit} invoice gratis pada bulan ini. Tingkatkan ke paket NotaKu PRO untuk pembuatan invoice tanpa batas (unlimited), kustomisasi PDF tanpa watermark, dan fitur pembayaran digital otomatis.`
-              : `You have reached your limit of ${used}/${limit} free invoices this month. Upgrade to NotaKu PRO for unlimited invoices, watermark-free PDF exports, and automatic digital payment features.`}
+            {tInv("limitDesc", { used, limit })}
           </p>
           <div className="pt-2">
             <UpgradeButton className="inline-flex items-center gap-2 rounded-xl bg-[#0f6b4f] px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-xs hover:bg-[#0c5740] transition-all cursor-pointer active:scale-[0.98] min-h-[44px]" />

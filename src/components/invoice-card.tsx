@@ -2,26 +2,29 @@
 
 import Link from "next/link";
 import { SerializedInvoice } from "@/types/invoice";
-import { statusLabel, formatDateWIB } from "@/lib/invoice-utils";
-import { useLanguage } from "@/lib/i18n/context";
+import type { InvoiceStatus } from "@/generated/prisma/client";
+import { statusConfig, formatDateWIB } from "@/lib/invoice-utils";
+import { formatMoney } from "@/lib/currencies";
+import { useLocale, useTranslations } from "next-intl";
 
 interface InvoiceCardProps {
   invoice: SerializedInvoice;
 }
 
 export function InvoiceCard({ invoice }: InvoiceCardProps) {
-  const { locale, t } = useLanguage();
-  const s = statusLabel[invoice.status] || statusLabel.DRAFT;
+  const locale = useLocale() as "id" | "en";
+  const tStatus = useTranslations("common.status");
+  const s = statusConfig[invoice.status];
 
-  const statusTextMap: Record<string, string> = {
-    DRAFT: t.invoices?.statusDraft || "Draft",
-    SENT: t.invoices?.statusSent || "Terkirim",
-    PAID: t.invoices?.statusPaid || "Lunas",
-    OVERDUE: t.invoices?.statusOverdue || "Lewat Tempo",
-    CANCELLED: t.invoices?.statusCancelled || "Dibatalkan",
+  const sellerStatusLabelMap: Record<InvoiceStatus, string> = {
+    DRAFT: tStatus("draft"),
+    SENT: tStatus("sent"),
+    PAID: tStatus("paid"),
+    OVERDUE: tStatus("overdue"),
+    CANCELLED: tStatus("cancelled"),
   };
 
-  const displayStatus = statusTextMap[invoice.status] || s.text;
+  const displayStatus = sellerStatusLabelMap[invoice.status];
 
   return (
     <Link href={`/invoices/${invoice.id}`} className="block group">
@@ -47,7 +50,7 @@ export function InvoiceCard({ invoice }: InvoiceCardProps) {
 
           <div className="text-right shrink-0">
             <p className="font-bold text-slate-900 text-sm tabular-nums">
-              Rp{invoice.total.toLocaleString("id-ID")}
+              {formatMoney(invoice.total, invoice.currency, locale)}
             </p>
             <span
               className={`mt-1.5 inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${s.className}`}

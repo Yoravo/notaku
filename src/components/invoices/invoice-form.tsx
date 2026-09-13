@@ -10,7 +10,7 @@ import {
   calculateInvoiceTotals,
   DiscountType,
 } from "@/lib/invoice-calculations";
-import { useLanguage } from "@/lib/i18n/context";
+import { useLocale, useTranslations } from "next-intl";
 import {
   CURRENCY_MAP,
   SUPPORTED_CURRENCIES,
@@ -54,7 +54,8 @@ export function InvoiceForm({
   userBankAccountNumber?: string | null;
   userBankAccountName?: string | null;
 }) {
-  const { t, locale } = useLanguage();
+  const locale = useLocale() as "id" | "en";
+  const tInv = useTranslations("invoices");
   const isEdit = !!invoice && !isCloneMode;
 
   const [customerId, setCustomerId] = useState(
@@ -144,18 +145,10 @@ export function InvoiceForm({
     setError(null);
 
     if (!customerId) {
-      return setError(
-        locale === "id"
-          ? "Pilih pelanggan terlebih dahulu"
-          : "Please select a client first"
-      );
+      return setError(tInv("validationCustomer"));
     }
     if (items.some((i) => !i.description || i.price <= 0)) {
-      return setError(
-        locale === "id"
-          ? "Lengkapi semua deskripsi dan harga item (minimal 1)"
-          : "Complete all item descriptions and unit prices (min. 1)"
-      );
+      return setError(tInv("validationItems"));
     }
 
     setLoading(true);
@@ -189,19 +182,17 @@ export function InvoiceForm({
       const message =
         err instanceof Error
           ? err.message
-          : locale === "id"
-          ? "Terjadi kesalahan saat menyimpan invoice"
-          : "An error occurred while saving the invoice";
+          : tInv("saveError");
       setError(message);
       setLoading(false);
     }
   };
 
   const taxPresets = [
-    { label: t.invoices?.taxPresetNone || (locale === "id" ? "Tanpa Pajak (0%)" : "No Tax (0%)"), value: 0 },
+    { label: tInv("taxPresetNone"), value: 0 },
     { label: "PPN 11%", value: 11 },
     { label: "PPN 12%", value: 12 },
-    { label: t.invoices?.taxPresetCustom || (locale === "id" ? "Kustom %" : "Custom %"), value: "custom" },
+    { label: tInv("taxPresetCustom"), value: "custom" },
   ] as const;
 
   return (
@@ -209,12 +200,12 @@ export function InvoiceForm({
       {/* Customer & Due Date Card */}
       <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs">
         <h2 className="text-sm font-bold text-slate-900 mb-4">
-          {locale === "id" ? "Informasi Pelanggan & Batas Pembayaran" : "Client & Payment Schedule"}
+          {tInv("customerPaymentInfo")}
         </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div>
             <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-              {t.invoices?.customer || (locale === "id" ? "Pelanggan" : "Client")}{" "}
+              {tInv("customer")}{" "}
               <span className="text-rose-500">*</span>
             </label>
             <div className="flex gap-2">
@@ -223,9 +214,7 @@ export function InvoiceForm({
                 onChange={(e) => setCustomerId(e.target.value)}
                 className="flex-1 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-medium"
               >
-                <option value="">
-                  {t.invoices?.selectCustomer || (locale === "id" ? "Pilih pelanggan..." : "Select client...")}
-                </option>
+                <option value="">{tInv("selectCustomer")}</option>
                 {customers.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
@@ -238,14 +227,12 @@ export function InvoiceForm({
                 className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer whitespace-nowrap shadow-2xs"
               >
                 <PlusIcon className="h-4 w-4 text-[#0f6b4f]" />
-                <span>{locale === "id" ? "Baru" : "New"}</span>
+                <span>{tInv("newCustomer")}</span>
               </button>
             </div>
             {customers.length === 0 && (
               <p className="mt-2 text-xs text-amber-700 font-medium">
-                {locale === "id"
-                  ? "Belum ada pelanggan. Klik + Baru untuk menambahkan."
-                  : "No clients found. Click + New to add one."}
+                {tInv("noCustomers")}
               </p>
             )}
             {showCustomerModal && (
@@ -261,8 +248,8 @@ export function InvoiceForm({
 
           <div>
             <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-              {t.invoices?.dueDate || (locale === "id" ? "Jatuh Tempo" : "Due Date")}{" "}
-              <span className="text-slate-400 font-normal">({t.invoices?.optional || (locale === "id" ? "Opsional" : "Optional")})</span>
+              {tInv("dueDate")}{" "}
+              <span className="text-slate-400 font-normal">({tInv("optional")})</span>
             </label>
             <input
               type="date"
@@ -274,7 +261,7 @@ export function InvoiceForm({
 
           <div>
             <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-              {locale === "id" ? "Mata Uang" : "Currency"}
+              {tInv("currency")}
             </label>
             <select
               value={currency}
@@ -295,10 +282,10 @@ export function InvoiceForm({
       <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-bold text-slate-900">
-            {t.invoices?.itemsTitle || (locale === "id" ? "Daftar Item / Jasa" : "Line Items & Services")}
+            {tInv("itemsTitle")}
           </h2>
           <span className="text-xs text-slate-500 font-semibold">
-            {items.length} {locale === "id" ? "item" : "items"}
+            {tInv("itemCount", { count: items.length })}
           </span>
         </div>
 
@@ -311,7 +298,7 @@ export function InvoiceForm({
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-slate-500">
-                  {locale === "id" ? `Item #${index + 1}` : `Line #${index + 1}`}
+                  {tInv("itemIndex", { number: index + 1 })}
                 </span>
                 {items.length > 1 && (
                   <button
@@ -320,12 +307,12 @@ export function InvoiceForm({
                     className="text-xs text-rose-600 hover:text-rose-700 font-semibold cursor-pointer inline-flex items-center gap-1 min-h-[36px] px-2"
                   >
                     <TrashIcon className="w-3.5 h-3.5" />
-                    <span>{locale === "id" ? "Hapus" : "Delete"}</span>
+                    <span>{tInv("delete")}</span>
                   </button>
                 )}
               </div>
               <input
-                placeholder={t.invoices?.itemName || (locale === "id" ? "Deskripsi barang atau jasa" : "Item or service description")}
+                placeholder={tInv("itemPlaceholder")}
                 value={item.description}
                 onChange={(e) =>
                   updateItem(index, "description", e.target.value)
@@ -335,7 +322,7 @@ export function InvoiceForm({
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="block text-[11px] font-bold text-slate-500 mb-1">
-                    {t.invoices?.quantity || (locale === "id" ? "Jumlah (Qty)" : "Quantity")}
+                    {tInv("quantityLabel")}
                   </label>
                   <input
                     type="number"
@@ -354,7 +341,7 @@ export function InvoiceForm({
                 </div>
                 <div>
                   <label className="block text-[11px] font-bold text-slate-500 mb-1">
-                    {t.invoices?.price || (locale === "id" ? `Harga Satuan (${currConf.symbol})` : `Unit Price (${currConf.symbol})`)}
+                    {tInv("unitPrice", { symbol: currConf.symbol })}
                   </label>
                   <input
                     type="number"
@@ -374,9 +361,9 @@ export function InvoiceForm({
                 </div>
               </div>
               <div className="text-right pt-2 border-t border-slate-200 flex items-center justify-between text-xs">
-                <span className="text-slate-500 font-medium">Subtotal:</span>
+                <span className="text-slate-500 font-medium">{tInv("subtotal")}:</span>
                 <span className="font-bold text-slate-900 tabular-nums">
-                  {formatMoney(item.quantity * item.price, currency)}
+                  {formatMoney(item.quantity * item.price, currency, locale)}
                 </span>
               </div>
             </div>
@@ -386,18 +373,18 @@ export function InvoiceForm({
         {/* Desktop Items Layout */}
         <div className="hidden md:block space-y-3">
           <div className="grid grid-cols-12 gap-3 text-xs font-bold text-slate-500 uppercase tracking-wider px-1">
-            <div className="col-span-5">{t.invoices?.itemName || (locale === "id" ? "Deskripsi" : "Description")}</div>
-            <div className="col-span-2 text-center">{t.invoices?.quantity || "Qty"}</div>
-            <div className="col-span-2 text-right">{t.invoices?.price || `Harga (${currConf.symbol})`}</div>
-            <div className="col-span-2 text-right">{t.invoices?.amount || "Jumlah"}</div>
-            <div className="col-span-1 text-center">{t.invoices?.actions || "Aksi"}</div>
+            <div className="col-span-5">{tInv("itemName")}</div>
+            <div className="col-span-2 text-center">{tInv("quantity")}</div>
+            <div className="col-span-2 text-right">{tInv("unitPrice", { symbol: currConf.symbol })}</div>
+            <div className="col-span-2 text-right">{tInv("amount")}</div>
+            <div className="col-span-1 text-center">{tInv("actions")}</div>
           </div>
 
           {items.map((item, index) => (
             <div key={index} className="grid grid-cols-12 gap-3 items-center">
               <div className="col-span-5">
                 <input
-                  placeholder={t.invoices?.itemName || (locale === "id" ? "Deskripsi barang atau jasa" : "Item or service description")}
+                  placeholder={tInv("itemPlaceholder")}
                   value={item.description}
                   onChange={(e) =>
                     updateItem(index, "description", e.target.value)
@@ -439,7 +426,7 @@ export function InvoiceForm({
                 />
               </div>
               <div className="col-span-2 text-right font-bold text-sm text-slate-900 tabular-nums">
-                {formatMoney(item.quantity * item.price, currency)}
+                {formatMoney(item.quantity * item.price, currency, locale)}
               </div>
               <div className="col-span-1 text-center">
                 <button
@@ -447,7 +434,7 @@ export function InvoiceForm({
                   onClick={() => removeItem(index)}
                   disabled={items.length === 1}
                   className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer disabled:opacity-20 disabled:cursor-not-allowed"
-                  title={locale === "id" ? "Hapus baris item" : "Remove item"}
+                  title={tInv("removeItem")}
                 >
                   <TrashIcon className="h-4 w-4" />
                 </button>
@@ -462,21 +449,21 @@ export function InvoiceForm({
           className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-[#0f6b4f] hover:text-[#0c553e] transition-colors cursor-pointer bg-emerald-50 hover:bg-emerald-100/70 px-3.5 py-2 rounded-xl border border-emerald-200 shadow-2xs active:scale-[0.98]"
         >
           <PlusIcon className="h-4 w-4" />
-          <span>{t.invoices?.addItem || (locale === "id" ? "Tambah Baris Item" : "Add Line Item")}</span>
+          <span>{tInv("addItem")}</span>
         </button>
       </div>
 
       {/* Diskon & Pajak (PPN) Card */}
       <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs space-y-6">
         <h2 className="text-sm font-bold text-slate-900">
-          {locale === "id" ? "Pengaturan Diskon & Pajak (PPN)" : "Discount & Tax Settings"}
+          {tInv("discountTaxSettings")}
         </h2>
 
         {/* Section Diskon */}
         <div className="space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-              {t.invoices?.discount || (locale === "id" ? "Diskon" : "Discount")}
+              {tInv("discount")}
             </label>
             {/* Toggle Tipe Diskon */}
             <div className="inline-flex rounded-xl border border-slate-200 bg-slate-50 p-1 self-start sm:self-auto">
@@ -489,7 +476,7 @@ export function InvoiceForm({
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                {t.invoices?.discountTypeFixed || `${currConf.symbol} (Nominal)`}
+                {tInv("discountTypeFixed", { symbol: currConf.symbol })}
               </button>
               <button
                 type="button"
@@ -500,7 +487,7 @@ export function InvoiceForm({
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                {t.invoices?.discountTypePercent || "% (Persen)"}
+                {tInv("discountTypePercent")}
               </button>
             </div>
           </div>
@@ -522,7 +509,7 @@ export function InvoiceForm({
                   onChange={(e) =>
                     setDiscountValue(Math.max(0, parseFloat(e.target.value) || 0))
                   }
-                  placeholder={discountType === "FIXED" ? "0" : (locale === "id" ? "Contoh: 10" : "e.g. 10")}
+                  placeholder={discountType === "FIXED" ? "0" : tInv("percentageExample")}
                   className={`w-full rounded-xl border border-slate-200 bg-white py-2.5 text-xs sm:text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] tabular-nums font-medium ${
                     discountType === "FIXED" ? "pl-10 pr-3.5" : "px-3.5"
                   }`}
@@ -560,7 +547,7 @@ export function InvoiceForm({
         {/* Section Pajak (PPN) */}
         <div className="space-y-3 pt-4 border-t border-slate-100">
           <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-            {t.invoices?.taxVat || (locale === "id" ? "Pajak Pertambahan Nilai (PPN)" : "Value Added Tax (VAT)")}
+            {tInv("taxVatFull")}
           </label>
 
           <div className="flex flex-wrap gap-2">
@@ -583,7 +570,7 @@ export function InvoiceForm({
           {selectedTaxMode === "custom" && (
             <div className="max-w-xs pt-1">
               <label className="block text-[11px] font-bold text-slate-500 mb-1">
-                {locale === "id" ? "Tarif Pajak Kustom (%)" : "Custom Tax Rate (%)"}
+                {tInv("customTaxRate")}
               </label>
               <div className="relative">
                 <input
@@ -597,7 +584,7 @@ export function InvoiceForm({
                       Math.min(100, Math.max(0, parseFloat(e.target.value) || 0)),
                     )
                   }
-                  placeholder={locale === "id" ? "Contoh: 10 atau 2.5" : "e.g. 10 or 2.5"}
+                  placeholder={tInv("taxRateExample")}
                   className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 pr-8 text-xs sm:text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] font-medium"
                 />
                 <span className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-xs font-bold text-slate-400 pointer-events-none">
@@ -609,11 +596,11 @@ export function InvoiceForm({
 
           {activeTaxRate > 0 && (
             <p className="text-xs text-slate-600 font-medium">
-              {locale === "id" ? "Pajak dihitung dari" : "Tax calculated from"}{" "}
-              <strong>{t.invoices?.taxableBase || "DPP"}</strong> ={" "}
-              <span>{formatMoney(totals.taxableBase, currency)}</span>:{" "}
+              {tInv("taxCalculatedFrom")}{" "}
+              <strong>{tInv("taxableBase")}</strong> ={" "}
+              <span>{formatMoney(totals.taxableBase, currency, locale)}</span>:{" "}
               <strong className="text-slate-900">
-                +{formatMoney(totals.taxAmount, currency)}
+                +{formatMoney(totals.taxAmount, currency, locale)}
               </strong>
             </p>
           )}
@@ -624,12 +611,10 @@ export function InvoiceForm({
       <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs space-y-4">
         <div>
           <h2 className="text-sm font-bold text-slate-900">
-            {t.invoices?.paymentMethodsTitle || (locale === "id" ? "Metode Pembayaran untuk Pelanggan" : "Payment Methods for Clients")}
+            {tInv("paymentMethodsForCustomer")}
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
-            {locale === "id"
-              ? "Pilih opsi pembayaran yang akan ditampilkan pada halaman invoice publik."
-              : "Choose payment options displayed on the public invoice page."}
+            {tInv("paymentMethodsDesc")}
           </p>
         </div>
 
@@ -644,24 +629,24 @@ export function InvoiceForm({
             />
             <div className="space-y-0.5">
               <span className="text-xs font-bold text-slate-900">
-                {t.invoices?.directTransferTitle || (locale === "id" ? "Transfer Rekening Bank / E-Wallet Langsung (Direct Transfer)" : "Direct Bank Transfer")}
+                {tInv("directTransferFormTitle")}
               </span>
               <p className="text-xs text-slate-500">
                 {userBankName && userBankAccountNumber ? (
-                  <>
-                    {locale === "id" ? "Ditransfer langsung ke" : "Transferred directly to"}{" "}
-                    <strong>{userBankName}</strong> ({userBankAccountNumber} {locale === "id" ? "a/n" : "a.n."} {userBankAccountName}). {locale === "id" ? "Anda mengonfirmasi lunas secara manual." : "You confirm settlement manually."}
-                  </>
+                  tInv.rich("directTransferConfigured", {
+                    bank: userBankName,
+                    number: userBankAccountNumber,
+                    holder: userBankAccountName || "",
+                    b: (chunks) => <strong>{chunks}</strong>,
+                  })
                 ) : (
-                  <>
-                    {locale === "id"
-                      ? "Tampilkan nomor rekening Anda pada invoice. (Anda belum mendaftarkan rekening di "
-                      : "Display bank account on invoice. (You haven't configured a bank account in "}
-                    <Link href="/settings" className="text-[#0f6b4f] underline font-bold">
-                      {t.dashboard?.settings || "Settings"}
-                    </Link>
-                    ).
-                  </>
+                  tInv.rich("directTransferMissing", {
+                    settings: (chunks) => (
+                      <Link href="/settings" className="text-[#0f6b4f] underline font-bold">
+                        {chunks}
+                      </Link>
+                    ),
+                  })
                 )}
               </p>
             </div>
@@ -678,17 +663,14 @@ export function InvoiceForm({
             <div className="space-y-0.5">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-slate-900">
-                  {t.invoices?.digitalPaymentTitle || (locale === "id" ? "Pembayaran Digital Instan (QRIS & Virtual Account via NotaKu)" : "Instant Digital Payment (QRIS & VA)")}
+                  {tInv("digitalPaymentFormTitle")}
                 </span>
                 <span className="rounded-md bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-[#0f6b4f]">
-                  {locale === "id" ? "Otomatis Lunas" : "Auto Settled"}
+                  {tInv("autoSettled")}
                 </span>
               </div>
               <p className="text-xs text-slate-600">
-                {t.invoices?.digitalPaymentDesc ||
-                  (locale === "id"
-                    ? "Pelanggan scan QRIS atau bayar Virtual Account secara instan. Dana masuk ke Saldo NotaKu Anda dan invoice otomatis berstatus Lunas (MDR 0.7% dipotong saat settlement)."
-                    : "Client scans QRIS or pays via Virtual Account instantly. Funds go to your NotaKu Wallet and the invoice is automatically settled (0.7% MDR applies).")}
+                {tInv("digitalPaymentFormDesc")}
               </p>
             </div>
           </label>
@@ -704,17 +686,14 @@ export function InvoiceForm({
             <div className="space-y-0.5">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-slate-900">
-                  {t.invoices?.automatedReminderTitle || (locale === "id" ? "Pengingat Pembayaran Otomatis (Email)" : "Automated Payment Reminders (Email)")}
+                  {tInv("automatedReminderTitle")}
                 </span>
                 <span className="rounded-md bg-slate-200/80 px-2 py-0.5 text-[10px] font-bold text-slate-700">
-                  {locale === "id" ? "H-3, Hari H, H+3" : "D-3, Due Date, D+3"}
+                  {tInv("reminderSchedule")}
                 </span>
               </div>
               <p className="text-xs text-slate-500">
-                {t.invoices?.automatedReminderDesc ||
-                  (locale === "id"
-                    ? "Kirim email pengingat ramah secara otomatis ke pelanggan pada H-3, hari H jatuh tempo, dan H+3 jika belum lunas."
-                    : "Automatically send gentle reminder emails to clients at D-3, due date, and D+3 if unpaid.")}
+                {tInv("automatedReminderOptionDesc")}
               </p>
             </div>
           </label>
@@ -724,13 +703,13 @@ export function InvoiceForm({
       {/* Notes Card */}
       <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs">
         <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-          {t.invoices?.notes || (locale === "id" ? "Catatan Tambahan (Opsional)" : "Additional Notes (Optional)")}
+          {tInv("additionalNotes")}
         </label>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           rows={2}
-          placeholder={t.invoices?.notesPlaceholder || (locale === "id" ? "Contoh: Pembayaran dapat ditransfer ke rekening BCA 123456789 a/n Nama Bisnis" : "e.g. Payment due within 14 days of issue.")}
+          placeholder={tInv("notesPlaceholder")}
           className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] resize-none shadow-2xs"
         />
       </div>
@@ -749,31 +728,31 @@ export function InvoiceForm({
       <div className="hidden md:block rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs">
         <div className="space-y-2 border-b border-slate-100 pb-4 text-sm">
           <div className="flex justify-between text-slate-600">
-            <span className="font-medium">{t.invoices?.subtotal || "Subtotal"}</span>
+            <span className="font-medium">{tInv("subtotal")}</span>
             <span className="font-bold text-slate-900 tabular-nums">
-              {formatMoney(totals.subtotal, currency)}
+              {formatMoney(totals.subtotal, currency, locale)}
             </span>
           </div>
 
           {totals.discountAmount > 0 && (
             <div className="flex justify-between text-[#0f6b4f] font-semibold">
               <span>
-                {t.invoices?.discount || (locale === "id" ? "Diskon" : "Discount")}{" "}
+                {tInv("discount")}{" "}
                 {discountType === "PERCENTAGE"
                   ? `(${totals.discountValue}%)`
                   : ""}
               </span>
               <span className="tabular-nums">
-                -{formatMoney(totals.discountAmount, currency)}
+                -{formatMoney(totals.discountAmount, currency, locale)}
               </span>
             </div>
           )}
 
           {activeTaxRate > 0 && (
             <div className="flex justify-between text-slate-600">
-              <span className="font-medium">{t.invoices?.taxVat || "Pajak"} ({activeTaxRate}%)</span>
+              <span className="font-medium">{tInv("taxVat")} ({activeTaxRate}%)</span>
               <span className="font-bold text-slate-900 tabular-nums">
-                +{formatMoney(totals.taxAmount, currency)}
+                +{formatMoney(totals.taxAmount, currency, locale)}
               </span>
             </div>
           )}
@@ -782,10 +761,10 @@ export function InvoiceForm({
         <div className="flex items-center justify-between pt-4">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              {t.invoices?.total || (locale === "id" ? "Total Tagihan" : "Grand Total")}
+              {tInv("total")}
             </span>
             <p className="text-2xl font-bold text-slate-900 tabular-nums">
-              {formatMoney(totals.total, currency)}
+              {formatMoney(totals.total, currency, locale)}
             </p>
           </div>
 
@@ -794,7 +773,7 @@ export function InvoiceForm({
               href="/invoices"
               className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs"
             >
-              {locale === "id" ? "Batal" : "Cancel"}
+              {tInv("cancelBtn")}
             </Link>
             <button
               onClick={handleSubmit}
@@ -802,10 +781,10 @@ export function InvoiceForm({
               className="rounded-xl bg-[#0f6b4f] px-6 py-2.5 text-xs sm:text-sm font-bold text-white cursor-pointer hover:bg-[#0c553e] active:scale-[0.98] disabled:opacity-50 transition-all shadow-xs"
             >
               {loading
-                ? (locale === "id" ? "Menyimpan..." : "Saving...")
+                ? tInv("savingBtn")
                 : isEdit
-                ? (locale === "id" ? "Simpan Perubahan" : "Save Changes")
-                : (locale === "id" ? "Buat & Simpan Invoice" : "Create Invoice")}
+                ? tInv("saveChanges")
+                : tInv("createAndSave")}
             </button>
           </div>
         </div>
@@ -816,10 +795,10 @@ export function InvoiceForm({
         <div className="flex items-center justify-between gap-3">
           <div>
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-              {t.invoices?.total || "Total"}
+              {tInv("total")}
             </span>
             <p className="text-base font-extrabold text-slate-900 tabular-nums">
-              {formatMoney(totals.total, currency)}
+              {formatMoney(totals.total, currency, locale)}
             </p>
           </div>
           <button
@@ -828,10 +807,10 @@ export function InvoiceForm({
             className="flex-1 max-w-[200px] rounded-xl bg-[#0f6b4f] px-4 py-3 text-xs font-bold text-white shadow-xs hover:bg-[#0c553e] active:scale-[0.98] disabled:opacity-50 transition-all text-center cursor-pointer min-h-[44px]"
           >
             {loading
-              ? (locale === "id" ? "Menyimpan..." : "Saving...")
+              ? tInv("savingBtn")
               : isEdit
-              ? (locale === "id" ? "Simpan Perubahan" : "Save Changes")
-              : (locale === "id" ? "Simpan Invoice" : "Create Invoice")}
+              ? tInv("saveChanges")
+              : tInv("saveInvoice")}
           </button>
         </div>
       </div>

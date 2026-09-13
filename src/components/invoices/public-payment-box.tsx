@@ -11,13 +11,15 @@ import {
   ArrowTopRightOnSquareIcon,
   DocumentCheckIcon,
 } from "@heroicons/react/24/outline";
-import { useLanguage } from "@/lib/i18n/context";
+import { formatMoney } from "@/lib/currencies";
+import { useLocale, useTranslations } from "next-intl";
 
 interface PublicPaymentBoxProps {
   invoiceId: string;
   publicId: string;
   invoiceNumber: string;
   total: number;
+  currency?: string;
   status: string;
   enableDirectTransfer: boolean;
   enableDigitalPayment: boolean;
@@ -31,6 +33,7 @@ export function PublicPaymentBox({
   publicId,
   invoiceNumber,
   total,
+  currency,
   status,
   enableDirectTransfer,
   enableDigitalPayment,
@@ -39,7 +42,8 @@ export function PublicPaymentBox({
   bankAccountNumber,
   bankAccountName,
 }: PublicPaymentBoxProps) {
-  const { t, locale } = useLanguage();
+  const locale = useLocale() as "id" | "en";
+  const tInv = useTranslations("invoices");
   const [copied, setCopied] = useState(false);
   const [loadingPayment, setLoadingPayment] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
@@ -67,23 +71,14 @@ export function PublicPaymentBox({
 
       const data = await res.json();
       if (!res.ok || !data.paymentUrl) {
-        setPaymentError(
-          data.error ||
-            (locale === "id"
-              ? "Gagal menyiapkan pembayaran digital. Silakan coba lagi."
-              : "Failed to prepare digital checkout. Please try again.")
-        );
+        setPaymentError(data.error || tInv("digitalPaymentPrepareFailed"));
         setLoadingPayment(false);
         return;
       }
 
       window.location.href = data.paymentUrl;
     } catch {
-      setPaymentError(
-        locale === "id"
-          ? "Terjadi kesalahan jaringan. Silakan coba lagi."
-          : "Network error occurred. Please try again."
-      );
+      setPaymentError(tInv("networkError"));
       setLoadingPayment(false);
     }
   };
@@ -96,12 +91,10 @@ export function PublicPaymentBox({
         </div>
         <div>
           <h3 className="text-base sm:text-lg font-bold text-emerald-950">
-            {t.invoices?.publicPaidNotice || (locale === "id" ? "Invoice Ini Telah Lunas" : "This invoice has been settled in full.")}
+            {tInv("publicPaidNotice")}
           </h3>
           <p className="mt-1 text-xs sm:text-sm text-emerald-800 font-medium">
-            {locale === "id"
-              ? `Terima kasih, pembayaran untuk invoice ${invoiceNumber} telah terverifikasi.`
-              : `Thank you, payment for invoice ${invoiceNumber} has been verified.`}
+            {tInv("publicPaidThanks", { invoiceNumber })}
           </p>
         </div>
 
@@ -113,9 +106,7 @@ export function PublicPaymentBox({
             className="inline-flex items-center gap-2 rounded-xl bg-[#0f6b4f] px-4 py-2.5 text-xs sm:text-sm font-bold text-white shadow-xs hover:bg-[#0c553e] active:scale-[0.98] transition-all"
           >
             <DocumentCheckIcon className="w-4 h-4" />
-            <span>
-              {t.invoices?.officialReceiptPdf || (locale === "id" ? "Unduh Kuitansi Resmi (PDF)" : "Download Official Receipt (PDF)")}
-            </span>
+            <span>{tInv("officialReceiptPdf")}</span>
           </a>
         </div>
       </div>
@@ -132,11 +123,11 @@ export function PublicPaymentBox({
         <div className="flex items-center gap-2">
           <span className="h-2.5 w-2.5 rounded-full bg-[#0f6b4f]" />
           <h3 className="text-sm font-bold text-slate-900">
-            {t.invoices?.paymentMethodsTitle || (locale === "id" ? "Pilihan Metode Pembayaran" : "Payment Options")}
+            {tInv("paymentMethodsTitle")}
           </h3>
         </div>
         <span className="text-xs font-bold text-[#0f6b4f] tabular-nums">
-          Total: Rp{total.toLocaleString("id-ID")}
+          {tInv("totalLabel")} {formatMoney(total, currency || "IDR", locale)}
         </span>
       </div>
 
@@ -151,21 +142,21 @@ export function PublicPaymentBox({
                 </div>
                 <div>
                   <h4 className="text-xs sm:text-sm font-bold text-slate-900">
-                    {t.invoices?.directTransferTitle || (locale === "id" ? "Transfer Bank Manual" : "Manual Bank Transfer")}
+                    {tInv("directTransferTitle")}
                   </h4>
                   <p className="text-[11px] text-slate-500 font-medium">
-                    {locale === "id" ? `Tujuan rekening ${sellerName}` : `Direct to ${sellerName}`}
+                    {tInv("directTransferDestination", { sellerName })}
                   </p>
                 </div>
               </div>
 
               <div className="rounded-xl bg-slate-50 p-3 space-y-2 text-xs border border-slate-100">
                 <div className="flex justify-between text-slate-600">
-                  <span className="font-medium">{locale === "id" ? "Bank:" : "Bank:"}</span>
+                  <span className="font-medium">{tInv("bank")}</span>
                   <span className="font-bold text-slate-900">{bankName}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-600 font-medium">{t.invoices?.accountNumber || (locale === "id" ? "No. Rekening:" : "Account #:")}</span>
+                  <span className="text-slate-600 font-medium">{tInv("accountNumber")}</span>
                   <div className="flex items-center gap-1.5">
                     <span className="font-mono font-bold text-slate-900 text-sm tracking-wider">
                       {bankAccountNumber}
@@ -174,7 +165,7 @@ export function PublicPaymentBox({
                       type="button"
                       onClick={handleCopyAccount}
                       className="p-1 text-slate-400 hover:text-[#0f6b4f] cursor-pointer transition-colors"
-                      title={locale === "id" ? "Salin Nomor Rekening" : "Copy Account #"}
+                      title={tInv("copyAccountNumber")}
                     >
                       {copied ? (
                         <ClipboardDocumentCheckIcon className="w-4 h-4 text-[#0f6b4f]" />
@@ -185,16 +176,14 @@ export function PublicPaymentBox({
                   </div>
                 </div>
                 <div className="flex justify-between text-slate-600 border-t border-slate-200/60 pt-1.5">
-                  <span className="font-medium">{t.invoices?.accountHolder || (locale === "id" ? "Atas Nama:" : "Account Name:")}</span>
+                  <span className="font-medium">{tInv("accountHolder")}</span>
                   <span className="font-bold text-slate-900">{bankAccountName}</span>
                 </div>
               </div>
             </div>
 
             <p className="text-[11px] text-slate-500 leading-tight">
-              {locale === "id"
-                ? "*Silakan transfer sesuai nominal tagihan dan konfirmasi bukti ke penjual."
-                : "*Please transfer exact amount and confirm receipt with the issuer."}
+              {tInv("transferInstruction")}
             </p>
           </div>
         )}
@@ -210,22 +199,20 @@ export function PublicPaymentBox({
                   </div>
                   <div>
                     <h4 className="text-xs sm:text-sm font-bold text-slate-900">
-                      {t.invoices?.digitalPaymentTitle || (locale === "id" ? "Bayar Instan (QRIS & VA)" : "Instant QRIS & VA")}
+                      {tInv("digitalPaymentTitle")}
                     </h4>
                     <p className="text-[11px] text-[#0f6b4f] font-bold">
-                      {locale === "id" ? "Konfirmasi Otomatis 24/7" : "Instant 24/7 Settlement"}
+                      {tInv("automaticConfirmation")}
                     </p>
                   </div>
                 </div>
                 <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-[#0f6b4f]">
-                  Real-Time
+                  {tInv("realTime")}
                 </span>
               </div>
 
               <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                {locale === "id"
-                  ? "Scan QRIS via GoPay, BCA, OVO, ShopeePay, DANA atau bayar Virtual Account. Status invoice otomatis lunas seketika."
-                  : "Scan QRIS with e-wallet/mobile banking or pay via Virtual Account. Status updates automatically in real-time."}
+                {tInv("digitalPaymentPublicDesc")}
               </p>
 
               {paymentError && (
@@ -242,11 +229,11 @@ export function PublicPaymentBox({
               className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#0f6b4f] px-4 py-3 text-xs sm:text-sm font-bold text-white shadow-xs hover:bg-[#0c553e] active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50 min-h-[44px]"
             >
               {loadingPayment ? (
-                <span>{locale === "id" ? "Menyiapkan Pembayaran..." : "Preparing Checkout..."}</span>
+                <span>{tInv("preparingCheckout")}</span>
               ) : (
                 <>
                   <SparklesIcon className="w-4 h-4" />
-                  <span>{t.invoices?.publicPayNow || (locale === "id" ? "Bayar via QRIS / VA Sekarang" : "Pay via QRIS / VA Now")}</span>
+                  <span>{tInv("publicPayNow")}</span>
                   <ArrowTopRightOnSquareIcon className="w-4 h-4 ml-0.5" />
                 </>
               )}

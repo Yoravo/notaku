@@ -4,7 +4,8 @@ import Link from "next/link";
 import { InvoiceActions } from "@/components/invoices/invoice-actions";
 import { WhatsAppShareModal } from "@/components/invoices/whatsapp-share-modal";
 import { EmailShareModal } from "@/components/invoices/email-share-modal";
-import { statusLabel, formatDateWIB } from "@/lib/invoice-utils";
+import { statusConfig, formatDateWIB } from "@/lib/invoice-utils";
+import type { InvoiceStatus } from "@/generated/prisma/client";
 import {
   PencilSquareIcon,
   EyeIcon,
@@ -14,7 +15,7 @@ import {
   UserIcon,
   DocumentCheckIcon,
 } from "@heroicons/react/24/outline";
-import { useLanguage } from "@/lib/i18n/context";
+import { useLocale, useTranslations } from "next-intl";
 import { formatMoney } from "@/lib/currencies";
 
 interface InvoiceItem {
@@ -39,7 +40,7 @@ interface InvoiceDetailClientProps {
     publicId: string;
     customPublicUrl?: string | null;
     number: string | null;
-    status: string;
+    status: InvoiceStatus;
     dueDate: string | null;
     notes: string | null;
     subtotal: number;
@@ -58,19 +59,21 @@ interface InvoiceDetailClientProps {
 }
 
 export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
-  const { t, locale } = useLanguage();
+  const locale = useLocale() as "id" | "en";
+  const tInv = useTranslations("invoices");
+  const tStatus = useTranslations("common.status");
 
-  const status = statusLabel[invoice.status] || statusLabel.DRAFT;
+  const status = statusConfig[invoice.status] || statusConfig.DRAFT;
 
-  const statusTextMap: Record<string, string> = {
-    DRAFT: t.invoices?.statusDraft || "Draft",
-    SENT: t.invoices?.statusSent || "Terkirim",
-    PAID: t.invoices?.statusPaid || "Lunas",
-    OVERDUE: t.invoices?.statusOverdue || "Lewat Tempo",
-    CANCELLED: t.invoices?.statusCancelled || "Dibatalkan",
+  const sellerStatusLabelMap: Record<InvoiceStatus, string> = {
+    DRAFT: tStatus("draft"),
+    SENT: tStatus("sent"),
+    PAID: tStatus("paid"),
+    OVERDUE: tStatus("overdue"),
+    CANCELLED: tStatus("cancelled"),
   };
 
-  const displayStatus = statusTextMap[invoice.status] || status.text;
+  const displayStatus = sellerStatusLabelMap[invoice.status];
 
   return (
     <div className="max-w-4xl space-y-6">
@@ -84,15 +87,15 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
             className="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors mb-2"
           >
             <ArrowLeftIcon className="w-3.5 h-3.5" />
-            <span>{t.invoices?.backToList || (locale === "id" ? "Kembali ke Daftar Invoice" : "Back to Invoices")}</span>
+            <span>{tInv("backToList")}</span>
           </Link>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-            {invoice.number || (locale === "id" ? "Draft Invoice" : "Draft Invoice")}
+            {invoice.number || tInv("draftInvoice")}
           </h1>
           <p className="mt-1 text-xs text-slate-500 flex items-center gap-1.5 font-medium">
             <CalendarDaysIcon className="w-3.5 h-3.5 text-slate-400" />
             <span>
-              {t.invoices?.createdOn || (locale === "id" ? "Dibuat" : "Created on")}{" "}
+              {tInv("createdOn")}{" "}
               {formatDateWIB(invoice.createdAt, {
                 day: "numeric",
                 month: "long",
@@ -120,16 +123,16 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors border-r border-slate-200"
-              title={t.invoices?.previewPdf || (locale === "id" ? "Lihat Pratinjau PDF" : "Preview PDF")}
+              title={tInv("previewPdf")}
             >
               <EyeIcon className="w-4 h-4 text-slate-400" />
-              <span>{t.invoices?.viewPdf || (locale === "id" ? "Lihat PDF" : "View PDF")}</span>
+              <span>{tInv("viewPdf")}</span>
             </a>
             <a
               href={`/api/invoices/${invoice.id}/pdf`}
               download
               className="inline-flex items-center p-2 text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
-              title={t.invoices?.downloadPdf || (locale === "id" ? "Unduh File PDF" : "Download PDF")}
+              title={tInv("downloadPdf")}
             >
               <ArrowDownTrayIcon className="w-4 h-4" />
             </a>
@@ -143,16 +146,16 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold text-[#0f6b4f] hover:bg-emerald-100/60 transition-colors border-r border-emerald-200"
-                title={t.invoices?.viewReceipt || (locale === "id" ? "Lihat Kuitansi Resmi" : "View Receipt")}
+                title={tInv("viewReceipt")}
               >
                 <DocumentCheckIcon className="w-4 h-4 text-[#0f6b4f]" />
-                <span>{t.invoices?.viewReceipt || (locale === "id" ? "Kuitansi" : "Receipt")}</span>
+                <span>{tInv("receipt")}</span>
               </a>
               <a
                 href={`/api/invoices/${invoice.id}/receipt`}
                 download
                 className="inline-flex items-center p-2 text-[#0f6b4f] hover:bg-emerald-100/80 transition-colors"
-                title={t.invoices?.downloadReceipt || (locale === "id" ? "Unduh Kuitansi PDF" : "Download Receipt PDF")}
+                title={tInv("downloadReceipt")}
               >
                 <ArrowDownTrayIcon className="w-4 h-4" />
               </a>
@@ -167,14 +170,14 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
               className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs"
             >
               <PencilSquareIcon className="w-4 h-4 text-slate-400" />
-              <span>{locale === "id" ? "Edit" : "Edit"}</span>
+              <span>{tInv("edit")}</span>
             </Link>
           )}
 
           {/* Email Share Modal */}
           <EmailShareModal
             invoiceId={invoice.id}
-            invoiceNumber={invoice.number || "Draft"}
+            invoiceNumber={invoice.number || tInv("draftInvoice")}
             customerName={invoice.customer.name}
             customerEmail={invoice.customer.email}
             total={invoice.total}
@@ -192,10 +195,11 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
 
           {/* WhatsApp Share Modal */}
           <WhatsAppShareModal
-            invoiceNumber={invoice.number || "Draft"}
+            invoiceNumber={invoice.number || tInv("draftInvoice")}
             customerName={invoice.customer.name}
             customerPhone={invoice.customer.phone}
             total={invoice.total}
+            currency={invoice.currency}
             dueDate={
               invoice.dueDate
                 ? formatDateWIB(invoice.dueDate, {
@@ -223,7 +227,7 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
           <div>
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
               <UserIcon className="w-3.5 h-3.5" />
-              {t.invoices?.billedTo || (locale === "id" ? "Ditagihkan Kepada" : "Billed To")}
+              {tInv("billedTo")}
             </span>
             <p className="mt-1.5 font-bold text-slate-900 text-base">
               {invoice.customer.name}
@@ -247,7 +251,7 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
 
           <div className="sm:text-right flex flex-col justify-start sm:items-end">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              {t.invoices?.dueDate || (locale === "id" ? "Jatuh Tempo Pembayaran" : "Due Date")}
+              {tInv("dueDate")}
             </span>
             <p className="mt-1.5 font-semibold text-slate-900 text-sm">
               {invoice.dueDate
@@ -256,12 +260,12 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
                     month: "long",
                     year: "numeric",
                   })
-                : locale === "id" ? "Tidak ditentukan (Langsung)" : "Not specified (Direct)"}
+                : tInv("dueDateUnspecified")}
             </p>
             {invoice.notes && (
               <div className="mt-3 text-left sm:text-right max-w-xs">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                  {t.invoices?.notes || (locale === "id" ? "Catatan" : "Notes")}
+                  {tInv("notes")}
                 </span>
                 <p className="text-xs text-slate-600 italic mt-0.5">
                   &quot;{invoice.notes}&quot;
@@ -276,10 +280,10 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
           <table className="w-full text-left text-xs sm:text-sm">
             <thead className="border-b border-slate-200 bg-slate-50/80 text-slate-500 text-xs uppercase font-bold tracking-wider">
               <tr>
-                <th className="px-6 py-3.5">{t.invoices?.itemName || (locale === "id" ? "Deskripsi Item" : "Description")}</th>
-                <th className="px-4 py-3.5 text-center">{t.invoices?.quantity || (locale === "id" ? "Qty" : "Qty")}</th>
-                <th className="px-4 py-3.5 text-right">{t.invoices?.price || (locale === "id" ? "Harga Satuan" : "Unit Price")}</th>
-                <th className="px-6 py-3.5 text-right">{t.invoices?.amount || (locale === "id" ? "Subtotal" : "Amount")}</th>
+                <th className="px-6 py-3.5">{tInv("itemName")}</th>
+                <th className="px-4 py-3.5 text-center">{tInv("quantity")}</th>
+                <th className="px-4 py-3.5 text-right">{tInv("price")}</th>
+                <th className="px-6 py-3.5 text-right">{tInv("amount")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -292,10 +296,10 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
                     {item.quantity}
                   </td>
                   <td className="px-4 py-3.5 text-right text-slate-600 tabular-nums">
-                    {formatMoney(item.price, invoice.currency)}
+                    {formatMoney(item.price, invoice.currency, locale)}
                   </td>
                   <td className="px-6 py-3.5 text-right font-semibold text-slate-900 tabular-nums">
-                    {formatMoney(item.amount, invoice.currency)}
+                    {formatMoney(item.amount, invoice.currency, locale)}
                   </td>
                 </tr>
               ))}
@@ -306,10 +310,10 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
                   colSpan={3}
                   className="px-6 py-3 text-right font-semibold text-slate-600 text-xs"
                 >
-                  {t.invoices?.subtotal || "Subtotal"}
+                  {tInv("subtotal")}
                 </td>
                 <td className="px-6 py-3 text-right font-semibold text-slate-900 text-sm tabular-nums">
-                  {formatMoney(invoice.subtotal || invoice.total, invoice.currency)}
+                  {formatMoney(invoice.subtotal || invoice.total, invoice.currency, locale)}
                 </td>
               </tr>
 
@@ -319,11 +323,11 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
                     colSpan={3}
                     className="px-6 py-2.5 text-right font-semibold text-xs"
                   >
-                    {t.invoices?.discount || (locale === "id" ? "Diskon" : "Discount")}{" "}
+                    {tInv("discount")}{" "}
                     {invoice.discountType === "PERCENTAGE" ? `(${invoice.discountValue}%)` : ""}
                   </td>
                   <td className="px-6 py-2.5 text-right font-bold text-sm tabular-nums">
-                    -{formatMoney(invoice.discountAmount, invoice.currency)}
+                    -{formatMoney(invoice.discountAmount, invoice.currency, locale)}
                   </td>
                 </tr>
               )}
@@ -334,10 +338,10 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
                     colSpan={3}
                     className="px-6 py-2.5 text-right font-semibold text-slate-600 text-xs"
                   >
-                    {t.invoices?.taxVat || (locale === "id" ? "Pajak (PPN)" : "Tax (VAT)")} ({invoice.taxRate}%)
+                    {tInv("taxVat")} ({invoice.taxRate}%)
                   </td>
                   <td className="px-6 py-2.5 text-right font-bold text-slate-900 text-sm tabular-nums">
-                    +{formatMoney(invoice.taxAmount, invoice.currency)}
+                    +{formatMoney(invoice.taxAmount, invoice.currency, locale)}
                   </td>
                 </tr>
               )}
@@ -347,10 +351,10 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
                   colSpan={3}
                   className="px-6 py-4 text-right font-bold text-slate-800 uppercase tracking-wider text-xs sm:text-sm"
                 >
-                  {t.invoices?.grandTotal || (locale === "id" ? "Total Tagihan" : "Grand Total")}
+                  {tInv("grandTotal")}
                 </td>
                 <td className="px-6 py-4 text-right font-bold text-slate-900 text-lg sm:text-xl tabular-nums">
-                  {formatMoney(invoice.total, invoice.currency)}
+                  {formatMoney(invoice.total, invoice.currency, locale)}
                 </td>
               </tr>
             </tfoot>

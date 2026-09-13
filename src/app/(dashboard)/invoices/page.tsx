@@ -70,6 +70,7 @@ export default async function InvoicesPage({
     number: inv.number,
     status: inv.status,
     total: Number(inv.total),
+    currency: inv.currency,
     createdAt: inv.createdAt.toISOString(),
     customer: {
       id: inv.customer.id,

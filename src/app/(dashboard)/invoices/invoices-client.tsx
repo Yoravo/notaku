@@ -8,8 +8,10 @@ import {
   ArrowDownTrayIcon,
   DocumentTextIcon,
 } from "@heroicons/react/24/outline";
-import { statusLabel, formatDateWIB } from "@/lib/invoice-utils";
-import { useLanguage } from "@/lib/i18n/context";
+import { statusConfig, formatDateWIB } from "@/lib/invoice-utils";
+import { formatMoney } from "@/lib/currencies";
+import type { InvoiceStatus } from "@/generated/prisma/client";
+import { useLocale, useTranslations } from "next-intl";
 
 interface CustomerData {
   id: string;
@@ -21,8 +23,9 @@ interface CustomerData {
 interface InvoiceItemData {
   id: string;
   number: string | null;
-  status: string;
+  status: InvoiceStatus;
   total: number;
+  currency?: string;
   createdAt: string;
   customer: CustomerData;
 }
@@ -33,7 +36,7 @@ interface InvoicesClientProps {
   totalAll: number;
   currentPage: number;
   totalPages: number;
-  activeStatus: string;
+  activeStatus: InvoiceStatus | "";
   exportUrl: string;
   from?: string;
   to?: string;
@@ -50,24 +53,27 @@ export function InvoicesClient({
   from,
   to,
 }: InvoicesClientProps) {
-  const { t, locale } = useLanguage();
+  const locale = useLocale() as "id" | "en";
+  const tInv = useTranslations("invoices");
+  const tStatus = useTranslations("common.status");
+
+  // Explicit status label mapping (seller perspective)
+  const sellerStatusLabelMap: Record<InvoiceStatus, string> = {
+    DRAFT: tStatus("draft"),
+    SENT: tStatus("sent"),
+    PAID: tStatus("paid"),
+    OVERDUE: tStatus("overdue"),
+    CANCELLED: tStatus("cancelled"),
+  };
 
   const filterTabs = [
-    { label: t.invoices?.filterAll || (locale === "id" ? "Semua Status" : "All Statuses"), value: "" },
-    { label: t.invoices?.filterDraft || (locale === "id" ? "Draft" : "Draft"), value: "DRAFT" },
-    { label: t.invoices?.filterSent || (locale === "id" ? "Terkirim" : "Sent"), value: "SENT" },
-    { label: t.invoices?.filterPaid || (locale === "id" ? "Lunas" : "Paid"), value: "PAID" },
-    { label: t.invoices?.filterOverdue || (locale === "id" ? "Lewat Tempo" : "Overdue"), value: "OVERDUE" },
-    { label: t.invoices?.filterCancelled || (locale === "id" ? "Dibatalkan" : "Cancelled"), value: "CANCELLED" },
+    { label: tInv("filterAll"), value: "" },
+    { label: sellerStatusLabelMap.DRAFT, value: "DRAFT" },
+    { label: sellerStatusLabelMap.SENT, value: "SENT" },
+    { label: sellerStatusLabelMap.PAID, value: "PAID" },
+    { label: sellerStatusLabelMap.OVERDUE, value: "OVERDUE" },
+    { label: sellerStatusLabelMap.CANCELLED, value: "CANCELLED" },
   ];
-
-  const statusTextMap: Record<string, string> = {
-    DRAFT: t.invoices?.statusDraft || "Draft",
-    SENT: t.invoices?.statusSent || "Terkirim",
-    PAID: t.invoices?.statusPaid || "Lunas",
-    OVERDUE: t.invoices?.statusOverdue || "Lewat Tempo",
-    CANCELLED: t.invoices?.statusCancelled || "Dibatalkan",
-  };
 
   const buildHref = (s: string, p = 1) => {
     const params = new URLSearchParams();
@@ -85,12 +91,10 @@ export function InvoicesClient({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-            {t.invoices?.title || (locale === "id" ? "Daftar Invoice & Tagihan" : "Invoices & Billing")}
+            {tInv("title")}
           </h1>
           <p className="mt-1 text-xs sm:text-sm text-slate-500">
-            {locale === "id"
-              ? `Kelola ${totalAll} invoice transaksi bisnis dan pantau status pembayarannya.`
-              : `Manage ${totalAll} business invoices and track their payment statuses.`}
+            {tInv("subtitle", { total: totalAll })}
           </p>
         </div>
 
@@ -102,7 +106,7 @@ export function InvoicesClient({
               className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs"
             >
               <ArrowDownTrayIcon className="h-4 w-4 text-slate-400" />
-              <span>{locale === "id" ? "Ekspor CSV" : "Export CSV"}</span>
+              <span>{tInv("exportCsv")}</span>
             </a>
           )}
           <Link
@@ -111,7 +115,7 @@ export function InvoicesClient({
             className="inline-flex items-center gap-1.5 rounded-xl bg-[#0f6b4f] px-4 py-2 text-xs sm:text-sm font-bold text-white hover:bg-[#0c553e] active:scale-[0.98] transition-all shadow-xs"
           >
             <PlusIcon className="h-4 w-4" />
-            <span>{t.invoices?.newInvoice || (locale === "id" ? "Buat Invoice" : "Create Invoice")}</span>
+            <span>{tInv("newInvoice")}</span>
           </Link>
         </div>
       </div>
@@ -144,21 +148,13 @@ export function InvoicesClient({
           </div>
           <h3 className="text-sm font-bold text-slate-900">
             {activeStatus
-              ? locale === "id"
-                ? `Tidak ada invoice dengan status ${statusTextMap[activeStatus] || activeStatus}`
-                : `No invoices found with status ${statusTextMap[activeStatus] || activeStatus}`
-              : locale === "id"
-              ? "Belum ada invoice dibuat"
-              : "No invoices created yet"}
+              ? tInv("noInvoicesStatus", { status: sellerStatusLabelMap[activeStatus] || activeStatus })
+              : tInv("noInvoicesCreated")}
           </h3>
           <p className="mt-1 text-xs text-slate-500 max-w-sm mx-auto">
             {!activeStatus
-              ? locale === "id"
-                ? "Mulai buat invoice penagihan pertamamu dan kirimkan ke pelanggan dalam hitungan detik."
-                : "Start creating your first billing invoice and send it to your client in seconds."
-              : locale === "id"
-              ? "Coba ganti filter status atau buat invoice baru."
-              : "Try switching the status filter or create a new invoice."}
+              ? tInv("emptyCreateFirst")
+              : tInv("emptyStatusFilter")}
           </p>
           {!activeStatus && (
             <Link
@@ -166,7 +162,7 @@ export function InvoicesClient({
               prefetch={true}
               className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-[#0f6b4f] px-4 py-2 text-xs font-semibold text-white hover:bg-[#0c553e] transition-all shadow-xs"
             >
-              {locale === "id" ? "Buat Invoice Pertama" : "Create First Invoice"}
+              {tInv("createFirstInvoice")}
             </Link>
           )}
         </div>
@@ -175,8 +171,8 @@ export function InvoicesClient({
           {/* Card View: Mobile only (md:hidden) */}
           <div className="space-y-2.5 md:hidden">
             {invoices.map((invoice) => {
-              const s = statusLabel[invoice.status] || statusLabel.DRAFT;
-              const displayStatus = statusTextMap[invoice.status] || s.text;
+              const s = statusConfig[invoice.status];
+              const displayStatus = sellerStatusLabelMap[invoice.status];
 
               return (
                 <Link
@@ -202,7 +198,7 @@ export function InvoicesClient({
                     </div>
                     <div className="text-right shrink-0">
                       <p className="font-bold text-slate-900 text-sm tabular-nums">
-                        Rp{Number(invoice.total).toLocaleString("id-ID")}
+                        {formatMoney(Number(invoice.total), invoice.currency || "IDR", locale)}
                       </p>
                       <span
                         className={`mt-1.5 inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${s.className}`}
@@ -223,26 +219,26 @@ export function InvoicesClient({
               <thead className="border-b border-slate-200 bg-slate-50/80">
                 <tr>
                   <th className="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500">
-                    {t.invoices?.invoiceNumber || (locale === "id" ? "No. Invoice" : "Invoice #")}
+                    {tInv("invoiceNumber")}
                   </th>
                   <th className="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500">
-                    {t.invoices?.customer || (locale === "id" ? "Pelanggan" : "Client")}
+                    {tInv("customer")}
                   </th>
                   <th className="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500">
-                    {t.invoices?.issueDate || (locale === "id" ? "Tanggal" : "Date")}
+                    {tInv("issueDate")}
                   </th>
                   <th className="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500">
-                    {t.invoices?.status || (locale === "id" ? "Status" : "Status")}
+                    {tInv("status")}
                   </th>
                   <th className="px-5 py-3.5 text-right text-xs font-bold uppercase tracking-wider text-slate-500">
-                    {t.invoices?.total || (locale === "id" ? "Total" : "Total")}
+                    {tInv("total")}
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {invoices.map((invoice) => {
-                  const s = statusLabel[invoice.status] || statusLabel.DRAFT;
-                  const displayStatus = statusTextMap[invoice.status] || s.text;
+                  const s = statusConfig[invoice.status] || statusConfig.DRAFT;
+                  const displayStatus = sellerStatusLabelMap[invoice.status] || tStatus("draft");
 
                   return (
                     <tr
@@ -277,7 +273,7 @@ export function InvoicesClient({
                         </span>
                       </td>
                       <td className="px-5 py-3.5 text-right font-bold text-slate-900 tabular-nums">
-                        Rp{Number(invoice.total).toLocaleString("id-ID")}
+                        {formatMoney(Number(invoice.total), invoice.currency || "IDR", locale)}
                       </td>
                     </tr>
                   );
@@ -290,17 +286,11 @@ export function InvoicesClient({
           {totalPages > 1 && (
             <div className="mt-4 flex items-center justify-between text-xs sm:text-sm text-slate-600">
               <p>
-                {locale === "id" ? (
-                  <>
-                    Halaman <strong className="text-slate-900">{currentPage}</strong> dari{" "}
-                    <strong className="text-slate-900">{totalPages}</strong>
-                  </>
-                ) : (
-                  <>
-                    Page <strong className="text-slate-900">{currentPage}</strong> of{" "}
-                    <strong className="text-slate-900">{totalPages}</strong>
-                  </>
-                )}
+                {tInv.rich("pageIndicator", {
+                  current: currentPage,
+                  total: totalPages,
+                  b: (chunks) => <strong className="text-slate-900">{chunks}</strong>,
+                })}
               </p>
               <div className="flex gap-2">
                 <Link
@@ -314,7 +304,7 @@ export function InvoicesClient({
                   aria-disabled={currentPage <= 1}
                 >
                   <ChevronLeftIcon className="h-4 w-4" />
-                  <span>{locale === "id" ? "Sebelumnya" : "Prev"}</span>
+                  <span>{tInv("prev")}</span>
                 </Link>
                 <Link
                   href={buildHref(activeStatus ?? "", currentPage + 1)}
@@ -326,7 +316,7 @@ export function InvoicesClient({
                   }`}
                   aria-disabled={currentPage >= totalPages}
                 >
-                  <span>{locale === "id" ? "Berikutnya" : "Next"}</span>
+                  <span>{tInv("next")}</span>
                   <ChevronRightIcon className="h-4 w-4" />
                 </Link>
               </div>

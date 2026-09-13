@@ -98,6 +98,7 @@ export default async function DashboardPage({
     dueDate: inv.dueDate ? inv.dueDate.toISOString() : null,
     notes: inv.notes,
     total: Number(inv.total),
+    currency: inv.currency,
     createdAt: inv.createdAt.toISOString(),
     customer: {
       id: inv.customer.id,

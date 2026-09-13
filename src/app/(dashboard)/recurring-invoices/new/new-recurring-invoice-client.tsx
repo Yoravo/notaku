@@ -25,54 +25,10 @@ import {
   RecurringFrequency,
   getTodayDateStrWIB,
 } from "@/lib/recurring-invoices";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 
 type Customer = { id: string; name: string };
 type InvoiceItem = { description: string; quantity: number; price: number };
-
-const FREQUENCY_OPTIONS: {
-  value: RecurringFrequency;
-  labelId: string;
-  labelEn: string;
-  descId: string;
-  descEn: string;
-}[] = [
-  {
-    value: "WEEKLY",
-    labelId: "Mingguan",
-    labelEn: "Weekly",
-    descId: "Setiap 7 hari",
-    descEn: "Every 7 days",
-  },
-  {
-    value: "BIWEEKLY",
-    labelId: "2 Mingguan",
-    labelEn: "Biweekly",
-    descId: "Setiap 14 hari",
-    descEn: "Every 14 days",
-  },
-  {
-    value: "MONTHLY",
-    labelId: "Bulanan",
-    labelEn: "Monthly",
-    descId: "Tanggal yang sama tiap bulan",
-    descEn: "Same day each month",
-  },
-  {
-    value: "QUARTERLY",
-    labelId: "Triwulan",
-    labelEn: "Quarterly",
-    descId: "Setiap 3 bulan",
-    descEn: "Every 3 months",
-  },
-  {
-    value: "ANNUALLY",
-    labelId: "Tahunan",
-    labelEn: "Annually",
-    descId: "Setiap 1 tahun",
-    descEn: "Once a year",
-  },
-];
 
 const DISCOUNT_PERCENT_PRESETS = [5, 10, 15, 20, 50];
 
@@ -91,7 +47,7 @@ export function NewRecurringInvoiceClient({
   userBankAccountNumber?: string | null;
   userBankAccountName?: string | null;
 }) {
-  const { t, locale } = useLanguage();
+  const tRec = useTranslations("recurring");
   const router = useRouter();
 
   const [title, setTitle] = useState("");
@@ -159,29 +115,17 @@ export function NewRecurringInvoiceClient({
     if (!isPro) return;
 
     if (!title.trim()) {
-      setError(
-        locale === "id"
-          ? "Judul atau label tagihan berulang wajib diisi."
-          : "Schedule title is required."
-      );
+      setError(tRec("validationTitle"));
       return;
     }
 
     if (!customerId) {
-      setError(
-        locale === "id"
-          ? "Silakan pilih pelanggan."
-          : "Please select a client/customer."
-      );
+      setError(tRec("validationCustomer"));
       return;
     }
 
     if (items.some((item) => !item.description.trim() || item.price <= 0)) {
-      setError(
-        locale === "id"
-          ? "Pastikan semua baris item memiliki deskripsi dan harga lebih dari 0."
-          : "Please ensure all items have descriptions and price greater than 0."
-      );
+      setError(tRec("validationItems"));
       return;
     }
 
@@ -208,7 +152,7 @@ export function NewRecurringInvoiceClient({
       router.push("/recurring-invoices");
       router.refresh();
     } catch (err: any) {
-      setError(err.message || "Terjadi kesalahan saat menyimpan jadwal.");
+      setError(err.message || tRec("saveError"));
       setLoading(false);
     }
   };
@@ -219,7 +163,7 @@ export function NewRecurringInvoiceClient({
         <div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
             <ArrowPathIcon className="w-6 h-6 sm:w-7 sm:h-7 text-[#0f6b4f]" />
-            <span>{locale === "id" ? "Buat Tagihan Berulang" : "New Recurring Schedule"}</span>
+            <span>{tRec("newRecurring")}</span>
           </h1>
         </div>
 
@@ -229,12 +173,10 @@ export function NewRecurringInvoiceClient({
           </div>
           <div>
             <h2 className="text-lg font-bold text-slate-900">
-              {locale === "id" ? "Fitur Eksklusif NotaKu PRO" : "Exclusive NotaKu PRO Feature"}
+              {tRec("proFeatureNotice")}
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-lg mx-auto leading-relaxed">
-              {locale === "id"
-                ? "Fitur pembuatan invoice berulang (recurring invoices) otomatis hanya tersedia untuk pelanggan paket NotaKu PRO. Tingkatkan paket Anda untuk mengaktifkan otomatisasi penagihan."
-                : "Automated recurring invoices are available exclusively for NotaKu PRO members. Upgrade now to automate periodic billing."}
+              {tRec("proFeatureDesc")}
             </p>
           </div>
           <div className="pt-2">
@@ -252,7 +194,7 @@ export function NewRecurringInvoiceClient({
         <div className="flex items-center gap-2">
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
             <ArrowPathIcon className="w-6 h-6 sm:w-7 sm:h-7 text-[#0f6b4f]" />
-            <span>{locale === "id" ? "Buat Tagihan Berulang" : "New Recurring Schedule"}</span>
+            <span>{tRec("newRecurring")}</span>
           </h1>
           <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-[#0f6b4f] border border-emerald-200 shadow-2xs">
             <SparklesIcon className="w-3.5 h-3.5 text-[#0f6b4f]" />
@@ -260,9 +202,7 @@ export function NewRecurringInvoiceClient({
           </span>
         </div>
         <p className="text-xs sm:text-sm text-slate-500 mt-1">
-          {locale === "id"
-            ? "Atur jadwal penerbitan dan pengiriman invoice otomatis berkala ke pelanggan Anda."
-            : "Configure automatic periodic invoice generation and dispatch for your clients."}
+          {tRec("formSubtitle")}
         </p>
       </div>
 
@@ -277,25 +217,21 @@ export function NewRecurringInvoiceClient({
         <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs space-y-4">
           <h2 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
             <CalendarDaysIcon className="w-5 h-5 text-[#0f6b4f]" />
-            <span>{locale === "id" ? "Informasi & Jadwal Tagihan" : "Schedule & Client Info"}</span>
+            <span>{tRec("scheduleInfo")}</span>
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Title / Label */}
             <div className="md:col-span-2">
               <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">
-                {locale === "id" ? "Nama / Label Jadwal Tagihan" : "Schedule Title / Label"}{" "}
+                {tRec("scheduleTitle")}{" "}
                 <span className="text-rose-500">*</span>
               </label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder={
-                  locale === "id"
-                    ? "Contoh: Langganan Maintenance Website - PT Maju Jaya"
-                    : "e.g. Monthly Retainer - Acme Corp"
-                }
+                placeholder={tRec("scheduleTitlePlaceholder")}
                 required
                 className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-2 focus:ring-[#0f6b4f]/20 min-h-[44px]"
               />
@@ -305,7 +241,7 @@ export function NewRecurringInvoiceClient({
             <div>
               <div className="flex items-center justify-between mb-1">
                 <label className="block text-xs sm:text-sm font-semibold text-slate-700">
-                  {locale === "id" ? "Pelanggan" : "Client"}{" "}
+                  {tRec("customer")}{" "}
                   <span className="text-rose-500">*</span>
                 </label>
                 <button
@@ -314,7 +250,7 @@ export function NewRecurringInvoiceClient({
                   className="text-xs font-bold text-[#0f6b4f] hover:underline cursor-pointer flex items-center gap-1"
                 >
                   <PlusIcon className="w-3.5 h-3.5" />
-                  <span>{locale === "id" ? "+ Tambah Baru" : "+ Add New"}</span>
+                  <span>{tRec("addNew")}</span>
                 </button>
               </div>
               <select
@@ -323,9 +259,7 @@ export function NewRecurringInvoiceClient({
                 required
                 className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-2 focus:ring-[#0f6b4f]/20 min-h-[44px]"
               >
-                <option value="">
-                  {locale === "id" ? "-- Pilih Pelanggan --" : "-- Select Client --"}
-                </option>
+                <option value="">{tRec("selectCustomer")}</option>
                 {customers.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
@@ -337,7 +271,7 @@ export function NewRecurringInvoiceClient({
             {/* Frequency */}
             <div>
               <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">
-                {locale === "id" ? "Frekuensi Berulang" : "Recurring Frequency"}{" "}
+                {tRec("frequency")}{" "}
                 <span className="text-rose-500">*</span>
               </label>
               <select
@@ -345,10 +279,15 @@ export function NewRecurringInvoiceClient({
                 onChange={(e) => setFrequency(e.target.value as RecurringFrequency)}
                 className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-2 focus:ring-[#0f6b4f]/20 min-h-[44px]"
               >
-                {FREQUENCY_OPTIONS.map((f) => (
+                {[
+                  { value: "WEEKLY" as const, label: tRec("freqWeeklyLabel"), desc: tRec("freqWeeklyDesc") },
+                  { value: "BIWEEKLY" as const, label: tRec("freqBiweeklyLabel"), desc: tRec("freqBiweeklyDesc") },
+                  { value: "MONTHLY" as const, label: tRec("freqMonthlyLabel"), desc: tRec("freqMonthlyDesc") },
+                  { value: "QUARTERLY" as const, label: tRec("freqQuarterlyLabel"), desc: tRec("freqQuarterlyDesc") },
+                  { value: "ANNUALLY" as const, label: tRec("freqAnnuallyLabel"), desc: tRec("freqAnnuallyDesc") },
+                ].map((f) => (
                   <option key={f.value} value={f.value}>
-                    {locale === "id" ? f.labelId : f.labelEn} (
-                    {locale === "id" ? f.descId : f.descEn})
+                    {f.label} ({f.desc})
                   </option>
                 ))}
               </select>
@@ -357,7 +296,7 @@ export function NewRecurringInvoiceClient({
             {/* Start Date */}
             <div>
               <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">
-                {locale === "id" ? "Tanggal Mulai / Terbit Pertama" : "First Run Date (WIB)"}{" "}
+                {tRec("startDate")}{" "}
                 <span className="text-rose-500">*</span>
               </label>
               <input
@@ -368,16 +307,14 @@ export function NewRecurringInvoiceClient({
                 className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-2 focus:ring-[#0f6b4f]/20 min-h-[44px]"
               />
               <p className="text-[11px] text-slate-400 mt-1">
-                {locale === "id"
-                  ? "Sistem cron berjalan tiap pukul 08:00 WIB untuk menerbitkan tagihan pada tanggal ini."
-                  : "Automated cron triggers daily at 08:00 WIB on this scheduled date."}
+                {tRec("cronHint")}
               </p>
             </div>
 
             {/* Due Days Offset */}
             <div>
               <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">
-                {locale === "id" ? "Jatuh Tempo (Hari setelah Terbit)" : "Due Date Offset (Days)"}{" "}
+                {tRec("dueDaysOffset")}{" "}
                 <span className="text-rose-500">*</span>
               </label>
               <div className="flex items-center gap-2">
@@ -391,13 +328,11 @@ export function NewRecurringInvoiceClient({
                   className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-2 focus:ring-[#0f6b4f]/20 min-h-[44px]"
                 />
                 <span className="text-xs sm:text-sm font-medium text-slate-600 shrink-0">
-                  {locale === "id" ? "Hari" : "Days"}
+                  {tRec("days")}
                 </span>
               </div>
               <p className="text-[11px] text-slate-400 mt-1">
-                {locale === "id"
-                  ? `Contoh: 7 hari = jatuh tempo 7 hari sejak invoice dibuat.`
-                  : `e.g. 7 days after invoice is generated.`}
+                {tRec("dueDaysHint")}
               </p>
             </div>
           </div>
@@ -414,12 +349,10 @@ export function NewRecurringInvoiceClient({
               <div className="text-xs">
                 <span className="font-bold text-slate-900 flex items-center gap-1.5">
                   <EnvelopeIcon className="w-3.5 h-3.5 text-emerald-600" />
-                  {locale === "id" ? "Kirim Email Otomatis" : "Auto Send Email"}
+                  {tRec("autoSendEmail")}
                 </span>
                 <p className="text-slate-500 mt-0.5">
-                  {locale === "id"
-                    ? "Kirim invoice dan tautan pembayaran langsung ke email pelanggan saat terbit."
-                    : "Instantly email the invoice link and payment details upon dispatch."}
+                  {tRec("autoSendEmailDesc")}
                 </p>
               </div>
             </label>
@@ -434,14 +367,12 @@ export function NewRecurringInvoiceClient({
               <div className="text-xs">
                 <span className="font-bold text-slate-900 flex items-center gap-1.5">
                   <CreditCardIcon className="w-3.5 h-3.5 text-slate-600" />
-                  {locale === "id" ? "Transfer Bank Manual" : "Direct Bank Transfer"}
+                  {tRec("directTransfer")}
                 </span>
                 <p className="text-slate-500 mt-0.5">
                   {userBankName
                     ? `${userBankName} (${userBankAccountNumber})`
-                    : locale === "id"
-                    ? "Tampilkan rekening bank Anda di invoice."
-                    : "Display your bank account on invoice."}
+                    : tRec("bankMissing")}
                 </p>
               </div>
             </label>
@@ -452,7 +383,7 @@ export function NewRecurringInvoiceClient({
         <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs space-y-4">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <h2 className="text-sm sm:text-base font-bold text-slate-900">
-              {locale === "id" ? "Rincian Item Tagihan" : "Invoice Items"}
+              {tRec("itemsTitle")}
             </h2>
             <button
               type="button"
@@ -460,7 +391,7 @@ export function NewRecurringInvoiceClient({
               className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-[#0f6b4f] hover:underline cursor-pointer"
             >
               <PlusIcon className="w-4 h-4" />
-              <span>{locale === "id" ? "Tambah Baris" : "Add Item"}</span>
+              <span>{tRec("addItem")}</span>
             </button>
           </div>
 
@@ -472,17 +403,13 @@ export function NewRecurringInvoiceClient({
               >
                 <div className="col-span-12 sm:col-span-6">
                   <label className="block text-[11px] font-semibold text-slate-500 mb-1 sm:hidden">
-                    {locale === "id" ? "Deskripsi" : "Description"}
+                    {tRec("description")}
                   </label>
                   <input
                     type="text"
                     value={item.description}
                     onChange={(e) => updateItem(index, "description", e.target.value)}
-                    placeholder={
-                      locale === "id"
-                        ? "Nama layanan / produk langganan"
-                        : "Service / subscription item name"
-                    }
+                    placeholder={tRec("itemPlaceholder")}
                     required
                     className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs sm:text-sm text-slate-900 shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f]"
                   />
@@ -490,7 +417,7 @@ export function NewRecurringInvoiceClient({
 
                 <div className="col-span-4 sm:col-span-2">
                   <label className="block text-[11px] font-semibold text-slate-500 mb-1 sm:hidden">
-                    {locale === "id" ? "Jumlah" : "Qty"}
+                    {tRec("quantity")}
                   </label>
                   <input
                     type="number"
@@ -504,7 +431,7 @@ export function NewRecurringInvoiceClient({
 
                 <div className="col-span-6 sm:col-span-3">
                   <label className="block text-[11px] font-semibold text-slate-500 mb-1 sm:hidden">
-                    {locale === "id" ? "Harga Satuan (Rp)" : "Price (Rp)"}
+                    {tRec("unitPrice")}
                   </label>
                   <input
                     type="number"
@@ -523,7 +450,7 @@ export function NewRecurringInvoiceClient({
                     onClick={() => removeItem(index)}
                     disabled={items.length <= 1}
                     className="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors disabled:opacity-30 cursor-pointer"
-                    title={locale === "id" ? "Hapus Item" : "Delete Item"}
+                    title={tRec("deleteItem")}
                   >
                     <TrashIcon className="w-4 h-4" />
                   </button>
@@ -537,7 +464,7 @@ export function NewRecurringInvoiceClient({
             {/* Discount */}
             <div className="space-y-1.5">
               <label className="font-semibold text-slate-700">
-                {locale === "id" ? "Diskon / Potongan" : "Discount"}
+                {tRec("discount")}
               </label>
               <div className="flex items-center gap-2">
                 <select
@@ -545,8 +472,8 @@ export function NewRecurringInvoiceClient({
                   onChange={(e) => setDiscountType(e.target.value as DiscountType)}
                   className="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-800 shadow-2xs focus:border-[#0f6b4f] focus:outline-none"
                 >
-                  <option value="FIXED">Rp (Nominal)</option>
-                  <option value="PERCENTAGE">% (Persen)</option>
+                  <option value="FIXED">{tRec("discountFixed")}</option>
+                  <option value="PERCENTAGE">{tRec("discountPercent")}</option>
                 </select>
                 <input
                   type="number"
@@ -561,7 +488,7 @@ export function NewRecurringInvoiceClient({
             {/* Tax */}
             <div className="space-y-1.5">
               <label className="font-semibold text-slate-700">
-                {locale === "id" ? "Pajak / PPN" : "Tax (PPN)"}
+                {tRec("tax")}
               </label>
               <div className="flex items-center gap-2">
                 <select
@@ -572,10 +499,10 @@ export function NewRecurringInvoiceClient({
                   }}
                   className="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-800 shadow-2xs focus:border-[#0f6b4f] focus:outline-none"
                 >
-                  <option value={0}>Tanpa Pajak (0%)</option>
+                  <option value={0}>{tRec("taxNone")}</option>
                   <option value={11}>PPN 11%</option>
                   <option value={12}>PPN 12%</option>
-                  <option value="custom">Kustom %</option>
+                  <option value="custom">{tRec("taxCustom")}</option>
                 </select>
                 {selectedTaxMode === "custom" && (
                   <input
@@ -596,14 +523,14 @@ export function NewRecurringInvoiceClient({
           <div className="pt-3 border-t border-slate-100 flex justify-end">
             <div className="w-full sm:w-64 space-y-1.5 text-xs">
               <div className="flex justify-between text-slate-600">
-                <span>Subtotal:</span>
+                <span>{tRec("subtotal")}</span>
                 <span className="font-mono tabular-nums font-semibold">
                   Rp{totals.subtotal.toLocaleString("id-ID")}
                 </span>
               </div>
               {totals.discountAmount > 0 && (
                 <div className="flex justify-between text-emerald-700">
-                  <span>Diskon:</span>
+                  <span>{tRec("discountSummary")}</span>
                   <span className="font-mono tabular-nums font-semibold">
                     -Rp{totals.discountAmount.toLocaleString("id-ID")}
                   </span>
@@ -611,14 +538,14 @@ export function NewRecurringInvoiceClient({
               )}
               {totals.taxAmount > 0 && (
                 <div className="flex justify-between text-slate-600">
-                  <span>Pajak ({activeTaxRate}%):</span>
+                  <span>{tRec("taxSummary", { rate: activeTaxRate })}</span>
                   <span className="font-mono tabular-nums font-semibold">
                     +Rp{totals.taxAmount.toLocaleString("id-ID")}
                   </span>
                 </div>
               )}
               <div className="flex justify-between text-sm font-bold text-slate-900 pt-1.5 border-t border-slate-200">
-                <span>Total Estimasi:</span>
+                <span>{tRec("estimatedGrandTotal")}</span>
                 <span className="font-mono tabular-nums text-[#0f6b4f]">
                   Rp{totals.total.toLocaleString("id-ID")}
                 </span>
@@ -630,17 +557,13 @@ export function NewRecurringInvoiceClient({
         {/* Notes & Terms */}
         <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs space-y-3">
           <label className="block text-xs sm:text-sm font-semibold text-slate-700">
-            {locale === "id" ? "Catatan / Ketentuan Pembayaran" : "Notes & Payment Terms"}
+            {tRec("notes")}
           </label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={3}
-            placeholder={
-              locale === "id"
-                ? "Contoh: Mohon lakukan pembayaran sebelum tanggal jatuh tempo. Terima kasih atas kerja samanya."
-                : "e.g. Please complete payment before the due date. Thank you for your business."
-            }
+            placeholder={tRec("notesPlaceholder")}
             className="w-full rounded-xl border border-slate-300 bg-white p-3 text-xs sm:text-sm text-slate-900 shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-2 focus:ring-[#0f6b4f]/20"
           />
         </div>
@@ -651,7 +574,7 @@ export function NewRecurringInvoiceClient({
             href="/recurring-invoices"
             className="w-full sm:w-auto text-center rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors shadow-2xs min-h-[44px] flex items-center justify-center"
           >
-            {locale === "id" ? "Batal" : "Cancel"}
+            {tRec("cancel")}
           </Link>
 
           <button
@@ -662,12 +585,8 @@ export function NewRecurringInvoiceClient({
             <CheckBadgeIcon className="w-4 h-4" />
             <span>
               {loading
-                ? locale === "id"
-                  ? "Menyimpan..."
-                  : "Saving..."
-                : locale === "id"
-                ? "Simpan & Jadwalkan Tagihan"
-                : "Save & Schedule Recurring"}
+                ? tRec("saving")
+                : tRec("saveSchedule")}
             </span>
           </button>
         </div>

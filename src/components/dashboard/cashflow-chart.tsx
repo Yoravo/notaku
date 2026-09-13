@@ -2,14 +2,14 @@
 
 import { MonthlyCashflowPoint } from "@/lib/analytics";
 import { formatCurrency } from "@/lib/pdf/format";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 
 interface CashflowChartProps {
   data: MonthlyCashflowPoint[];
 }
 
 export function CashflowChart({ data }: CashflowChartProps) {
-  const { locale } = useLanguage();
+  const tCash = useTranslations("cashflow");
 
   const maxVal = Math.max(
     ...data.map((d) => Math.max(d.billed, d.collected)),
@@ -26,12 +26,10 @@ export function CashflowChart({ data }: CashflowChartProps) {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-slate-100">
         <div>
           <h2 className="text-base font-bold text-slate-900">
-            {locale === "id" ? "Arus Kas & Realisasi Pembayaran" : "Cashflow & Payment Collection"}
+            {tCash("title")}
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
-            {locale === "id"
-              ? "Perbandingan nilai tagihan yang diterbitkan vs pembayaran yang diterima (6 Bulan Terakhir)"
-              : "Comparison between invoiced amount vs collected revenue (Last 6 Months)"}
+            {tCash("subtitle")}
           </p>
         </div>
 
@@ -39,17 +37,17 @@ export function CashflowChart({ data }: CashflowChartProps) {
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded bg-blue-500 inline-block" />
             <span className="text-slate-600">
-              {locale === "id" ? "Ditagihkan (Billed)" : "Invoiced"}
+              {tCash("legendBilled")}
             </span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded bg-[#0f6b4f] inline-block" />
             <span className="text-slate-600">
-              {locale === "id" ? "Diterima (Collected)" : "Collected"}
+              {tCash("legendCollected")}
             </span>
           </div>
           <div className="rounded-lg bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-[#0f6b4f] border border-emerald-200/60">
-            {collectionRate}% {locale === "id" ? "Tercairkan" : "Realized"}
+            {tCash("rateRealized", { rate: collectionRate })}
           </div>
         </div>
       </div>
@@ -110,13 +108,13 @@ export function CashflowChart({ data }: CashflowChartProps) {
         <div className="mt-4 grid grid-cols-2 gap-3 pt-2 text-xs sm:text-sm">
           <div className="p-3 rounded-xl bg-slate-50 border border-slate-100">
             <span className="text-slate-500 text-xs">
-              {locale === "id" ? "Total Tagihan Diterbitkan (6 Bln)" : "Total Invoiced (6 Mo)"}
+              {tCash("summaryTotalBilled")}
             </span>
             <p className="font-bold text-slate-900 mt-0.5">{formatCurrency(totalBilled)}</p>
           </div>
           <div className="p-3 rounded-xl bg-emerald-50/50 border border-emerald-100">
             <span className="text-emerald-700 text-xs">
-              {locale === "id" ? "Total Kas Masuk Terkumpul (6 Bln)" : "Total Cash Collected (6 Mo)"}
+              {tCash("summaryTotalCollected")}
             </span>
             <p className="font-bold text-[#0f6b4f] mt-0.5">{formatCurrency(totalCollected)}</p>
           </div>

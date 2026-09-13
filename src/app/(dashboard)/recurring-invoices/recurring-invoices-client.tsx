@@ -27,7 +27,7 @@ import {
 } from "@/actions/recurring-invoices";
 import { UpgradeButton } from "@/components/upgrade-button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 import { formatDateWIB } from "@/lib/invoice-utils";
 
 interface RecurringInvoicesClientProps {
@@ -39,7 +39,7 @@ export function RecurringInvoicesClient({
   recurringList,
   isPro,
 }: RecurringInvoicesClientProps) {
-  const { t, locale } = useLanguage();
+  const tRec = useTranslations("recurring");
   const router = useRouter();
 
   const [loadingId, setLoadingId] = useState<string | null>(null);
@@ -64,12 +64,12 @@ export function RecurringInvoicesClient({
     onConfirm: async () => {},
   });
 
-  const frequencyLabels: Record<RecurringFrequency, { id: string; en: string }> = {
-    WEEKLY: { id: "Mingguan (7 Hari)", en: "Weekly (7 Days)" },
-    BIWEEKLY: { id: "2 Mingguan (14 Hari)", en: "Biweekly (14 Days)" },
-    MONTHLY: { id: "Bulanan", en: "Monthly" },
-    QUARTERLY: { id: "Triwulan (3 Bulan)", en: "Quarterly (3 Months)" },
-    ANNUALLY: { id: "Tahunan", en: "Annually" },
+  const frequencyLabels: Record<RecurringFrequency, string> = {
+    WEEKLY: tRec("freqWeekly"),
+    BIWEEKLY: tRec("freqBiweekly"),
+    MONTHLY: tRec("freqMonthly"),
+    QUARTERLY: tRec("freqQuarterly"),
+    ANNUALLY: tRec("freqAnnually"),
   };
 
   const handleStatusChange = async (id: string, newStatus: RecurringStatus, title: string) => {
@@ -79,51 +79,31 @@ export function RecurringInvoicesClient({
     setDialogConfig({
       isOpen: true,
       title: isCancelling
-        ? locale === "id"
-          ? "Hapus Jadwal Tagihan Berulang?"
-          : "Delete Recurring Schedule?"
+        ? tRec("deleteTitle")
         : isPausing
-        ? locale === "id"
-          ? "Jeda Tagihan Berulang?"
-          : "Pause Recurring Schedule?"
-        : locale === "id"
-        ? "Lanjutkan Tagihan Berulang?"
-        : "Resume Recurring Schedule?",
+        ? tRec("pauseTitle")
+        : tRec("resumeTitle"),
       description: isCancelling
-        ? locale === "id"
-          ? "Jadwal ini akan dibatalkan dan tidak akan menerbitkan invoice otomatis lagi."
-          : "This schedule will be cancelled and will no longer dispatch automatic invoices."
+        ? tRec("deleteDesc")
         : isPausing
-        ? locale === "id"
-          ? "Invoice otomatis tidak akan diterbitkan selama jadwal ini dijeda."
-          : "Automatic invoices will not be generated while this schedule is paused."
-        : locale === "id"
-        ? "Jadwal ini akan kembali aktif dan menerbitkan invoice sesuai jadwal."
-        : "This schedule will be reactivated and generate invoices as scheduled.",
+        ? tRec("pauseDesc")
+        : tRec("resumeDesc"),
       confirmLabel: isCancelling
-        ? locale === "id"
-          ? "Ya, Hapus"
-          : "Yes, Delete"
+        ? tRec("deleteConfirm")
         : isPausing
-        ? locale === "id"
-          ? "Ya, Jeda"
-          : "Yes, Pause"
-        : locale === "id"
-        ? "Ya, Lanjutkan"
-        : "Yes, Resume",
+        ? tRec("pauseConfirm")
+        : tRec("resumeConfirm"),
       variant: isCancelling ? "danger" : isPausing ? "warning" : "success",
-      itemDetails: [{ label: locale === "id" ? "Nama Jadwal" : "Schedule Title", value: title }],
+      itemDetails: [{ label: tRec("scheduleName"), value: title }],
       onConfirm: async () => {
         setLoadingId(id);
         try {
           await updateRecurringInvoiceStatus(id, newStatus);
-          setSuccessMessage(
-            locale === "id" ? "Status jadwal berhasil diperbarui!" : "Schedule status updated!"
-          );
+          setSuccessMessage(tRec("statusUpdated"));
           setTimeout(() => setSuccessMessage(null), 4000);
           router.refresh();
         } catch (err: any) {
-          setErrorMessage(err.message || "Terjadi kesalahan");
+          setErrorMessage(err.message || tRec("genericError"));
           setTimeout(() => setErrorMessage(null), 4000);
         } finally {
           setLoadingId(null);
@@ -136,27 +116,20 @@ export function RecurringInvoicesClient({
   const handleRunNow = async (id: string, title: string) => {
     setDialogConfig({
       isOpen: true,
-      title: locale === "id" ? "Terbitkan Invoice Sekarang?" : "Generate Invoice Now?",
-      description:
-        locale === "id"
-          ? "Sistem akan langsung membuat invoice resmi baru di daftar Invoice dan memajukan jadwal terbit berikutnya."
-          : "The system will immediately create a new official invoice and advance the next run date.",
-      confirmLabel: locale === "id" ? "Terbitkan Sekarang" : "Generate Now",
+      title: tRec("runNowTitle"),
+      description: tRec("runNowDesc"),
+      confirmLabel: tRec("runNowConfirm"),
       variant: "primary",
-      itemDetails: [{ label: locale === "id" ? "Nama Jadwal" : "Schedule Title", value: title }],
+      itemDetails: [{ label: tRec("scheduleName"), value: title }],
       onConfirm: async () => {
         setLoadingId(id);
         try {
           const res = await triggerRecurringInvoiceNow(id);
-          setSuccessMessage(
-            locale === "id"
-              ? `Invoice ${res.invoiceNumber} berhasil diterbitkan!`
-              : `Invoice ${res.invoiceNumber} generated successfully!`
-          );
+          setSuccessMessage(tRec("runNowSuccess", { invoiceNumber: res.invoiceNumber }));
           setTimeout(() => setSuccessMessage(null), 5000);
           router.refresh();
         } catch (err: any) {
-          setErrorMessage(err.message || "Gagal menerbitkan invoice");
+          setErrorMessage(err.message || tRec("runNowFailed"));
           setTimeout(() => setErrorMessage(null), 5000);
         } finally {
           setLoadingId(null);
@@ -174,7 +147,7 @@ export function RecurringInvoicesClient({
           <div className="flex items-center gap-2">
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
               <ArrowPathIcon className="w-6 h-6 sm:w-7 sm:h-7 text-[#0f6b4f]" />
-              <span>{t.recurring?.title || (locale === "id" ? "Tagihan Berulang" : "Recurring Invoices")}</span>
+              <span>{tRec("title")}</span>
             </h1>
             <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-[#0f6b4f] border border-emerald-200 shadow-2xs">
               <SparklesIcon className="w-3.5 h-3.5 text-[#0f6b4f]" />
@@ -182,10 +155,7 @@ export function RecurringInvoicesClient({
             </span>
           </div>
           <p className="mt-1 text-xs sm:text-sm text-slate-500 max-w-2xl">
-            {t.recurring?.subtitle ||
-              (locale === "id"
-                ? "Otomatisasi pembuatan dan pengiriman invoice berkala untuk bisnis langganan, retainer, atau sewa."
-                : "Automate invoice generation and delivery on periodic schedules for subscription, retainer, or rental businesses.")}
+            {tRec("subtitle")}
           </p>
         </div>
 
@@ -196,10 +166,7 @@ export function RecurringInvoicesClient({
             className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#0f6b4f] px-4 py-2 text-xs sm:text-sm font-bold text-white transition-all hover:bg-[#0c553e] active:scale-[0.98] shadow-xs shrink-0"
           >
             <PlusIcon className="w-4 h-4" />
-            <span>
-              {t.recurring?.newRecurring ||
-                (locale === "id" ? "Buat Tagihan Berulang" : "New Recurring Schedule")}
-            </span>
+            <span>{tRec("newRecurring")}</span>
           </Link>
         )}
       </div>
@@ -226,14 +193,10 @@ export function RecurringInvoicesClient({
           </div>
           <div>
             <h2 className="text-lg font-bold text-slate-900">
-              {t.recurring?.proFeatureNotice ||
-                (locale === "id" ? "Fitur Eksklusif NotaKu PRO" : "Exclusive NotaKu PRO Feature")}
+              {tRec("proFeatureNotice")}
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-lg mx-auto leading-relaxed">
-              {t.recurring?.proFeatureDesc ||
-                (locale === "id"
-                  ? "Fitur invoice berulang (recurring invoices) otomatis hanya tersedia untuk pelanggan paket NotaKu PRO. Tingkatkan paket Anda untuk menghemat waktu penagihan bulanan."
-                  : "Automated recurring invoices are available exclusively for NotaKu PRO members. Upgrade now to save time on monthly billing.")}
+              {tRec("proFeatureDesc")}
             </p>
           </div>
           <div className="pt-2">
@@ -248,14 +211,10 @@ export function RecurringInvoicesClient({
           </div>
           <div>
             <h3 className="text-base font-bold text-slate-900">
-              {t.recurring?.emptyTitle ||
-                (locale === "id" ? "Belum ada tagihan berulang" : "No recurring schedules yet")}
+              {tRec("emptyTitle")}
             </h3>
             <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-md mx-auto">
-              {t.recurring?.emptyDesc ||
-                (locale === "id"
-                  ? "Buat jadwal invoice periodik otomatis agar Anda tidak perlu membuat tagihan berulang kali secara manual."
-                  : "Create periodic invoice schedules to automate recurring billing without manual effort.")}
+              {tRec("emptyDesc")}
             </p>
           </div>
           <div>
@@ -265,10 +224,7 @@ export function RecurringInvoicesClient({
               className="inline-flex items-center gap-1.5 rounded-xl bg-[#0f6b4f] px-4 py-2.5 text-xs sm:text-sm font-bold text-white hover:bg-[#0c553e] transition-all shadow-xs"
             >
               <PlusIcon className="w-4 h-4" />
-              <span>
-                {t.recurring?.newRecurring ||
-                  (locale === "id" ? "Buat Tagihan Berulang" : "New Recurring Schedule")}
-              </span>
+              <span>{tRec("newRecurring")}</span>
             </Link>
           </div>
         </div>
@@ -293,7 +249,7 @@ export function RecurringInvoicesClient({
                     <div>
                       <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
                         <ClockIcon className="w-3.5 h-3.5 text-slate-400" />
-                        {frequencyLabels[item.frequency]?.[locale] || item.frequency}
+                        {frequencyLabels[item.frequency]}
                       </span>
                       <h3 className="text-base font-bold text-slate-900 leading-snug mt-0.5">
                         {item.title}
@@ -303,11 +259,11 @@ export function RecurringInvoicesClient({
                     {item.status === "ACTIVE" ? (
                       <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-[#0f6b4f] border border-emerald-200">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#0f6b4f] animate-pulse" />
-                        {t.recurring?.statusActive || "Aktif"}
+                        {tRec("statusActive")}
                       </span>
                     ) : (
                       <span className="inline-flex items-center rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-bold text-amber-700 border border-amber-200">
-                        {t.recurring?.statusPaused || "Dijeda"}
+                        {tRec("statusPaused")}
                       </span>
                     )}
                   </div>
@@ -317,7 +273,7 @@ export function RecurringInvoicesClient({
                     <div className="flex items-center justify-between text-slate-600">
                       <span className="flex items-center gap-1.5 text-slate-500">
                         <UsersIcon className="w-3.5 h-3.5" />
-                        {locale === "id" ? "Pelanggan" : "Client"}
+                        {tRec("customer")}
                       </span>
                       <span className="font-semibold text-slate-900">
                         {item.customer?.name || "—"}
@@ -325,7 +281,7 @@ export function RecurringInvoicesClient({
                     </div>
 
                     <div className="flex items-center justify-between text-slate-600">
-                      <span className="text-slate-500">{locale === "id" ? "Estimasi Tagihan" : "Estimated Total"}</span>
+                      <span className="text-slate-500">{tRec("estimatedTotal")}</span>
                       <span className="font-bold text-[#0f6b4f] text-sm tabular-nums">
                         Rp{subtotal.toLocaleString("id-ID")}
                       </span>
@@ -334,7 +290,7 @@ export function RecurringInvoicesClient({
                     {item.autoSendEmail && item.customer?.email && (
                       <div className="flex items-center gap-1 text-[11px] text-slate-500 pt-0.5">
                         <EnvelopeIcon className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>Auto-email aktif ({item.customer.email})</span>
+                        <span>{tRec("autoEmailActive", { email: item.customer.email })}</span>
                       </div>
                     )}
                   </div>
@@ -344,7 +300,7 @@ export function RecurringInvoicesClient({
                     <div className="space-y-0.5">
                       <span className="text-slate-400 text-[11px] flex items-center gap-1">
                         <CalendarDaysIcon className="w-3 h-3" />
-                        {locale === "id" ? "Jadwal Berikutnya" : "Next Run"}
+                        {tRec("nextRun")}
                       </span>
                       <p className="font-semibold text-slate-800">
                         {formatDateWIB(new Date(item.nextRunDate))}
@@ -353,7 +309,7 @@ export function RecurringInvoicesClient({
 
                     <div className="space-y-0.5">
                       <span className="text-slate-400 text-[11px]">
-                        {locale === "id" ? "Terakhir Terbit" : "Last Run"}
+                        {tRec("lastRun")}
                       </span>
                       <p className="font-medium text-slate-600">
                         {item.lastRunDate ? formatDateWIB(new Date(item.lastRunDate)) : "—"}
@@ -371,7 +327,7 @@ export function RecurringInvoicesClient({
                     className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-bold text-[#0f6b4f] hover:bg-emerald-100 transition-colors disabled:opacity-50 cursor-pointer"
                   >
                     <PlayIcon className="w-3.5 h-3.5" />
-                    <span>{locale === "id" ? "Terbitkan Sekarang" : "Run Now"}</span>
+                    <span>{tRec("runNow")}</span>
                   </button>
 
                   <div className="flex items-center gap-1">
@@ -381,7 +337,7 @@ export function RecurringInvoicesClient({
                         onClick={() => handleStatusChange(item.id, "PAUSED", item.title)}
                         disabled={isItemLoading}
                         className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-colors disabled:opacity-50 cursor-pointer"
-                        title={locale === "id" ? "Jeda Jadwal" : "Pause Schedule"}
+                        title={tRec("pauseSchedule")}
                       >
                         <PauseIcon className="w-4 h-4" />
                       </button>
@@ -391,7 +347,7 @@ export function RecurringInvoicesClient({
                         onClick={() => handleStatusChange(item.id, "ACTIVE", item.title)}
                         disabled={isItemLoading}
                         className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors disabled:opacity-50 cursor-pointer"
-                        title={locale === "id" ? "Lanjutkan Jadwal" : "Resume Schedule"}
+                        title={tRec("resumeSchedule")}
                       >
                         <PlayIcon className="w-4 h-4" />
                       </button>
@@ -402,7 +358,7 @@ export function RecurringInvoicesClient({
                       onClick={() => handleStatusChange(item.id, "CANCELLED", item.title)}
                       disabled={isItemLoading}
                       className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors disabled:opacity-50 cursor-pointer"
-                      title={locale === "id" ? "Hapus / Batalkan Jadwal" : "Delete Schedule"}
+                      title={tRec("deleteSchedule")}
                     >
                       <TrashIcon className="w-4 h-4" />
                     </button>

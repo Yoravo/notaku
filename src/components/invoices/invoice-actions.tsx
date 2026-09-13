@@ -12,7 +12,7 @@ import {
   DocumentDuplicateIcon,
 } from "@heroicons/react/24/outline";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 
 export function InvoiceActions({
   invoiceId,
@@ -23,7 +23,7 @@ export function InvoiceActions({
   status: string;
   invoiceNumber?: string;
 }) {
-  const { t, locale } = useLanguage();
+  const tInv = useTranslations("invoices");
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -70,9 +70,7 @@ export function InvoiceActions({
       const message =
         err instanceof Error
           ? err.message
-          : locale === "id"
-          ? "Terjadi kesalahan"
-          : "An error occurred";
+          : tInv("genericError");
       setError(message);
     } finally {
       setLoading(null);
@@ -112,8 +110,8 @@ export function InvoiceActions({
             <PaperAirplaneIcon className="w-4 h-4" />
             <span>
               {isLoading("sent")
-                ? locale === "id" ? "Menandai..." : "Updating..."
-                : t.invoices?.markSent || (locale === "id" ? "Tandai Terkirim" : "Mark as Sent")}
+                ? tInv("updating")
+                : tInv("markSent")}
             </span>
           </button>
         )}
@@ -127,8 +125,8 @@ export function InvoiceActions({
             <CheckIcon className="w-4 h-4 stroke-[2.5]" />
             <span>
               {isLoading("paid")
-                ? locale === "id" ? "Menyimpan..." : "Saving..."
-                : t.invoices?.markPaid || (locale === "id" ? "Tandai Lunas" : "Mark as Paid")}
+                ? tInv("saving")
+                : tInv("markPaid")}
             </span>
           </button>
         )}
@@ -138,7 +136,7 @@ export function InvoiceActions({
           type="button"
           onClick={() => setDropdownOpen(!dropdownOpen)}
           disabled={busy}
-          aria-label={locale === "id" ? "Menu Opsi Tambahan" : "More Actions"}
+          aria-label={tInv("moreActions")}
           className="p-2 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shadow-2xs disabled:opacity-50"
         >
           <EllipsisVerticalIcon className="w-4 h-4" />
@@ -151,7 +149,7 @@ export function InvoiceActions({
               className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
             >
               <DocumentDuplicateIcon className="w-4 h-4 text-slate-500" />
-              <span>{t.invoices?.duplicateInvoice || (locale === "id" ? "Duplikasi (1-Click)" : "Duplicate (1-Click)")}</span>
+              <span>{tInv("duplicateInvoice")}</span>
             </button>
 
             {status === "DRAFT" && (
@@ -160,7 +158,7 @@ export function InvoiceActions({
                 className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-[#0f6b4f] hover:bg-emerald-50 transition-colors cursor-pointer"
               >
                 <CheckIcon className="w-4 h-4" />
-                <span>{t.invoices?.markPaid || (locale === "id" ? "Langsung Tandai Lunas" : "Mark as Paid")}</span>
+                <span>{tInv("markPaidDirect")}</span>
               </button>
             )}
 
@@ -173,7 +171,7 @@ export function InvoiceActions({
                 className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-amber-700 hover:bg-amber-50 transition-colors cursor-pointer"
               >
                 <XCircleIcon className="w-4 h-4 text-amber-500" />
-                <span>{t.invoices?.cancelInvoice || (locale === "id" ? "Batalkan Invoice" : "Cancel Invoice")}</span>
+                <span>{tInv("cancelInvoice")}</span>
               </button>
             )}
 
@@ -187,7 +185,7 @@ export function InvoiceActions({
               className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
             >
               <TrashIcon className="w-4 h-4" />
-              <span>{t.invoices?.deleteInvoice || (locale === "id" ? "Hapus Invoice" : "Delete Invoice")}</span>
+              <span>{tInv("deleteInvoice")}</span>
             </button>
           </div>
         )}
@@ -207,14 +205,10 @@ export function InvoiceActions({
         isOpen={confirmModal.isOpen && confirmModal.type === "cancel"}
         onClose={() => setConfirmModal({ isOpen: false, type: null })}
         onConfirm={handleExecuteCancel}
-        title={locale === "id" ? "Batalkan Invoice Ini?" : "Cancel this Invoice?"}
-        description={
-          locale === "id"
-            ? "Status invoice akan diubah menjadi CANCELLED. Pelanggan tidak akan dapat melakukan pembayaran digital untuk invoice ini."
-            : "Invoice status will change to CANCELLED. Digital payments will be disabled for this invoice."
-        }
-        confirmLabel={locale === "id" ? "Ya, Batalkan Invoice" : "Yes, Cancel Invoice"}
-        cancelLabel={locale === "id" ? "Kembali" : "Go Back"}
+        title={tInv("cancelConfirmTitle")}
+        description={tInv("cancelConfirmDesc")}
+        confirmLabel={tInv("cancelConfirmAction")}
+        cancelLabel={tInv("goBack")}
         variant="warning"
         isLoading={isLoading("cancel")}
       />
@@ -224,15 +218,10 @@ export function InvoiceActions({
         isOpen={confirmModal.isOpen && confirmModal.type === "delete"}
         onClose={() => setConfirmModal({ isOpen: false, type: null })}
         onConfirm={handleExecuteDelete}
-        title={t.invoices?.deleteConfirmTitle || (locale === "id" ? "Hapus Invoice Ini?" : "Delete This Invoice?")}
-        description={
-          t.invoices?.deleteConfirmDesc ||
-          (locale === "id"
-            ? "Invoice yang dihapus tidak dapat dipulihkan kembali. Seluruh data item dan tautan publik invoice ini akan dinonaktifkan."
-            : "Deleted invoices cannot be recovered. All line items and public links will be permanently disabled.")
-        }
-        confirmLabel={locale === "id" ? "Ya, Hapus Invoice" : "Yes, Delete Invoice"}
-        cancelLabel={locale === "id" ? "Batal" : "Cancel"}
+        title={tInv("deleteConfirmTitle")}
+        description={tInv("deleteConfirmDesc")}
+        confirmLabel={tInv("deleteConfirmAction")}
+        cancelLabel={tInv("cancel")}
         variant="danger"
         isLoading={isLoading("delete")}
       />

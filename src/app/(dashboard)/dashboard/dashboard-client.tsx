@@ -13,10 +13,11 @@ import {
 import { RecentInvoices } from "@/components/recent-invoices";
 import { SerializedInvoice } from "@/types/invoice";
 import { AnnouncementBanner, AnnouncementData } from "@/components/announcement-banner";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations, useLocale } from "next-intl";
 import { AdvancedAnalyticsData } from "@/lib/analytics";
 import { CashflowChart } from "@/components/dashboard/cashflow-chart";
 import { ClientPerformanceMetrics } from "@/components/dashboard/client-performance-metrics";
+import { formatMoney } from "@/lib/currencies";
 
 interface DashboardClientProps {
   userName: string;
@@ -49,16 +50,18 @@ export function DashboardClient({
   announcement = null,
   analytics,
 }: DashboardClientProps) {
-  const { t, locale } = useLanguage();
+  const tDash = useTranslations("dashboard");
+  const tInv = useTranslations("invoices");
+  const tStatus = useTranslations("common.status");
+  const locale = useLocale();
 
-  const rangeLabels: Record<string, { id: string; en: string }> = {
-    month: { id: "Bulan Ini", en: "This Month" },
-    year: { id: "Tahun Ini", en: "This Year" },
-    all: { id: "Semua Waktu", en: "All Time" },
+  const rangeLabels: Record<string, string> = {
+    month: tDash("rangeMonth"),
+    year: tDash("rangeYear"),
+    all: tDash("rangeAll"),
   };
 
-  const periodLabel =
-    rangeLabels[selectedRange]?.[locale] || (locale === "id" ? "Bulan Ini" : "This Month");
+  const periodLabel = rangeLabels[selectedRange] || tDash("rangeMonth");
 
   return (
     <div className="space-y-6 sm:space-y-8">
@@ -70,33 +73,21 @@ export function DashboardClient({
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-              {locale === "id" ? "Ringkasan Dashboard" : "Dashboard Overview"}
+              {tDash("title")}
             </h1>
             {isPro ? (
               <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-[#0f6b4f] border border-emerald-200 shadow-2xs">
                 <SparklesIcon className="w-3.5 h-3.5 text-[#0f6b4f]" />
-                PRO
+                {tDash("planBadgePro")}
               </span>
             ) : (
               <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-600 border border-slate-200">
-                FREE
+                {tDash("planBadgeFree")}
               </span>
             )}
           </div>
           <p className="mt-1 text-xs sm:text-sm text-slate-500">
-            {locale === "id" ? (
-              <>
-                Selamat datang kembali,{" "}
-                <span className="font-semibold text-slate-800">{userName}</span>. Berikut
-                performa transaksi tagihan Anda.
-              </>
-            ) : (
-              <>
-                Welcome back,{" "}
-                <span className="font-semibold text-slate-800">{userName}</span>. Here is your
-                billing and transaction performance.
-              </>
-            )}
+            {tDash("welcome", { name: userName })}
           </p>
         </div>
 
@@ -107,7 +98,7 @@ export function DashboardClient({
             className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors shadow-2xs"
           >
             <ArrowDownTrayIcon className="w-4 h-4 text-slate-400" />
-            <span>{locale === "id" ? "Ekspor Rekap" : "Export Report"}</span>
+            <span>{tDash("exportReport")}</span>
           </a>
           <Link
             href="/invoices/new"
@@ -115,7 +106,7 @@ export function DashboardClient({
             className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#0f6b4f] px-4 py-2 text-xs sm:text-sm font-bold text-white transition-all hover:bg-[#0c553e] active:scale-[0.98] shadow-xs"
           >
             <PlusIcon className="w-4 h-4" />
-            <span>{t.invoices?.newInvoice || (locale === "id" ? "Buat Invoice" : "New Invoice")}</span>
+            <span>{tInv("newInvoice")}</span>
           </Link>
         </div>
       </div>
@@ -133,7 +124,7 @@ export function DashboardClient({
                 : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
             }`}
           >
-            {rangeLabels[r][locale]}
+            {rangeLabels[r]}
           </Link>
         ))}
       </div>
@@ -144,7 +135,7 @@ export function DashboardClient({
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs transition-all hover:border-slate-300 hover:shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              {locale === "id" ? "Total Tagihan" : "Total Billed"}
+              {tDash("totalRevenue")}
             </span>
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
               <DocumentTextIcon className="h-5 w-5" />
@@ -152,7 +143,7 @@ export function DashboardClient({
           </div>
           <div className="mt-3">
             <p className="text-2xl font-bold tracking-tight text-slate-900 tabular-nums">
-              Rp{totalVolume.toLocaleString("id-ID")}
+              {formatMoney(totalVolume, "IDR")}
             </p>
             <p className="mt-1 text-xs text-slate-400 font-medium">
               {invoiceCount} invoice • {periodLabel}
@@ -164,7 +155,7 @@ export function DashboardClient({
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs transition-all hover:border-slate-300 hover:shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              {locale === "id" ? "Pendapatan Lunas" : "Paid Revenue"}
+              {tDash("totalPaid")}
             </span>
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-[#0f6b4f]">
               <CheckBadgeIcon className="h-5 w-5" />
@@ -172,10 +163,10 @@ export function DashboardClient({
           </div>
           <div className="mt-3">
             <p className="text-2xl font-bold tracking-tight text-[#0f6b4f] tabular-nums">
-              Rp{paidRevenue.toLocaleString("id-ID")}
+              {formatMoney(paidRevenue, "IDR")}
             </p>
             <p className="mt-1 text-xs text-slate-400 font-medium">
-              {locale === "id" ? "Berhasil diterima" : "Successfully collected"}
+              {tDash("paidRevenueSubtitle")}
             </p>
           </div>
         </div>
@@ -184,7 +175,7 @@ export function DashboardClient({
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs transition-all hover:border-slate-300 hover:shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              {locale === "id" ? "Menunggu Bayar" : "Pending Payment"}
+              {tDash("unpaidAmount")}
             </span>
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
               <ClockIcon className="h-5 w-5" />
@@ -192,10 +183,10 @@ export function DashboardClient({
           </div>
           <div className="mt-3">
             <p className="text-2xl font-bold tracking-tight text-amber-600 tabular-nums">
-              Rp{pendingRevenue.toLocaleString("id-ID")}
+              {formatMoney(pendingRevenue, "IDR")}
             </p>
             <p className="mt-1 text-xs text-slate-400 font-medium">
-              {locale === "id" ? "Belum dibayar klien" : "Awaiting settlement"}
+              {tDash("unpaidAmountSubtitle")}
             </p>
           </div>
         </div>
@@ -204,7 +195,7 @@ export function DashboardClient({
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs transition-all hover:border-slate-300 hover:shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              {locale === "id" ? "Kuota Invoice" : "Invoice Quota"}
+              {tDash("monthlyLimit")}
             </span>
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
               <BanknotesIcon className="h-5 w-5" />

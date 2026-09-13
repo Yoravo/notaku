@@ -8,13 +8,15 @@ import {
   DocumentDuplicateIcon,
   ArrowTopRightOnSquareIcon,
 } from "@heroicons/react/24/outline";
-import { useLanguage } from "@/lib/i18n/context";
+import { formatMoney } from "@/lib/currencies";
+import { useLocale, useTranslations } from "next-intl";
 
 type Props = {
   invoiceNumber: string;
   customerName: string;
   customerPhone?: string | null;
   total: number;
+  currency?: string;
   dueDate?: string | null;
   publicId: string;
   customPublicUrl?: string | null;
@@ -27,13 +29,15 @@ export function WhatsAppShareModal({
   customerName,
   customerPhone,
   total,
+  currency,
   dueDate,
   publicId,
   customPublicUrl,
   businessName,
   status,
 }: Props) {
-  const { t, locale } = useLanguage();
+  const locale = useLocale() as "id" | "en";
+  const tInv = useTranslations("invoices");
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -48,15 +52,15 @@ export function WhatsAppShareModal({
       : process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
 
   const invoiceUrl = customPublicUrl || `${appUrl}/i/${publicId}`;
-  const totalFormatted = `Rp${Number(total).toLocaleString("id-ID")}`;
+  const totalFormatted = formatMoney(Number(total), currency || "IDR", locale);
   const sender = businessName ? `*${businessName}*` : "*NotaKu*";
 
   // Template opsi
   const templates = [
     {
       id: "new",
-      title: locale === "id" ? "Tagihan Baru" : "New Invoice",
-      desc: locale === "id" ? "Kirim tagihan pertama kali ke pelanggan" : "Send initial invoice to client",
+      title: tInv("waNewTitle"),
+      desc: tInv("waNewDesc"),
       text:
         locale === "id"
           ? `Halo Kak ${customerName},\n\nTerima kasih atas kerja samanya. Berikut rincian invoice ${invoiceNumber} dari ${sender}:\n\n💰 *Total Tagihan:* ${totalFormatted}${dueDate ? `\n📅 *Jatuh Tempo:* ${dueDate}` : ""}\n\nSilakan cek rincian dan pembayaran melalui link resmi berikut:\n👉 ${invoiceUrl}\n\nTerima kasih!`
@@ -64,35 +68,35 @@ export function WhatsAppShareModal({
     },
     {
       id: "reminder_h3",
-      title: locale === "id" ? "Pengingat (H-3)" : "Reminder (3 Days)",
-      desc: locale === "id" ? "Pengingat ramah 3 hari sebelum jatuh tempo" : "Friendly reminder 3 days before due date",
+      title: tInv("waReminderH3Title"),
+      desc: tInv("waReminderH3Desc"),
       text:
         locale === "id"
-          ? `Halo Kak ${customerName},\n\nSemoga hari Anda menyenangkan. Sekadar pengingat ramah bahwa tagihan invoice ${invoiceNumber} dari ${sender} sebesar ${totalFormatted} akan jatuh tempo dalam *3 hari lagi* (${dueDate || "segera"}).\n\nUntuk rincian dan pembayaran dapat diakses melalui link berikut:\n👉 ${invoiceUrl}\n\nTerima kasih banyak!`
-          : `Hello ${customerName},\n\nHope you have a great day. This is a friendly reminder that invoice ${invoiceNumber} from ${sender} for ${totalFormatted} is due in *3 days* (${dueDate || "soon"}).\n\nView details & pay online:\n👉 ${invoiceUrl}\n\nThank you!`,
+          ? `Halo Kak ${customerName},\n\nSemoga hari Anda menyenangkan. Sekadar pengingat ramah bahwa tagihan invoice ${invoiceNumber} dari ${sender} sebesar ${totalFormatted} akan jatuh tempo dalam *3 hari lagi* (${dueDate || tInv("dateSoon")}).\n\nUntuk rincian dan pembayaran dapat diakses melalui link berikut:\n👉 ${invoiceUrl}\n\nTerima kasih banyak!`
+          : `Hello ${customerName},\n\nHope you have a great day. This is a friendly reminder that invoice ${invoiceNumber} from ${sender} for ${totalFormatted} is due in *3 days* (${dueDate || tInv("dateSoon")}).\n\nView details & pay online:\n👉 ${invoiceUrl}\n\nThank you!`,
     },
     {
       id: "reminder_today",
-      title: locale === "id" ? "Hari H Jatuh Tempo" : "Due Today",
-      desc: locale === "id" ? "Pengingat tepat pada tanggal jatuh tempo" : "Reminder on due date",
+      title: tInv("waReminderTodayTitle"),
+      desc: tInv("waReminderTodayDesc"),
       text:
         locale === "id"
-          ? `Halo Kak ${customerName},\n\nKami ingin menginformasikan bahwa tagihan invoice ${invoiceNumber} dari ${sender} sebesar ${totalFormatted} jatuh tempo *HARI INI* (${dueDate || "hari ini"}).\n\nMohon bantuannya untuk dapat menyelesaikan pembayaran melalui tautan berikut:\n👉 ${invoiceUrl}\n\nJika sudah melakukan pembayaran, silakan abaikan pesan ini. Terima kasih!`
-          : `Hello ${customerName},\n\nFriendly reminder that invoice ${invoiceNumber} from ${sender} for ${totalFormatted} is due *TODAY* (${dueDate || "today"}).\n\nPlease complete payment via:\n👉 ${invoiceUrl}\n\nIf already paid, please disregard. Thank you!`,
+          ? `Halo Kak ${customerName},\n\nKami ingin menginformasikan bahwa tagihan invoice ${invoiceNumber} dari ${sender} sebesar ${totalFormatted} jatuh tempo *HARI INI* (${dueDate || tInv("dateToday")}).\n\nMohon bantuannya untuk dapat menyelesaikan pembayaran melalui tautan berikut:\n👉 ${invoiceUrl}\n\nJika sudah melakukan pembayaran, silakan abaikan pesan ini. Terima kasih!`
+          : `Hello ${customerName},\n\nFriendly reminder that invoice ${invoiceNumber} from ${sender} for ${totalFormatted} is due *TODAY* (${dueDate || tInv("dateToday")}).\n\nPlease complete payment via:\n👉 ${invoiceUrl}\n\nIf already paid, please disregard. Thank you!`,
     },
     {
       id: "reminder_overdue",
-      title: locale === "id" ? "Lewat Jatuh Tempo" : "Overdue",
-      desc: locale === "id" ? "Pemberitahuan tagihan yang telah melewati tempo" : "Notice for overdue invoices",
+      title: tInv("waOverdueTitle"),
+      desc: tInv("waOverdueDesc"),
       text:
         locale === "id"
-          ? `Halo Kak ${customerName},\n\nKami menginformasikan bahwa tagihan invoice ${invoiceNumber} dari ${sender} sebesar ${totalFormatted} saat ini telah *MELEWATI JATUH TEMPO* (${dueDate || "sudah lewat"}).\n\nMohon kesediaannya untuk segera melakukan konfirmasi dan pembayaran melalui link resmi berikut:\n👉 ${invoiceUrl}\n\nTerima kasih atas perhatian dan kerja samanya.`
-          : `Hello ${customerName},\n\nWe would like to notify you that invoice ${invoiceNumber} from ${sender} for ${totalFormatted} is now *OVERDUE* (${dueDate || "past due"}).\n\nPlease settle payment via:\n👉 ${invoiceUrl}\n\nThank you for your cooperation.`,
+          ? `Halo Kak ${customerName},\n\nKami menginformasikan bahwa tagihan invoice ${invoiceNumber} dari ${sender} sebesar ${totalFormatted} saat ini telah *MELEWATI JATUH TEMPO* (${dueDate || tInv("datePastDue")}).\n\nMohon kesediaannya untuk segera melakukan konfirmasi dan pembayaran melalui link resmi berikut:\n👉 ${invoiceUrl}\n\nTerima kasih atas perhatian dan kerja samanya.`
+          : `Hello ${customerName},\n\nWe would like to notify you that invoice ${invoiceNumber} from ${sender} for ${totalFormatted} is now *OVERDUE* (${dueDate || tInv("datePastDue")}).\n\nPlease settle payment via:\n👉 ${invoiceUrl}\n\nThank you for your cooperation.`,
     },
     {
       id: "paid",
-      title: locale === "id" ? "Konfirmasi Lunas" : "Paid Confirmation",
-      desc: locale === "id" ? "Konfirmasi pembayaran yang telah diterima" : "Confirm payment received",
+      title: tInv("waPaidTitle"),
+      desc: tInv("waPaidDesc"),
       text:
         locale === "id"
           ? `Halo Kak ${customerName},\n\nPembayaran untuk invoice ${invoiceNumber} sebesar ${totalFormatted} telah kami terima dan berstatus *LUNAS* ✅.\n\nTerima kasih banyak atas kepercayaannya bersama ${sender}.\n\nBukti transaksi digital dapat dilihat di:\n👉 ${invoiceUrl}`
@@ -140,7 +144,7 @@ export function WhatsAppShareModal({
         className="inline-flex items-center gap-1.5 rounded-xl bg-[#25D366] px-3.5 py-2 text-xs sm:text-sm font-bold text-white hover:bg-[#20ba5a] active:scale-[0.98] transition-all cursor-pointer shadow-xs"
       >
         <ChatBubbleLeftRightIcon className="w-4 h-4" />
-        <span>{t.invoices?.shareWhatsApp || "Share WhatsApp"}</span>
+        <span>{tInv("shareWhatsApp")}</span>
       </button>
 
       {isOpen && (
@@ -154,12 +158,12 @@ export function WhatsAppShareModal({
                 </div>
                 <div>
                   <h3 className="text-sm sm:text-base font-bold text-slate-900">
-                    {locale === "id" ? "Kirim Tagihan via WhatsApp" : "Share via WhatsApp"}
+                    {tInv("whatsappModalTitle")}
                   </h3>
                   <p className="text-[11px] text-slate-500 font-medium">
                     {customerPhone
-                      ? `${locale === "id" ? "Tujuan" : "To"}: ${customerName} (${customerPhone})`
-                      : `${locale === "id" ? "Tujuan" : "To"}: ${customerName}`}
+                      ? `${tInv("destination")}: ${customerName} (${customerPhone})`
+                      : `${tInv("destination")}: ${customerName}`}
                   </p>
                 </div>
               </div>
@@ -175,7 +179,7 @@ export function WhatsAppShareModal({
             {/* Template Selector */}
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                {locale === "id" ? "Pilih Skenario Pesan" : "Select Message Scenario"}
+                {tInv("selectMessageScenario")}
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {templates.map((tmpl) => {
@@ -205,7 +209,7 @@ export function WhatsAppShareModal({
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="block text-xs font-bold text-slate-700">
-                  {locale === "id" ? "Pratinjau / Edit Pesan" : "Message Preview / Edit"}
+                  {tInv("messagePreview")}
                 </label>
                 <button
                   type="button"
@@ -215,12 +219,12 @@ export function WhatsAppShareModal({
                   {copied ? (
                     <>
                       <CheckIcon className="w-3.5 h-3.5 text-[#0f6b4f]" />
-                      <span className="text-[#0f6b4f]">{locale === "id" ? "Tersalin!" : "Copied!"}</span>
+                      <span className="text-[#0f6b4f]">{tInv("copied")}</span>
                     </>
                   ) : (
                     <>
                       <DocumentDuplicateIcon className="w-3.5 h-3.5 text-slate-400" />
-                      <span>{locale === "id" ? "Salin Teks" : "Copy Text"}</span>
+                      <span>{tInv("copyText")}</span>
                     </>
                   )}
                 </button>
@@ -240,7 +244,7 @@ export function WhatsAppShareModal({
                 onClick={() => setIsOpen(false)}
                 className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shadow-2xs"
               >
-                {locale === "id" ? "Tutup" : "Close"}
+                {tInv("close")}
               </button>
               <a
                 href={waLink}
@@ -249,7 +253,7 @@ export function WhatsAppShareModal({
                 onClick={() => setIsOpen(false)}
                 className="inline-flex items-center gap-1.5 rounded-xl bg-[#25D366] px-5 py-2.5 text-xs sm:text-sm font-bold text-white hover:bg-[#20ba5a] active:scale-[0.98] transition-all cursor-pointer shadow-xs"
               >
-                <span>{locale === "id" ? "Buka WhatsApp" : "Open WhatsApp"}</span>
+                <span>{tInv("openWhatsApp")}</span>
                 <ArrowTopRightOnSquareIcon className="w-4 h-4" />
               </a>
             </div>

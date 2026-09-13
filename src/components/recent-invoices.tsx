@@ -5,21 +5,22 @@ import { SerializedInvoice } from "@/types/invoice";
 import { InvoiceCard } from "./invoice-card";
 import { InvoiceTable } from "./invoice-table";
 import { DocumentTextIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 
 interface RecentInvoicesProps {
   invoices: SerializedInvoice[];
 }
 
 export function RecentInvoices({ invoices }: RecentInvoicesProps) {
-  const { t } = useLanguage();
+  const tDash = useTranslations("dashboard");
+  const tInv = useTranslations("invoices");
 
   return (
     <div className="space-y-3.5">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-base sm:text-lg font-bold text-slate-900">
-            {t.dashboard?.recentInvoices || "Invoice Terbaru"}
+            {tDash("recentInvoices")}
           </h2>
           <p className="text-xs text-slate-500 hidden sm:block">
             {invoices.length > 0
@@ -29,9 +30,10 @@ export function RecentInvoices({ invoices }: RecentInvoicesProps) {
         </div>
         <Link
           href="/invoices"
+          prefetch={true}
           className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-[#0f6b4f] hover:text-[#0c553e] transition-colors group"
         >
-          <span>{t.dashboard?.viewAll || "Lihat Semua"}</span>
+          <span>{tDash("viewAll")}</span>
           <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
         </Link>
       </div>
@@ -42,17 +44,17 @@ export function RecentInvoices({ invoices }: RecentInvoicesProps) {
             <DocumentTextIcon className="w-6 h-6" />
           </div>
           <h3 className="text-sm font-bold text-slate-900">
-            {t.dashboard?.emptyInvoicesTitle || "Belum ada invoice"}
+            {tDash("emptyInvoicesTitle")}
           </h3>
           <p className="mt-1 text-xs text-slate-500 max-w-sm mx-auto">
-            {t.dashboard?.emptyInvoicesDesc ||
-              "Buat invoice pertamamu sekarang dan kirimkan ke pelanggan dalam 30 detik."}
+            {tDash("emptyInvoicesDesc")}
           </p>
           <Link
             href="/invoices/new"
+            prefetch={true}
             className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-[#0f6b4f] px-4 py-2 text-xs font-semibold text-white hover:bg-[#0c553e] transition-all shadow-xs"
           >
-            {t.dashboard?.createInvoice || "Buat Invoice"}
+            {tInv("newInvoice")}
           </Link>
         </div>
       ) : (
