@@ -62,7 +62,7 @@ export function LandingFAQ() {
                   <div
                     className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl transition-all duration-200 ${
                       isOpen
-                        ? "rotate-180 bg-emerald text-paper"
+                        ? "rotate-180 bg-emerald text-white"
                         : "bg-paper-deep dark:bg-slate-800 text-ink-soft"
                     }`}
                   >

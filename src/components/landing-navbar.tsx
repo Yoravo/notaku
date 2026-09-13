@@ -58,30 +58,56 @@ export function LandingNavbar({ session }: NavbarProps) {
       }
     };
 
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace("#", "");
-      if (hash) {
-        setActiveHash(hash);
+    const handleLocationChange = () => {
+      const rawHash = window.location.hash;
+      // Sanitize any stacked hashes (e.g. #faq#pricing -> pricing)
+      if (rawHash.includes("#")) {
+        const parts = rawHash.split("#").filter(Boolean);
+        const latestHash = parts[parts.length - 1];
+        if (parts.length > 1) {
+          window.history.replaceState(null, "", `/#${latestHash}`);
+        }
+        setActiveHash(latestHash || "");
       } else {
         updateActiveHashFromScroll();
       }
     };
 
     window.addEventListener("scroll", updateActiveHashFromScroll, { passive: true });
-    window.addEventListener("hashchange", handleHashChange);
+    window.addEventListener("hashchange", handleLocationChange);
+    window.addEventListener("popstate", handleLocationChange);
 
     // Initial check
-    if (window.location.hash) {
-      setActiveHash(window.location.hash.replace("#", ""));
-    } else {
-      updateActiveHashFromScroll();
-    }
+    handleLocationChange();
 
     return () => {
       window.removeEventListener("scroll", updateActiveHashFromScroll);
-      window.removeEventListener("hashchange", handleHashChange);
+      window.removeEventListener("hashchange", handleLocationChange);
+      window.removeEventListener("popstate", handleLocationChange);
     };
   }, [pathname]);
+
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    item: (typeof navLinks)[0]
+  ) => {
+    if (mobileMenuOpen) {
+      setMobileMenuOpen(false);
+    }
+
+    // Intercept in-page hash links on the homepage to avoid Next.js router stacking hashes
+    if (!item.isRoute && item.hash && pathname === "/") {
+      e.preventDefault();
+      const el = document.getElementById(item.hash);
+      if (el) {
+        const yOffset = -80; // top header sticky offset
+        const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }
+      window.history.pushState(null, "", `/#${item.hash}`);
+      setActiveHash(item.hash);
+    }
+  };
 
   const isLinkActive = (item: (typeof navLinks)[0]) => {
     if (item.isRoute) {
@@ -106,6 +132,14 @@ export function LandingNavbar({ session }: NavbarProps) {
         <Link
           href="/"
           prefetch={true}
+          onClick={(e) => {
+            if (pathname === "/" && window.location.hash) {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+              window.history.pushState(null, "", "/");
+              setActiveHash("");
+            }
+          }}
           className="flex items-center gap-1.5 text-2xl font-bold tracking-tight text-ink transition-transform hover:scale-[1.02]"
         >
           <Image
@@ -131,6 +165,7 @@ export function LandingNavbar({ session }: NavbarProps) {
                 key={item.name}
                 href={item.href}
                 prefetch={true}
+                onClick={(e) => handleNavClick(e, item)}
                 className={`text-sm font-medium transition-all relative py-1 ${
                   active
                     ? "text-emerald font-bold"
@@ -147,7 +182,7 @@ export function LandingNavbar({ session }: NavbarProps) {
         </nav>
 
         {/* Desktop Auth Buttons & Language Switcher & Theme */}
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-2.5 md:flex">
           <ThemeToggle />
           <LanguageSwitcher />
 
@@ -155,7 +190,7 @@ export function LandingNavbar({ session }: NavbarProps) {
             <Link
               href="/dashboard"
               prefetch={true}
-              className="inline-flex items-center justify-center rounded-full bg-ink px-5 py-2 text-sm font-semibold text-paper transition-all hover:bg-emerald hover:shadow-md hover:shadow-emerald/20"
+              className="inline-flex items-center justify-center rounded-xl bg-ink px-4 py-2 text-sm font-semibold text-paper transition-all hover:bg-emerald hover:text-white min-h-[38px] cursor-pointer shadow-2xs"
             >
               {tNav("dashboard")}
             </Link>
@@ -164,14 +199,14 @@ export function LandingNavbar({ session }: NavbarProps) {
               <Link
                 href="/login"
                 prefetch={true}
-                className="text-sm font-medium text-ink-soft transition-colors hover:text-ink px-2"
+                className="text-sm font-medium text-ink-soft transition-colors hover:text-ink px-2.5 py-2 min-h-[38px] inline-flex items-center"
               >
                 {tNav("login")}
               </Link>
               <Link
                 href="/register"
                 prefetch={true}
-                className="inline-flex items-center justify-center rounded-full bg-emerald px-5 py-2 text-sm font-semibold text-paper shadow-sm transition-all hover:bg-emerald-bright hover:shadow-md hover:shadow-emerald/25"
+                className="inline-flex items-center justify-center rounded-xl bg-emerald hover:bg-emerald-bright px-4 py-2 text-sm font-semibold text-white shadow-xs transition-all hover:shadow-md hover:shadow-emerald/25 min-h-[38px] cursor-pointer"
               >
                 {tNav("register")}
               </Link>
@@ -186,13 +221,13 @@ export function LandingNavbar({ session }: NavbarProps) {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="inline-flex items-center justify-center rounded-lg p-2 text-ink hover:bg-paper-deep transition-colors cursor-pointer"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-ink shadow-2xs hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer"
             aria-label="Toggle Navigation Menu"
           >
             {mobileMenuOpen ? (
-              <XMarkIcon className="h-6 w-6" />
+              <XMarkIcon className="h-5 w-5" />
             ) : (
-              <Bars3Icon className="h-6 w-6" />
+              <Bars3Icon className="h-5 w-5" />
             )}
           </button>
         </div>
@@ -201,7 +236,7 @@ export function LandingNavbar({ session }: NavbarProps) {
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
         <div className="border-b border-line bg-paper px-6 py-5 shadow-lg animate-in slide-in-from-top-2 md:hidden">
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
             {navLinks.map((item) => {
               const active = isLinkActive(item);
               return (
@@ -209,8 +244,8 @@ export function LandingNavbar({ session }: NavbarProps) {
                   key={item.name}
                   href={item.href}
                   prefetch={true}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`text-base font-medium transition-colors py-1.5 flex items-center justify-between ${
+                  onClick={(e) => handleNavClick(e, item)}
+                  className={`text-base font-medium transition-colors min-h-[44px] flex items-center justify-between py-2 px-1 ${
                     active
                       ? "text-emerald font-bold"
                       : "text-ink-soft hover:text-emerald"
@@ -223,23 +258,23 @@ export function LandingNavbar({ session }: NavbarProps) {
                 </Link>
               );
             })}
-            <hr className="border-line my-1" />
+            <hr className="border-line my-2" />
             {session ? (
               <Link
                 href="/dashboard"
                 prefetch={true}
                 onClick={() => setMobileMenuOpen(false)}
-                className="block w-full rounded-full bg-ink py-2.5 text-center text-sm font-semibold text-paper hover:bg-emerald transition-colors"
+                className="flex items-center justify-center w-full min-h-[44px] rounded-xl bg-ink py-2.5 text-center text-sm font-semibold text-paper hover:bg-emerald hover:text-white transition-colors"
               >
                 {tNav("dashboard")}
               </Link>
             ) : (
-              <div className="flex flex-col gap-2.5">
+              <div className="flex flex-col gap-2.5 pt-1">
                 <Link
                   href="/login"
                   prefetch={true}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block w-full rounded-full border border-line bg-paper-deep py-2.5 text-center text-sm font-medium text-ink hover:bg-line transition-colors"
+                  className="flex items-center justify-center w-full min-h-[44px] rounded-xl border border-line bg-paper-deep/60 py-2.5 text-center text-sm font-semibold text-ink hover:bg-line transition-colors"
                 >
                   {tNav("login")}
                 </Link>
@@ -247,7 +282,7 @@ export function LandingNavbar({ session }: NavbarProps) {
                   href="/register"
                   prefetch={true}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block w-full rounded-full bg-emerald py-2.5 text-center text-sm font-semibold text-paper hover:bg-emerald-bright transition-colors shadow-sm"
+                  className="flex items-center justify-center w-full min-h-[44px] rounded-xl bg-emerald py-2.5 text-center text-sm font-semibold text-white hover:bg-emerald-bright transition-colors shadow-xs"
                 >
                   {tNav("register")}
                 </Link>

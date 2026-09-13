@@ -2,12 +2,26 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 export function LandingFooter() {
+  const pathname = usePathname();
   const tFooter = useTranslations("footer");
   const tNav = useTranslations("nav");
   const tTools = useTranslations("tools");
+
+  const handleFooterHashClick = (e: React.MouseEvent<HTMLAnchorElement>, hash: string) => {
+    if (pathname === "/") {
+      e.preventDefault();
+      const el = document.getElementById(hash);
+      if (el) {
+        const y = el.getBoundingClientRect().top + window.pageYOffset - 80;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }
+      window.history.pushState(null, "", `/#${hash}`);
+    }
+  };
 
   return (
     <footer className="border-t border-line bg-paper py-14 sm:py-16 text-ink">
@@ -113,13 +127,15 @@ export function LandingFooter() {
                 {tTools("allTools")}
               </Link>
               <a
-                href="#cara-kerja"
+                href="/#cara-kerja"
+                onClick={(e) => handleFooterHashClick(e, "cara-kerja")}
                 className="inline-flex items-center min-h-[44px] py-2 text-xs sm:text-sm font-medium text-ink-soft hover:text-emerald transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald rounded-lg"
               >
                 {tNav("howItWorks")}
               </a>
               <a
-                href="#pricing"
+                href="/#pricing"
+                onClick={(e) => handleFooterHashClick(e, "pricing")}
                 className="inline-flex items-center min-h-[44px] py-2 text-xs sm:text-sm font-medium text-ink-soft hover:text-emerald transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald rounded-lg"
               >
                 {tNav("pricing")}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { LandingNavbar } from "@/components/landing-navbar";
@@ -38,6 +39,205 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
   const tPricing = useTranslations("pricing");
   const tBottomCta = useTranslations("bottomCta");
   const tTools = useTranslations("tools");
+
+  // 3D Card Interactive Tilt & Physics State
+  const cardContainerRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const secondaryCardRef = useRef<HTMLDivElement>(null);
+  const glareRef = useRef<HTMLDivElement>(null);
+
+  const [isPaid, setIsPaid] = useState(true);
+  const [showCopied, setShowCopied] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const isTouchDeviceRef = useRef(false);
+
+  // Physics constants & mutable state (no React re-renders during motion)
+  const RESTING = {
+    rx: 5.5,
+    ry: -8.5,
+    rz: 1.2,
+    tz: 0,
+    scale: 1,
+    gx: 50,
+    gy: 50,
+    go: 0,
+  };
+
+  const target = useRef({ ...RESTING });
+  const current = useRef({ ...RESTING });
+  const isHoveredRef = useRef(false);
+  const isAnimatingRef = useRef(false);
+  const rafIdRef = useRef<number | null>(null);
+
+  // Detect pointer capability & reduced motion dynamically
+  useEffect(() => {
+    const finePointerMq = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const reducedMotionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const updateCapabilities = () => {
+      const isTouch = !finePointerMq.matches || reducedMotionMq.matches;
+      isTouchDeviceRef.current = isTouch;
+      setIsTouchDevice(isTouch);
+
+      if (isTouch) {
+        if (rafIdRef.current) {
+          cancelAnimationFrame(rafIdRef.current);
+          rafIdRef.current = null;
+        }
+        isAnimatingRef.current = false;
+        if (cardRef.current) {
+          cardRef.current.style.transform = "";
+        }
+      } else {
+        if (cardRef.current) {
+          cardRef.current.style.transform = `perspective(1000px) rotateX(${RESTING.rx}deg) rotateY(${RESTING.ry}deg) rotateZ(${RESTING.rz}deg) translateZ(${RESTING.tz}px) scale(${RESTING.scale})`;
+        }
+      }
+    };
+
+    updateCapabilities();
+
+    finePointerMq.addEventListener("change", updateCapabilities);
+    reducedMotionMq.addEventListener("change", updateCapabilities);
+
+    return () => {
+      finePointerMq.removeEventListener("change", updateCapabilities);
+      reducedMotionMq.removeEventListener("change", updateCapabilities);
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
+    };
+  }, []);
+
+  const tick = useCallback(() => {
+    const LERP = 0.08;
+    const cur = current.current;
+    const tar = target.current;
+
+    cur.rx += (tar.rx - cur.rx) * LERP;
+    cur.ry += (tar.ry - cur.ry) * LERP;
+    cur.rz += (tar.rz - cur.rz) * LERP;
+    cur.tz += (tar.tz - cur.tz) * LERP;
+    cur.scale += (tar.scale - cur.scale) * LERP;
+    cur.gx += (tar.gx - cur.gx) * 0.1;
+    cur.gy += (tar.gy - cur.gy) * 0.1;
+    cur.go += (tar.go - cur.go) * 0.12;
+
+    // Direct DOM transform updates (zero VDOM overhead)
+    if (cardRef.current) {
+      cardRef.current.style.transform = `perspective(1000px) rotateX(${cur.rx.toFixed(2)}deg) rotateY(${cur.ry.toFixed(2)}deg) rotateZ(${cur.rz.toFixed(2)}deg) translateZ(${cur.tz.toFixed(1)}px) scale(${cur.scale.toFixed(3)})`;
+    }
+
+    if (secondaryCardRef.current) {
+      const secRx = (cur.rx * 0.45).toFixed(2);
+      const secRy = (cur.ry * 0.45).toFixed(2);
+      const secTx = (18 - cur.ry * 0.4).toFixed(1);
+      const secTy = (-12 + cur.rx * 0.3).toFixed(1);
+      secondaryCardRef.current.style.transform = `perspective(1000px) rotateX(${secRx}deg) rotateY(${secRy}deg) translate3d(${secTx}px, ${secTy}px, -40px)`;
+    }
+
+    if (glareRef.current) {
+      glareRef.current.style.opacity = cur.go.toFixed(3);
+      glareRef.current.style.background = `radial-gradient(circle at ${cur.gx.toFixed(1)}% ${cur.gy.toFixed(1)}%, rgba(255, 255, 255, 0.22) 0%, transparent 60%)`;
+    }
+
+    // Convergence threshold to sleep rAF loop when settled (0% CPU when stationary)
+    const delta =
+      Math.abs(tar.rx - cur.rx) +
+      Math.abs(tar.ry - cur.ry) +
+      Math.abs(tar.scale - cur.scale) +
+      Math.abs(tar.go - cur.go);
+
+    if (delta > 0.005) {
+      rafIdRef.current = requestAnimationFrame(tick);
+    } else {
+      // Settle precisely to target state and sleep
+      cur.rx = tar.rx;
+      cur.ry = tar.ry;
+      cur.rz = tar.rz;
+      cur.tz = tar.tz;
+      cur.scale = tar.scale;
+      cur.go = tar.go;
+      cur.gx = tar.gx;
+      cur.gy = tar.gy;
+
+      if (cardRef.current) {
+        cardRef.current.style.transform = `perspective(1000px) rotateX(${cur.rx.toFixed(2)}deg) rotateY(${cur.ry.toFixed(2)}deg) rotateZ(${cur.rz.toFixed(2)}deg) translateZ(${cur.tz.toFixed(1)}px) scale(${cur.scale.toFixed(3)})`;
+      }
+      if (glareRef.current) {
+        glareRef.current.style.opacity = cur.go.toFixed(3);
+      }
+
+      isAnimatingRef.current = false;
+      rafIdRef.current = null;
+    }
+  }, []);
+
+  const startAnimation = useCallback(() => {
+    if (!isAnimatingRef.current) {
+      isAnimatingRef.current = true;
+      rafIdRef.current = requestAnimationFrame(tick);
+    }
+  }, [tick]);
+
+  const updateTargetFromPointer = useCallback(
+    (clientX: number, clientY: number) => {
+      if (isTouchDeviceRef.current || !cardContainerRef.current) return;
+      const rect = cardContainerRef.current.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      const normX = Math.max(-1, Math.min(1, (x - centerX) / centerX));
+      const normY = Math.max(-1, Math.min(1, (y - centerY) / centerY));
+
+      // Bounded rotation (max 8.5 deg for natural elegant perspective)
+      target.current.rx = -normY * 8.5;
+      target.current.ry = normX * 8.5;
+      target.current.rz = normX * 0.5;
+      target.current.tz = 8;
+      target.current.scale = 1.015;
+
+      target.current.gx = (x / rect.width) * 100;
+      target.current.gy = (y / rect.height) * 100;
+      target.current.go = 0.22;
+
+      isHoveredRef.current = true;
+      startAnimation();
+    },
+    [startAnimation]
+  );
+
+  const handleMouseEnter = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      updateTargetFromPointer(e.clientX, e.clientY);
+    },
+    [updateTargetFromPointer]
+  );
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      updateTargetFromPointer(e.clientX, e.clientY);
+    },
+    [updateTargetFromPointer]
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    if (isTouchDeviceRef.current) return;
+    target.current.rx = RESTING.rx;
+    target.current.ry = RESTING.ry;
+    target.current.rz = RESTING.rz;
+    target.current.tz = RESTING.tz;
+    target.current.scale = RESTING.scale;
+    target.current.go = 0;
+
+    isHoveredRef.current = false;
+    startAnimation();
+  }, [startAnimation]);
 
   const mainFeatures = [
     {
@@ -155,7 +355,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                 style={{ animationDelay: "0.1s" }}
               >
                 {tHero("title")}{" "}
-                <span className="text-emerald italic">{tHero("titleHighlight")}</span>
+                <span className="font-sans font-black text-emerald dark:text-emerald-400 not-italic tracking-tight">{tHero("titleHighlight")}</span>
               </h1>
 
               <p
@@ -182,15 +382,24 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                 <Link
                   href="/buat-invoice"
                   prefetch={true}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-paper-deep hover:bg-line px-6 py-3.5 text-sm sm:text-base font-bold text-ink transition-colors min-h-[48px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald focus-visible:ring-offset-2"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-paper-deep hover:bg-line text-ink dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800 dark:text-white px-6 py-3.5 text-sm sm:text-base font-bold transition-colors min-h-[48px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald focus-visible:ring-offset-2"
                 >
                   <DocumentTextIcon className="w-4 h-4 text-emerald" />
                   <span>{tTools("tryFreeGenerator")}</span>
                 </Link>
 
                 <a
-                  href="#cara-kerja"
-                  className="inline-flex items-center justify-center px-4 py-3 text-sm font-semibold text-ink-soft hover:text-emerald transition-colors min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald rounded-lg text-center"
+                  href="/#cara-kerja"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const el = document.getElementById("cara-kerja");
+                    if (el) {
+                      const y = el.getBoundingClientRect().top + window.pageYOffset - 80;
+                      window.scrollTo({ top: y, behavior: "smooth" });
+                    }
+                    window.history.pushState(null, "", "/#cara-kerja");
+                  }}
+                  className="inline-flex items-center justify-center px-4 py-3 text-sm font-semibold text-ink-soft hover:text-emerald transition-colors min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald rounded-lg text-center cursor-pointer"
                 >
                   {tHero("ctaHow")} &rarr;
                 </a>
@@ -216,51 +425,133 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
               </div>
             </div>
 
-            {/* Right Interactive Mockup / Document Stage */}
-            <div className="lg:col-span-5 relative">
-              <div className="mx-auto w-full max-w-md rounded-2xl border border-line bg-white dark:bg-slate-900 mockup-paper-preview p-6 sm:p-7 shadow-xl shadow-ink/5 transition-all">
-                {/* Header Mockup */}
-                <div className="flex items-start justify-between border-b border-line dark:border-slate-800 pb-4">
-                  <Link
-                    href="/"
-                    prefetch={true}
-                    className="flex items-center gap-1.5 font-display text-lg font-bold text-ink transition-opacity hover:opacity-80"
-                  >
-                    <Image
-                      src="/logo.png"
-                      alt="NotaKu Logo"
-                      width={24}
-                      height={24}
-                      className="w-6 h-6 object-contain shrink-0"
-                    />
-                    <span>
-                      <span>Nota</span>
-                      <span className="text-emerald">Ku</span>
-                    </span>
-                  </Link>
-                  <div className="flex items-center gap-1.5 bg-emerald-50 text-[#0f6b4f] dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-200/60 px-2.5 py-1 rounded-full text-xs font-bold shadow-2xs">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald" />
-                    <span>{tMockup("paid")}</span>
+            {/* Right Interactive Mockup / 3D Document Stage */}
+            <div
+              ref={cardContainerRef}
+              onMouseEnter={handleMouseEnter}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+              className="lg:col-span-5 relative flex items-center justify-center py-6 sm:py-8 select-none touch-pan-y group/hero-stage"
+            >
+              {/* Grounded Natural Floor Shadows */}
+              <div
+                className="absolute -bottom-6 inset-x-8 sm:inset-x-12 h-10 rounded-[100%] bg-slate-900/[0.07] dark:bg-black/50 blur-2xl pointer-events-none -z-10"
+              />
+              <div
+                className="absolute -bottom-2 inset-x-14 sm:inset-x-20 h-4 rounded-[100%] bg-slate-950/[0.04] dark:bg-black/40 blur-md pointer-events-none -z-10"
+              />
+
+              {/* Atmospheric Ambient Emerald/Teal Glow */}
+              <div
+                className="absolute -inset-6 rounded-3xl bg-gradient-to-tr from-emerald-500/10 via-teal-500/5 to-transparent blur-3xl opacity-50 dark:opacity-25 pointer-events-none -z-20"
+              />
+
+              {/* Secondary Stacked Paper Card for Layered 3D Depth */}
+              <div
+                ref={secondaryCardRef}
+                className="absolute w-full max-w-md h-full rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-paper-deep/50 dark:bg-slate-800/30 pointer-events-none hidden sm:block will-change-transform shadow-[0_12px_28px_-10px_rgba(15,23,42,0.06),0_0_0_1px_rgba(15,23,42,0.04)] dark:shadow-[0_16px_36px_-12px_rgba(0,0,0,0.4),0_0_0_1px_rgba(255,255,255,0.05)]"
+                style={{
+                  transform: "perspective(1000px) rotateX(2.48deg) rotateY(-3.83deg) translate3d(21.4px, -10.4px, -40px)",
+                }}
+              />
+
+              {/* Main Futuristic 3D Document Card with Butter-Smooth Inertia & Soft Modern Shadow */}
+              <div
+                ref={cardRef}
+                className={`relative mx-auto w-full max-w-md rounded-2xl border border-slate-200/90 dark:border-slate-800/80 bg-white dark:bg-slate-900/95 p-6 sm:p-7 group will-change-transform shadow-[0_2px_4px_rgba(15,23,42,0.02),0_12px_24px_-6px_rgba(15,23,42,0.06),0_24px_48px_-12px_rgba(15,23,42,0.08),0_0_0_1px_rgba(15,23,42,0.06)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.3),0_16px_32px_-8px_rgba(0,0,0,0.5),0_32px_64px_-16px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.08),inset_0_1px_0_0_rgba(255,255,255,0.08)] ${
+                  isTouchDevice ? "animate-float-gentle" : ""
+                }`}
+                style={{
+                  transform: !isTouchDevice
+                    ? `perspective(1000px) rotateX(${RESTING.rx}deg) rotateY(${RESTING.ry}deg) rotateZ(${RESTING.rz}deg) translateZ(${RESTING.tz}px) scale(${RESTING.scale})`
+                    : undefined,
+                  transformStyle: "preserve-3d",
+                  WebkitTransformStyle: "preserve-3d",
+                  backfaceVisibility: "hidden",
+                  WebkitBackfaceVisibility: "hidden",
+                }}
+              >
+                {/* Dynamic Specular Glare Layer that follows mouse pointer */}
+                <div
+                  ref={glareRef}
+                  className="absolute inset-0 rounded-2xl pointer-events-none z-30 opacity-0"
+                />
+
+                {/* Header Mockup with Parallax Layer Z: 20px */}
+                <div
+                  className="flex items-start justify-between border-b border-line dark:border-slate-800 pb-4"
+                  style={{ transform: "translateZ(20px)" }}
+                >
+                  <div>
+                    <Link
+                      href="/"
+                      prefetch={true}
+                      className="flex items-center gap-1.5 font-display text-lg font-bold text-ink transition-opacity hover:opacity-80"
+                    >
+                      <Image
+                        src="/logo.png"
+                        alt="NotaKu Logo"
+                        width={24}
+                        height={24}
+                        className="w-6 h-6 object-contain shrink-0"
+                      />
+                      <span>
+                        <span>Nota</span>
+                        <span className="text-emerald">Ku</span>
+                      </span>
+                    </Link>
+                    <p className="font-mono text-[10px] text-ink-soft mt-0.5 tracking-wider">
+                      #INV/2026/08/0029
+                    </p>
                   </div>
+
+                  {/* Interactive Status Badge with Parallax Layer Z: 36px */}
+                  <button
+                    type="button"
+                    onClick={() => setIsPaid(!isPaid)}
+                    style={{ transform: "translateZ(36px)" }}
+                    className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold shadow-xs cursor-pointer transition-colors duration-150 ${
+                      isPaid
+                        ? "bg-emerald-50 text-[#0f6b4f] dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-500/40"
+                        : "bg-amber-50 text-amber-700 dark:bg-amber-950/80 dark:text-amber-300 border border-amber-200 dark:border-amber-500/40"
+                    }`}
+                    title="Klik untuk simulasi status pembayaran"
+                  >
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        isPaid ? "bg-emerald animate-pulse" : "bg-amber-500"
+                      }`}
+                    />
+                    <span>{isPaid ? tMockup("paid") : "BELUM LUNAS"}</span>
+                  </button>
                 </div>
 
-                {/* Customer Info */}
-                <div className="mt-4 flex justify-between text-xs">
+                {/* Customer Info with Parallax Layer Z: 22px */}
+                <div
+                  className="mt-4 flex justify-between text-xs"
+                  style={{ transform: "translateZ(22px)" }}
+                >
                   <div>
-                    <span className="text-ink-soft">{tMockup("billedTo")}</span>
+                    <span className="text-ink-soft font-medium">{tMockup("billedTo")}</span>
                     <p className="font-bold text-ink text-sm mt-0.5">
                       Kopi Kenangan Senja
                     </p>
-                    <p className="text-ink-soft">Jakarta Selatan</p>
+                    <p className="text-ink-soft text-[11px]">Jakarta Selatan</p>
                   </div>
                   <div className="text-right">
-                    <span className="text-ink-soft">{tMockup("dueDate")}</span>
+                    <span className="text-ink-soft font-medium">{tMockup("dueDate")}</span>
                     <p className="font-bold text-ink mt-0.5">28 Agu 2026</p>
+                    <span className="inline-block text-[10px] font-semibold text-[#0f6b4f] dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-md mt-0.5">
+                      Mayar QRIS
+                    </span>
                   </div>
                 </div>
 
-                {/* Line Items */}
-                <div className="mt-5 space-y-2.5 rounded-xl bg-paper-deep/40 dark:bg-slate-800/50 p-3.5 text-xs">
+                {/* Line Items with Parallax Layer Z: 26px */}
+                <div
+                  className="mt-5 space-y-2.5 rounded-xl bg-paper-deep/50 dark:bg-slate-800/60 p-3.5 text-xs border border-line/40 dark:border-slate-800"
+                  style={{ transform: "translateZ(26px)" }}
+                >
                   <div className="flex justify-between font-medium">
                     <span className="text-ink">{tMockup("item1")}</span>
                     <span className="tnum font-bold text-ink">Rp450.000</span>
@@ -283,28 +574,55 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                   </div>
                 </div>
 
-                {/* Grand Total */}
-                <div className="mt-4 flex items-baseline justify-between border-t border-ink/80 dark:border-slate-700 pt-3">
+                {/* Grand Total with Parallax Layer Z: 42px */}
+                <div
+                  className="mt-4 flex items-baseline justify-between border-t border-ink/80 dark:border-slate-700 pt-3"
+                  style={{ transform: "translateZ(42px)" }}
+                >
                   <div>
                     <span className="text-xs font-bold text-ink-soft uppercase tracking-wider">
                       {tMockup("grandTotal")}
                     </span>
                   </div>
-                  <span className="tnum font-display text-2xl sm:text-3xl font-bold text-ink">
+                  <span className="tnum font-sans text-2xl sm:text-3xl font-black text-ink tracking-tight">
                     Rp699.300
                   </span>
                 </div>
 
-                {/* Settlement Confirmation Strip */}
-                <div className="mt-4 flex items-center justify-between pt-2 border-t border-line/60 dark:border-slate-800 text-[11px] text-ink-soft font-medium">
+                {/* Settlement Confirmation Strip with Parallax Layer Z: 22px */}
+                <div
+                  className="mt-4 flex items-center justify-between pt-2 border-t border-line/60 dark:border-slate-800 text-[11px] text-ink-soft font-medium"
+                  style={{ transform: "translateZ(22px)" }}
+                >
                   <span className="inline-flex items-center gap-1.5">
-                    <ShieldCheckIcon className="w-4 h-4 text-emerald" />
-                    <span>{tMockup("verified")}</span>
+                    <ShieldCheckIcon
+                      className={`w-4 h-4 ${isPaid ? "text-emerald" : "text-amber-500"}`}
+                    />
+                    <span>{isPaid ? tMockup("verified") : "Menunggu Pelunasan"}</span>
                   </span>
-                  <span className="font-semibold text-emerald">
-                    {tMockup("qrisPaid")}
+                  <span
+                    className={`font-semibold ${
+                      isPaid ? "text-emerald dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"
+                    }`}
+                  >
+                    {isPaid ? tMockup("qrisPaid") : "QRIS Mayar Otomatis"}
                   </span>
                 </div>
+
+                {/* Floating Interactive 3D Action Badge with Parallax Layer Z: 48px */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowCopied(true);
+                    setTimeout(() => setShowCopied(false), 2200);
+                  }}
+                  style={{ transform: "translateZ(48px)" }}
+                  className="absolute -bottom-3.5 -right-2 sm:-right-4 rounded-xl border border-emerald-500/40 bg-white/95 dark:bg-slate-800/95 text-[#0f6b4f] dark:text-emerald-300 px-3.5 py-2 shadow-lg flex items-center gap-2 text-xs font-bold transition-colors duration-150 hover:bg-emerald-50 dark:hover:bg-slate-700/90 cursor-pointer group/wa"
+                  title="Klik untuk simulasi kirim nota WhatsApp"
+                >
+                  <ChatBubbleLeftRightIcon className="w-4 h-4 text-emerald group-hover/wa:rotate-12 transition-transform duration-200" />
+                  <span>{showCopied ? "Link Nota Terkirim! ✓" : tMockup("floatCard")}</span>
+                </button>
               </div>
             </div>
           </div>
@@ -335,14 +653,14 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                   className="group relative rounded-2xl border border-line bg-white dark:bg-slate-900 p-7 shadow-xs transition-colors hover:border-emerald/40"
                 >
                   <div className="flex items-center justify-between">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald/10 text-emerald transition-colors group-hover:bg-emerald group-hover:text-paper">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald/10 text-emerald transition-colors group-hover:bg-emerald group-hover:text-white">
                       <IconComp className="h-6 w-6 stroke-[2]" />
                     </div>
                     <span className="rounded-lg bg-paper-deep dark:bg-slate-800 px-2.5 py-1 text-[11px] font-bold text-ink-soft">
                       {item.badge}
                     </span>
                   </div>
-                  <h3 className="mt-5 font-display text-lg font-bold text-ink">
+                  <h3 className="mt-5 font-sans text-lg font-bold text-ink">
                     {item.title}
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-ink-soft">
@@ -376,10 +694,10 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                 key={idx}
                 className="relative rounded-2xl border border-line bg-paper-deep/40 dark:bg-slate-900/60 p-7 sm:p-8 text-left transition-colors hover:bg-paper-deep/80 dark:hover:bg-slate-900"
               >
-                <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald text-paper font-mono text-sm font-bold shadow-xs">
+                <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald text-white font-mono text-sm font-bold shadow-xs">
                   {step.step}
                 </div>
-                <h3 className="mt-5 font-display text-lg sm:text-xl font-bold text-ink">
+                <h3 className="mt-5 font-sans text-lg sm:text-xl font-bold text-ink">
                   {step.title}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">
@@ -469,7 +787,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                 >
                   <div>
                     <div className="flex items-center justify-between mb-4">
-                      <div className="p-2.5 rounded-xl bg-emerald/10 text-emerald group-hover:bg-emerald group-hover:text-paper transition-colors">
+                      <div className="p-2.5 rounded-xl bg-emerald/10 text-emerald group-hover:bg-emerald group-hover:text-white transition-colors">
                         <Icon className="w-5 h-5" />
                       </div>
                       {tool.badge && (
@@ -517,7 +835,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
             <div className="flex flex-col justify-between rounded-2xl border border-line bg-white dark:bg-slate-900 p-8 sm:p-10 shadow-xs">
               <div>
                 <div className="flex items-center justify-between">
-                  <h3 className="font-display text-2xl font-bold text-ink">{tPricing("freeTitle")}</h3>
+                  <h3 className="font-sans text-2xl font-bold text-ink">{tPricing("freeTitle")}</h3>
                   <span className="rounded-lg bg-paper-deep dark:bg-slate-800 px-2.5 py-1 text-xs font-semibold text-ink-soft">
                     {tPricing("freeBadge")}
                   </span>
@@ -526,7 +844,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                   {tPricing("freeDesc")}
                 </p>
                 <div className="mt-6 border-b border-line dark:border-slate-800 pb-6">
-                  <p className="tnum font-display text-4xl font-extrabold text-ink">
+                  <p className="tnum font-sans text-4xl font-black text-ink tracking-tight">
                     {formatMoney(0, "IDR")}
                     <span className="text-sm font-normal text-ink-soft ml-1">
                       {tPricing("freePeriod")}
@@ -566,7 +884,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                 <Link
                   href={session ? "/dashboard" : "/register"}
                   prefetch={true}
-                  className="flex items-center justify-center w-full rounded-xl border border-line bg-paper-deep hover:bg-line text-ink py-3.5 text-sm font-bold transition-colors cursor-pointer min-h-[48px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald"
+                  className="flex items-center justify-center w-full rounded-xl bg-ink text-paper hover:bg-emerald hover:text-white py-3.5 text-sm font-bold transition-all cursor-pointer min-h-[48px] shadow-sm hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald"
                 >
                   {session ? tPricing("freeBtnUser") : tPricing("freeBtnGuest")}
                 </Link>
@@ -574,21 +892,21 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
             </div>
 
             {/* Pro Plan */}
-            <div className="relative flex flex-col justify-between rounded-2xl bg-[#09110E] dark:bg-slate-900 border border-emerald/30 p-8 sm:p-10 text-paper shadow-xl shadow-emerald-950/20">
+            <div className="relative flex flex-col justify-between rounded-2xl bg-[#09110E] dark:bg-slate-900 border border-emerald/30 p-8 sm:p-10 text-slate-100 shadow-xl shadow-emerald-950/20">
               <div>
                 <div className="flex items-center justify-between">
-                  <h3 className="font-display text-2xl font-bold text-white">
+                  <h3 className="font-sans text-2xl font-bold text-white">
                     Nota<span className="text-emerald-400">Ku</span> PRO
                   </h3>
                   <span className="rounded-lg bg-emerald px-2.5 py-1 text-xs font-bold text-white shadow-2xs">
                     {tPricing("proBadge")}
                   </span>
                 </div>
-                <p className="mt-2 text-sm text-paper/70">
+                <p className="mt-2 text-sm text-slate-300">
                   {tPricing("proDesc")}
                 </p>
-                <div className="mt-6 border-b border-paper/15 pb-6">
-                  <p className="tnum font-display text-4xl font-extrabold text-white">
+                <div className="mt-6 border-b border-white/15 pb-6">
+                  <p className="tnum font-sans text-4xl font-black text-white tracking-tight">
                     {formatMoney(49000, "IDR")}
                     <span className="text-sm font-normal opacity-70 ml-1">
                       {tPricing("proPeriod")}
@@ -599,33 +917,33 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                   </p>
                 </div>
 
-                <ul className="mt-6 space-y-3.5 text-sm text-paper/90">
+                <ul className="mt-6 space-y-3.5 text-sm text-slate-200">
                   <li className="flex items-center gap-3">
-                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald text-paper shrink-0">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald text-white shrink-0">
                       <CheckIcon className="h-3.5 w-3.5 stroke-[3]" />
                     </div>
                     <span>{tPricing("proItem1")}</span>
                   </li>
                   <li className="flex items-center gap-3">
-                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald text-paper shrink-0">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald text-white shrink-0">
                       <CheckIcon className="h-3.5 w-3.5 stroke-[3]" />
                     </div>
                     <span>{tPricing("proItem2")}</span>
                   </li>
                   <li className="flex items-center gap-3">
-                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald text-paper shrink-0">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald text-white shrink-0">
                       <CheckIcon className="h-3.5 w-3.5 stroke-[3]" />
                     </div>
                     <span>{tPricing("proItem3")}</span>
                   </li>
                   <li className="flex items-center gap-3">
-                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald text-paper shrink-0">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald text-white shrink-0">
                       <CheckIcon className="h-3.5 w-3.5 stroke-[3]" />
                     </div>
                     <span>{tPricing("proItem4")}</span>
                   </li>
                   <li className="flex items-center gap-3">
-                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald text-paper shrink-0">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald text-white shrink-0">
                       <CheckIcon className="h-3.5 w-3.5 stroke-[3]" />
                     </div>
                     <span>{tPricing("proItem5")}</span>

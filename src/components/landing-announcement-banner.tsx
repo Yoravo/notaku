@@ -12,7 +12,7 @@ export async function LandingAnnouncementBanner() {
   const colorStyles = {
     info: "bg-blue-600 text-white border-blue-700",
     warning: "bg-amber-600 text-white border-amber-700",
-    success: "bg-emerald text-paper border-emerald-900",
+    success: "bg-emerald text-white border-emerald-900",
   }[announcement.type];
 
   return (

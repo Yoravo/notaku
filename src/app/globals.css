@@ -67,6 +67,26 @@
   }
   .tilt-in { animation: tilt-in 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.3s both; }
 
+  @keyframes float-gentle {
+    0%, 100% {
+      transform: perspective(1000px) rotateX(4.5deg) rotateY(-7deg) rotateZ(1deg) translateY(0px);
+    }
+    50% {
+      transform: perspective(1000px) rotateX(6deg) rotateY(-5.5deg) rotateZ(1.3deg) translateY(-6px);
+    }
+  }
+  .animate-float-gentle {
+    animation: float-gentle 7s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-float-gentle,
+    .rise,
+    .tilt-in {
+      animation: none !important;
+    }
+  }
+
   .tnum { font-variant-numeric: tabular-nums; }
 
   /* =========================================================================
@@ -159,29 +179,7 @@
     color: #64748b !important;
   }
 
-  /* 6. Landing Page Mockup Card Exemption (Tetap Putih Bersih Sebagai Pratinjau Kertas) */
-  .dark .mockup-paper-preview {
-    background-color: #ffffff !important;
-    color: #0f172a !important;
-  }
-  .dark .mockup-paper-preview * {
-    color: initial;
-  }
-  .dark .mockup-paper-preview .text-slate-900,
-  .dark .mockup-paper-preview .text-slate-800,
-  .dark .mockup-paper-preview .text-ink {
-    color: #0f172a !important;
-  }
-  .dark .mockup-paper-preview .text-slate-500,
-  .dark .mockup-paper-preview .text-ink-soft {
-    color: #64748b !important;
-  }
-  .dark .mockup-paper-preview .border-slate-200,
-  .dark .mockup-paper-preview .border-slate-100 {
-    border-color: #e2e8f0 !important;
-  }
-
-  /* 7. Canvas & Signature Pad Exemption (Canvas Tanda Tangan Tetap Berlatar Putih) */
+  /* 6. Canvas & Signature Pad Exemption (Canvas Tanda Tangan Tetap Berlatar Putih) */
   .dark canvas {
     background-color: #ffffff !important;
   }

@@ -53,4 +53,5 @@ DESIGN.md
 test-dashboard-mobile.py
 scripts/audit-output*
 scripts/capture-landing-baseline.cjs
+scripts/capture-redesign-verification.cjs
 scripts/smoke-settings-render.cjs

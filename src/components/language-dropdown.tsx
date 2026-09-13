@@ -60,11 +60,11 @@ export function LanguageDropdown({ variant = "light" }: LanguageDropdownProps) {
 
   const buttonStyles = {
     light:
-      "bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 shadow-2xs",
+      "bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 shadow-2xs dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800",
     dark:
       "bg-slate-800/90 border-slate-700 text-slate-200 hover:bg-slate-700 hover:text-white shadow-2xs",
     ghost:
-      "bg-paper-deep/80 border-line text-ink hover:bg-line hover:border-ink/20 shadow-2xs",
+      "bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 shadow-2xs dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800",
   };
 
   return (
@@ -74,7 +74,7 @@ export function LanguageDropdown({ variant = "light" }: LanguageDropdownProps) {
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
         aria-haspopup="true"
-        className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold transition-all cursor-pointer ${buttonStyles[variant]}`}
+        className={`inline-flex items-center gap-1.5 rounded-xl border h-9 px-3 text-xs font-semibold transition-colors cursor-pointer ${buttonStyles[variant]}`}
       >
         <GlobeAltIcon className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
         <span className="font-medium">{currentLang.flag}</span>
@@ -86,8 +86,8 @@ export function LanguageDropdown({ variant = "light" }: LanguageDropdownProps) {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-48 rounded-2xl bg-white p-1.5 shadow-xl border border-slate-200/80 z-50 animate-in fade-in zoom-in-95 duration-100">
-          <div className="px-3 py-2 border-b border-slate-100 mb-1">
+        <div className="absolute right-0 top-full mt-2 w-48 rounded-2xl bg-white dark:bg-slate-900 p-1.5 shadow-xl border border-slate-200/80 dark:border-slate-800 z-50 animate-in fade-in zoom-in-95 duration-100">
+          <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 mb-1">
             <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
               {tNav("selectLanguage")}
             </p>
@@ -103,18 +103,18 @@ export function LanguageDropdown({ variant = "light" }: LanguageDropdownProps) {
                   onClick={() => handleSelectLocale(lang.code)}
                   className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-xs font-medium transition-colors cursor-pointer ${
                     isSelected
-                      ? "bg-emerald-50 text-emerald-800 font-semibold"
-                      : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+                      ? "bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 font-semibold"
+                      : "text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">
+                    <span className="font-mono text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                       {lang.flag}
                     </span>
                     <span>{lang.label}</span>
                   </div>
                   {isSelected && (
-                    <CheckIcon className="w-4 h-4 text-emerald-600 stroke-[2.5]" />
+                    <CheckIcon className="w-4 h-4 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
                   )}
                 </button>
               );
