@@ -41,22 +41,21 @@ export const CURRENCY_MAP: Record<SupportedCurrency, CurrencyConfig> = {
 
 export const SUPPORTED_CURRENCIES: SupportedCurrency[] = ["IDR", "USD", "SGD", "EUR"];
 
-/**
- * Format currency value with symbol based on currency code
- */
-export function formatMoney(amount: number, currency: SupportedCurrency | string = "IDR"): string {
-  const code = (currency?.toUpperCase() as SupportedCurrency) || "IDR";
-  const conf = CURRENCY_MAP[code] || CURRENCY_MAP.IDR;
-
-  const num = Number(amount) || 0;
-
-  if (code === "IDR") {
-    const parts = Math.round(num).toString().split(".");
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    return `Rp${parts[0]}`;
+/** Format currency value using the selected UI locale. */
+export function formatMoney(
+  amount: number,
+  currency: SupportedCurrency | string = "IDR",
+  locale: "id" | "en" = "id",
+): string {
+  const requestedCode = currency?.toUpperCase() as SupportedCurrency;
+  if (!CURRENCY_MAP[requestedCode]) {
+    console.warn(`[formatMoney] Unsupported currency ${JSON.stringify(currency)}; using IDR`);
   }
+  const code = CURRENCY_MAP[requestedCode] ? requestedCode : "IDR";
+  const conf = CURRENCY_MAP[code];
+  const num = Number.isFinite(Number(amount)) ? Number(amount) : 0;
 
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat(locale === "en" ? "en-US" : "id-ID", {
     style: "currency",
     currency: code,
     minimumFractionDigits: conf.decimalPlaces,
