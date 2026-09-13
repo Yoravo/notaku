@@ -7,6 +7,7 @@ import {
   CheckIcon,
   PencilSquareIcon,
 } from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
 
 interface SignaturePadModalProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ export function SignaturePadModal({
   onClose,
   onSave,
 }: SignaturePadModalProps) {
+  const tSig = useTranslations("signaturePad");
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [isEmpty, setIsEmpty] = useState(true);
@@ -38,46 +40,27 @@ export function SignaturePadModal({
     // Handle high DPI display agar garis tajam
     const ratio = Math.max(window.devicePixelRatio || 1, 1);
     const rect = canvas.getBoundingClientRect();
-
     canvas.width = rect.width * ratio;
     canvas.height = rect.height * ratio;
     ctx.scale(ratio, ratio);
 
-    // Setup style garis
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.strokeStyle = strokeColor;
     ctx.lineWidth = strokeWidth;
-
-    // Bersihkan canvas
-    ctx.clearRect(0, 0, rect.width, rect.height);
-    setIsEmpty(true);
-  }, [isOpen]);
-
-  // Update properti konteks saat warna atau ketebalan berubah
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    ctx.strokeStyle = strokeColor;
-    ctx.lineWidth = strokeWidth;
-  }, [strokeColor, strokeWidth]);
-
-  if (!isOpen) return null;
+  }, [isOpen, strokeColor, strokeWidth]);
 
   const getCoordinates = (
     e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>
   ) => {
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0 };
-    const rect = canvas.getBoundingClientRect();
 
+    const rect = canvas.getBoundingClientRect();
     if ("touches" in e) {
-      const touch = e.touches[0];
       return {
-        x: touch.clientX - rect.left,
-        y: touch.clientY - rect.top,
+        x: e.touches[0].clientX - rect.left,
+        y: e.touches[0].clientY - rect.top,
       };
     }
     return {
@@ -89,16 +72,18 @@ export function SignaturePadModal({
   const startDrawing = (
     e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>
   ) => {
-    e.preventDefault();
+    setIsDrawing(true);
     const canvas = canvasRef.current;
     if (!canvas) return;
+
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     const { x, y } = getCoordinates(e);
     ctx.beginPath();
     ctx.moveTo(x, y);
-    setIsDrawing(true);
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = strokeWidth;
     setIsEmpty(false);
   };
 
@@ -106,9 +91,9 @@ export function SignaturePadModal({
     e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>
   ) => {
     if (!isDrawing) return;
-    e.preventDefault();
     const canvas = canvasRef.current;
     if (!canvas) return;
+
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
@@ -117,23 +102,18 @@ export function SignaturePadModal({
     ctx.stroke();
   };
 
-  const stopDrawing = (e?: React.MouseEvent | React.TouchEvent) => {
-    if (e) e.preventDefault();
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (ctx) ctx.closePath();
+  const stopDrawing = () => {
     setIsDrawing(false);
   };
 
   const handleClear = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const rect = canvas.getBoundingClientRect();
-    ctx.clearRect(0, 0, rect.width, rect.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     setIsEmpty(true);
   };
 
@@ -147,6 +127,8 @@ export function SignaturePadModal({
     onClose();
   };
 
+  if (!isOpen) return null;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs animate-in fade-in duration-150">
       <div className="w-full max-w-lg rounded-2xl bg-white p-5 sm:p-6 shadow-2xl space-y-4 animate-in zoom-in-95 duration-150">
@@ -158,10 +140,10 @@ export function SignaturePadModal({
             </div>
             <div>
               <h3 className="text-base font-bold text-gray-900">
-                Goreskan Tanda Tangan
+                {tSig("title")}
               </h3>
               <p className="text-xs text-gray-500">
-                Tanda tangani di dalam kotak kanvas menggunakan jari atau mouse
+                {tSig("subtitle")}
               </p>
             </div>
           </div>
@@ -178,7 +160,7 @@ export function SignaturePadModal({
         <div className="flex flex-wrap items-center justify-between gap-3 text-xs bg-gray-50 p-2.5 rounded-xl border border-gray-200/70">
           {/* Warna Tinta */}
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-gray-600">Warna Tinta:</span>
+            <span className="font-semibold text-gray-600">{tSig("inkColor")}</span>
             <button
               type="button"
               onClick={() => setStrokeColor("#111827")}
@@ -187,7 +169,7 @@ export function SignaturePadModal({
                   ? "border-[#0f6b4f] scale-110 shadow-xs"
                   : "border-transparent opacity-80"
               }`}
-              title="Hitam Profesional"
+              title={tSig("colorBlack")}
             />
             <button
               type="button"
@@ -197,17 +179,17 @@ export function SignaturePadModal({
                   ? "border-[#0f6b4f] scale-110 shadow-xs"
                   : "border-transparent opacity-80"
               }`}
-              title="Biru Pulpen"
+              title={tSig("colorBlue")}
             />
           </div>
 
           {/* Ketebalan Goresan */}
           <div className="flex items-center gap-1.5">
-            <span className="font-semibold text-gray-600">Garis:</span>
+            <span className="font-semibold text-gray-600">{tSig("strokeWidth")}</span>
             {[
-              { label: "Tipis", val: 1.8 },
-              { label: "Sedang", val: 2.5 },
-              { label: "Tebal", val: 3.5 },
+              { label: tSig("strokeThin"), val: 1.8 },
+              { label: tSig("strokeMedium"), val: 2.5 },
+              { label: tSig("strokeThick"), val: 3.5 },
             ].map((st) => (
               <button
                 key={st.val}
@@ -226,7 +208,7 @@ export function SignaturePadModal({
         </div>
 
         {/* Drawing Canvas Area */}
-        <div className="relative w-full h-56 sm:h-64 rounded-xl border-2 border-dashed border-gray-300 bg-linear-to-b from-gray-50 to-white flex items-center justify-center overflow-hidden touch-none select-none shadow-inner">
+        <div className="relative w-full h-56 sm:h-64 rounded-xl border-2 border-dashed border-gray-300 bg-gradient-to-b from-gray-50 to-white flex items-center justify-center overflow-hidden touch-none select-none shadow-inner">
           <canvas
             ref={canvasRef}
             className="w-full h-full cursor-crosshair"
@@ -242,17 +224,17 @@ export function SignaturePadModal({
           {/* Watermark Garis Tanda Tangan */}
           <div className="absolute bottom-8 left-8 right-8 pointer-events-none border-b border-gray-300/80 flex justify-between items-end pb-1">
             <span className="text-[10px] text-gray-400 font-mono tracking-wider">
-              Tanda Tangan Digital
+              {tSig("watermarkTitle")}
             </span>
             <span className="text-[10px] text-gray-300 font-mono">
-              (X) Gores Disini
+              {tSig("watermarkSignHere")}
             </span>
           </div>
 
           {isEmpty && (
             <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
               <p className="text-xs text-gray-400 font-medium">
-                Gunakan jari atau mouse untuk membuat tanda tangan
+                {tSig("canvasPlaceholder")}
               </p>
             </div>
           )}
@@ -267,7 +249,7 @@ export function SignaturePadModal({
             className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-gray-600 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
           >
             <ArrowPathIcon className="w-4 h-4" />
-            <span>Bersihkan / Ulangi</span>
+            <span>{tSig("clear")}</span>
           </button>
 
           <div className="flex items-center gap-2">
@@ -276,7 +258,7 @@ export function SignaturePadModal({
               onClick={onClose}
               className="px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
             >
-              Batal
+              {tSig("cancel")}
             </button>
             <button
               type="button"
@@ -285,7 +267,7 @@ export function SignaturePadModal({
               className="inline-flex items-center gap-1.5 px-5 py-2 text-xs font-semibold text-white bg-[#0f6b4f] hover:bg-[#0c5740] rounded-lg transition-colors cursor-pointer shadow-xs disabled:opacity-50 disabled:pointer-events-none"
             >
               <CheckIcon className="w-4 h-4 stroke-[2.5]" />
-              <span>Gunakan Tanda Tangan</span>
+              <span>{tSig("useSignature")}</span>
             </button>
           </div>
         </div>

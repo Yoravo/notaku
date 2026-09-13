@@ -20,7 +20,7 @@ import {
   CodeBracketIcon,
   BellAlertIcon,
 } from "@heroicons/react/24/outline";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 import type { CustomDomainData } from "@/actions/domains";
 import type { ApiKeyData, WebhookEndpointData } from "@/actions/developer";
 import type { BotNotificationSettings } from "@/actions/notifications";
@@ -59,7 +59,8 @@ export function SettingsTabsClient({
   };
   botNotificationData: BotNotificationSettings;
 }) {
-  const { t, locale } = useLanguage();
+  const tSet = useTranslations("settings");
+  const tTmpl = useTranslations("templates");
   const [activeTab, setActiveTab] = useState<
     "profile" | "bank" | "template" | "domain" | "developer" | "notifications" | "security"
   >("profile");
@@ -67,13 +68,13 @@ export function SettingsTabsClient({
   const isPro = user.plan === "PRO";
 
   const tabs = [
-    { id: "profile", label: t.settings?.tabProfile || (locale === "id" ? "Profil & Identitas" : "Profile & Identity"), icon: UserIcon },
-    { id: "bank", label: t.settings?.tabBank || (locale === "id" ? "Rekening Pembayaran" : "Bank Account"), icon: BuildingLibraryIcon },
-    { id: "template", label: t.settings?.tabTemplate || (locale === "id" ? "Desain PDF Faktur" : "Invoice PDF Template"), icon: DocumentTextIcon },
-    { id: "domain", label: t.settings?.tabDomain || (locale === "id" ? "Domain & White-Label" : "Domain & White-Label"), icon: GlobeAltIcon },
-    { id: "developer", label: t.settings?.tabDeveloper || (locale === "id" ? "Developer & API" : "Developer & API"), icon: CodeBracketIcon },
-    { id: "notifications", label: t.settings?.tabNotifications || (locale === "id" ? "Bot Notifikasi" : "Bot Notifications"), icon: BellAlertIcon },
-    { id: "security", label: t.settings?.tabSecurity || (locale === "id" ? "Keamanan Akun" : "Account Security"), icon: ShieldCheckIcon },
+    { id: "profile", label: tSet("tabProfile"), icon: UserIcon },
+    { id: "bank", label: tSet("tabBank"), icon: BuildingLibraryIcon },
+    { id: "template", label: tSet("tabTemplate"), icon: DocumentTextIcon },
+    { id: "domain", label: tSet("tabDomain"), icon: GlobeAltIcon },
+    { id: "developer", label: tSet("tabDeveloper"), icon: CodeBracketIcon },
+    { id: "notifications", label: tSet("tabNotifications"), icon: BellAlertIcon },
+    { id: "security", label: tSet("tabSecurity"), icon: ShieldCheckIcon },
   ] as const;
 
   return (
@@ -81,13 +82,10 @@ export function SettingsTabsClient({
       {/* Page Header (Reactive Translation) */}
       <div>
         <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-          {t.settings?.title || (locale === "id" ? "Pengaturan Akun & Bisnis" : "Account & Business Settings")}
+          {tSet("title")}
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 mt-1">
-          {t.settings?.subtitle ||
-            (locale === "id"
-              ? "Kelola profil usaha, logo & tanda tangan faktur, rekening pembayaran, preferensi template PDF, dan keamanan akun."
-              : "Configure business branding, payment details, PDF templates, and account security.")}
+          {tSet("subtitle")}
         </p>
       </div>
 
@@ -118,18 +116,7 @@ export function SettingsTabsClient({
       <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-7 shadow-2xs">
         {/* Tab 1: Profile & Business */}
         {activeTab === "profile" && (
-          <div className="space-y-6 max-w-2xl">
-            <div>
-              <h2 className="text-base sm:text-lg font-bold text-slate-900">
-                {locale === "id" ? "Profil & Identitas Usaha" : "Business Profile & Identity"}
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-                {locale === "id"
-                  ? "Kelola informasi nama usaha, kontak, alamat, logo, tanda tangan, dan stempel resmi pada invoice."
-                  : "Manage business name, contact, address, logo, digital signature, and official invoice stamp."}
-              </p>
-            </div>
-
+          <div className="space-y-4">
             <ProfileForm
               name={user.name}
               businessName={user.businessName}
@@ -139,80 +126,56 @@ export function SettingsTabsClient({
               signatureUrl={user.signatureUrl}
               stampUrl={user.stampUrl}
               email={user.email}
-              receiveNewsletter={user.receiveNewsletter ?? true}
+              receiveNewsletter={user.receiveNewsletter}
             />
           </div>
         )}
 
-        {/* Tab 2: Rekening Bank & E-Wallet */}
+        {/* Tab 2: Bank Details */}
         {activeTab === "bank" && (
-          <div className="space-y-6 max-w-2xl">
-            <div>
-              <h2 className="text-base sm:text-lg font-bold text-slate-900">
-                {locale === "id" ? "Rekening Bank & E-Wallet" : "Bank Account & E-Wallet"}
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-                {locale === "id"
-                  ? "Nomor rekening tujuan transfer invoice manual pelanggan dan tujuan pencairan saldo (payout)."
-                  : "Destination bank account for manual client transfers and wallet payouts."}
-              </p>
-            </div>
-
+          <div className="space-y-4">
             <BankSettingsForm
               bankName={user.bankName || null}
               bankAccountNumber={user.bankAccountNumber || null}
               bankAccountName={user.bankAccountName || null}
-              isLocked={Boolean(user.bankAccountLocked)}
+              isLocked={user.bankAccountLocked || false}
               userFullName={user.name}
             />
           </div>
         )}
 
-        {/* Tab 3: Template & Desain Invoice */}
+        {/* Tab 3: Template Selector */}
         {activeTab === "template" && (
-          <div className="space-y-6 max-w-3xl">
-            <div>
-              <h2 className="text-base sm:text-lg font-bold text-slate-900">
-                {locale === "id" ? "Pilihan Template PDF Invoice" : "Invoice PDF Template Options"}
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-                {locale === "id"
-                  ? "Atur gaya tata letak default PDF invoice Anda (Classic, Modern, atau Minimal)."
-                  : "Choose default PDF layout style for your invoices (Classic, Modern, or Minimal)."}
-              </p>
-            </div>
-
-            {isPro ? (
-              <TemplateSelector current={user.invoiceTemplate} />
-            ) : (
-              <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-5 space-y-3 shadow-2xs">
-                <div className="flex items-center gap-2 text-amber-900 font-bold text-sm">
-                  <SparklesIcon className="w-5 h-5 text-amber-600 shrink-0" />
-                  <span>{locale === "id" ? "Kustomisasi Template adalah Fitur PRO" : "Template Customization is a PRO Feature"}</span>
-                </div>
-                <p className="text-xs text-amber-800 leading-relaxed">
-                  {locale === "id"
-                    ? "Upgrade ke akun NotaKu PRO untuk membuka akses bebas memilih 3 template faktur eksklusif (Classic, Modern, Minimal) dan menghapus watermark NotaKu pada dokumen PDF."
-                    : "Upgrade to NotaKu PRO to unlock access to 3 exclusive invoice layout templates (Classic, Modern, Minimal) and remove the NotaKu watermark on all PDF exports."}
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+              <div>
+                <h3 className="text-base font-bold text-slate-900">
+                  {tSet("tabTemplate")}
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  {tTmpl("templateSubtitle")}
                 </p>
-                <div className="pt-2">
-                  <UpgradeButton className="inline-flex items-center gap-2 rounded-xl bg-[#0f6b4f] px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-[#0c5740] transition-colors cursor-pointer" />
-                </div>
               </div>
-            )}
+              {!isPro && (
+                <div className="shrink-0">
+                  <UpgradeButton className="text-xs py-2 px-3.5" />
+                </div>
+              )}
+            </div>
+            <TemplateSelector current={user.invoiceTemplate} />
           </div>
         )}
 
-        {/* Tab 4: Domain & White-Label */}
+        {/* Tab 4: Custom Domain (White-Label - PRO) */}
         {activeTab === "domain" && (
-          <div className="space-y-6 max-w-3xl">
+          <div className="space-y-4">
             <CustomDomainForm initialData={domainData} />
           </div>
         )}
 
-        {/* Tab 5: Developer & API */}
+        {/* Tab 5: Developer API Keys & Webhooks (PRO) */}
         {activeTab === "developer" && (
-          <div className="space-y-6 max-w-3xl">
+          <div className="space-y-4">
             <DeveloperSettingsForm
               isPro={developerData.isPro}
               initialApiKeys={developerData.apiKeys}
@@ -221,27 +184,16 @@ export function SettingsTabsClient({
           </div>
         )}
 
-        {/* Tab 6: Bot Notifikasi Telegram & Discord */}
+        {/* Tab 6: Telegram & Discord Notification Bots (PRO) */}
         {activeTab === "notifications" && (
-          <div className="space-y-6 max-w-3xl">
+          <div className="space-y-4">
             <NotificationSettingsForm initialData={botNotificationData} />
           </div>
         )}
 
-        {/* Tab 7: Keamanan & Password */}
+        {/* Tab 7: Security & Password */}
         {activeTab === "security" && (
-          <div className="space-y-6 max-w-2xl">
-            <div>
-              <h2 className="text-base sm:text-lg font-bold text-slate-900">
-                {t.settings?.tabSecurity || (locale === "id" ? "Keamanan Akun" : "Account Security")}
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-                {locale === "id"
-                  ? "Perbarui kata sandi akun NotaKu Anda untuk menjaga keamanan akses dan data tagihan."
-                  : "Update your NotaKu account password to safeguard access and invoice data."}
-              </p>
-            </div>
-
+          <div className="space-y-4">
             <SecurityForm />
           </div>
         )}

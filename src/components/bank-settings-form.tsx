@@ -21,7 +21,7 @@ import {
   EnvelopeIcon,
   PencilSquareIcon,
 } from "@heroicons/react/24/outline";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 
 interface BankSettingsFormProps {
   bankName: string | null;
@@ -37,7 +37,7 @@ export function BankSettingsForm({
   bankAccountName,
   userFullName,
 }: BankSettingsFormProps) {
-  const { t, locale } = useLanguage();
+  const tBank = useTranslations("bank");
   const hasExistingAccount = Boolean(bankName && bankAccountNumber);
 
   // Form State
@@ -64,15 +64,15 @@ export function BankSettingsForm({
     setError(null);
 
     if (!formData.bankName) {
-      setError(locale === "id" ? "Silakan pilih Bank atau E-Wallet." : "Please select a Bank or E-Wallet.");
+      setError(tBank("selectBankError"));
       return;
     }
     if (!formData.bankAccountNumber || formData.bankAccountNumber.trim().length < 4) {
-      setError(locale === "id" ? "Nomor rekening minimal 4 digit." : "Account number must be at least 4 digits.");
+      setError(tBank("accNumberMinError"));
       return;
     }
     if (!formData.bankAccountName || formData.bankAccountName.trim().length < 2) {
-      setError(locale === "id" ? "Nama pemilik rekening wajib diisi." : "Account holder name is required.");
+      setError(tBank("accHolderRequiredError"));
       return;
     }
 
@@ -82,11 +82,7 @@ export function BankSettingsForm({
 
   const handleConfirmInitialSave = async () => {
     if (!agreeCheck) {
-      setError(
-        locale === "id"
-          ? "Anda wajib mencentang persetujuan keabsahan data rekening."
-          : "You must check the agreement confirming account details are valid."
-      );
+      setError(tBank("agreementRequiredError"));
       return;
     }
 
@@ -109,9 +105,7 @@ export function BankSettingsForm({
       setError(
         err instanceof Error
           ? err.message
-          : locale === "id"
-          ? "Gagal menyimpan rekening."
-          : "Failed to save bank account."
+          : tBank("saveFailed")
       );
     } finally {
       setLoadingSave(false);
@@ -127,13 +121,13 @@ export function BankSettingsForm({
     try {
       const res = await requestBankChangeOtp();
       if (!res.success) {
-        setError(res.error || (locale === "id" ? "Gagal meminta kode OTP" : "Failed to request OTP code"));
+        setError(res.error || tBank("requestOtpFailed"));
       } else {
         setOtpSent(true);
-        setSuccess(res.message || (locale === "id" ? "Kode OTP berhasil dikirim!" : "OTP code sent successfully!"));
+        setSuccess(res.message || tBank("otpSentSuccess"));
       }
     } catch {
-      setError(locale === "id" ? "Terjadi gangguan jaringan saat mengirim OTP." : "Network error while requesting OTP.");
+      setError(tBank("otpNetworkError"));
     } finally {
       setLoadingOtp(false);
     }
@@ -146,19 +140,19 @@ export function BankSettingsForm({
     setSuccess(null);
 
     if (!formData.bankName) {
-      setError(locale === "id" ? "Pilih Bank atau E-Wallet baru." : "Please choose a new Bank or E-Wallet.");
+      setError(tBank("selectBankNewError"));
       return;
     }
     if (!formData.bankAccountNumber || formData.bankAccountNumber.length < 4) {
-      setError(locale === "id" ? "Nomor rekening baru minimal 4 digit." : "Account number must be at least 4 digits.");
+      setError(tBank("accNumberNewMinError"));
       return;
     }
     if (!formData.bankAccountName || formData.bankAccountName.length < 2) {
-      setError(locale === "id" ? "Nama pemilik rekening baru wajib diisi." : "Account holder name is required.");
+      setError(tBank("accHolderNewRequiredError"));
       return;
     }
     if (!otpCode || otpCode.trim().length !== 6) {
-      setError(locale === "id" ? "Masukkan 6 digit kode OTP verifikasi email." : "Enter the 6-digit OTP verification code.");
+      setError(tBank("otpLengthError"));
       return;
     }
 
@@ -172,15 +166,15 @@ export function BankSettingsForm({
       });
 
       if (!res.success) {
-        setError(res.error || (locale === "id" ? "Verifikasi OTP gagal" : "OTP verification failed"));
+        setError(res.error || tBank("otpVerificationFailed"));
       } else {
-        setSuccess(res.message || (locale === "id" ? "Rekening berhasil diperbarui!" : "Bank account updated successfully!"));
+        setSuccess(res.message || tBank("bankAccountUpdatedSuccess"));
         setIsEditing(false);
         setOtpSent(false);
         setOtpCode("");
       }
     } catch {
-      setError(locale === "id" ? "Gagal memproses pembaruan rekening." : "Failed to process bank account update.");
+      setError(tBank("updateFailed"));
     } finally {
       setLoadingSave(false);
     }
@@ -203,11 +197,11 @@ export function BankSettingsForm({
                   </h3>
                   <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-bold text-[#0f6b4f] border border-emerald-200/60 shadow-2xs">
                     <CheckCircleIcon className="h-3 w-3" />
-                    {locale === "id" ? "Terverifikasi" : "Verified"}
+                    {tBank("cardTitleVerified")}
                   </span>
                 </div>
                 <p className="text-xs text-slate-500 font-medium">
-                  {locale === "id" ? "Tujuan transfer langsung invoice & penarikan saldo" : "Destination for invoice payments & fund withdrawals"}
+                  {tBank("cardDescription")}
                 </p>
               </div>
             </div>
@@ -222,19 +216,19 @@ export function BankSettingsForm({
               className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 shadow-2xs hover:bg-slate-50 transition-all cursor-pointer min-h-[44px] sm:min-h-[38px]"
             >
               <PencilSquareIcon className="h-4 w-4 text-slate-400" />
-              <span>{locale === "id" ? "Ubah Rekening" : "Change Account"}</span>
+              <span>{tBank("changeAccountBtn")}</span>
             </button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             <div className="rounded-xl bg-slate-50/80 p-3 border border-slate-200/60 shadow-2xs">
-              <span className="text-slate-500 text-[11px] font-semibold">{locale === "id" ? "Nomor Rekening / No HP:" : "Account / Phone Number:"}</span>
+              <span className="text-slate-500 text-[11px] font-semibold">{tBank("accountNumberCardLabel")}</span>
               <p className="font-mono font-bold text-slate-900 text-sm tracking-wider mt-0.5">
                 {bankAccountNumber}
               </p>
             </div>
             <div className="rounded-xl bg-slate-50/80 p-3 border border-slate-200/60 shadow-2xs">
-              <span className="text-slate-500 text-[11px] font-semibold">{t.invoices?.accountHolder || (locale === "id" ? "Atas Nama (Pemilik):" : "Account Holder:")}</span>
+              <span className="text-slate-500 text-[11px] font-semibold">{tBank("accountHolderCardLabel")}</span>
               <p className="font-bold text-slate-900 text-sm uppercase mt-0.5">
                 {bankAccountName || userFullName}
               </p>
@@ -244,9 +238,7 @@ export function BankSettingsForm({
           <p className="text-[11px] text-slate-400 font-medium flex items-center gap-1">
             <LockClosedIcon className="h-3.5 w-3.5 shrink-0" />
             <span>
-              {locale === "id"
-                ? "Perubahan data rekening dilindungi dengan verifikasi OTP email (maks 3x per hari)."
-                : "Account modifications are protected via Email OTP verification (max 3x per day)."}
+              {tBank("otpSecurityNotice")}
             </span>
           </p>
         </div>
@@ -268,13 +260,13 @@ export function BankSettingsForm({
               <div>
                 <h3 className="text-sm font-bold text-slate-900">
                   {hasExistingAccount
-                    ? (locale === "id" ? "Ubah Data Rekening (Verifikasi OTP)" : "Update Account (Email OTP)")
-                    : (locale === "id" ? "Pendaftaran Rekening Pertama Kali" : "First-Time Bank Registration")}
+                    ? tBank("editTitle")
+                    : tBank("initialTitle")}
                 </h3>
                 <p className="text-xs text-slate-500 font-medium">
                   {hasExistingAccount
-                    ? (locale === "id" ? "Masukkan rekening baru dan konfirmasi kode OTP yang dikirim ke email Anda" : "Enter new bank details and confirm with the OTP sent to your email")
-                    : (locale === "id" ? "Data rekening akan dicetak pada invoice dan digunakan untuk pencairan saldo" : "Account details will be printed on invoices and used for payouts")}
+                    ? tBank("editSubtitle")
+                    : tBank("initialSubtitle")}
                 </p>
               </div>
             </div>
@@ -288,7 +280,7 @@ export function BankSettingsForm({
                   setError(null);
                 }}
                 className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 cursor-pointer"
-                title={locale === "id" ? "Batal Ubah" : "Cancel Edit"}
+                title={tBank("cancelEdit")}
               >
                 <XMarkIcon className="h-5 w-5" />
               </button>
@@ -320,7 +312,7 @@ export function BankSettingsForm({
             {/* Bank / E-Wallet Selector */}
             <div>
               <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                {locale === "id" ? "Bank / E-Wallet Tujuan" : "Target Bank / E-Wallet"}{" "}
+                {tBank("targetBankLabel")}{" "}
                 <span className="text-rose-500">*</span>
               </label>
               <div className="relative">
@@ -335,8 +327,8 @@ export function BankSettingsForm({
                   className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-11 pr-4 text-xs sm:text-sm font-semibold text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs min-h-[44px] sm:min-h-[40px]"
                   required
                 >
-                  <option value="">{locale === "id" ? "-- Pilih Bank / E-Wallet --" : "-- Select Bank / E-Wallet --"}</option>
-                  <optgroup label={locale === "id" ? "Bank Nasional & Digital" : "National & Digital Banks"}>
+                  <option value="">{tBank("selectBankPlaceholder")}</option>
+                  <optgroup label={tBank("nationalBankGroup")}>
                     {INDONESIA_BANKS_AND_EWALLETS.filter(
                       (b) => b.category === "BANK"
                     ).map((b) => (
@@ -345,7 +337,7 @@ export function BankSettingsForm({
                       </option>
                     ))}
                   </optgroup>
-                  <optgroup label="E-Wallet">
+                  <optgroup label={tBank("ewalletGroup")}>
                     {INDONESIA_BANKS_AND_EWALLETS.filter(
                       (b) => b.category === "EWALLET"
                     ).map((b) => (
@@ -361,7 +353,7 @@ export function BankSettingsForm({
             {/* Account Number */}
             <div>
               <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                {locale === "id" ? "Nomor Rekening / No HP E-Wallet" : "Account Number / E-Wallet Phone"}{" "}
+                {tBank("accountNumberFieldLabel")}{" "}
                 <span className="text-rose-500">*</span>
               </label>
               <div className="relative">
@@ -370,7 +362,7 @@ export function BankSettingsForm({
                 </div>
                 <input
                   type="text"
-                  placeholder={locale === "id" ? "Contoh: 1234567890 atau 081234567890" : "e.g. 1234567890 or 081234567890"}
+                  placeholder={tBank("accountNumberPlaceholder")}
                   value={formData.bankAccountNumber}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -387,7 +379,7 @@ export function BankSettingsForm({
             {/* Account Name */}
             <div>
               <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                {t.invoices?.accountHolder || (locale === "id" ? "Nama Pemilik Rekening (Atas Nama)" : "Account Holder Name")}{" "}
+                {tBank("accountHolderFieldLabel")}{" "}
                 <span className="text-rose-500">*</span>
               </label>
               <div className="relative">
@@ -396,7 +388,7 @@ export function BankSettingsForm({
                 </div>
                 <input
                   type="text"
-                  placeholder={locale === "id" ? "Contoh: BUDI SANTOSO" : "e.g. JOHN DOE"}
+                  placeholder={tBank("accountHolderPlaceholder")}
                   value={formData.bankAccountName}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -416,13 +408,11 @@ export function BankSettingsForm({
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div>
                     <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider">
-                      {locale === "id" ? "Kode Verifikasi OTP Email" : "Email OTP Verification Code"}{" "}
+                      {tBank("otpFieldLabel")}{" "}
                       <span className="text-rose-500">*</span>
                     </label>
                     <p className="text-[11px] text-slate-500 font-medium">
-                      {locale === "id"
-                        ? "Maksimal 3 permintaan kode per 24 jam demi keamanan akun."
-                        : "Maximum 3 OTP requests per 24 hours for account security."}
+                      {tBank("otpFieldHint")}
                     </p>
                   </div>
 
@@ -439,8 +429,8 @@ export function BankSettingsForm({
                     )}
                     <span>
                       {otpSent
-                        ? locale === "id" ? "Kirim Ulang OTP" : "Resend OTP"
-                        : locale === "id" ? "Minta Kode OTP" : "Request OTP Code"}
+                        ? tBank("resendOtp")
+                        : tBank("requestOtp")}
                     </span>
                   </button>
                 </div>
@@ -470,7 +460,7 @@ export function BankSettingsForm({
                   }}
                   className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer shadow-2xs min-h-[44px]"
                 >
-                  {locale === "id" ? "Batal" : "Cancel"}
+                  {tBank("cancel")}
                 </button>
               )}
 
@@ -482,12 +472,12 @@ export function BankSettingsForm({
                 {loadingSave ? (
                   <>
                     <ArrowPathIcon className="w-4 h-4 animate-spin" />
-                    <span>{locale === "id" ? "Memproses..." : "Processing..."}</span>
+                    <span>{tBank("processing")}</span>
                   </>
                 ) : hasExistingAccount ? (
-                  <span>{locale === "id" ? "Verifikasi OTP & Simpan Rekening" : "Verify OTP & Save Account"}</span>
+                  <span>{tBank("verifyOtpAndSave")}</span>
                 ) : (
-                  <span>{locale === "id" ? "Simpan Data Rekening" : "Save Bank Account"}</span>
+                  <span>{tBank("saveBankAccount")}</span>
                 )}
               </button>
             </div>
@@ -510,10 +500,10 @@ export function BankSettingsForm({
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-slate-900">
-                    {locale === "id" ? "Konfirmasi Kebenaran Rekening" : "Confirm Account Details"}
+                    {tBank("confirmModalTitle")}
                   </h3>
                   <p className="text-xs text-slate-500 font-medium">
-                    {locale === "id" ? "Periksa kembali kebenaran nomor rekening Anda" : "Please double-check your account details"}
+                    {tBank("confirmModalSubtitle")}
                   </p>
                 </div>
               </div>
@@ -529,17 +519,17 @@ export function BankSettingsForm({
             {/* Recap Card */}
             <div className="rounded-xl bg-slate-50 p-4 border border-slate-200/80 space-y-2.5 text-xs shadow-2xs">
               <div className="flex justify-between">
-                <span className="text-slate-500 font-medium">{locale === "id" ? "Bank / E-Wallet:" : "Bank / E-Wallet:"}</span>
+                <span className="text-slate-500 font-medium">{tBank("confirmBankLabel")}</span>
                 <span className="font-bold text-slate-900">{formData.bankName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500 font-medium">{locale === "id" ? "Nomor Rekening:" : "Account Number:"}</span>
+                <span className="text-slate-500 font-medium">{tBank("confirmAccNumberLabel")}</span>
                 <span className="font-mono font-bold text-slate-900 text-sm tracking-wider">
                   {formData.bankAccountNumber}
                 </span>
               </div>
               <div className="flex justify-between border-t border-slate-200/60 pt-2">
-                <span className="text-slate-500 font-medium">{locale === "id" ? "Atas Nama (Pemilik):" : "Account Holder:"}</span>
+                <span className="text-slate-500 font-medium">{tBank("confirmAccHolderLabel")}</span>
                 <span className="font-bold text-slate-900 uppercase">
                   {formData.bankAccountName}
                 </span>
@@ -555,9 +545,7 @@ export function BankSettingsForm({
                   className="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#0f6b4f] focus:ring-[#0f6b4f]"
                 />
                 <span className="text-xs text-slate-700 font-medium leading-snug">
-                  {locale === "id"
-                    ? "Saya menyatakan bahwa data rekening di atas adalah benar milik saya dan siap digunakan untuk penerimaan pembayaran."
-                    : "I hereby declare that the account information above is valid, belongs to me, and is authorized for invoice payouts."}
+                  {tBank("agreeDeclaration")}
                 </span>
               </label>
             </div>
@@ -568,7 +556,7 @@ export function BankSettingsForm({
                 onClick={() => setShowConfirmModal(false)}
                 className="flex-1 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer min-h-[44px]"
               >
-                {locale === "id" ? "Periksa Lagi" : "Review Again"}
+                {tBank("reviewAgain")}
               </button>
               <button
                 type="button"
@@ -579,10 +567,10 @@ export function BankSettingsForm({
                 {loadingSave ? (
                   <>
                     <ArrowPathIcon className="w-3.5 h-3.5 animate-spin" />
-                    <span>{locale === "id" ? "Menyimpan..." : "Saving..."}</span>
+                    <span>{tBank("saving")}</span>
                   </>
                 ) : (
-                  <span>{locale === "id" ? "Konfirmasi & Simpan" : "Confirm & Save"}</span>
+                  <span>{tBank("confirmAndSave")}</span>
                 )}
               </button>
             </div>

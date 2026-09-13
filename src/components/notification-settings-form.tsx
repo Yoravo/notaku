@@ -10,7 +10,7 @@ import {
   ArrowPathIcon,
   InformationCircleIcon,
 } from "@heroicons/react/24/outline";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 import { UpgradeButton } from "@/components/upgrade-button";
 import {
   updateBotNotificationSettings,
@@ -24,7 +24,7 @@ export function NotificationSettingsForm({
 }: {
   initialData: BotNotificationSettings;
 }) {
-  const { t, locale } = useLanguage();
+  const tNotif = useTranslations("notifications");
   const [formData, setFormData] = useState<BotNotificationSettings>(initialData);
   const [isSaving, startSaveTransition] = useTransition();
   const [isTestingTelegram, startTestTgTransition] = useTransition();
@@ -54,12 +54,12 @@ export function NotificationSettingsForm({
 
         setMessage({
           type: "success",
-          text: locale === "id" ? "Pengaturan notifikasi bot berhasil disimpan!" : "Bot notification settings saved successfully!",
+          text: tNotif("saveSuccess"),
         });
       } catch (err: any) {
         setMessage({
           type: "error",
-          text: err?.message || (locale === "id" ? "Gagal menyimpan pengaturan." : "Failed to save settings."),
+          text: err?.message || tNotif("saveError"),
         });
       }
     });
@@ -68,7 +68,7 @@ export function NotificationSettingsForm({
   const handleTestTelegram = () => {
     if (!formData.telegramBotToken || !formData.telegramChatId) {
       setTestTgStatus({
-        error: locale === "id" ? "Masukkan Bot Token dan Chat ID terlebih dahulu." : "Enter Bot Token and Chat ID first.",
+        error: tNotif("tokenRequired"),
       });
       return;
     }
@@ -78,7 +78,7 @@ export function NotificationSettingsForm({
         await sendTestTelegramNotification(formData.telegramBotToken!, formData.telegramChatId!);
         setTestTgStatus({ success: true });
       } catch (err: any) {
-        setTestTgStatus({ error: err?.message || "Gagal mengirim pesan tes." });
+        setTestTgStatus({ error: err?.message || tNotif("testFailed") });
       }
     });
   };
@@ -86,7 +86,7 @@ export function NotificationSettingsForm({
   const handleTestDiscord = () => {
     if (!formData.discordWebhookUrl) {
       setTestDiscordStatus({
-        error: locale === "id" ? "Masukkan Webhook URL Discord terlebih dahulu." : "Enter Discord Webhook URL first.",
+        error: tNotif("webhookUrlRequired"),
       });
       return;
     }
@@ -96,7 +96,7 @@ export function NotificationSettingsForm({
         await sendTestDiscordNotification(formData.discordWebhookUrl!);
         setTestDiscordStatus({ success: true });
       } catch (err: any) {
-        setTestDiscordStatus({ error: err?.message || "Gagal mengirim webhook tes." });
+        setTestDiscordStatus({ error: err?.message || tNotif("testFailed") });
       }
     });
   };
@@ -105,12 +105,10 @@ export function NotificationSettingsForm({
     <div className="space-y-6">
       <div>
         <h2 className="text-base sm:text-lg font-bold text-slate-900">
-          {locale === "id" ? "Notifikasi Bot Telegram & Discord" : "Telegram & Discord Bot Notifications"}
+          {tNotif("title")}
         </h2>
         <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-          {locale === "id"
-            ? "Dapatkan notifikasi instan langsung ke grup Telegram atau channel Discord Anda saat invoice dibayar atau jatuh tempo."
-            : "Receive instant push alerts in your Telegram or Discord channels when invoices are paid or due today."}
+          {tNotif("subtitle")}
         </p>
       </div>
 
@@ -118,12 +116,10 @@ export function NotificationSettingsForm({
         <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-5 space-y-3 shadow-2xs">
           <div className="flex items-center gap-2 text-amber-900 font-bold text-sm">
             <SparklesIcon className="w-5 h-5 text-amber-600 shrink-0" />
-            <span>{locale === "id" ? "Fitur Eksklusif NotaKu PRO" : "NotaKu PRO Exclusive Feature"}</span>
+            <span>{tNotif("proNoticeTitle")}</span>
           </div>
           <p className="text-xs text-amber-800 leading-relaxed">
-            {locale === "id"
-              ? "Integrasi notifikasi bot Telegram dan webhook Discord hanya tersedia untuk pengguna paket PRO. Tingkatkan akun untuk memantau arus kas bisnis Anda secara real-time."
-              : "Telegram bot integration and Discord webhooks are exclusively available for PRO members. Upgrade now to monitor cash flow in real time."}
+            {tNotif("proNoticeDesc")}
           </p>
           <div className="pt-2">
             <UpgradeButton className="inline-flex items-center gap-2 rounded-xl bg-[#0f6b4f] px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-[#0c5740] transition-colors cursor-pointer" />
@@ -158,10 +154,10 @@ export function NotificationSettingsForm({
               </div>
               <div>
                 <h3 className="text-sm font-bold text-slate-900">
-                  {locale === "id" ? "Integrasi Bot Telegram" : "Telegram Bot Integration"}
+                  {tNotif("telegramTitle")}
                 </h3>
                 <p className="text-xs text-slate-500">
-                  {locale === "id" ? "Kirim pesan ke chat pribadi atau grup kerja Anda" : "Dispatch alerts to personal chat or team group"}
+                  {tNotif("telegramSubtitle")}
                 </p>
               </div>
             </div>
@@ -176,13 +172,7 @@ export function NotificationSettingsForm({
               />
               <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#0f6b4f]"></div>
               <span className="ml-2.5 text-xs font-semibold text-slate-700">
-                {formData.telegramEnabled
-                  ? locale === "id"
-                    ? "Aktif"
-                    : "Enabled"
-                  : locale === "id"
-                  ? "Nonaktif"
-                  : "Disabled"}
+                {formData.telegramEnabled ? tNotif("enabled") : tNotif("disabled")}
               </span>
             </label>
           </div>
@@ -190,7 +180,7 @@ export function NotificationSettingsForm({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                {locale === "id" ? "Telegram Bot Token" : "Telegram Bot Token"}
+                {tNotif("telegramTokenLabel")}
               </label>
               <input
                 type="password"
@@ -201,7 +191,7 @@ export function NotificationSettingsForm({
                 className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0f6b4f]/20 focus:border-[#0f6b4f] disabled:bg-slate-100 disabled:text-slate-400 font-mono"
               />
               <p className="text-[11px] text-slate-500 mt-1">
-                {locale === "id" ? "Dapatkan dari " : "Get from "}
+                {tNotif("telegramGetFrom")}{" "}
                 <a
                   href="https://t.me/BotFather"
                   target="_blank"
@@ -215,18 +205,18 @@ export function NotificationSettingsForm({
 
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                {locale === "id" ? "Chat ID / Group ID" : "Chat ID / Group ID"}
+                {tNotif("telegramChatIdLabel")}
               </label>
               <input
                 type="text"
                 disabled={!isPro || !formData.telegramEnabled}
-                placeholder="Misal: 123456789 atau -1001234567890"
+                placeholder={tNotif("telegramChatIdPlaceholder")}
                 value={formData.telegramChatId || ""}
                 onChange={(e) => setFormData((prev) => ({ ...prev, telegramChatId: e.target.value }))}
                 className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0f6b4f]/20 focus:border-[#0f6b4f] disabled:bg-slate-100 disabled:text-slate-400 font-mono"
               />
               <p className="text-[11px] text-slate-500 mt-1">
-                {locale === "id" ? "Ketahui ID Anda via " : "Find your ID via "}
+                {tNotif("telegramFindId")}{" "}
                 <a
                   href="https://t.me/userinfobot"
                   target="_blank"
@@ -252,13 +242,13 @@ export function NotificationSettingsForm({
                 ) : (
                   <PaperAirplaneIcon className="w-3.5 h-3.5" />
                 )}
-                <span>{locale === "id" ? "Kirim Pesan Uji Coba" : "Send Test Message"}</span>
+                <span>{tNotif("testTelegramBtn")}</span>
               </button>
 
               {testTgStatus?.success && (
                 <span className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
                   <CheckCircleIcon className="w-4 h-4" />
-                  {locale === "id" ? "Pesan tes terkirim!" : "Test message sent!"}
+                  {tNotif("testSuccess")}
                 </span>
               )}
               {testTgStatus?.error && (
@@ -280,10 +270,10 @@ export function NotificationSettingsForm({
               </div>
               <div>
                 <h3 className="text-sm font-bold text-slate-900">
-                  {locale === "id" ? "Integrasi Discord Webhook" : "Discord Webhook Integration"}
+                  {tNotif("discordTitle")}
                 </h3>
                 <p className="text-xs text-slate-500">
-                  {locale === "id" ? "Kirim format Embed ke channel Discord server Anda" : "Send rich embeds to your Discord channel"}
+                  {tNotif("discordSubtitle")}
                 </p>
               </div>
             </div>
@@ -298,20 +288,14 @@ export function NotificationSettingsForm({
               />
               <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#0f6b4f]"></div>
               <span className="ml-2.5 text-xs font-semibold text-slate-700">
-                {formData.discordEnabled
-                  ? locale === "id"
-                    ? "Aktif"
-                    : "Enabled"
-                  : locale === "id"
-                  ? "Nonaktif"
-                  : "Disabled"}
+                {formData.discordEnabled ? tNotif("enabled") : tNotif("disabled")}
               </span>
             </label>
           </div>
 
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1.5">
-              {locale === "id" ? "Discord Webhook URL" : "Discord Webhook URL"}
+              {tNotif("discordUrlLabel")}
             </label>
             <input
               type="password"
@@ -324,9 +308,7 @@ export function NotificationSettingsForm({
             <p className="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
               <InformationCircleIcon className="w-3.5 h-3.5 text-slate-400 shrink-0" />
               <span>
-                {locale === "id"
-                  ? "Buka Discord > Server Settings > Integrations > Webhooks > Copy Webhook URL."
-                  : "Open Discord > Server Settings > Integrations > Webhooks > Copy Webhook URL."}
+                {tNotif("discordInstructions")} {tNotif("discordStep1")}
               </span>
             </p>
           </div>
@@ -344,13 +326,13 @@ export function NotificationSettingsForm({
                 ) : (
                   <PaperAirplaneIcon className="w-3.5 h-3.5" />
                 )}
-                <span>{locale === "id" ? "Kirim Pesan Uji Coba" : "Send Test Webhook"}</span>
+                <span>{tNotif("testDiscordBtn")}</span>
               </button>
 
               {testDiscordStatus?.success && (
                 <span className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
                   <CheckCircleIcon className="w-4 h-4" />
-                  {locale === "id" ? "Webhook tes terkirim!" : "Test webhook sent!"}
+                  {tNotif("testSuccess")}
                 </span>
               )}
               {testDiscordStatus?.error && (
@@ -366,12 +348,10 @@ export function NotificationSettingsForm({
         {/* Section 3: Notification Events / Triggers */}
         <div className="rounded-2xl border border-slate-200 p-5 sm:p-6 space-y-4">
           <h3 className="text-sm font-bold text-slate-900">
-            {locale === "id" ? "Pemicu Notifikasi (Triggers)" : "Notification Triggers"}
+            {tNotif("eventTriggersTitle")}
           </h3>
           <p className="text-xs text-slate-500">
-            {locale === "id"
-              ? "Pilih jenis peristiwa invoice yang ingin Anda terima pemberitahuannya:"
-              : "Select which invoice events should trigger alerts:"}
+            {tNotif("eventTriggersSubtitle")}
           </p>
 
           <div className="space-y-3 pt-1">
@@ -385,12 +365,10 @@ export function NotificationSettingsForm({
               />
               <div>
                 <span className="text-xs sm:text-sm font-bold text-slate-800 block">
-                  {locale === "id" ? "Pembayaran Invoice Berhasil / Lunas" : "Invoice Payment Settled / Paid"}
+                  {tNotif("notifyOnPayment")}
                 </span>
                 <span className="text-xs text-slate-500 block mt-0.5">
-                  {locale === "id"
-                    ? "Kirim notifikasi setiap kali ada pelanggan yang melunasi invoice via QRIS/VA digital maupun transfer manual."
-                    : "Send notification every time a client settles an invoice digitally or manually."}
+                  {tNotif("notifyOnPaymentHint")}
                 </span>
               </div>
             </label>
@@ -405,12 +383,10 @@ export function NotificationSettingsForm({
               />
               <div>
                 <span className="text-xs sm:text-sm font-bold text-slate-800 block">
-                  {locale === "id" ? "Pengingat Tagihan Jatuh Tempo Hari Ini (H-0)" : "Invoices Due Today (H-0)"}
+                  {tNotif("notifyOnDueDate")}
                 </span>
                 <span className="text-xs text-slate-500 block mt-0.5">
-                  {locale === "id"
-                    ? "Kirim ringkasan seluruh invoice pelanggan yang jatuh tempo pada hari ini."
-                    : "Send a morning digest of all client invoices due today."}
+                  {tNotif("notifyOnDueDateHint")}
                 </span>
               </div>
             </label>
@@ -425,12 +401,10 @@ export function NotificationSettingsForm({
               />
               <div>
                 <span className="text-xs sm:text-sm font-bold text-slate-800 block">
-                  {locale === "id" ? "Invoice Berulang Diterbitkan Otomatis" : "Recurring Invoice Generated"}
+                  {tNotif("notifyOnRecurring")}
                 </span>
                 <span className="text-xs text-slate-500 block mt-0.5">
-                  {locale === "id"
-                    ? "Kirim notifikasi saat sistem cron berhasil menerbitkan tagihan periodik baru untuk pelanggan Anda."
-                    : "Send notification when cron automatically generates a new recurring invoice."}
+                  {tNotif("notifyOnRecurringHint")}
                 </span>
               </div>
             </label>
@@ -446,13 +420,7 @@ export function NotificationSettingsForm({
           >
             {isSaving && <ArrowPathIcon className="w-4 h-4 animate-spin" />}
             <span>
-              {isSaving
-                ? locale === "id"
-                  ? "Menyimpan..."
-                  : "Saving..."
-                : locale === "id"
-                ? "Simpan Pengaturan Notifikasi"
-                : "Save Notification Settings"}
+              {isSaving ? tNotif("saving") : tNotif("saveBtn")}
             </span>
           </button>
         </div>

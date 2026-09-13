@@ -1,7 +1,7 @@
 "use client";
 
 import { CustomerList } from "@/components/customers/customer-list";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations, useLocale } from "next-intl";
 
 interface Customer {
   id: string;
@@ -18,7 +18,8 @@ export function CustomersClient({
   customers: Customer[];
   errorMessage?: string;
 }) {
-  const { t, locale } = useLanguage();
+  const tCust = useTranslations("customers");
+  const locale = useLocale();
 
   return (
     <div className="space-y-6">
@@ -33,12 +34,10 @@ export function CustomersClient({
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-            {t.customers?.title || (locale === "id" ? "Buku Pelanggan" : "Client Directory")}
+            {tCust("title")}
           </h1>
           <p className="mt-1 text-xs sm:text-sm text-slate-500">
-            {locale === "id"
-              ? `Kelola ${customers.length} kontak pelanggan untuk mempermudah penagihan invoice berulang.`
-              : `Manage ${customers.length} client contacts to streamline recurring invoice creation.`}
+            {tCust("clientsCountDesc", { count: customers.length })}
           </p>
         </div>
       </div>

@@ -12,7 +12,7 @@ import {
   TrashIcon,
   InformationCircleIcon,
 } from "@heroicons/react/24/outline";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 import {
   saveDomainSettings,
   verifyCustomDomain,
@@ -22,7 +22,7 @@ import {
 import { UpgradeButton } from "@/components/upgrade-button";
 
 export function CustomDomainForm({ initialData }: { initialData: CustomDomainData }) {
-  const { t, locale } = useLanguage();
+  const tDom = useTranslations("domains");
   const [data, setData] = useState<CustomDomainData>(initialData);
   const [subdomain, setSubdomain] = useState(initialData.subdomainSlug || "");
   const [customDomain, setCustomDomain] = useState(initialData.customDomain || "");
@@ -60,7 +60,7 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
         });
         setMessage({
           type: "success",
-          text: locale === "id" ? "Pengaturan domain berhasil disimpan!" : "Domain settings saved successfully!",
+          text: tDom("saveSuccess"),
         });
         // Update local state
         setData((prev) => ({
@@ -72,7 +72,7 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
       } catch (err: any) {
         setMessage({
           type: "error",
-          text: err.message || (locale === "id" ? "Gagal menyimpan pengaturan domain." : "Failed to save domain settings."),
+          text: err.message || tDom("saveError"),
         });
       }
     });
@@ -98,20 +98,14 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
       } catch (err: any) {
         setMessage({
           type: "error",
-          text: err.message || (locale === "id" ? "Gagal melakukan verifikasi DNS." : "Failed to verify DNS."),
+          text: err.message || tDom("verifyError"),
         });
       }
     });
   };
 
   const handleRemove = () => {
-    if (
-      !confirm(
-        locale === "id"
-          ? "Apakah Anda yakin ingin menghapus custom domain ini?"
-          : "Are you sure you want to remove this custom domain?"
-      )
-    ) {
+    if (!confirm(tDom("confirmRemove"))) {
       return;
     }
 
@@ -127,12 +121,12 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
         }));
         setMessage({
           type: "success",
-          text: locale === "id" ? "Custom domain berhasil dihapus." : "Custom domain removed successfully.",
+          text: tDom("removeSuccess"),
         });
       } catch (err: any) {
         setMessage({
           type: "error",
-          text: err.message || (locale === "id" ? "Gagal menghapus domain." : "Failed to remove domain."),
+          text: err.message || tDom("removeError"),
         });
       }
     });
@@ -146,15 +140,13 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
           <div className="space-y-1 max-w-xl">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-purple-500/20 border border-purple-400/30 text-purple-200 text-xs font-bold uppercase tracking-wider">
               <SparklesIcon className="w-3.5 h-3.5" />
-              <span>Fitur Eksklusif NotaKu PRO</span>
+              <span>{tDom("proNoticeTitle")}</span>
             </div>
             <h3 className="text-lg font-bold">
-              {locale === "id" ? "Custom Domain & Subdomain White-Label" : "Custom Domain & White-Label"}
+              {tDom("proNoticeSubtitle")}
             </h3>
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
-              {locale === "id"
-                ? "Sajikan invoice bisnis Anda dengan alamat domain kustom sendiri (contoh: invoice.tokosaya.com). Tingkatkan profesionalitas dan kepercayaan klien Anda."
-                : "Brand your invoices with your own custom domain (e.g. invoice.mybrand.com). Boost credibility and client trust."}
+              {tDom("proNoticeDesc")}
             </p>
           </div>
           <UpgradeButton className="shrink-0" />
@@ -171,13 +163,11 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
             <GlobeAltIcon className="w-5 h-5" />
           </span>
           <h2 className="text-lg font-extrabold text-slate-900">
-            {locale === "id" ? "Domain & White-Label Bisnis" : "Custom Domain & White-Label"}
+            {tDom("title")}
           </h2>
         </div>
         <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
-          {locale === "id"
-            ? "Hubungkan domain atau subdomain bisnis Anda agar halaman invoice publik tampil dengan alamat identitas Anda sendiri."
-            : "Connect your custom domain or subdomain to show invoices under your own branded address."}
+          {tDom("subtitle")}
         </p>
       </div>
 
@@ -198,7 +188,7 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
         {/* Subdomain Instan bawaan */}
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-            {locale === "id" ? "Subdomain Instan NotaKu" : "Instant NotaKu Subdomain"}
+            {tDom("subdomainLabel")}
           </label>
           <div className="flex rounded-xl shadow-2xs border border-slate-200 overflow-hidden focus-within:ring-2 focus-within:ring-[#0f6b4f] focus-within:border-transparent">
             <input
@@ -213,9 +203,7 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
             </span>
           </div>
           <p className="text-[11px] text-slate-400 mt-1 font-medium">
-            {locale === "id"
-              ? "Subdomain langsung aktif tanpa perlu konfigurasi DNS."
-              : "Instant branded subdomain without DNS setup required."}
+            {tDom("subdomainDesc")}
           </p>
         </div>
 
@@ -223,19 +211,19 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
         <div className="pt-2 border-t border-slate-100">
           <div className="flex items-center justify-between mb-1.5">
             <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
-              {locale === "id" ? "Domain Kustom Sendiri" : "Your Own Custom Domain"}
+              {tDom("customDomainLabel")}
             </label>
             {data.customDomain && (
               <div>
                 {data.customDomainVerified ? (
                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-[#0f6b4f] border border-emerald-200">
                     <CheckCircleIcon className="w-3.5 h-3.5" />
-                    <span>{locale === "id" ? "Terverifikasi & Aktif" : "Verified & Active"}</span>
+                    <span>{tDom("statusVerified")}</span>
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
                     <ClockIcon className="w-3.5 h-3.5" />
-                    <span>{locale === "id" ? "Menunggu DNS" : "Pending DNS"}</span>
+                    <span>{tDom("statusPending")}</span>
                   </span>
                 )}
               </div>
@@ -255,7 +243,7 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
                 type="button"
                 onClick={handleRemove}
                 disabled={isPending}
-                className="p-2.5 rounded-xl text-rose-600 hover:bg-rose-50 border border-slate-200 transition-colors"
+                className="p-2.5 rounded-xl text-rose-600 hover:bg-rose-50 border border-slate-200 transition-colors cursor-pointer"
                 title="Hapus domain"
               >
                 <TrashIcon className="w-5 h-5" />
@@ -263,9 +251,7 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
             )}
           </div>
           <p className="text-[11px] text-slate-400 mt-1 font-medium">
-            {locale === "id"
-              ? "Gunakan subdomain dari domain bisnis Anda (disarankan, contoh: invoice.brandanda.com atau tagihan.bisnis.id)."
-              : "Use a subdomain of your primary domain (e.g. invoice.mybusiness.com)."}
+            {tDom("customDomainDesc")}
           </p>
         </div>
 
@@ -276,12 +262,8 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
             className="px-5 py-2.5 rounded-xl bg-[#0f6b4f] hover:bg-[#0c5740] text-white text-xs sm:text-sm font-bold shadow-xs transition-colors cursor-pointer disabled:opacity-50"
           >
             {isPending
-              ? locale === "id"
-                ? "Menyimpan..."
-                : "Saving..."
-              : locale === "id"
-                ? "Simpan Pengaturan Domain"
-                : "Save Domain Settings"}
+              ? tDom("saving")
+              : tDom("saveBtn")}
           </button>
         </div>
       </form>
@@ -292,10 +274,10 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
             <div>
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <span>Panduan Konfigurasi DNS</span>
+                <span>{tDom("dnsGuideTitle")}</span>
               </h3>
               <p className="text-xs text-slate-400 mt-0.5">
-                Tambahkan DNS Record berikut di panel registrar / DNS manager domain Anda (Cloudflare, Niagahoster, Rumahweb, dll):
+                {tDom("dnsGuideDesc")}
               </p>
             </div>
             <button
@@ -305,7 +287,7 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-md transition-all active:scale-95 cursor-pointer shrink-0 disabled:opacity-50"
             >
               <ArrowPathIcon className={`w-4 h-4 ${isVerifying ? "animate-spin" : ""}`} />
-              <span>{isVerifying ? "Mengecek DNS..." : "Verifikasi DNS Sekarang"}</span>
+              <span>{isVerifying ? tDom("verifying") : tDom("verifyBtn")}</span>
             </button>
           </div>
 
@@ -313,10 +295,10 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
             <table className="w-full text-left text-xs">
               <thead className="text-[10px] uppercase tracking-wider text-slate-400 border-b border-slate-800">
                 <tr>
-                  <th className="pb-2">Tipe Record</th>
-                  <th className="pb-2">Nama / Host</th>
-                  <th className="pb-2">Nilai Target</th>
-                  <th className="pb-2 text-right">Aksi</th>
+                  <th className="pb-2">{tDom("dnsType")}</th>
+                  <th className="pb-2">{tDom("dnsHost")}</th>
+                  <th className="pb-2">{tDom("dnsTarget")}</th>
+                  <th className="pb-2 text-right">{tDom("dnsAction")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800 text-slate-200">
@@ -330,17 +312,17 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
                     <button
                       type="button"
                       onClick={handleCopyTarget}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-bold text-slate-200 transition-colors inline-flex items-center gap-1"
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-bold text-slate-200 transition-colors inline-flex items-center gap-1 cursor-pointer"
                     >
                       {copiedTarget ? (
                         <>
                           <ClipboardDocumentCheckIcon className="w-3.5 h-3.5 text-emerald-400" />
-                          <span>Disalin</span>
+                          <span>{tDom("copied")}</span>
                         </>
                       ) : (
                         <>
                           <ClipboardDocumentIcon className="w-3.5 h-3.5" />
-                          <span>Salin</span>
+                          <span>{tDom("copy")}</span>
                         </>
                       )}
                     </button>
@@ -360,17 +342,17 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
                       <button
                         type="button"
                         onClick={handleCopyTxt}
-                        className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-bold text-slate-200 transition-colors inline-flex items-center gap-1"
+                        className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-bold text-slate-200 transition-colors inline-flex items-center gap-1 cursor-pointer"
                       >
                         {copiedTxt ? (
                           <>
                             <ClipboardDocumentCheckIcon className="w-3.5 h-3.5 text-emerald-400" />
-                            <span>Disalin</span>
+                            <span>{tDom("copied")}</span>
                           </>
                         ) : (
                           <>
                             <ClipboardDocumentIcon className="w-3.5 h-3.5" />
-                            <span>Salin</span>
+                            <span>{tDom("copy")}</span>
                           </>
                         )}
                       </button>

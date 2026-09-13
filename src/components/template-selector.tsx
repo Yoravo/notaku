@@ -4,7 +4,7 @@ import { useState } from "react";
 import { updateInvoiceTemplate } from "@/actions/settings";
 import { InvoiceTemplate } from "@/generated/prisma/client";
 import dynamic from "next/dynamic";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
 
 const TemplatePreview = dynamic(() => import("@/components/template-preview"), {
@@ -16,25 +16,25 @@ interface TemplateSelectorProps {
 }
 
 export function TemplateSelector({ current }: TemplateSelectorProps) {
-  const { t, locale } = useLanguage();
+  const tTmpl = useTranslations("templates");
   const [selected, setSelected] = useState<InvoiceTemplate>(current);
   const [loading, setLoading] = useState(false);
 
   const templates = [
     {
       value: "CLASSIC" as const,
-      label: "Classic",
-      desc: locale === "id" ? "Bersih, rapi, dan standar industri" : "Clean, structured, and industry standard",
+      label: tTmpl("classicLabel"),
+      desc: tTmpl("classicDesc"),
     },
     {
       value: "MODERN" as const,
-      label: "Modern",
-      desc: locale === "id" ? "Header elegan, aksen korporat premium" : "Sleek header, premium corporate look",
+      label: tTmpl("modernLabel"),
+      desc: tTmpl("modernDesc"),
     },
     {
       value: "MINIMAL" as const,
-      label: "Minimal",
-      desc: locale === "id" ? "Ultra-clean, aksen emerald profesional" : "Ultra-clean with emerald accents",
+      label: tTmpl("minimalLabel"),
+      desc: tTmpl("minimalDesc"),
     },
   ];
 
@@ -83,12 +83,10 @@ export function TemplateSelector({ current }: TemplateSelectorProps) {
       <div className="space-y-2">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
           <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-            {locale === "id" ? "Pratinjau Hasil PDF Invoice" : "Live PDF Invoice Preview"}
+            {tTmpl("previewHeading")}
           </p>
           <span className="text-[11px] text-slate-400 font-medium">
-            {locale === "id"
-              ? "Termasuk rincian tanda tangan, cap & rekening usaha Anda"
-              : "Includes digital signature, business stamp & bank details"}
+            {tTmpl("previewHint")}
           </span>
         </div>
 

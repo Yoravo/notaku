@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 import { createCustomer, updateCustomer } from "@/actions/customers";
 import { XMarkIcon, UserIcon, EnvelopeIcon, PhoneIcon, MapPinIcon } from "@heroicons/react/24/outline";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations, useLocale } from "next-intl";
 
 type Customer = {
   id: string;
@@ -14,17 +14,23 @@ type Customer = {
 };
 
 export function CustomerModal({
+  isOpen = true,
   customer,
   onClose,
+  onSuccess,
 }: {
+  isOpen?: boolean;
   customer: Customer | null;
   onClose: () => void;
   onSuccess?: () => void;
 }) {
-  const { t, locale } = useLanguage();
+  const tCust = useTranslations("customers");
+  const locale = useLocale();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const isEdit = !!customer;
+
+  if (!isOpen) return null;
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -40,23 +46,18 @@ export function CustomerModal({
         await createCustomer(formData);
       }
       onClose();
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : locale === "id"
-          ? "Gagal menyimpan data pelanggan"
-          : "Failed to save client profile"
-      );
+    } catch (err: any) {
+      setError(err?.message || tCust("saveError"));
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity animate-in fade-in duration-150"
+        className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity"
         onClick={!loading ? onClose : undefined}
       />
 
@@ -70,14 +71,10 @@ export function CustomerModal({
             </div>
             <div>
               <h2 className="text-sm sm:text-base font-bold text-slate-900">
-                {isEdit
-                  ? t.customers?.editCustomer || (locale === "id" ? "Edit Profil Pelanggan" : "Edit Client Profile")
-                  : t.customers?.addCustomer || (locale === "id" ? "Tambah Pelanggan Baru" : "Add New Client")}
+                {isEdit ? tCust("editModalTitle") : tCust("createModalTitle")}
               </h2>
               <p className="text-[11px] text-slate-500 font-medium">
-                {isEdit
-                  ? (locale === "id" ? "Perbarui informasi kontak pelanggan" : "Update client contact information")
-                  : (locale === "id" ? "Simpan kontak untuk invoice mendatang" : "Save contact for future invoicing")}
+                {isEdit ? tCust("editModalSubtitle") : tCust("createModalSubtitle")}
               </p>
             </div>
           </div>
@@ -105,7 +102,7 @@ export function CustomerModal({
               htmlFor="name"
               className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5"
             >
-              {t.customers?.name || (locale === "id" ? "Nama Pelanggan / Perusahaan" : "Client / Company Name")}{" "}
+              {tCust("companyOrName")}{" "}
               <span className="text-rose-500">*</span>
             </label>
             <div className="relative">
@@ -114,7 +111,7 @@ export function CustomerModal({
                 id="name"
                 name="name"
                 required
-                placeholder={locale === "id" ? "Contoh: PT Sumber Rejeki / Budi Santoso" : "e.g. Acme Corp / John Doe"}
+                placeholder={tCust("namePlaceholder")}
                 defaultValue={customer?.name || ""}
                 className="w-full rounded-xl border border-slate-200 bg-white pl-9 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-medium"
               />
@@ -126,7 +123,7 @@ export function CustomerModal({
               htmlFor="email"
               className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5"
             >
-              {t.customers?.email || "Email"}
+              {tCust("email")}
             </label>
             <div className="relative">
               <EnvelopeIcon className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -146,7 +143,7 @@ export function CustomerModal({
               htmlFor="phone"
               className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5"
             >
-              {t.customers?.phone || (locale === "id" ? "No. WhatsApp / Telepon" : "WhatsApp / Phone Number")}
+              {tCust("phone")}
             </label>
             <div className="relative">
               <PhoneIcon className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -165,7 +162,7 @@ export function CustomerModal({
               htmlFor="address"
               className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5"
             >
-              {t.customers?.address || (locale === "id" ? "Alamat Lengkap" : "Billing Address")}
+              {tCust("address")}
             </label>
             <div className="relative">
               <MapPinIcon className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-slate-400" />
@@ -173,7 +170,7 @@ export function CustomerModal({
                 id="address"
                 name="address"
                 rows={2}
-                placeholder={locale === "id" ? "Alamat kantor atau domisili pelanggan" : "Client office or billing address"}
+                placeholder={tCust("addressPlaceholder")}
                 defaultValue={customer?.address || ""}
                 className="w-full rounded-xl border border-slate-200 bg-white pl-9 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] resize-none shadow-2xs leading-relaxed"
               />
@@ -188,7 +185,7 @@ export function CustomerModal({
               disabled={loading}
               className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 cursor-pointer hover:bg-slate-50 transition-colors shadow-2xs disabled:opacity-50"
             >
-              {locale === "id" ? "Batal" : "Cancel"}
+              {tCust("cancel")}
             </button>
             <button
               type="submit"
@@ -217,14 +214,10 @@ export function CustomerModal({
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     />
                   </svg>
-                  <span>{locale === "id" ? "Menyimpan..." : "Saving..."}</span>
+                  <span>{tCust("saving")}</span>
                 </>
               ) : (
-                <span>
-                  {isEdit
-                    ? locale === "id" ? "Simpan Perubahan" : "Save Changes"
-                    : locale === "id" ? "Simpan Pelanggan" : "Save Client"}
-                </span>
+                <span>{isEdit ? tCust("saveChanges") : tCust("newCustomer")}</span>
               )}
             </button>
           </div>

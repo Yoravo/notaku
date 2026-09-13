@@ -15,7 +15,7 @@ import {
   CheckIcon,
 } from "@heroicons/react/24/outline";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations, useLocale } from "next-intl";
 
 type Customer = {
   id: string;
@@ -30,7 +30,8 @@ export function CustomerList({
 }: {
   customers: Customer[];
 }) {
-  const { t, locale } = useLanguage();
+  const tCust = useTranslations("customers");
+  const locale = useLocale();
   const [searchQuery, setSearchQuery] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
@@ -38,61 +39,54 @@ export function CustomerList({
   // Delete Confirm Dialog State
   const [deletingCustomer, setDeletingCustomer] = useState<Customer | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const handleCopyPortal = (customerId: string) => {
-    const url = `${window.location.origin}/portal/${customerId}`;
-    navigator.clipboard.writeText(url);
-    setCopiedId(customerId);
-    setTimeout(() => setCopiedId(null), 2500);
-  };
+  // Quick copy feedback state
+  const [copiedPortalId, setCopiedPortalId] = useState<string | null>(null);
 
-  // Filter instan berbasis nama, email, telepon, dan alamat
   const filteredCustomers = useMemo(() => {
-    const q = searchQuery.toLowerCase().trim();
-    if (!q) return initial;
+    if (!searchQuery.trim()) return initial;
+    const q = searchQuery.toLowerCase();
     return initial.filter(
       (c) =>
         c.name.toLowerCase().includes(q) ||
         (c.email && c.email.toLowerCase().includes(q)) ||
         (c.phone && c.phone.toLowerCase().includes(q)) ||
-        (c.address && c.address.toLowerCase().includes(q)),
+        (c.address && c.address.toLowerCase().includes(q))
     );
   }, [initial, searchQuery]);
 
-  const handleEdit = (customer: Customer) => {
-    setEditingCustomer(customer);
-    setShowModal(true);
-  };
-
-  const handleOpenDelete = (customer: Customer) => {
-    setDeletingCustomer(customer);
-  };
-
-  const handleExecuteDelete = async () => {
+  const handleDelete = async () => {
     if (!deletingCustomer) return;
     setIsDeleting(true);
     try {
       await deleteCustomer(deletingCustomer.id);
       setDeletingCustomer(null);
     } catch {
-      alert(locale === "id" ? "Gagal menghapus pelanggan" : "Failed to delete client");
+      alert(tCust("deleteError"));
     } finally {
       setIsDeleting(false);
     }
   };
 
+  const handleCopyPortalLink = (customerId: string) => {
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const portalUrl = `${origin}/portal/${customerId}`;
+    navigator.clipboard.writeText(portalUrl);
+    setCopiedPortalId(customerId);
+    setTimeout(() => setCopiedPortalId(null), 2000);
+  };
+
   return (
-    <>
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-        {/* Search Bar */}
-        <div className="relative flex-1 max-w-md">
+    <div className="space-y-4">
+      {/* Search & Actions Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="relative max-w-sm w-full">
           <MagnifyingGlassIcon className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t.customers?.searchPlaceholder || (locale === "id" ? "Cari nama, email, atau no. telepon..." : "Search name, email, or phone...")}
+            placeholder={tCust("searchPlaceholder")}
             className="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-4 py-2.5 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-medium"
           />
         </div>
@@ -105,7 +99,7 @@ export function CustomerList({
           className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#0f6b4f] px-4 py-2.5 text-xs sm:text-sm font-bold text-white hover:bg-[#0c553e] active:scale-[0.98] transition-all shadow-xs cursor-pointer shrink-0"
         >
           <PlusIcon className="h-4 w-4" />
-          <span>{t.customers?.addCustomer || (locale === "id" ? "Tambah Pelanggan" : "Add Client")}</span>
+          <span>{tCust("addCustomer")}</span>
         </button>
       </div>
 
@@ -115,10 +109,10 @@ export function CustomerList({
             <UsersIcon className="w-6 h-6" />
           </div>
           <h3 className="text-sm font-bold text-slate-900">
-            {t.customers?.emptyTitle || (locale === "id" ? "Belum ada pelanggan terdaftar" : "No clients registered yet")}
+            {tCust("emptyTitle")}
           </h3>
           <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-            {t.customers?.emptyDesc || (locale === "id" ? "Tambah profil pelanggan pertama Anda untuk mempercepat pembuatan invoice berulang." : "Add your first client profile to speed up recurring invoice creation.")}
+            {tCust("emptyDesc")}
           </p>
           <button
             onClick={() => {
@@ -128,15 +122,13 @@ export function CustomerList({
             className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-[#0f6b4f] px-4 py-2 text-xs font-semibold text-white hover:bg-[#0c553e] transition-all shadow-xs cursor-pointer"
           >
             <PlusIcon className="h-4 w-4" />
-            <span>{t.customers?.addCustomer || (locale === "id" ? "Tambah Pelanggan" : "Add Client")}</span>
+            <span>{tCust("addCustomer")}</span>
           </button>
         </div>
       ) : filteredCustomers.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-2xl border border-slate-200 shadow-2xs">
           <p className="text-sm text-slate-500 font-medium">
-            {locale === "id"
-              ? `Tidak ditemukan pelanggan dengan kata kunci "${searchQuery}".`
-              : `No clients found matching "${searchQuery}".`}
+            {tCust("noMatchingSearch", { query: searchQuery })}
           </p>
         </div>
       ) : (
@@ -145,81 +137,80 @@ export function CustomerList({
             <table className="w-full text-left text-xs sm:text-sm">
               <thead className="border-b border-slate-200 bg-slate-50/80 text-slate-500 uppercase text-[11px] font-bold tracking-wider">
                 <tr>
-                  <th className="px-5 py-3.5">{t.customers?.name || (locale === "id" ? "Nama" : "Name")}</th>
-                  <th className="px-5 py-3.5">{t.customers?.email || (locale === "id" ? "Email" : "Email")}</th>
-                  <th className="px-5 py-3.5">{t.customers?.phone || (locale === "id" ? "Telepon" : "Phone")}</th>
+                  <th className="px-5 py-3.5">{tCust("name")}</th>
+                  <th className="px-5 py-3.5">{tCust("email")}</th>
+                  <th className="px-5 py-3.5">{tCust("phone")}</th>
                   <th className="px-5 py-3.5 hidden md:table-cell">
-                    {t.customers?.address || (locale === "id" ? "Alamat" : "Address")}
+                    {tCust("address")}
                   </th>
                   <th className="px-5 py-3.5 text-right">
-                    {t.invoices?.actions || (locale === "id" ? "Aksi" : "Actions")}
+                    {tCust("actions")}
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {filteredCustomers.map((customer) => (
-                  <tr key={customer.id} className="hover:bg-slate-50/80 transition-colors group">
-                    <td className="px-5 py-3.5 font-bold text-slate-900">
-                      {customer.name}
+                {filteredCustomers.map((cust) => (
+                  <tr key={cust.id} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="px-5 py-3.5 font-semibold text-slate-900">
+                      {cust.name}
                     </td>
                     <td className="px-5 py-3.5 text-slate-600 font-mono text-xs">
-                      {customer.email || "—"}
+                      {cust.email || "—"}
                     </td>
                     <td className="px-5 py-3.5 text-slate-600 font-mono text-xs">
-                      {customer.phone || "—"}
+                      {cust.phone || "—"}
                     </td>
-                    <td className="px-5 py-3.5 text-slate-600 hidden md:table-cell max-w-xs truncate">
-                      {customer.address || "—"}
+                    <td className="px-5 py-3.5 text-slate-500 hidden md:table-cell max-w-xs truncate text-xs">
+                      {cust.address || "—"}
                     </td>
                     <td className="px-5 py-3.5 text-right">
-                      <div className="inline-flex items-center gap-1.5">
-                        <Link
-                          href={`/portal/${customer.id}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          title={locale === "id" ? "Buka Portal Tagihan Klien" : "Open Client Billing Portal"}
-                          className="p-1.5 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors border border-transparent hover:border-slate-200"
-                        >
-                          <ArrowTopRightOnSquareIcon className="w-4 h-4" />
-                        </Link>
+                      <div className="inline-flex items-center gap-1 sm:gap-1.5">
+                        {/* 1-Click Copy Client Portal Link */}
                         <button
-                          type="button"
-                          onClick={() => handleCopyPortal(customer.id)}
-                          title={locale === "id" ? "Salin Link Portal Tagihan Klien" : "Copy Client Portal Link"}
-                          className="inline-flex items-center gap-1 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 px-2.5 py-1.5 text-xs font-semibold transition-all border border-slate-200/80 cursor-pointer"
+                          onClick={() => handleCopyPortalLink(cust.id)}
+                          title={tCust("sharePortal")}
+                          className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                            copiedPortalId === cust.id
+                              ? "bg-emerald-50 text-[#0f6b4f] border-emerald-200"
+                              : "text-slate-500 hover:text-slate-900 border-slate-200 hover:bg-slate-50"
+                          }`}
                         >
-                          {copiedId === customer.id ? (
-                            <>
-                              <CheckIcon className="w-3.5 h-3.5 text-[#0f6b4f]" />
-                              <span className="text-[#0f6b4f] font-bold">Tersalin</span>
-                            </>
+                          {copiedPortalId === cust.id ? (
+                            <CheckIcon className="h-4 w-4 text-[#0f6b4f] stroke-[2.5]" />
                           ) : (
-                            <span>{locale === "id" ? "Link Portal" : "Portal Link"}</span>
+                            <ArrowTopRightOnSquareIcon className="h-4 w-4" />
                           )}
                         </button>
+
+                        {/* Buat Invoice untuk Customer ini */}
                         <Link
-                          href={`/invoices/new?customerId=${customer.id}`}
-                          title={locale === "id" ? "Buat invoice untuk pelanggan ini" : "Create invoice for this client"}
-                          className="inline-flex items-center gap-1 rounded-xl bg-emerald-50 text-[#0f6b4f] hover:bg-emerald-100 px-3 py-1.5 text-xs font-bold transition-all border border-emerald-200/60 shadow-2xs"
+                          href={`/invoices/new?customerId=${cust.id}`}
+                          prefetch={true}
+                          className="p-1.5 rounded-lg text-slate-500 hover:text-[#0f6b4f] border border-slate-200 hover:bg-slate-50 transition-colors"
+                          title={tCust("createInvoiceFor")}
                         >
-                          <DocumentPlusIcon className="w-3.5 h-3.5" />
-                          <span>{t.customers?.createInvoiceFor || (locale === "id" ? "Buat Invoice" : "Create Invoice")}</span>
+                          <DocumentPlusIcon className="h-4 w-4" />
                         </Link>
+
+                        {/* Edit Customer */}
                         <button
-                          type="button"
-                          onClick={() => handleEdit(customer)}
-                          title={t.customers?.editCustomer || (locale === "id" ? "Edit Pelanggan" : "Edit Client")}
-                          className="p-1.5 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors cursor-pointer border border-transparent hover:border-slate-200"
+                          onClick={() => {
+                            setEditingCustomer(cust);
+                            setShowModal(true);
+                          }}
+                          className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 border border-slate-200 hover:bg-slate-50 transition-colors cursor-pointer"
+                          title={tCust("editCustomer")}
                         >
-                          <PencilSquareIcon className="w-4 h-4" />
+                          <PencilSquareIcon className="h-4 w-4" />
                         </button>
+
+                        {/* Delete Customer */}
                         <button
-                          type="button"
-                          onClick={() => handleOpenDelete(customer)}
-                          title={t.customers?.deleteCustomer || (locale === "id" ? "Hapus Pelanggan" : "Delete Client")}
-                          className="p-1.5 rounded-xl text-rose-500 hover:bg-rose-50 hover:text-rose-700 transition-colors cursor-pointer border border-transparent hover:border-rose-200"
+                          onClick={() => setDeletingCustomer(cust)}
+                          className="p-1.5 rounded-lg text-rose-500 hover:text-rose-700 border border-rose-100 hover:bg-rose-50 transition-colors cursor-pointer"
+                          title={tCust("deleteCustomer")}
                         >
-                          <TrashIcon className="w-4 h-4" />
+                          <TrashIcon className="h-4 w-4" />
                         </button>
                       </div>
                     </td>
@@ -231,38 +222,28 @@ export function CustomerList({
         </div>
       )}
 
-      {showModal && (
-        <CustomerModal
-          customer={editingCustomer}
-          onClose={() => setShowModal(false)}
-        />
-      )}
+      {/* Modal Tambah / Edit Customer */}
+      <CustomerModal
+        isOpen={showModal}
+        onClose={() => {
+          setShowModal(false);
+          setEditingCustomer(null);
+        }}
+        customer={editingCustomer}
+      />
 
-      {/* Modern Delete Customer Confirm Dialog */}
+      {/* Dialog Konfirmasi Hapus Pelanggan */}
       <ConfirmDialog
-        isOpen={Boolean(deletingCustomer)}
-        onClose={() => !isDeleting && setDeletingCustomer(null)}
-        onConfirm={handleExecuteDelete}
-        title={locale === "id" ? "Hapus Kontak Pelanggan?" : "Delete Client Contact?"}
-        description={
-          locale === "id"
-            ? "Profil pelanggan ini akan dihapus dari daftar kontak. Invoice yang sudah terbit sebelumnya tidak akan terpengaruh."
-            : "This client profile will be removed from your contact list. Previously issued invoices will not be affected."
-        }
-        confirmLabel={locale === "id" ? "Ya, Hapus Pelanggan" : "Yes, Delete Client"}
-        cancelLabel={locale === "id" ? "Batal" : "Cancel"}
+        isOpen={!!deletingCustomer}
+        title={tCust("confirmDeleteTitle")}
+        description={tCust("confirmDeleteDesc", { name: deletingCustomer?.name || "" })}
+        confirmLabel={tCust("confirmDeleteBtn")}
+        cancelLabel={tCust("confirmCancelBtn")}
         variant="danger"
         isLoading={isDeleting}
-        itemDetails={
-          deletingCustomer
-            ? [
-                { label: locale === "id" ? "Nama Pelanggan" : "Client Name", value: deletingCustomer.name },
-                { label: "Email", value: deletingCustomer.email || "—" },
-                { label: locale === "id" ? "Nomor Telepon" : "Phone Number", value: deletingCustomer.phone || "—" },
-              ]
-            : undefined
-        }
+        onConfirm={handleDelete}
+        onClose={() => setDeletingCustomer(null)}
       />
-    </>
+    </div>
   );
 }

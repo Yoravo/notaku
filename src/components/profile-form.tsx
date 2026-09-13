@@ -18,7 +18,7 @@ import {
   EnvelopeIcon,
 } from "@heroicons/react/24/outline";
 import { SignaturePadModal } from "@/components/signature-pad-modal";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 
 type Props = {
   name: string;
@@ -43,7 +43,8 @@ export function ProfileForm({
   email,
   receiveNewsletter = true,
 }: Props) {
-  const { t, locale } = useLanguage();
+  const tSet = useTranslations("settings");
+  const tProf = useTranslations("profile");
   const [form, setForm] = useState({
     name,
     businessName: businessName ?? "",
@@ -84,11 +85,7 @@ export function ProfileForm({
     if (!file) return;
 
     if (file.size > 5 * 1024 * 1024) {
-      setError(
-        locale === "id"
-          ? `Ukuran file ${target} maksimal 5MB`
-          : `${target} file size max 5MB`
-      );
+      setError(tProf("maxFileSize", { target }));
       return;
     }
 
@@ -168,13 +165,7 @@ export function ProfileForm({
       setSuccess(true);
       setTimeout(() => setSuccess(false), 4000);
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : locale === "id"
-          ? "Terjadi kesalahan saat menyimpan profil"
-          : "Error occurred while saving profile"
-      );
+      setError(err instanceof Error ? err.message : tProf("saveError"));
     } finally {
       setLoading(false);
     }
@@ -195,18 +186,14 @@ export function ProfileForm({
       {success && (
         <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3.5 text-xs text-[#0f6b4f] flex items-center gap-2 font-semibold shadow-2xs">
           <CheckCircleIcon className="w-4 h-4 shrink-0 text-[#0f6b4f]" />
-          <span>
-            {locale === "id"
-              ? "Profil dan identitas bisnis berhasil diperbarui!"
-              : "Business profile and identities updated successfully!"}
-          </span>
+          <span>{tProf("saveSuccess")}</span>
         </div>
       )}
 
       {/* Business Logo Section */}
       <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 sm:p-5">
         <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2.5">
-          {locale === "id" ? "Logo Bisnis / Toko (Header Invoice)" : "Business / Store Logo (Invoice Header)"}
+          {tProf("logoLabel")}
         </label>
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -226,9 +213,7 @@ export function ProfileForm({
             <div className="flex flex-wrap items-center gap-2">
               <label className="cursor-pointer inline-flex items-center justify-center px-3.5 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all shadow-2xs min-h-[44px] sm:min-h-[38px]">
                 <span>
-                  {form.logoUrl
-                    ? locale === "id" ? "Ganti Logo" : "Change Logo"
-                    : locale === "id" ? "Pilih Gambar" : "Select Image"}
+                  {form.logoUrl ? tProf("logoChange") : tProf("logoSelect")}
                 </span>
                 <input
                   type="file"
@@ -252,7 +237,7 @@ export function ProfileForm({
                     className="px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 rounded-xl transition-all border border-slate-200 bg-white cursor-pointer inline-flex items-center gap-1.5 shadow-2xs min-h-[44px] sm:min-h-[38px]"
                   >
                     <ArrowsPointingOutIcon className="w-3.5 h-3.5 text-slate-500" />
-                    <span>{locale === "id" ? "Sesuaikan Ukuran" : "Adjust Size"}</span>
+                    <span>{tProf("adjustSize")}</span>
                   </button>
 
                   <button
@@ -260,16 +245,14 @@ export function ProfileForm({
                     onClick={() => setForm((prev) => ({ ...prev, logoUrl: "" }))}
                     className="px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer min-h-[44px] sm:min-h-[38px]"
                   >
-                    {locale === "id" ? "Hapus Logo" : "Remove Logo"}
+                    {tProf("removeLogo")}
                   </button>
                 </>
               )}
             </div>
 
             <p className="text-[11px] text-slate-500 font-medium">
-              {locale === "id"
-                ? "Format PNG/JPG/WebP, maks 5MB. Ditampilkan di header/kop faktur."
-                : "PNG/JPG/WebP format, max 5MB. Rendered in invoice header."}
+              {tProf("logoHint")}
             </p>
           </div>
         </div>
@@ -280,7 +263,7 @@ export function ProfileForm({
         {/* Digital Signature */}
         <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 sm:p-5 space-y-3">
           <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
-            {locale === "id" ? "Tanda Tangan Digital (Bawah PDF)" : "Digital Signature (PDF Footer)"}
+            {tProf("signatureLabel")}
           </label>
           <div className="flex items-center gap-3">
             <div className="w-24 h-16 rounded-xl border-2 border-dashed border-slate-300 bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
@@ -292,7 +275,7 @@ export function ProfileForm({
                 />
               ) : (
                 <span className="text-[10px] text-slate-400 font-medium text-center px-1">
-                  {locale === "id" ? "Tanpa TTD" : "No Signature"}
+                  {tProf("noSignature")}
                 </span>
               )}
             </div>
@@ -305,14 +288,12 @@ export function ProfileForm({
                 >
                   <PencilSquareIcon className="w-3.5 h-3.5" />
                   <span>
-                    {form.signatureUrl
-                      ? locale === "id" ? "Gores Ulang" : "Redraw"
-                      : locale === "id" ? "Buat TTD (Draw)" : "Draw Signature"}
+                    {form.signatureUrl ? tProf("redrawSignature") : tProf("drawSignature")}
                   </span>
                 </button>
 
                 <label className="cursor-pointer inline-flex items-center justify-center px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all shadow-2xs min-h-[38px]">
-                  <span>{locale === "id" ? "Unggah File" : "Upload File"}</span>
+                  <span>{tProf("uploadFile")}</span>
                   <input
                     type="file"
                     accept="image/png, image/jpeg, image/webp"
@@ -335,7 +316,7 @@ export function ProfileForm({
                     }}
                     className="text-xs text-slate-600 hover:text-slate-900 font-semibold cursor-pointer"
                   >
-                    {locale === "id" ? "Atur Ukuran" : "Resize"}
+                    {tProf("resize")}
                   </button>
                   <span className="text-slate-300">•</span>
                   <button
@@ -343,23 +324,21 @@ export function ProfileForm({
                     onClick={() => setForm((prev) => ({ ...prev, signatureUrl: "" }))}
                     className="text-xs text-rose-600 hover:underline font-semibold cursor-pointer"
                   >
-                    {locale === "id" ? "Hapus" : "Remove"}
+                    {tProf("remove")}
                   </button>
                 </div>
               )}
             </div>
           </div>
           <p className="text-[10px] text-slate-500 font-medium">
-            {locale === "id"
-              ? "Goreskan tanda tangan langsung dengan jari/mouse, atau unggah foto/scan tanda tangan."
-              : "Draw directly with touch/mouse, or upload an image of your signature."}
+            {tProf("signatureHint")}
           </p>
         </div>
 
         {/* Digital Business Stamp */}
         <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 sm:p-5 space-y-3">
           <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
-            {locale === "id" ? "Stempel Toko / Bisnis (Cap PDF)" : "Company Stamp (Official Seal)"}
+            {tProf("stampLabel")}
           </label>
           <div className="flex items-center gap-3">
             <div className="w-24 h-16 rounded-xl border-2 border-dashed border-slate-300 bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
@@ -371,16 +350,14 @@ export function ProfileForm({
                 />
               ) : (
                 <span className="text-[10px] text-slate-400 font-medium text-center px-1">
-                  {locale === "id" ? "Tanpa Cap" : "No Stamp"}
+                  {tProf("noStamp")}
                 </span>
               )}
             </div>
             <div className="space-y-1.5 flex-1">
               <label className="cursor-pointer inline-flex items-center justify-center px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all shadow-2xs min-h-[38px]">
                 <span>
-                  {form.stampUrl
-                    ? locale === "id" ? "Ganti Cap" : "Change Stamp"
-                    : locale === "id" ? "Unggah Cap" : "Upload Stamp"}
+                  {form.stampUrl ? tProf("changeStamp") : tProf("uploadStamp")}
                 </span>
                 <input
                   type="file"
@@ -395,15 +372,13 @@ export function ProfileForm({
                   onClick={() => setForm((prev) => ({ ...prev, stampUrl: "" }))}
                   className="block text-xs text-rose-600 hover:underline font-semibold cursor-pointer"
                 >
-                  {locale === "id" ? "Hapus Cap" : "Remove Stamp"}
+                  {tProf("removeStamp")}
                 </button>
               )}
             </div>
           </div>
           <p className="text-[10px] text-slate-500 font-medium">
-            {locale === "id"
-              ? "Unggah stempel cap digital untuk dicetak menimpa area tanda tangan faktur."
-              : "Upload a digital stamp to overlay above the signature block on invoice PDFs."}
+            {tProf("stampHint")}
           </p>
         </div>
       </div>
@@ -425,17 +400,15 @@ export function ProfileForm({
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
                 <h3 className="text-base font-bold text-slate-900">
-                  {locale === "id" ? "Sesuaikan & Resize" : "Adjust & Resize"}{" "}
+                  {tProf("cropTitle")}{" "}
                   {cropTarget === "logo"
-                    ? locale === "id" ? "Logo" : "Logo"
+                    ? tProf("targetLogo")
                     : cropTarget === "signature"
-                    ? locale === "id" ? "Tanda Tangan" : "Signature"
-                    : locale === "id" ? "Stempel Cap" : "Stamp"}
+                    ? tProf("targetSignature")
+                    : tProf("targetStamp")}
                 </h3>
                 <p className="text-xs text-slate-500 font-medium">
-                  {locale === "id"
-                    ? "Geser dan atur perbesaran gambar agar pas dicetak pada faktur"
-                    : "Drag and zoom image to fit properly on PDF printouts"}
+                  {tProf("cropGuide")}
                 </p>
               </div>
               <button
@@ -493,7 +466,7 @@ export function ProfileForm({
               {/* Target Overlay Guide */}
               <div className="absolute inset-4 pointer-events-none border border-[#0f6b4f]/40 rounded-xl flex items-center justify-center">
                 <span className="text-[10px] uppercase font-bold tracking-widest text-[#0f6b4f] bg-white/90 px-2 py-0.5 rounded-md shadow-xs">
-                  {locale === "id" ? "Area Cetak PDF" : "PDF Print Area"}
+                  {tProf("pdfPrintArea")}
                 </span>
               </div>
             </div>
@@ -503,7 +476,7 @@ export function ProfileForm({
               <div className="flex items-center justify-between text-xs text-slate-700">
                 <span className="font-bold flex items-center gap-1">
                   <MagnifyingGlassMinusIcon className="w-4 h-4 text-slate-400" />
-                  {locale === "id" ? "Ukuran / Zoom" : "Size / Zoom"}
+                  {tProf("sizeZoom")}
                 </span>
                 <span className="font-mono text-[#0f6b4f] font-bold">
                   {Math.round(scale * 100)}%
@@ -540,14 +513,14 @@ export function ProfileForm({
                 onClick={() => setTempImage(null)}
                 className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer min-h-[44px] sm:min-h-[38px]"
               >
-                {locale === "id" ? "Batal" : "Cancel"}
+                {tProf("cancel")}
               </button>
               <button
                 type="button"
                 onClick={handleApplyCrop}
                 className="px-5 py-2 text-xs font-bold text-white bg-[#0f6b4f] hover:bg-[#0c553e] rounded-xl transition-all cursor-pointer shadow-xs min-h-[44px] sm:min-h-[38px]"
               >
-                {locale === "id" ? "Terapkan Gambar" : "Apply Image"}
+                {tProf("applyImage")}
               </button>
             </div>
           </div>
@@ -559,7 +532,7 @@ export function ProfileForm({
         <div>
           <label className="block font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
             <UserIcon className="w-4 h-4 text-slate-400" />
-            <span>{locale === "id" ? "Nama Lengkap" : "Full Name"}</span> <span className="text-rose-500">*</span>
+            <span>{tProf("fullName")}</span> <span className="text-rose-500">*</span>
           </label>
           <input
             type="text"
@@ -574,14 +547,14 @@ export function ProfileForm({
         <div>
           <label className="block font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
             <BuildingOfficeIcon className="w-4 h-4 text-slate-400" />
-            <span>{t.settings?.businessName || (locale === "id" ? "Nama Bisnis / Toko" : "Business / Store Name")}</span>
+            <span>{tSet("businessName")}</span>
           </label>
           <input
             type="text"
             name="businessName"
             value={form.businessName}
             onChange={handleChange}
-            placeholder={locale === "id" ? "Contoh: Toko Kopi Sejahtera" : "e.g. Acme Studio Inc."}
+            placeholder={tProf("businessNamePlaceholder")}
             className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-slate-900 font-medium focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs min-h-[44px] sm:min-h-[40px]"
           />
         </div>
@@ -590,7 +563,7 @@ export function ProfileForm({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm">
         <div>
           <label className="block font-bold text-slate-700 mb-1.5">
-            {locale === "id" ? "Email Akun" : "Account Email"}
+            {tProf("accountEmail")}
           </label>
           <input
             type="email"
@@ -603,14 +576,14 @@ export function ProfileForm({
         <div>
           <label className="block font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
             <PhoneIcon className="w-4 h-4 text-slate-400" />
-            <span>{t.settings?.businessPhone || (locale === "id" ? "No. WhatsApp / Telepon" : "WhatsApp / Phone Number")}</span>
+            <span>{tSet("businessPhone")}</span>
           </label>
           <input
             type="text"
             name="phone"
             value={form.phone}
             onChange={handleChange}
-            placeholder={locale === "id" ? "Contoh: 08123456789" : "e.g. +628123456789"}
+            placeholder={tProf("phonePlaceholder")}
             className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-slate-900 font-medium focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-mono min-h-[44px] sm:min-h-[40px]"
           />
         </div>
@@ -619,18 +592,14 @@ export function ProfileForm({
       <div>
         <label className="block font-bold text-slate-700 mb-1.5 flex items-center gap-1.5 text-xs sm:text-sm">
           <MapPinIcon className="w-4 h-4 text-slate-400" />
-          <span>{t.settings?.businessAddress || (locale === "id" ? "Alamat Bisnis / Kantor" : "Business / Office Address")}</span>
+          <span>{tSet("businessAddress")}</span>
         </label>
         <textarea
           name="address"
           value={form.address}
           onChange={handleChange}
           rows={3}
-          placeholder={
-            locale === "id"
-              ? "Alamat yang akan dicetak pada invoice..."
-              : "Address to appear on your invoice header..."
-          }
+          placeholder={tProf("addressPlaceholder")}
           className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 font-medium focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] resize-none shadow-2xs leading-relaxed"
         />
       </div>
@@ -647,16 +616,10 @@ export function ProfileForm({
           <div>
             <span className="text-xs sm:text-sm font-bold text-slate-900 block flex items-center gap-1.5">
               <EnvelopeIcon className="w-4 h-4 text-slate-500" />
-              <span>
-                {locale === "id"
-                  ? "Terima Email Pengumuman & Berita Berkala dari NotaKu"
-                  : "Receive Official Announcements & Periodic News from NotaKu"}
-              </span>
+              <span>{tProf("newsletterTitle")}</span>
             </span>
             <span className="text-xs text-slate-500 block mt-0.5 leading-relaxed">
-              {locale === "id"
-                ? "Dapatkan info rilis fitur baru, tips mengelola invoice bisnis, dan promo voucher diskon yang dikirim langsung ke email Anda."
-                : "Get notified about new product features, invoicing best practices, and special discount vouchers directly in your inbox."}
+              {tProf("newsletterDesc")}
             </span>
           </div>
         </label>
@@ -674,9 +637,7 @@ export function ProfileForm({
             <CheckCircleIcon className="w-4 h-4 text-emerald-200" />
           )}
           <span>
-            {loading
-              ? t.settings?.saving || (locale === "id" ? "Menyimpan..." : "Saving...")
-              : t.settings?.saveChanges || (locale === "id" ? "Simpan Perubahan" : "Save Changes")}
+            {loading ? tSet("saving") : tSet("saveChanges")}
           </span>
         </button>
       </div>
