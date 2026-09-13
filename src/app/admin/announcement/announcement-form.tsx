@@ -11,7 +11,7 @@ import {
   ComputerDesktopIcon,
   SparklesIcon,
 } from "@heroicons/react/24/outline";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 
 type AnnouncementFormProps = {
   initialData: {
@@ -27,7 +27,7 @@ type AnnouncementFormProps = {
 };
 
 export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
-  const { t, locale } = useLanguage();
+  const tAdmin = useTranslations("admin");
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState(initialData?.message || "");
   const [type, setType] = useState<"info" | "warning" | "success">(
@@ -50,10 +50,7 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
     if (isActive && !message.trim()) {
       setStatusFeedback({
         type: "error",
-        text:
-          locale === "id"
-            ? "Pesan pengumuman tidak boleh kosong saat status aktif."
-            : "Announcement message cannot be empty when active.",
+        text: tAdmin("messageRequired"),
       });
       return;
     }
@@ -72,20 +69,13 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
       if (res.success) {
         setStatusFeedback({
           type: "success",
-          text:
-            locale === "id"
-              ? "Pengumuman berhasil diperbarui dan disiarkan!"
-              : "Announcement successfully updated and broadcasted!",
+          text: tAdmin("announcementSaveSuccess"),
         });
         setTimeout(() => setStatusFeedback(null), 4000);
       } else {
         setStatusFeedback({
           type: "error",
-          text:
-            res.error ||
-            (locale === "id"
-              ? "Gagal menyimpan pengumuman."
-              : "Failed to save announcement."),
+          text: res.error || tAdmin("saveError", { fallback: "Gagal menyimpan pengumuman." }),
         });
       }
     });
@@ -97,11 +87,7 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
       <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-2xs">
         <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-1.5">
           <SparklesIcon className="w-4 h-4 text-[#0f6b4f]" />
-          <span>
-            {locale === "id"
-              ? "Live Preview (Tampilan Banner Pengumuman)"
-              : "Live Preview (Announcement Banner View)"}
-          </span>
+          <span>{tAdmin("livePreviewTitle")}</span>
         </h3>
         {isActive && message.trim() ? (
           <div
@@ -125,17 +111,7 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
           </div>
         ) : (
           <div className="p-6 rounded-xl border border-dashed border-slate-200 text-center text-slate-400 text-xs font-medium bg-slate-50/50">
-            {locale === "id" ? (
-              <>
-                Pengumuman saat ini berstatus{" "}
-                <strong className="text-slate-600">NONAKTIF</strong>.
-              </>
-            ) : (
-              <>
-                Announcement is currently{" "}
-                <strong className="text-slate-600">INACTIVE</strong>.
-              </>
-            )}
+            {tAdmin("announcementInactive")}
           </div>
         )}
       </div>
@@ -146,12 +122,10 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
         <div className="flex items-center justify-between border-b border-slate-100 pb-4">
           <div>
             <p className="text-sm font-bold text-slate-900">
-              {locale === "id" ? "Status Pengumuman" : "Broadcast Status"}
+              {tAdmin("statusActiveTitle")}
             </p>
             <p className="text-xs text-slate-500 font-medium">
-              {locale === "id"
-                ? "Aktifkan untuk menyiarkan pesan pengumuman ini secara langsung."
-                : "Enable to broadcast this announcement live across the platform."}
+              {tAdmin("statusActiveDesc")}
             </p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer min-h-[44px]">
@@ -168,35 +142,26 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
         {/* Target Placement */}
         <div>
           <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-2">
-            {locale === "id" ? "Target Penayangan (Placement)" : "Target Placement"}
+            {tAdmin("placementLabel")}
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
               {
                 id: "ALL",
-                label: locale === "id" ? "Semua Halaman" : "All Pages",
-                desc:
-                  locale === "id"
-                    ? "Landing Page & Dashboard User"
-                    : "Landing Page & User Dashboard",
+                label: tAdmin("placementAll"),
+                desc: tAdmin("placementDescAll"),
                 icon: SparklesIcon,
               },
               {
                 id: "LANDING",
-                label: locale === "id" ? "Landing Page Saja" : "Landing Page Only",
-                desc:
-                  locale === "id"
-                    ? "Pengunjung & Marketing"
-                    : "Visitors & Marketing",
+                label: tAdmin("placementPublic"),
+                desc: tAdmin("placementDescLanding"),
                 icon: GlobeAltIcon,
               },
               {
                 id: "DASHBOARD",
-                label: locale === "id" ? "Dashboard Saja" : "Dashboard Only",
-                desc:
-                  locale === "id"
-                    ? "Pengguna yang login"
-                    : "Logged in users",
+                label: tAdmin("placementDashboard"),
+                desc: tAdmin("placementDescDashboard"),
                 icon: ComputerDesktopIcon,
               },
             ].map((p) => (
@@ -227,19 +192,13 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
         {/* Message Input */}
         <div>
           <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-            {locale === "id"
-              ? "Isi Pesan Pengumuman / Promo"
-              : "Announcement Message / Promo"}
+            {tAdmin("messageLabel")}
           </label>
           <textarea
             rows={3}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder={
-              locale === "id"
-                ? "Contoh: Promo Peluncuran! Gunakan kode voucher LAUNCH50 untuk diskon 50% paket PRO."
-                : "e.g. Launch Special! Use voucher code LAUNCH50 for 50% off PRO subscription."
-            }
+            placeholder={tAdmin("messagePlaceholder")}
             className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] bg-slate-50/50 focus:bg-white transition-colors"
           />
         </div>
@@ -247,26 +206,23 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
         {/* Banner Type / Tone */}
         <div>
           <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-            {locale === "id" ? "Tipe / Warna Banner" : "Banner Style & Type"}
+            {tAdmin("typeLabel")}
           </label>
           <div className="grid grid-cols-3 gap-3">
             {[
               {
                 id: "info",
-                label: locale === "id" ? "Info (Biru)" : "Info (Blue)",
+                label: tAdmin("typeInfo"),
                 bg: "bg-blue-50 text-blue-800 border-blue-200/60",
               },
               {
                 id: "warning",
-                label: locale === "id" ? "Warning (Kuning)" : "Warning (Amber)",
+                label: tAdmin("typeWarning"),
                 bg: "bg-amber-50 text-amber-800 border-amber-200/60",
               },
               {
                 id: "success",
-                label:
-                  locale === "id"
-                    ? "Promo / Rilis (Hijau)"
-                    : "Promo / Release (Green)",
+                label: tAdmin("typeSuccess"),
                 bg: "bg-emerald-50 text-[#0f6b4f] border-emerald-200/60",
               },
             ].map((bt) => (
@@ -290,29 +246,25 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-100 pt-4">
           <div>
             <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-              {locale === "id"
-                ? "Teks Tombol/Tautan (Opsional)"
-                : "Action Link Text (Optional)"}
+              {tAdmin("linkTextLabel")}
             </label>
             <input
               type="text"
               value={linkText}
               onChange={(e) => setLinkText(e.target.value)}
-              placeholder={locale === "id" ? "Contoh: Klaim Promo Diskon" : "e.g. Claim Discount"}
+              placeholder={tAdmin("linkTextPlaceholder")}
               className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] bg-slate-50/50 focus:bg-white transition-colors min-h-[44px]"
             />
           </div>
           <div>
             <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-              {locale === "id"
-                ? "URL Tautan (Opsional)"
-                : "Link Destination URL (Optional)"}
+              {tAdmin("linkUrlLabel")}
             </label>
             <input
               type="text"
               value={linkUrl}
               onChange={(e) => setLinkUrl(e.target.value)}
-              placeholder={locale === "id" ? "Contoh: /billing atau #pricing" : "e.g. /billing or #pricing"}
+              placeholder={tAdmin("linkUrlPlaceholder")}
               className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] bg-slate-50/50 focus:bg-white transition-colors min-h-[44px]"
             />
           </div>
@@ -341,7 +293,7 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         {initialData?.updatedBy ? (
           <p className="text-xs text-slate-400 font-medium">
-            {locale === "id" ? "Terakhir diubah oleh" : "Last updated by"}{" "}
+            {tAdmin("lastUpdatedBy")}{" "}
             <strong className="text-slate-700 font-mono">{initialData.updatedBy}</strong>
           </p>
         ) : (
@@ -355,9 +307,7 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
         >
           {isPending && <ArrowPathIcon className="w-4 h-4 animate-spin" />}
           <span>
-            {isPending
-              ? locale === "id" ? "Menyimpan..." : "Saving..."
-              : locale === "id" ? "Simpan & Siarkan" : "Save & Broadcast"}
+            {isPending ? tAdmin("savingBroadcast") : tAdmin("saveAndBroadcast")}
           </span>
         </button>
       </div>

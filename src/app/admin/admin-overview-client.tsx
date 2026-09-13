@@ -13,7 +13,7 @@ import {
 import { TrafficBarChart } from "./traffic-chart";
 import { formatCurrency } from "@/lib/pdf/format";
 import { formatDateWIB } from "@/lib/invoice-utils";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 
 export interface AdminOverviewData {
   totalEstimatedIncome: number;
@@ -68,7 +68,7 @@ export interface AdminOverviewData {
 }
 
 export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
-  const { t, locale } = useLanguage();
+  const tAdmin = useTranslations("admin");
 
   return (
     <div className="space-y-8">
@@ -77,18 +77,15 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-              {t.admin?.title || (locale === "id" ? "Admin & Analytics Center" : "Admin & Analytics Center")}
+              {tAdmin("title")}
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              {t.admin?.subtitle ||
-                (locale === "id"
-                  ? "Pantau real-time revenue, performa pengguna, dan trafik website NotaKu."
-                  : "Monitor real-time revenue, user performance, and website traffic.")}
+              {tAdmin("subtitle")}
             </p>
           </div>
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/60 text-[#0f6b4f] text-xs font-bold self-start sm:self-auto shadow-2xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>{t.admin?.liveTracking || (locale === "id" ? "Live Tracking Aktif" : "Live Tracking Active")}</span>
+            <span>{tAdmin("liveTracking")}</span>
           </div>
         </div>
       </div>
@@ -97,56 +94,52 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
       <div>
         <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-1.5">
           <CurrencyDollarIcon className="w-4 h-4 text-[#0f6b4f]" />
-          <span>{t.admin?.sectionRevenue || (locale === "id" ? "Pendapatan & Subscription (SaaS)" : "Revenue & Subscriptions (SaaS)")}</span>
+          <span>{tAdmin("sectionRevenue")}</span>
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Total Income */}
           <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs hover:border-emerald-300 transition-all">
             <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-              {t.admin?.totalIncome || (locale === "id" ? "Total Est. Pendapatan" : "Total Est. Revenue")}
+              {tAdmin("totalIncome")}
             </p>
             <p className="text-2xl sm:text-3xl font-extrabold text-[#0f6b4f] mt-2 tabular-nums">
               {formatCurrency(data.totalEstimatedIncome)}
             </p>
             <p className="text-[11px] text-slate-400 font-medium mt-1">
-              {locale === "id"
-                ? `Dari ${data.settlementLogsCount || data.proUsers} transaksi Pro`
-                : `From ${data.settlementLogsCount || data.proUsers} Pro transactions`}
+              {tAdmin("proTransactionsCount", { count: data.settlementLogsCount || data.proUsers })}
             </p>
           </div>
 
           {/* Monthly Recurring Revenue */}
           <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs hover:border-blue-300 transition-all">
             <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-              {t.admin?.mrr || (locale === "id" ? "MRR (Pendapatan Bulanan)" : "MRR (Monthly Recurring Revenue)")}
+              {tAdmin("mrr")}
             </p>
             <p className="text-2xl sm:text-3xl font-extrabold text-blue-600 mt-2 tabular-nums">
               {formatCurrency(data.currentMRR)}
             </p>
             <p className="text-[11px] text-slate-400 font-medium mt-1">
-              {data.proUsers} Active Pro (Rp49k/bln)
+              {tAdmin("activeProUsersPrice", { count: data.proUsers })}
             </p>
           </div>
 
           {/* Pro Conversion Rate */}
           <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs">
             <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-              {t.admin?.proConversion || (locale === "id" ? "Konversi Pengguna Pro" : "Pro User Conversion")}
+              {tAdmin("proConversion")}
             </p>
             <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2 tabular-nums">
               {data.totalUsers > 0 ? ((data.proUsers / data.totalUsers) * 100).toFixed(1) : 0}%
             </p>
             <p className="text-[11px] text-slate-500 font-medium mt-1">
-              {locale === "id"
-                ? `${data.proUsers} Pro dari ${data.totalUsers} total user`
-                : `${data.proUsers} Pro out of ${data.totalUsers} total users`}
+              {data.proUsers} Pro / {data.totalUsers} users
             </p>
           </div>
 
           {/* GMV Invoices */}
           <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs">
             <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-              {t.admin?.paidVolume || (locale === "id" ? "Volume Invoice Terbayar" : "Settled Invoice Volume")}
+              {tAdmin("paidVolume")}
             </p>
             <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2 truncate tabular-nums">
               {formatCurrency(data.paidInvoiceVolume)}
@@ -162,12 +155,12 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
       <div>
         <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-1.5">
           <GlobeAltIcon className="w-4 h-4 text-blue-600" />
-          <span>{t.admin?.sectionTraffic || (locale === "id" ? "Trafik & Kunjungan Website (Pageviews)" : "Website Traffic & Visits (Pageviews)")}</span>
+          <span>{tAdmin("sectionTraffic")}</span>
         </h2>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-2xs">
             <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-              {t.admin?.traffic24h || (locale === "id" ? "24 Jam Terakhir" : "Last 24 Hours")}
+              {tAdmin("traffic24h")}
             </p>
             <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1 tabular-nums">
               {data.views24h.toLocaleString("id-ID")}
@@ -175,14 +168,14 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
             <div className="flex items-center justify-between text-[11px] text-slate-500 mt-2 border-t border-slate-100 pt-1.5">
               <span className="font-medium">Views</span>
               <span className="font-bold text-[#0f6b4f]">
-                {data.uniqueVisitors24hCount} {locale === "id" ? "Pengunjung" : "Visitors"}
+                {data.uniqueVisitors24hCount} {tAdmin("views")}
               </span>
             </div>
           </div>
 
           <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-2xs">
             <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-              {t.admin?.traffic7d || (locale === "id" ? "7 Hari Terakhir" : "Last 7 Days")}
+              {tAdmin("traffic7d")}
             </p>
             <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1 tabular-nums">
               {data.views7d.toLocaleString("id-ID")}
@@ -190,14 +183,14 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
             <div className="flex items-center justify-between text-[11px] text-slate-500 mt-2 border-t border-slate-100 pt-1.5">
               <span className="font-medium">Views</span>
               <span className="font-bold text-[#0f6b4f]">
-                {data.uniqueVisitors7dCount} {locale === "id" ? "Pengunjung" : "Visitors"}
+                {data.uniqueVisitors7dCount} {tAdmin("views")}
               </span>
             </div>
           </div>
 
           <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-2xs">
             <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-              {t.admin?.traffic30d || (locale === "id" ? "30 Hari Terakhir" : "Last 30 Days")}
+              {tAdmin("traffic30d")}
             </p>
             <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1 tabular-nums">
               {data.views30d.toLocaleString("id-ID")}
@@ -205,14 +198,14 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
             <div className="flex items-center justify-between text-[11px] text-slate-500 mt-2 border-t border-slate-100 pt-1.5">
               <span className="font-medium">Views</span>
               <span className="font-bold text-[#0f6b4f]">
-                {data.uniqueVisitors30dCount} {locale === "id" ? "Pengunjung" : "Visitors"}
+                {data.uniqueVisitors30dCount} {tAdmin("views")}
               </span>
             </div>
           </div>
 
           <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-2xs">
             <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-              {t.admin?.trafficAll || (locale === "id" ? "Total Kunjungan" : "Total Pageviews")}
+              {tAdmin("trafficAll")}
             </p>
             <p className="text-2xl sm:text-3xl font-extrabold text-blue-600 mt-1 tabular-nums">
               {data.totalViews.toLocaleString("id-ID")}
@@ -220,7 +213,7 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
             <div className="flex items-center justify-between text-[11px] text-slate-500 mt-2 border-t border-slate-100 pt-1.5">
               <span className="font-medium">Total Views</span>
               <span className="font-bold text-[#0f6b4f]">
-                {data.uniqueVisitorsAllCount} {locale === "id" ? "Total Unik" : "Total Unique"}
+                {data.uniqueVisitorsAllCount} {tAdmin("uniqueIps")}
               </span>
             </div>
           </div>
@@ -230,7 +223,7 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
         <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs mt-4">
           <h3 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
             <ChartBarSquareIcon className="w-4 h-4 text-blue-600" />
-            <span>{locale === "id" ? "Grafik Tren Trafik Harian (Pageviews vs Pengunjung Unik)" : "Daily Traffic Trends (Pageviews vs Unique Visitors)"}</span>
+            <span>{tAdmin("trafficTrendsTitle")}</span>
           </h3>
           <TrafficBarChart data={data.trafficChartData} />
         </div>
@@ -241,11 +234,11 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
           <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs">
             <h3 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
               <EyeIcon className="w-4 h-4 text-blue-600" />
-              <span>{locale === "id" ? "Halaman Paling Sering Dikunjungi" : "Most Visited Pages"}</span>
+              <span>{tAdmin("mostVisitedPagesTitle")}</span>
             </h3>
             {data.topPages.length === 0 ? (
               <p className="text-xs text-slate-400 py-6 text-center font-medium">
-                {locale === "id" ? "Belum ada data kunjungan halaman." : "No page view data available yet."}
+                {tAdmin("emptyPagesVisited")}
               </p>
             ) : (
               <div className="space-y-2">
@@ -281,11 +274,11 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
           <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs">
             <h3 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
               <ArrowTrendingUpIcon className="w-4 h-4 text-[#0f6b4f]" />
-              <span>{locale === "id" ? "Sumber Trafik (Top Referrers)" : "Traffic Sources (Top Referrers)"}</span>
+              <span>{tAdmin("trafficSourcesTitle")}</span>
             </h3>
             {data.topReferrers.length === 0 ? (
               <p className="text-xs text-slate-400 py-6 text-center font-medium">
-                {locale === "id" ? "Belum ada data referrer (kebanyakan direct traffic)." : "No referrer data available (mostly direct traffic)."}
+                {tAdmin("emptyReferrers")}
               </p>
             ) : (
               <div className="space-y-2">
@@ -315,10 +308,10 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
               <UsersIcon className="w-4 h-4 text-blue-600" />
-              <span>{locale === "id" ? `Pengguna Terbaru (${data.totalUsers} total)` : `Recent Users (${data.totalUsers} total)`}</span>
+              <span>{tAdmin("recentUsersCount", { count: data.totalUsers })}</span>
             </h3>
             <span className="text-[11px] text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded-full">
-              +{data.newUsers30d} {locale === "id" ? "bln ini" : "this month"}
+              {tAdmin("newUsersThisMonth", { count: data.newUsers30d })}
             </span>
           </div>
 
@@ -329,7 +322,7 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
                   <th className="pb-2.5">User</th>
                   <th className="pb-2.5">Plan</th>
                   <th className="pb-2.5">Invoices</th>
-                  <th className="pb-2.5">{locale === "id" ? "Daftar" : "Joined"}</th>
+                  <th className="pb-2.5">{tAdmin("colJoined")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -374,12 +367,12 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
         <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs">
           <h3 className="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2">
             <SparklesIcon className="w-4 h-4 text-[#0f6b4f]" />
-            <span>{locale === "id" ? "Aktivitas Terkini (Audit Log)" : "Recent Activity (Audit Logs)"}</span>
+            <span>{tAdmin("recentActivityTitle")}</span>
           </h3>
           <div className="space-y-2.5">
             {data.recentLogs.length === 0 ? (
               <p className="text-xs text-slate-400 py-6 text-center font-medium">
-                {locale === "id" ? "Belum ada audit log terekam." : "No audit logs recorded yet."}
+                {tAdmin("emptyAuditLogs")}
               </p>
             ) : (
               data.recentLogs.map((log) => (
@@ -414,32 +407,32 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
       <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs">
         <h3 className="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2">
           <ServerStackIcon className="w-4 h-4 text-purple-600" />
-          <span>{locale === "id" ? "Kapasitas Database & Table Rows (PostgreSQL Health)" : "Database Capacity & Table Rows (PostgreSQL Health)"}</span>
+          <span>{tAdmin("dbHealthTitle")}</span>
         </h3>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           <div className="bg-slate-50/80 rounded-xl p-3.5 border border-slate-200/60 shadow-2xs">
-            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{locale === "id" ? "Tabel Users" : "Users Table"}</p>
+            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{tAdmin("tableUsersLabel")}</p>
             <p className="text-lg font-extrabold text-slate-900 mt-1 font-mono">{data.totalUsers.toLocaleString("id-ID")}</p>
           </div>
           <div className="bg-slate-50/80 rounded-xl p-3.5 border border-slate-200/60 shadow-2xs">
-            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{locale === "id" ? "Tabel Invoices" : "Invoices Table"}</p>
+            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{tAdmin("tableInvoicesLabel")}</p>
             <p className="text-lg font-extrabold text-slate-900 mt-1 font-mono">{data.totalInvoices.toLocaleString("id-ID")}</p>
           </div>
           <div className="bg-slate-50/80 rounded-xl p-3.5 border border-slate-200/60 shadow-2xs">
-            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{locale === "id" ? "Invoice Items" : "Invoice Items"}</p>
+            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{tAdmin("tableInvoiceItemsLabel")}</p>
             <p className="text-lg font-extrabold text-slate-900 mt-1 font-mono">{data.totalInvoiceItems.toLocaleString("id-ID")}</p>
           </div>
           <div className="bg-slate-50/80 rounded-xl p-3.5 border border-slate-200/60 shadow-2xs">
-            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{locale === "id" ? "Pelanggan" : "Customers"}</p>
+            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{tAdmin("tableCustomersLabel")}</p>
             <p className="text-lg font-extrabold text-slate-900 mt-1 font-mono">{data.totalCustomers.toLocaleString("id-ID")}</p>
           </div>
           <div className="bg-slate-50/80 rounded-xl p-3.5 border border-slate-200/60 shadow-2xs">
-            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{locale === "id" ? "Audit Logs" : "Audit Logs"}</p>
+            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{tAdmin("tableAuditLogsLabel")}</p>
             <p className="text-lg font-extrabold text-slate-900 mt-1 font-mono">{data.totalAuditLogs.toLocaleString("id-ID")}</p>
           </div>
           <div className="bg-slate-50/80 rounded-xl p-3.5 border border-slate-200/60 shadow-2xs">
-            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{locale === "id" ? "Trafik Records" : "Traffic Records"}</p>
+            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{tAdmin("tableTrafficRecordsLabel")}</p>
             <p className="text-lg font-extrabold text-slate-900 mt-1 font-mono">{data.totalViews.toLocaleString("id-ID")}</p>
           </div>
         </div>

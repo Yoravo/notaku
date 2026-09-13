@@ -9,7 +9,7 @@ import {
   ArrowPathIcon,
 } from "@heroicons/react/24/outline";
 import { ConfirmDialog, ConfirmVariant } from "@/components/ui/confirm-dialog";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 
 type UserActionsProps = {
   userId: string;
@@ -40,7 +40,7 @@ export function UserRowActions({
   currentRole,
   isCurrentAdmin,
 }: UserActionsProps) {
-  const { t, locale } = useLanguage();
+  const tAdmin = useTranslations("admin");
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -49,7 +49,7 @@ export function UserRowActions({
     type: "PLAN",
     title: "",
     description: "",
-    confirmLabel: locale === "id" ? "Konfirmasi" : "Confirm",
+    confirmLabel: tAdmin("confirm"),
     variant: "primary",
     itemDetails: [],
   });
@@ -63,26 +63,19 @@ export function UserRowActions({
     setDialogState({
       isOpen: true,
       type: "PLAN",
-      title: isUpgrading
-        ? locale === "id" ? "Upgrade ke Paket PRO" : "Upgrade to PRO Plan"
-        : locale === "id" ? "Downgrade ke Paket FREE" : "Downgrade to FREE Plan",
-      description: isUpgrading
-        ? locale === "id"
-          ? "Pengguna akan langsung mendapatkan akses fitur PRO (unlimited invoice, branding kustom, tanpa watermark, dan template premium)."
-          : "User will immediately receive full PRO features (unlimited invoices, custom branding, zero watermark, and premium templates)."
-        : locale === "id"
-          ? "Pengguna akan dikembalikan ke batasan paket FREE standar (maksimal 5 invoice/bulan dan 20 pelanggan)."
-          : "User will be reverted to standard FREE limits (max 5 invoices/month and 20 clients).",
-      confirmLabel: isUpgrading
-        ? locale === "id" ? "Ya, Upgrade PRO" : "Yes, Upgrade to PRO"
-        : locale === "id" ? "Ya, Set FREE" : "Yes, Set to FREE",
+      title: tAdmin("confirmPlanChangeTitle"),
+      description: tAdmin("confirmPlanChangeDesc", {
+        name: userName || "User",
+        email: userEmail,
+        plan: nextPlan,
+      }),
+      confirmLabel: isUpgrading ? tAdmin("actionUpgradePro") : tAdmin("actionDowngradeFree"),
       variant: isUpgrading ? "upgrade" : "warning",
       newPlan: nextPlan,
       itemDetails: [
-        { label: locale === "id" ? "Nama Pengguna" : "User Name", value: userName || "—" },
+        { label: "User", value: userName || "—" },
         { label: "Email", value: userEmail },
-        { label: locale === "id" ? "Paket Saat Ini" : "Current Plan", value: currentPlan },
-        { label: locale === "id" ? "Paket Baru" : "Target Plan", value: nextPlan },
+        { label: "Plan", value: `${currentPlan} → ${nextPlan}` },
       ],
     });
   };
@@ -99,26 +92,19 @@ export function UserRowActions({
     setDialogState({
       isOpen: true,
       type: "ROLE",
-      title: isPromoting
-        ? locale === "id" ? "Jadikan Pengguna Sebagai Admin" : "Promote User to Admin"
-        : locale === "id" ? "Cabut Hak Akses Admin" : "Revoke Admin Privileges",
-      description: isPromoting
-        ? locale === "id"
-          ? "Pengguna ini akan memiliki akses penuh ke Admin Panel, mutasi keuangan, manajemen promo, dan manipulasi data pengguna lain."
-          : "This user will have full access to Admin Panel, finances, promo vouchers, and system management."
-        : locale === "id"
-          ? "Hak akses Admin akan dicabut. Pengguna tidak akan dapat mengakses rute /admin lagi."
-          : "Admin privileges will be revoked. The user will no longer be able to access /admin.",
-      confirmLabel: isPromoting
-        ? locale === "id" ? "Ya, Berikan Akses Admin" : "Yes, Grant Admin Role"
-        : locale === "id" ? "Ya, Cabut Akses Admin" : "Yes, Revoke Admin",
+      title: tAdmin("confirmRoleChangeTitle"),
+      description: tAdmin("confirmRoleChangeDesc", {
+        name: userName || "User",
+        email: userEmail,
+        role: nextRole,
+      }),
+      confirmLabel: isPromoting ? tAdmin("actionMakeAdmin") : tAdmin("actionRemoveAdmin"),
       variant: isPromoting ? "admin" : "danger",
       newRole: nextRole,
       itemDetails: [
-        { label: locale === "id" ? "Nama Pengguna" : "User Name", value: userName || "—" },
+        { label: "User", value: userName || "—" },
         { label: "Email", value: userEmail },
-        { label: locale === "id" ? "Role Saat Ini" : "Current Role", value: currentRole },
-        { label: locale === "id" ? "Role Baru" : "New Role", value: nextRole },
+        { label: "Role", value: `${currentRole} → ${nextRole}` },
       ],
     });
   };
@@ -135,13 +121,13 @@ export function UserRowActions({
         if (res.success) {
           setMessage({
             type: "success",
-            text: locale === "id" ? `Paket diubah ke ${targetPlan}` : `Plan updated to ${targetPlan}`,
+            text: tAdmin("planChangeSuccess", { plan: targetPlan }),
           });
           setTimeout(() => setMessage(null), 3000);
         } else {
           setMessage({
             type: "error",
-            text: res.error || (locale === "id" ? "Gagal mengubah paket" : "Failed to update plan"),
+            text: res.error || tAdmin("planChangeFailed"),
           });
         }
       } else if (dialogState.type === "ROLE" && dialogState.newRole) {
@@ -152,13 +138,13 @@ export function UserRowActions({
         if (res.success) {
           setMessage({
             type: "success",
-            text: locale === "id" ? `Role diubah ke ${targetRole}` : `Role updated to ${targetRole}`,
+            text: tAdmin("roleChangeSuccess", { role: targetRole }),
           });
           setTimeout(() => setMessage(null), 3000);
         } else {
           setMessage({
             type: "error",
-            text: res.error || (locale === "id" ? "Gagal mengubah role" : "Failed to update role"),
+            text: res.error || tAdmin("roleChangeFailed"),
           });
         }
       }
@@ -179,14 +165,14 @@ export function UserRowActions({
                 ? "bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200/60"
                 : "bg-emerald-50 text-[#0f6b4f] hover:bg-emerald-100 border border-emerald-200/60"
             }`}
-            title={currentPlan === "PRO" ? (locale === "id" ? "Downgrade ke Free" : "Downgrade to Free") : (locale === "id" ? "Upgrade ke Pro" : "Upgrade to Pro")}
+            title={currentPlan === "PRO" ? tAdmin("actionDowngradeFree") : tAdmin("actionUpgradePro")}
           >
             {isPending ? (
               <ArrowPathIcon className="w-3.5 h-3.5 animate-spin" />
             ) : (
               <SparklesIcon className="w-3.5 h-3.5" />
             )}
-            <span>{currentPlan === "PRO" ? (locale === "id" ? "Set Free" : "Set Free") : (locale === "id" ? "Set Pro" : "Set Pro")}</span>
+            <span>{currentPlan === "PRO" ? tAdmin("setFree") : tAdmin("setPro")}</span>
           </button>
 
           {/* Toggle Role Button */}
@@ -202,9 +188,9 @@ export function UserRowActions({
             title={
               currentRole === "ADMIN"
                 ? isCurrentAdmin
-                  ? locale === "id" ? "Akun Anda saat ini" : "Your active account"
-                  : locale === "id" ? "Cabut status Admin" : "Revoke Admin status"
-                : locale === "id" ? "Jadikan Admin" : "Make Admin"
+                  ? tAdmin("activeAccount")
+                  : tAdmin("actionRemoveAdmin")
+                : tAdmin("actionMakeAdmin")
             }
           >
             {currentRole === "ADMIN" ? (
@@ -212,7 +198,7 @@ export function UserRowActions({
             ) : (
               <ShieldCheckIcon className="w-3.5 h-3.5 text-slate-500" />
             )}
-            <span>{currentRole === "ADMIN" ? (locale === "id" ? "Cabut Admin" : "Revoke Admin") : (locale === "id" ? "Beri Admin" : "Make Admin")}</span>
+            <span>{currentRole === "ADMIN" ? tAdmin("actionRemoveAdmin") : tAdmin("actionMakeAdmin")}</span>
           </button>
         </div>
 
@@ -235,7 +221,7 @@ export function UserRowActions({
         title={dialogState.title}
         description={dialogState.description}
         confirmLabel={dialogState.confirmLabel}
-        cancelLabel={locale === "id" ? "Batalkan" : "Cancel"}
+        cancelLabel={tAdmin("cancel")}
         variant={dialogState.variant}
         isLoading={isPending}
         itemDetails={dialogState.itemDetails}
@@ -246,18 +232,13 @@ export function UserRowActions({
         isOpen={selfAdminAlertOpen}
         onClose={() => setSelfAdminAlertOpen(false)}
         onConfirm={() => setSelfAdminAlertOpen(false)}
-        title={locale === "id" ? "Tindakan Tidak Diizinkan" : "Action Restricted"}
-        description={
-          locale === "id"
-            ? "Anda tidak dapat mencabut hak akses ADMIN diri Anda sendiri demi mencegah terkuncinya akses sistem."
-            : "You cannot revoke your own ADMIN role to prevent locking yourself out of the system."
-        }
-        confirmLabel={locale === "id" ? "Mengerti" : "Understood"}
-        cancelLabel={locale === "id" ? "Tutup" : "Close"}
+        title={tAdmin("actionNotAllowed")}
+        description={tAdmin("selfDemoteWarning")}
+        confirmLabel={tAdmin("understand")}
+        cancelLabel={tAdmin("cancel")}
         variant="warning"
         itemDetails={[
-          { label: locale === "id" ? "Akun Anda" : "Your Account", value: userEmail },
-          { label: "Status", value: locale === "id" ? "Aktif Sesi Saat Ini" : "Current Active Session" },
+          { label: "User", value: userEmail },
         ]}
       />
     </>

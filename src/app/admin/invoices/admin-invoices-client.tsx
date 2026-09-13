@@ -8,7 +8,7 @@ import {
   MagnifyingGlassIcon,
   ArrowTopRightOnSquareIcon,
 } from "@heroicons/react/24/outline";
-import { useLanguage } from "@/lib/i18n/context";
+import { useLocale, useTranslations } from "next-intl";
 
 export type AdminInvoiceItem = {
   id: string;
@@ -55,7 +55,9 @@ export function AdminInvoicesClient({
   statusFilter,
   statusCountMap,
 }: AdminInvoicesClientProps) {
-  const { t, locale } = useLanguage();
+  const locale = useLocale() as "id" | "en";
+  const tAdmin = useTranslations("admin");
+  const tStatus = useTranslations("common.status");
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -64,35 +66,35 @@ export function AdminInvoicesClient({
           bg: "bg-emerald-50 border-emerald-200/60",
           text: "text-[#0f6b4f]",
           dot: "bg-emerald-500",
-          label: locale === "id" ? "Lunas" : "Paid",
+          label: tStatus("paid"),
         };
       case "SENT":
         return {
           bg: "bg-blue-50 border-blue-200/60",
           text: "text-blue-700",
           dot: "bg-blue-500",
-          label: locale === "id" ? "Terkirim" : "Sent",
+          label: tStatus("sent"),
         };
       case "DRAFT":
         return {
           bg: "bg-slate-100 border-slate-200",
           text: "text-slate-600",
           dot: "bg-slate-400",
-          label: locale === "id" ? "Draft" : "Draft",
+          label: tStatus("draft"),
         };
       case "OVERDUE":
         return {
           bg: "bg-rose-50 border-rose-200/60",
           text: "text-rose-700",
           dot: "bg-rose-500",
-          label: locale === "id" ? "Jatuh Tempo" : "Overdue",
+          label: tStatus("overdue"),
         };
       case "CANCELLED":
         return {
           bg: "bg-gray-100 border-gray-200",
           text: "text-gray-600",
           dot: "bg-gray-400",
-          label: locale === "id" ? "Dibatalkan" : "Cancelled",
+          label: tStatus("cancelled"),
         };
       default:
         return {
@@ -111,21 +113,17 @@ export function AdminInvoicesClient({
         <div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
             <DocumentTextIcon className="w-6 h-6 sm:w-7 sm:h-7 text-amber-600" />
-            <span>
-              {t.admin?.invoices || (locale === "id" ? "Monitoring Seluruh Invoice" : "All Invoices Monitoring")}
-            </span>
+            <span>{tAdmin("invoicesTitle")}</span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            {locale === "id"
-              ? "Pantau peredaran invoice publik, total transaksi, dan verifikasi invoice pengguna."
-              : "Monitor public invoice distribution, platform transaction volume, and user invoices."}
+            {tAdmin("invoicesSubtitle")}
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="bg-white border border-slate-200 rounded-2xl px-4 py-2.5 shadow-2xs text-center min-w-28">
             <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
-              {locale === "id" ? "Total Invoice" : "Total Invoices"}
+              {tAdmin("totalInvoicesLabel")}
             </p>
             <p className="text-lg font-extrabold text-slate-900 tabular-nums">
               {totalAllInvoices.toLocaleString("id-ID")}
@@ -133,7 +131,7 @@ export function AdminInvoicesClient({
           </div>
           <div className="bg-emerald-50/50 border border-emerald-200/60 rounded-2xl px-4 py-2.5 shadow-2xs text-center min-w-32">
             <p className="text-[10px] uppercase font-bold tracking-wider text-[#0f6b4f]">
-              {locale === "id" ? "Total Lunas (GMV)" : "Total Paid (GMV)"}
+              {tAdmin("totalGmvPaid")}
             </p>
             <p className="text-lg font-extrabold text-[#0f6b4f] tabular-nums">
               {formatCurrency(paidInvoicesTotal)}
@@ -154,7 +152,7 @@ export function AdminInvoicesClient({
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
-            {locale === "id" ? "Semua" : "All"} ({totalAllInvoices})
+            {tAdmin("filterAll")} ({totalAllInvoices})
           </Link>
           {["PAID", "SENT", "DRAFT", "OVERDUE", "CANCELLED"].map((st) => (
             <Link
@@ -179,11 +177,7 @@ export function AdminInvoicesClient({
               type="text"
               name="q"
               defaultValue={searchQuery}
-              placeholder={
-                locale === "id"
-                  ? "Cari nomor invoice, nama pembuat, email, atau pelanggan..."
-                  : "Search invoice number, creator name, email, or client..."
-              }
+              placeholder={tAdmin("searchPlaceholder")}
               className="w-full pl-10 pr-3.5 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] bg-slate-50/50 focus:bg-white transition-colors"
             />
           </div>
@@ -194,7 +188,7 @@ export function AdminInvoicesClient({
               type="submit"
               className="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl py-2.5 transition-colors cursor-pointer shadow-2xs"
             >
-              {locale === "id" ? "Cari Invoice" : "Search Invoices"}
+              Filter
             </button>
           </div>
         </form>
@@ -206,13 +200,13 @@ export function AdminInvoicesClient({
           <table className="w-full text-left text-xs sm:text-sm">
             <thead className="bg-slate-50/80 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
               <tr>
-                <th className="px-5 py-3.5">{locale === "id" ? "No. Invoice" : "Invoice No."}</th>
-                <th className="px-4 py-3.5">{locale === "id" ? "Pembuat (User)" : "Creator (User)"}</th>
-                <th className="px-4 py-3.5">{locale === "id" ? "Ditagihkan Ke" : "Billed To"}</th>
-                <th className="px-4 py-3.5">{locale === "id" ? "Status" : "Status"}</th>
-                <th className="px-4 py-3.5 text-right">{locale === "id" ? "Nominal" : "Amount"}</th>
-                <th className="px-4 py-3.5">{locale === "id" ? "Tgl Dibuat" : "Created Date"}</th>
-                <th className="px-5 py-3.5 text-right">{locale === "id" ? "Aksi" : "Action"}</th>
+                <th className="px-5 py-3.5">{tAdmin("colInvoiceNumber")}</th>
+                <th className="px-4 py-3.5">{tAdmin("colCreator")}</th>
+                <th className="px-4 py-3.5">{tAdmin("colBilledTo")}</th>
+                <th className="px-4 py-3.5">{tAdmin("colStatus")}</th>
+                <th className="px-4 py-3.5 text-right">{tAdmin("colAmount")}</th>
+                <th className="px-4 py-3.5">{tAdmin("tableDate")}</th>
+                <th className="px-5 py-3.5 text-right">{tAdmin("colAction")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -222,9 +216,7 @@ export function AdminInvoicesClient({
                     colSpan={7}
                     className="text-center py-12 text-slate-400 text-xs font-medium"
                   >
-                    {locale === "id"
-                      ? "Tidak ada invoice yang ditemukan."
-                      : "No invoices matched the current query."}
+                    {tAdmin("emptyInvoices")}
                   </td>
                 </tr>
               ) : (
@@ -301,7 +293,7 @@ export function AdminInvoicesClient({
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors shadow-2xs"
                         >
-                          <span>{locale === "id" ? "Lihat Web" : "View Live"}</span>
+                          <span>{tAdmin("viewPublic")}</span>
                           <ArrowTopRightOnSquareIcon className="w-3.5 h-3.5 text-slate-400" />
                         </a>
                       </td>
@@ -317,17 +309,7 @@ export function AdminInvoicesClient({
         {totalPages > 1 && (
           <div className="bg-slate-50/80 px-5 py-3.5 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
             <span>
-              {locale === "id" ? (
-                <>
-                  Menampilkan hal <strong className="text-slate-800">{currentPage}</strong> dari{" "}
-                  <strong className="text-slate-800">{totalPages}</strong> ({totalFilteredInvoices} total invoice)
-                </>
-              ) : (
-                <>
-                  Showing page <strong className="text-slate-800">{currentPage}</strong> of{" "}
-                  <strong className="text-slate-800">{totalPages}</strong> ({totalFilteredInvoices} total invoices)
-                </>
-              )}
+              {tAdmin("paginationSummary", { current: currentPage, total: totalPages, count: `${totalFilteredInvoices} total invoice` })}
             </span>
             <div className="flex items-center gap-2">
               {currentPage > 1 && (
@@ -337,7 +319,7 @@ export function AdminInvoicesClient({
                   }`}
                   className="px-3.5 py-1.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 font-bold text-slate-700 shadow-2xs transition-colors"
                 >
-                  {locale === "id" ? "Sebelumnya" : "Previous"}
+                  {tAdmin("paginationPrev")}
                 </Link>
               )}
               {currentPage < totalPages && (
@@ -347,7 +329,7 @@ export function AdminInvoicesClient({
                   }`}
                   className="px-3.5 py-1.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 font-bold text-slate-700 shadow-2xs transition-colors"
                 >
-                  {locale === "id" ? "Berikutnya" : "Next"}
+                  {tAdmin("paginationNext")}
                 </Link>
               )}
             </div>

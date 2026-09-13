@@ -9,7 +9,7 @@ import {
   ShieldCheckIcon,
 } from "@heroicons/react/24/outline";
 import { UserRowActions } from "./user-row-actions";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 
 export type AdminUserData = {
   id: string;
@@ -49,7 +49,7 @@ export function AdminUsersClient({
   roleFilter,
   currentAdminId,
 }: AdminUsersProps) {
-  const { t, locale } = useLanguage();
+  const tAdmin = useTranslations("admin");
 
   return (
     <div className="space-y-6">
@@ -58,21 +58,17 @@ export function AdminUsersClient({
         <div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
             <UsersIcon className="w-6 h-6 sm:w-7 sm:h-7 text-blue-600" />
-            <span>
-              {t.admin?.users || (locale === "id" ? "Manajemen Pengguna" : "User Management")}
-            </span>
+            <span>{tAdmin("usersTitle")}</span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            {locale === "id"
-              ? "Kelola akses, upgrade paket Pro secara manual, dan kelola otorisasi admin."
-              : "Manage user access, manually assign Pro plans, and configure admin authorizations."}
+            {tAdmin("usersSubtitle")}
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="bg-white border border-slate-200 rounded-2xl px-4 py-2.5 shadow-2xs text-center min-w-28">
             <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
-              {locale === "id" ? "Total User" : "Total Users"}
+              {tAdmin("totalUsers")}
             </p>
             <p className="text-lg font-extrabold text-slate-900 tabular-nums">
               {totalAllUsers.toLocaleString("id-ID")}
@@ -80,7 +76,7 @@ export function AdminUsersClient({
           </div>
           <div className="bg-amber-50/50 border border-amber-200/60 rounded-2xl px-4 py-2.5 shadow-2xs text-center min-w-28">
             <p className="text-[10px] uppercase font-bold tracking-wider text-amber-700">
-              {locale === "id" ? "User Pro" : "Pro Users"}
+              {tAdmin("proUsers")}
             </p>
             <p className="text-lg font-extrabold text-amber-800 tabular-nums">
               {totalProUsers.toLocaleString("id-ID")}
@@ -99,11 +95,7 @@ export function AdminUsersClient({
               type="text"
               name="q"
               defaultValue={searchQuery}
-              placeholder={
-                locale === "id"
-                  ? "Cari nama, email, atau nama bisnis..."
-                  : "Search name, email, or business name..."
-              }
+              placeholder={tAdmin("searchUsersPlaceholder")}
               className="w-full pl-10 pr-3.5 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] bg-slate-50/50 focus:bg-white transition-colors"
             />
           </div>
@@ -115,9 +107,9 @@ export function AdminUsersClient({
               defaultValue={planFilter}
               className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] bg-slate-50/50 focus:bg-white text-slate-700"
             >
-              <option value="">{locale === "id" ? "Semua Paket (Plan)" : "All Plans"}</option>
-              <option value="FREE">{locale === "id" ? "Hanya FREE" : "FREE Only"}</option>
-              <option value="PRO">{locale === "id" ? "Hanya PRO" : "PRO Only"}</option>
+              <option value="">{tAdmin("filterAllPlans")}</option>
+              <option value="FREE">FREE</option>
+              <option value="PRO">PRO</option>
             </select>
           </div>
 
@@ -128,7 +120,7 @@ export function AdminUsersClient({
               defaultValue={roleFilter}
               className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] bg-slate-50/50 focus:bg-white text-slate-700"
             >
-              <option value="">{locale === "id" ? "Semua Role" : "All Roles"}</option>
+              <option value="">{tAdmin("filterAllRoles")}</option>
               <option value="USER">USER</option>
               <option value="ADMIN">ADMIN</option>
             </select>
@@ -140,7 +132,7 @@ export function AdminUsersClient({
               type="submit"
               className="w-full h-full min-h-[42px] bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl flex items-center justify-center py-2.5 transition-colors cursor-pointer shadow-2xs"
             >
-              {locale === "id" ? "Filter" : "Filter"}
+              Filter
             </button>
           </div>
         </form>
@@ -152,12 +144,12 @@ export function AdminUsersClient({
           <table className="w-full text-left text-xs sm:text-sm">
             <thead className="bg-slate-50/80 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
               <tr>
-                <th className="px-5 py-3.5">{locale === "id" ? "Pengguna" : "User"}</th>
-                <th className="px-4 py-3.5">{locale === "id" ? "Status / Role" : "Status / Role"}</th>
-                <th className="px-4 py-3.5 text-center">{locale === "id" ? "Invoices" : "Invoices"}</th>
-                <th className="px-4 py-3.5 text-center">{locale === "id" ? "Pelanggan" : "Clients"}</th>
-                <th className="px-4 py-3.5">{locale === "id" ? "Tgl Daftar" : "Joined Date"}</th>
-                <th className="px-5 py-3.5 text-right">{locale === "id" ? "Aksi Admin" : "Admin Action"}</th>
+                <th className="px-5 py-3.5">{tAdmin("colUser")}</th>
+                <th className="px-4 py-3.5">{tAdmin("colStatusRole")}</th>
+                <th className="px-4 py-3.5 text-center">Invoices</th>
+                <th className="px-4 py-3.5 text-center">{tAdmin("colCustomers")}</th>
+                <th className="px-4 py-3.5">{tAdmin("colRegisteredDate")}</th>
+                <th className="px-5 py-3.5 text-right">{tAdmin("colAdminActions")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -167,9 +159,7 @@ export function AdminUsersClient({
                     colSpan={6}
                     className="text-center py-12 text-slate-400 text-xs font-medium"
                   >
-                    {locale === "id"
-                      ? "Tidak ditemukan pengguna yang sesuai dengan filter."
-                      : "No users matched the current filter."}
+                    {tAdmin("emptyUsers")}
                   </td>
                 </tr>
               ) : (
@@ -183,7 +173,7 @@ export function AdminUsersClient({
                           <Link
                             href={`/admin/users/${u.id}`}
                             className="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 font-bold flex items-center justify-center text-xs shrink-0 uppercase border border-slate-200 hover:border-slate-400 hover:bg-slate-200 transition-colors shadow-2xs"
-                            title={locale === "id" ? "Lihat Detail Pengguna" : "View User Details"}
+                            title="Detail"
                           >
                             {u.name ? u.name.charAt(0) : "U"}
                           </Link>
@@ -192,7 +182,7 @@ export function AdminUsersClient({
                               href={`/admin/users/${u.id}`}
                               className="font-bold text-slate-900 hover:text-blue-600 transition-colors truncate max-w-xs block text-xs sm:text-sm"
                             >
-                              {u.name || (locale === "id" ? "Tanpa Nama" : "Unnamed User")}
+                              {u.name || "User"}
                             </Link>
                             <p className="text-[11px] text-slate-400 truncate max-w-xs font-mono">
                               {u.email}
@@ -273,17 +263,7 @@ export function AdminUsersClient({
         {totalPages > 1 && (
           <div className="bg-slate-50/80 px-5 py-3.5 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
             <span>
-              {locale === "id" ? (
-                <>
-                  Menampilkan hal <strong className="text-slate-800">{currentPage}</strong> dari{" "}
-                  <strong className="text-slate-800">{totalPages}</strong> ({totalFilteredUsers} total user)
-                </>
-              ) : (
-                <>
-                  Showing page <strong className="text-slate-800">{currentPage}</strong> of{" "}
-                  <strong className="text-slate-800">{totalPages}</strong> ({totalFilteredUsers} total users)
-                </>
-              )}
+              {tAdmin("paginationSummary", { current: currentPage, total: totalPages, count: `${totalFilteredUsers} total user` })}
             </span>
             <div className="flex items-center gap-2">
               {currentPage > 1 && (
@@ -293,7 +273,7 @@ export function AdminUsersClient({
                   }`}
                   className="px-3.5 py-1.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 font-bold text-slate-700 shadow-2xs transition-colors"
                 >
-                  {locale === "id" ? "Sebelumnya" : "Previous"}
+                  {tAdmin("paginationPrev")}
                 </Link>
               )}
               {currentPage < totalPages && (
@@ -303,7 +283,7 @@ export function AdminUsersClient({
                   }`}
                   className="px-3.5 py-1.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 font-bold text-slate-700 shadow-2xs transition-colors"
                 >
-                  {locale === "id" ? "Berikutnya" : "Next"}
+                  {tAdmin("paginationNext")}
                 </Link>
               )}
             </div>

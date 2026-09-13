@@ -22,7 +22,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { LanguageDropdown } from "@/components/language-dropdown";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 
 type AdminUser = {
   id: string;
@@ -43,20 +43,21 @@ export function AdminLayoutClient({
   // Desktop sidebar collapse state (default: show/expanded)
   const [desktopOpen, setDesktopOpen] = useState(true);
   const pathname = usePathname();
-  const { t, locale } = useLanguage();
+  const tAdmin = useTranslations("admin");
+  const tDash = useTranslations("dashboard");
 
   const adminNavItems = [
-    { href: "/admin", label: t.admin?.overview || "Overview & Trafik", icon: ChartBarIcon, exact: true },
-    { href: "/admin/users", label: t.admin?.users || "Manajemen User", icon: UsersIcon },
-    { href: "/admin/invoices", label: t.admin?.invoices || "Semua Invoices", icon: DocumentTextIcon },
-    { href: "/admin/payouts", label: t.admin?.payouts || "Pencairan Dana", icon: BanknotesIcon },
-    { href: "/admin/finance", label: t.admin?.finance || "Laporan Finansial", icon: ChartBarIcon },
-    { href: "/admin/promos", label: t.admin?.promos || "Voucher & Promo", icon: TagIcon },
-    { href: "/admin/broadcast", label: locale === "id" ? "Email Broadcast" : "Email Broadcast", icon: EnvelopeIcon },
-    { href: "/admin/referrals", label: locale === "id" ? "Program Afiliasi" : "Affiliates & Referrals", icon: GiftIcon },
-    { href: "/admin/announcement", label: t.admin?.announcement || "Pengumuman", icon: MegaphoneIcon },
-    { href: "/admin/logs", label: t.admin?.logs || "Audit Logs", icon: ClipboardDocumentListIcon },
-    { href: "/admin/system", label: t.admin?.system || "System Health", icon: CpuChipIcon },
+    { href: "/admin", label: tAdmin("navOverview"), icon: ChartBarIcon, exact: true },
+    { href: "/admin/users", label: tAdmin("navUsers"), icon: UsersIcon },
+    { href: "/admin/invoices", label: tAdmin("navInvoices"), icon: DocumentTextIcon },
+    { href: "/admin/payouts", label: tAdmin("navPayouts"), icon: BanknotesIcon },
+    { href: "/admin/finance", label: tAdmin("navFinance"), icon: ChartBarIcon },
+    { href: "/admin/promos", label: tAdmin("navPromos"), icon: TagIcon },
+    { href: "/admin/broadcast", label: tAdmin("navBroadcast"), icon: EnvelopeIcon },
+    { href: "/admin/referrals", label: tAdmin("navReferrals"), icon: GiftIcon },
+    { href: "/admin/announcement", label: tAdmin("navAnnouncement"), icon: MegaphoneIcon },
+    { href: "/admin/logs", label: tAdmin("navLogs"), icon: ClipboardDocumentListIcon },
+    { href: "/admin/system", label: tAdmin("navSystem"), icon: CpuChipIcon },
   ];
 
   return (
@@ -110,7 +111,7 @@ export function AdminLayoutClient({
           <button
             onClick={() => setMobileOpen(false)}
             className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
-            aria-label="Tutup Menu"
+            aria-label={tAdmin("closeMenu")}
           >
             <XMarkIcon className="w-6 h-6" />
           </button>
@@ -119,7 +120,7 @@ export function AdminLayoutClient({
         {/* Navigation Menu */}
         <nav className="flex-1 space-y-1.5 px-3 py-4 overflow-y-auto">
           <p className="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2 whitespace-nowrap">
-            {locale === "id" ? "Menu Utama" : "Main Menu"}
+            {tDash("mainMenu")}
           </p>
           {adminNavItems.map((item) => {
             const isActive = item.exact
@@ -166,7 +167,7 @@ export function AdminLayoutClient({
             className="flex items-center justify-center gap-2 w-full py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors whitespace-nowrap"
           >
             <ArrowLeftOnRectangleIcon className="w-4 h-4 text-slate-400" />
-            <span>{t.admin?.backToUserApp || "Kembali ke App User"}</span>
+            <span>{tAdmin("backToUserApp")}</span>
           </Link>
         </div>
       </aside>
@@ -180,8 +181,8 @@ export function AdminLayoutClient({
             <button
               onClick={() => setDesktopOpen(!desktopOpen)}
               className="hidden md:inline-flex items-center justify-center p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer border border-slate-200 dark:border-slate-700 shadow-xs"
-              title={desktopOpen ? "Sembunyikan Sidebar" : "Tampilkan Sidebar"}
-              aria-label="Toggle Desktop Sidebar"
+              title={desktopOpen ? tDash("hideSidebar") : tDash("showSidebar")}
+              aria-label={tAdmin("toggleSidebar")}
             >
               <Bars3Icon className="w-5 h-5" />
             </button>
@@ -259,7 +260,7 @@ export function AdminLayoutClient({
               className="inline-flex items-center gap-1.5 text-xs font-semibold bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white px-3 py-1.5 rounded-xl transition-colors shadow-xs"
             >
               <ArrowLeftOnRectangleIcon className="w-4 h-4 text-slate-400" />
-              <span className="hidden sm:inline">{t.admin?.backToUserApp || "Ke App User"}</span>
+              <span className="hidden sm:inline">{tAdmin("backToUserApp")}</span>
             </Link>
           </div>
         </header>

@@ -11,10 +11,10 @@ import {
   XCircleIcon,
   ClockIcon,
 } from "@heroicons/react/24/outline";
-import { useLanguage } from "@/lib/i18n/context";
+import { useTranslations } from "next-intl";
 
 export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) {
-  const { t, locale } = useLanguage();
+  const tAdmin = useTranslations("admin");
   const [promos, setPromos] = useState<PromoData[]>(initialPromos);
   const [code, setCode] = useState("");
   const [description, setDescription] = useState("");
@@ -32,7 +32,7 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
     if (!code.trim()) {
       setFeedback({
         type: "error",
-        text: locale === "id" ? "Kode voucher tidak boleh kosong" : "Promo voucher code cannot be empty",
+        text: tAdmin("codeRequired"),
       });
       return;
     }
@@ -52,10 +52,7 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
       if (res.success && res.promo) {
         setFeedback({
           type: "success",
-          text:
-            locale === "id"
-              ? `Voucher ${res.promo.code} berhasil disimpan!`
-              : `Voucher ${res.promo.code} saved successfully!`,
+          text: tAdmin("saveSuccess", { code: res.promo.code }),
         });
         // Update local list
         setPromos((prev) => {
@@ -68,7 +65,7 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
       } else {
         setFeedback({
           type: "error",
-          text: res.error || (locale === "id" ? "Gagal menyimpan promo" : "Failed to save promo voucher"),
+          text: res.error || "Gagal menyimpan promo",
         });
       }
     });
@@ -92,7 +89,7 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
       <div className="lg:col-span-5 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-2xs h-fit">
         <h2 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2 mb-4">
           <TagIcon className="w-5 h-5 text-[#0f6b4f]" />
-          <span>{locale === "id" ? "Buat Kode Voucher Baru" : "Create New Promo Voucher"}</span>
+          <span>{tAdmin("formTitle")}</span>
         </h2>
 
         {feedback && (
@@ -115,27 +112,27 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs sm:text-sm">
           <div>
             <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-              {locale === "id" ? "Kode Promo / Kupon" : "Voucher Code"} <span className="text-rose-500">*</span>
+              {tAdmin("codeLabel")} <span className="text-rose-500">*</span>
             </label>
             <input
               type="text"
               required
               value={code}
               onChange={(e) => setCode(e.target.value.toUpperCase())}
-              placeholder={locale === "id" ? "Contoh: NOTAKULAUNCH, DISKON50" : "e.g. NOTAKULAUNCH, DISKON50"}
+              placeholder={tAdmin("codePlaceholder")}
               className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl uppercase font-mono font-bold tracking-wider focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] bg-slate-50/50 focus:bg-white transition-colors min-h-[44px]"
             />
           </div>
 
           <div>
             <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-              {locale === "id" ? "Deskripsi Promo" : "Description (Optional)"}
+              {tAdmin("descLabel")}
             </label>
             <input
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder={locale === "id" ? "Diskon khusus peluncuran awal" : "Special early launch promo"}
+              placeholder={tAdmin("descPlaceholder")}
               className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] bg-slate-50/50 focus:bg-white transition-colors font-medium min-h-[44px]"
             />
           </div>
@@ -143,21 +140,21 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                {locale === "id" ? "Tipe Diskon" : "Discount Type"}
+                {tAdmin("discountTypeLabel")}
               </label>
               <select
                 value={discountType}
                 onChange={(e) => setDiscountType(e.target.value as any)}
                 className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50/50 focus:bg-white font-medium text-slate-800 focus:ring-1 focus:ring-[#0f6b4f] min-h-[44px]"
               >
-                <option value="PERCENTAGE">{locale === "id" ? "Persen (%)" : "Percentage (%)"}</option>
-                <option value="FIXED">{locale === "id" ? "Nominal Tetap (Rp)" : "Fixed Amount (IDR)"}</option>
+                <option value="PERCENTAGE">{tAdmin("discountPercentage")}</option>
+                <option value="FIXED">{tAdmin("discountFixed")}</option>
               </select>
             </div>
 
             <div>
               <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                {locale === "id" ? "Besaran Diskon" : "Discount Value"} <span className="text-rose-500">*</span>
+                {tAdmin("discountValueLabel")} <span className="text-rose-500">*</span>
               </label>
               <input
                 type="number"
@@ -173,21 +170,21 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                {locale === "id" ? "Batas Klaim (Opsional)" : "Max Uses (Optional)"}
+                {tAdmin("maxUsesLabel")}
               </label>
               <input
                 type="number"
                 min={1}
                 value={maxUses}
                 onChange={(e) => setMaxUses(e.target.value)}
-                placeholder={locale === "id" ? "Tak terbatas" : "Unlimited"}
+                placeholder={tAdmin("maxUsesPlaceholder")}
                 className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50/50 focus:bg-white text-slate-900 focus:ring-1 focus:ring-[#0f6b4f] min-h-[44px]"
               />
             </div>
 
             <div>
               <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                {locale === "id" ? "Kedaluwarsa (Opsional)" : "Expires At (Optional)"}
+                {tAdmin("expiresAtLabel")}
               </label>
               <input
                 type="date"
@@ -207,7 +204,7 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
               className="w-4 h-4 rounded text-[#0f6b4f] focus:ring-[#0f6b4f] border-slate-300 cursor-pointer"
             />
             <label htmlFor="isActive" className="text-slate-700 font-semibold cursor-pointer select-none text-xs">
-              {locale === "id" ? "Aktifkan Voucher Ini Sekarang" : "Activate this voucher now"}
+              {tAdmin("activateVoucherNow")}
             </label>
           </div>
 
@@ -221,7 +218,7 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
             ) : (
               <SparklesIcon className="w-4 h-4 text-emerald-300" />
             )}
-            <span>{locale === "id" ? "Simpan Voucher Promo" : "Save Promo Voucher"}</span>
+            <span>{isPending ? tAdmin("saving") : tAdmin("saveVoucherBtn")}</span>
           </button>
         </form>
       </div>
@@ -232,13 +229,11 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
           <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
             <TagIcon className="w-4 h-4 text-slate-600" />
             <span>
-              {locale === "id"
-                ? `Daftar Voucher Aktif & Riwayat (${promos.length})`
-                : `Active Vouchers & History (${promos.length})`}
+              {tAdmin("tableTitle")} ({promos.length})
             </span>
           </h2>
           <span className="text-xs text-slate-400 font-semibold">
-            {locale === "id" ? "Siap untuk Mayar Checkout" : "Ready for Mayar Checkout"}
+            {tAdmin("readyForCheckout")}
           </span>
         </div>
 
@@ -247,23 +242,21 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
             <div className="p-12 text-center">
               <TagIcon className="w-12 h-12 text-slate-300 mx-auto mb-3" />
               <p className="text-sm font-bold text-slate-700">
-                {locale === "id" ? "Belum ada kode promo" : "No promo vouchers yet"}
+                {tAdmin("emptyPromos")}
               </p>
               <p className="text-xs text-slate-400 mt-1">
-                {locale === "id"
-                  ? "Buat voucher pertama Anda melalui form di samping."
-                  : "Create your first promo voucher via the form on the left."}
+                {tAdmin("firstPromoPrompt")}
               </p>
             </div>
           ) : (
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="border-b border-slate-100 bg-slate-50/80 text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-                  <th className="py-3.5 px-4">{locale === "id" ? "Kode Voucher" : "Voucher Code"}</th>
-                  <th className="py-3.5 px-4">{locale === "id" ? "Diskon" : "Discount"}</th>
-                  <th className="py-3.5 px-4">{locale === "id" ? "Batas / Expired" : "Limit / Expired"}</th>
+                  <th className="py-3.5 px-4">{tAdmin("colCode")}</th>
+                  <th className="py-3.5 px-4">{tAdmin("colDiscount")}</th>
+                  <th className="py-3.5 px-4">{tAdmin("colUsage")} / {tAdmin("colExpires")}</th>
                   <th className="py-3.5 px-4 text-center">Status</th>
-                  <th className="py-3.5 px-4 text-right">{locale === "id" ? "Aksi" : "Action"}</th>
+                  <th className="py-3.5 px-4 text-right">{tAdmin("colAction")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -288,10 +281,10 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
 
                     <td className="py-3.5 px-4 text-[11px] text-slate-500 font-medium">
                       <div>
-                        {locale === "id" ? "Klaim:" : "Uses:"}{" "}
+                        {tAdmin("claims")}{" "}
                         {p.maxUses
                           ? `${p.usedCount || 0} / ${p.maxUses}`
-                          : `${p.usedCount || 0} (${locale === "id" ? "Unlimited" : "Unlimited"})`}
+                          : `${p.usedCount || 0} (${tAdmin("unlimited")})`}
                       </div>
                       {p.expiresAt && (
                         <div className="text-slate-400 flex items-center gap-1 mt-0.5 font-mono">
@@ -310,8 +303,8 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
                         }`}
                       >
                         {p.isActive
-                          ? locale === "id" ? "AKTIF" : "ACTIVE"
-                          : locale === "id" ? "NONAKTIF" : "INACTIVE"}
+                          ? tAdmin("statusActive")
+                          : tAdmin("statusInactive")}
                       </span>
                     </td>
 
@@ -325,8 +318,8 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
                         }`}
                       >
                         {p.isActive
-                          ? locale === "id" ? "Nonaktifkan" : "Deactivate"
-                          : locale === "id" ? "Aktifkan" : "Activate"}
+                          ? tAdmin("actionDeactivate")
+                          : tAdmin("actionActivate")}
                       </button>
                     </td>
                   </tr>
