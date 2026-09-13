@@ -46,7 +46,11 @@ next-env.d.ts
 AGENTS.md
 CLAUDE.md
 .hermes.md
+DESIGN.md
 /src/generated
 
 # Testing
 test-dashboard-mobile.py
+scripts/audit-output*
+scripts/capture-landing-baseline.cjs
+scripts/smoke-settings-render.cjs
