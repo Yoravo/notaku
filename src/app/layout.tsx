@@ -133,7 +133,7 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200">
         <Script
           strategy="afterInteractive"
-          src="https://www.googletagmanager.com/gtag/js?id=G-P5Z02ZLRV3"
+          src="https://www.googletagmanager.com/gtag/js?id=G-52C2DD26LB"
         />
         <Script
           id="google-analytics"
@@ -143,7 +143,7 @@ export default async function RootLayout({
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', 'G-P5Z02ZLRV3', {
+              gtag('config', 'G-52C2DD26LB', {
                 page_path: window.location.pathname,
                 debug_mode: ${process.env.GA4_DEBUG_MODE === "true"},
               });

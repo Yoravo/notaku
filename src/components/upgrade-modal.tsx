@@ -74,7 +74,7 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
         if (typeof window.gtag !== "function") return resolve(null);
         const timeout = window.setTimeout(() => resolve(null), 800);
         try {
-          window.gtag("get", "G-P5Z02ZLRV3", field, (value: unknown) => {
+          window.gtag("get", "G-52C2DD26LB", field, (value: unknown) => {
             window.clearTimeout(timeout);
             const id = typeof value === "number" ? String(value) : value;
             resolve(typeof id === "string" && /^[0-9.]{1,100}$/.test(id) ? id : null);

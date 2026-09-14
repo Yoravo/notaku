@@ -312,7 +312,7 @@ export async function POST(request: Request) {
       });
 
       // GA4 Measurement Protocol: fire event upgrade_to_paid dari server
-      const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-P5Z02ZLRV3";
+      const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-52C2DD26LB";
       const gaApiSecret = process.env.GA4_API_SECRET;
 
       if (gaApiSecret && isFirstUpgrade) {
