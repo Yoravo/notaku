@@ -20,10 +20,19 @@ export async function POST(request: Request) {
   }
 
   let promoCode: string | null = null;
+  let gaClientId: string | null = null;
+  let gaSessionId: string | null = null;
   try {
     const body = await request.json().catch(() => ({}));
     if (body.promoCode && typeof body.promoCode === "string") {
       promoCode = body.promoCode.trim().toUpperCase();
+    }
+    if (typeof body.gaClientId === "string" && /^\d{1,20}\.\d{1,20}$/.test(body.gaClientId)) {
+      gaClientId = body.gaClientId;
+    }
+    if (gaClientId && typeof body.gaSessionId === "string" && /^[1-9]\d{0,15}$/.test(body.gaSessionId)
+      && Number.isSafeInteger(Number(body.gaSessionId))) {
+      gaSessionId = body.gaSessionId;
     }
   } catch {
     // Body optional
@@ -63,9 +72,13 @@ export async function POST(request: Request) {
         userId: user.id,
         midtransOrderId: paymentId || orderId,
         status: "INACTIVE",
+        gaClientId: gaClientId || null,
+        gaSessionId: gaSessionId || null,
       },
       update: {
         midtransOrderId: paymentId || orderId,
+        gaClientId,
+        gaSessionId,
       },
     });
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { TrafficTracker } from "@/components/traffic-tracker";
@@ -130,6 +131,25 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200">
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-P5Z02ZLRV3"
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-P5Z02ZLRV3', {
+                page_path: window.location.pathname,
+                debug_mode: ${process.env.GA4_DEBUG_MODE === "true"},
+              });
+            `,
+          }}
+        />
         <TrafficTracker />
         <ThemeProvider>
           <NextIntlClientProvider locale={locale} messages={messages}>

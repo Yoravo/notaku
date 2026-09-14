@@ -70,11 +70,31 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
     setError(null);
 
     try {
+      const getGaId = (field: "client_id" | "session_id") => new Promise<string | null>((resolve) => {
+        if (typeof window.gtag !== "function") return resolve(null);
+        const timeout = window.setTimeout(() => resolve(null), 800);
+        try {
+          window.gtag("get", "G-P5Z02ZLRV3", field, (value: unknown) => {
+            window.clearTimeout(timeout);
+            const id = typeof value === "number" ? String(value) : value;
+            resolve(typeof id === "string" && /^[0-9.]{1,100}$/.test(id) ? id : null);
+          });
+        } catch {
+          window.clearTimeout(timeout);
+          resolve(null);
+        }
+      });
+      const [gaClientId, gaSessionId] = await Promise.all([
+        getGaId("client_id"),
+        getGaId("session_id"),
+      ]);
       const res = await fetch("/api/payment/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           promoCode: appliedPromo ? appliedPromo.code : undefined,
+          gaClientId: gaClientId || undefined,
+          gaSessionId: gaSessionId || undefined,
         }),
       });
       const data = await res.json();

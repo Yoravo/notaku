@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 
 export async function POST(request: Request) {
   try {
-    const { path, referrer } = await request.json();
+    const { path, referrer, utm_source, utm_medium, utm_campaign } = await request.json();
     if (!path || typeof path !== "string") {
       return NextResponse.json({ error: "Invalid path" }, { status: 400 });
     }
@@ -45,6 +45,9 @@ export async function POST(request: Request) {
         referrer: referrer ? referrer.slice(0, 500) : null,
         userAgent: userAgent ? userAgent.slice(0, 255) : null,
         ipAddress: ipAddress ? ipAddress.slice(0, 45) : null,
+        utmSource: typeof utm_source === "string" ? utm_source.trim().slice(0, 100) || null : null,
+        utmMedium: typeof utm_medium === "string" ? utm_medium.trim().slice(0, 100) || null : null,
+        utmCampaign: typeof utm_campaign === "string" ? utm_campaign.trim().slice(0, 100) || null : null,
       },
     });
 

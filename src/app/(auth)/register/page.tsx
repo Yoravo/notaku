@@ -19,6 +19,7 @@ import {
 import { useTranslations } from "next-intl";
 import { LanguageDropdown } from "@/components/language-dropdown";
 import { linkUserReferral } from "@/actions/referrals";
+import { getFirstTouchUtm } from "@/components/traffic-tracker";
 
 function RegisterForm() {
   const tAuth = useTranslations("auth");
@@ -60,6 +61,21 @@ function RegisterForm() {
             await linkUserReferral(data.user.id, referralCode.trim());
           } catch (refErr) {
             console.error("Gagal menautkan kode referral:", refErr);
+          }
+        }
+        if (data?.user?.id) {
+          try {
+            const utm = getFirstTouchUtm();
+            window.dataLayer ??= [];
+            window.gtag ??= function (...args: unknown[]) {
+              window.dataLayer!.push(args);
+            };
+            window.gtag("event", "sign_up", {
+              method: "email",
+              ...utm,
+            });
+          } catch {
+            console.warn("[GA4_SIGN_UP_FAILED]");
           }
         }
         setSuccess(true);
