@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { auditLog } from "@/lib/audit-log";
 import { dispatchWebhook } from "@/lib/webhook-dispatcher";
 import { notifySellerInvoicePaid } from "@/lib/bot-notifications";
@@ -19,12 +19,17 @@ export async function POST(request: Request) {
 
     const expectedToken = process.env.MAYAR_WEBHOOK_TOKEN;
 
-    // Verifikasi Webhook Token jika dikonfigurasi
-    if (expectedToken && tokenHeader) {
+    // Verifikasi Webhook Token: WAJIB ada dan valid jika MAYAR_WEBHOOK_TOKEN dikonfigurasi di env
+    if (expectedToken) {
+      if (!tokenHeader) {
+        auditLog("payment.webhook_unauthorized", { reason: "Missing token header" });
+        return NextResponse.json({ error: "Missing authorization token" }, { status: 401 });
+      }
+
       const a = Buffer.from(tokenHeader);
       const b = Buffer.from(expectedToken);
       if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
-        auditLog("payment.webhook_unauthorized", { tokenReceived: tokenHeader });
+        auditLog("payment.webhook_unauthorized", { reason: "Invalid token value", tokenReceived: tokenHeader });
         return NextResponse.json({ error: "Unauthorized token" }, { status: 401 });
       }
     }
@@ -207,6 +212,9 @@ export async function POST(request: Request) {
       const newPeriodEnd = new Date(baseDate);
       newPeriodEnd.setDate(newPeriodEnd.getDate() + 30);
 
+      const isFirstUpgrade = !existingSub?.upgradeEventAt;
+      const now = new Date();
+
       await prisma.$transaction([
         prisma.subscription.upsert({
           where: { userId: user.id },
@@ -215,11 +223,13 @@ export async function POST(request: Request) {
             midtransOrderId: String(paymentId || `MAYAR-${Date.now()}`),
             status: "ACTIVE",
             currentPeriodEnd: newPeriodEnd,
+            upgradeEventAt: now,
           },
           update: {
             status: "ACTIVE",
             currentPeriodEnd: newPeriodEnd,
             midtransOrderId: String(paymentId || existingSub?.midtransOrderId),
+            ...(isFirstUpgrade ? { upgradeEventAt: now } : {}),
           },
         }),
         prisma.user.update({
@@ -300,6 +310,61 @@ export async function POST(request: Request) {
         amount,
         periodEnd: newPeriodEnd.toISOString(),
       });
+
+      // GA4 Measurement Protocol: fire event upgrade_to_paid dari server
+      const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-P5Z02ZLRV3";
+      const gaApiSecret = process.env.GA4_API_SECRET;
+
+      if (gaApiSecret && isFirstUpgrade) {
+        const gaClientId = existingSub?.gaClientId;
+
+        if (!gaClientId) {
+          console.warn(`[GA4] gaClientId kosong untuk user ${user.id}; event upgrade_to_paid dilewati agar tidak merusak atribusi GA4.`);
+        } else {
+          after(async () => {
+            try {
+              const params: Record<string, unknown> = {
+                transaction_id: String(paymentId || orderId || `PRO-${user.id.slice(0, 8)}`),
+                value: amount > 0 ? amount : 49000,
+                currency: "IDR",
+                items: [
+                  {
+                    item_id: "notaku_pro_monthly",
+                    item_name: "NotaKu PRO - 1 Bulan",
+                    price: amount > 0 ? amount : 49000,
+                    quantity: 1,
+                  },
+                ],
+              };
+              if (existingSub?.gaSessionId) {
+                params.session_id = existingSub.gaSessionId;
+              }
+
+              await fetch(
+                `https://www.google-analytics.com/mp/collect?measurement_id=${gaMeasurementId}&api_secret=${gaApiSecret}`,
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    client_id: gaClientId,
+                    user_id: user.id,
+                    events: [
+                      {
+                        name: "upgrade_to_paid",
+                        params,
+                      },
+                    ],
+                  }),
+                }
+              );
+            } catch (gaErr) {
+              console.error("[GA4_MEASUREMENT_PROTOCOL_ERROR]", gaErr);
+            }
+          });
+        }
+      } else if (!gaApiSecret) {
+        console.warn("[GA4] GA4_API_SECRET belum diatur di .env; event upgrade_to_paid server dilewati.");
+      }
 
       return NextResponse.json({ message: "Success: User upgraded to PRO" });
     }
