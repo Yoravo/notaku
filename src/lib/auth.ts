@@ -56,7 +56,7 @@ export const auth = betterAuth({
         user: { name?: string | null; email: string };
         url: string;
       }) => {
-        void sendEmail({
+        await sendEmail({
           to: user.email,
           subject: "Reset kata sandi akun NotaKu kamu",
           html: `
@@ -90,7 +90,7 @@ export const auth = betterAuth({
       user: { name?: string | null; email: string };
       url: string;
     }) => {
-      void sendEmail({
+      await sendEmail({
         to: user.email,
         subject: "Verifikasi email NotaKu kamu",
         html: `
