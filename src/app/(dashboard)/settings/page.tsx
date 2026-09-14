@@ -13,7 +13,13 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function SettingsPage() {
+export default async function SettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string }>;
+}) {
+  const { tab } = await searchParams;
+  const initialTab = tab === "bank" ? "bank" : "profile";
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) {
     redirect("/login");
@@ -36,6 +42,7 @@ export default async function SettingsPage() {
   return (
     <div className="max-w-4xl mx-auto">
       <SettingsTabsClient
+        key={initialTab}
         user={{
           id: user.id,
           name: user.name,
@@ -71,6 +78,7 @@ export default async function SettingsPage() {
           webhooks: devSettings.webhooks,
         }}
         botNotificationData={botSettings}
+        initialTab={initialTab}
       />
     </div>
   );

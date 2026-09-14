@@ -71,7 +71,10 @@ export default async function DashboardPage({
       },
       _sum: { total: true },
     }),
-    prisma.user.findUnique({ where: { id: userId }, select: { plan: true } }),
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: { plan: true, businessName: true, bankName: true, bankAccountNumber: true },
+    }),
     prisma.invoice.findMany({
       where: { userId },
       include: { customer: true },
@@ -126,6 +129,10 @@ export default async function DashboardPage({
       recentInvoices={serializedInvoices}
       announcement={announcement}
       analytics={analytics}
+      userId={userId}
+      hasBusinessName={Boolean(user?.businessName?.trim())}
+      hasBankAccount={Boolean(user?.bankName?.trim() && user?.bankAccountNumber?.trim())}
+      hasInvoices={recentInvoices.length > 0}
     />
   );
 }

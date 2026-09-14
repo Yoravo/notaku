@@ -313,7 +313,23 @@
     "welcome": "Selamat datang kembali, {name}. Berikut performa transaksi tagihan Anda.",
     "rangeMonth": "Bulan Ini",
     "rangeYear": "Tahun Ini",
-    "rangeAll": "Semua Waktu"
+    "rangeAll": "Semua Waktu",
+    "quickActionsTitle": "Aksi Cepat",
+    "onboarding": {
+      "title": "Panduan Memulai Nota<ku>Ku</ku>",
+      "subtitle": "Selesaikan langkah dasar untuk mulai mengelola tagihan bisnis Anda.",
+      "progressText": "{percent}% selesai · {done} dari {total} langkah",
+      "dismiss": "Tutup panduan",
+      "step1": "Atur Profil Usaha",
+      "step1Desc": "Lengkapi nama dan identitas bisnis Anda",
+      "step2": "Simpan Rekening Bank",
+      "step2Desc": "Untuk menerima pembayaran transfer klien",
+      "step3": "Tambah Kontak Klien",
+      "step3Desc": "Simpan data pelanggan pertama Anda",
+      "step4": "Terbitkan Invoice Pertama",
+      "step4Desc": "Buat dan kirim tagihan resmi ke klien",
+      "completed": "Selesai"
+    }
   },
   "cashflow": {
     "title": "Arus Kas & Realisasi Pembayaran",

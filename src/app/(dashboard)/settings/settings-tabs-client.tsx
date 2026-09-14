@@ -49,7 +49,9 @@ export function SettingsTabsClient({
   domainData,
   developerData,
   botNotificationData,
+  initialTab = "profile",
 }: {
+  initialTab?: "profile" | "bank";
   user: UserData;
   domainData: CustomDomainData;
   developerData: {
@@ -63,7 +65,7 @@ export function SettingsTabsClient({
   const tTmpl = useTranslations("templates");
   const [activeTab, setActiveTab] = useState<
     "profile" | "bank" | "template" | "domain" | "developer" | "notifications" | "security"
-  >("profile");
+  >(initialTab);
 
   const isPro = user.plan === "PRO";
 

@@ -313,7 +313,23 @@
     "welcome": "Welcome back, {name}. Here is your billing and transaction performance.",
     "rangeMonth": "This Month",
     "rangeYear": "This Year",
-    "rangeAll": "All Time"
+    "rangeAll": "All Time",
+    "quickActionsTitle": "Quick Actions",
+    "onboarding": {
+      "title": "Nota<ku>Ku</ku> Getting Started Guide",
+      "subtitle": "Complete basic setup to start managing your business invoices.",
+      "progressText": "{percent}% completed · {done} of {total} steps",
+      "dismiss": "Dismiss guide",
+      "step1": "Setup Business Profile",
+      "step1Desc": "Complete your business name and identity",
+      "step2": "Save Bank Account",
+      "step2Desc": "To receive direct transfer payments from clients",
+      "step3": "Add Client Contact",
+      "step3Desc": "Save your first customer contact details",
+      "step4": "Issue First Invoice",
+      "step4Desc": "Create and send your first official invoice",
+      "completed": "Done"
+    }
   },
   "cashflow": {
     "title": "Cashflow & Payment Collection",

@@ -9,6 +9,7 @@ import {
   CheckBadgeIcon,
   DocumentTextIcon,
   SparklesIcon,
+  UserPlusIcon,
 } from "@heroicons/react/24/outline";
 import { RecentInvoices } from "@/components/recent-invoices";
 import { SerializedInvoice } from "@/types/invoice";
@@ -18,6 +19,7 @@ import { AdvancedAnalyticsData } from "@/lib/analytics";
 import { CashflowChart } from "@/components/dashboard/cashflow-chart";
 import { ClientPerformanceMetrics } from "@/components/dashboard/client-performance-metrics";
 import { formatMoney } from "@/lib/currencies";
+import { OnboardingChecklist } from "@/components/dashboard/onboarding-checklist";
 
 interface DashboardClientProps {
   userName: string;
@@ -33,6 +35,10 @@ interface DashboardClientProps {
   recentInvoices: SerializedInvoice[];
   announcement?: AnnouncementData | null;
   analytics: AdvancedAnalyticsData;
+  userId: string;
+  hasBusinessName: boolean;
+  hasBankAccount: boolean;
+  hasInvoices: boolean;
 }
 
 export function DashboardClient({
@@ -45,15 +51,18 @@ export function DashboardClient({
   invoiceCount,
   used,
   limit,
-  totalCustomers: _totalCustomers,
+  totalCustomers,
   recentInvoices,
   announcement = null,
   analytics,
+  userId,
+  hasBusinessName,
+  hasBankAccount,
+  hasInvoices,
 }: DashboardClientProps) {
   const tDash = useTranslations("dashboard");
   const tInv = useTranslations("invoices");
-  const tStatus = useTranslations("common.status");
-  const locale = useLocale();
+  const locale = useLocale() === "en" ? "en" : "id";
 
   const rangeLabels: Record<string, string> = {
     month: tDash("rangeMonth"),
@@ -67,6 +76,15 @@ export function DashboardClient({
     <div className="space-y-6 sm:space-y-8">
       {/* Global Broadcast Announcement */}
       {announcement && <AnnouncementBanner announcement={announcement} />}
+
+      {/* Onboarding Checklist */}
+      <OnboardingChecklist
+        hasBusinessName={hasBusinessName}
+        hasBankAccount={hasBankAccount}
+        hasCustomers={totalCustomers > 0}
+        hasInvoices={hasInvoices}
+        userId={userId}
+      />
 
       {/* Header: Mobile-first stack, desktop row */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -132,7 +150,11 @@ export function DashboardClient({
       {/* Primary KPI Grid: 4 Metric Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {/* Card 1: Total Volume Transaksi */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs transition-all hover:border-slate-300 hover:shadow-xs">
+        <div
+          role="group"
+          tabIndex={0}
+          className="min-w-0 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-2xs transition-colors hover:border-emerald-400 focus-visible:border-emerald-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 motion-reduce:transition-none dark:border-slate-700 dark:hover:border-emerald-500 dark:focus-visible:border-emerald-400 dark:focus-visible:outline-emerald-400"
+        >
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
               {tDash("totalRevenue")}
@@ -143,7 +165,7 @@ export function DashboardClient({
           </div>
           <div className="mt-3">
             <p className="text-2xl font-bold tracking-tight text-slate-900 tabular-nums">
-              {formatMoney(totalVolume, "IDR")}
+              {formatMoney(totalVolume, "IDR", locale)}
             </p>
             <p className="mt-1 text-xs text-slate-400 font-medium">
               {invoiceCount} invoice • {periodLabel}
@@ -152,7 +174,11 @@ export function DashboardClient({
         </div>
 
         {/* Card 2: Pendapatan Lunas */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs transition-all hover:border-slate-300 hover:shadow-xs">
+        <div
+          role="group"
+          tabIndex={0}
+          className="min-w-0 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-2xs transition-colors hover:border-emerald-400 focus-visible:border-emerald-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 motion-reduce:transition-none dark:border-slate-700 dark:hover:border-emerald-500 dark:focus-visible:border-emerald-400 dark:focus-visible:outline-emerald-400"
+        >
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
               {tDash("totalPaid")}
@@ -163,7 +189,7 @@ export function DashboardClient({
           </div>
           <div className="mt-3">
             <p className="text-2xl font-bold tracking-tight text-[#0f6b4f] tabular-nums">
-              {formatMoney(paidRevenue, "IDR")}
+              {formatMoney(paidRevenue, "IDR", locale)}
             </p>
             <p className="mt-1 text-xs text-slate-400 font-medium">
               {tDash("paidRevenueSubtitle")}
@@ -172,7 +198,11 @@ export function DashboardClient({
         </div>
 
         {/* Card 3: Tagihan Tertunda (Pending / Overdue) */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs transition-all hover:border-slate-300 hover:shadow-xs">
+        <div
+          role="group"
+          tabIndex={0}
+          className="min-w-0 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-2xs transition-colors hover:border-emerald-400 focus-visible:border-emerald-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 motion-reduce:transition-none dark:border-slate-700 dark:hover:border-emerald-500 dark:focus-visible:border-emerald-400 dark:focus-visible:outline-emerald-400"
+        >
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
               {tDash("unpaidAmount")}
@@ -183,7 +213,7 @@ export function DashboardClient({
           </div>
           <div className="mt-3">
             <p className="text-2xl font-bold tracking-tight text-amber-600 tabular-nums">
-              {formatMoney(pendingRevenue, "IDR")}
+              {formatMoney(pendingRevenue, "IDR", locale)}
             </p>
             <p className="mt-1 text-xs text-slate-400 font-medium">
               {tDash("unpaidAmountSubtitle")}
@@ -192,7 +222,11 @@ export function DashboardClient({
         </div>
 
         {/* Card 4: Kuota Invoice Bulanan */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs transition-all hover:border-slate-300 hover:shadow-xs">
+        <div
+          role="group"
+          tabIndex={0}
+          className="min-w-0 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-2xs transition-colors hover:border-emerald-400 focus-visible:border-emerald-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 motion-reduce:transition-none dark:border-slate-700 dark:hover:border-emerald-500 dark:focus-visible:border-emerald-400 dark:focus-visible:outline-emerald-400"
+        >
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
               {tDash("monthlyLimit")}
@@ -216,6 +250,30 @@ export function DashboardClient({
           </div>
         </div>
       </div>
+
+      <section aria-labelledby="quick-actions-title">
+        <h2 id="quick-actions-title" className="mb-3 text-sm font-semibold text-slate-900">
+          {tDash("quickActionsTitle")}
+        </h2>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <Link
+            href="/invoices/new"
+            prefetch={true}
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#0f6b4f] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#0c553e] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 motion-reduce:transition-none dark:focus-visible:outline-emerald-400"
+          >
+            <PlusIcon aria-hidden="true" className="h-5 w-5" />
+            {tInv("newInvoice")}
+          </Link>
+          <Link
+            href="/customers"
+            prefetch={true}
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 motion-reduce:transition-none dark:focus-visible:outline-emerald-400"
+          >
+            <UserPlusIcon aria-hidden="true" className="h-5 w-5" />
+            {tDash("addCustomer")}
+          </Link>
+        </div>
+      </section>
 
       {/* Cashflow Bar Chart Component */}
       <CashflowChart data={analytics.monthlyCashflow} />
