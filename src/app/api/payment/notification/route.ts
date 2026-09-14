@@ -327,6 +327,7 @@ export async function POST(request: Request) {
                 transaction_id: String(paymentId || orderId || `PRO-${user.id.slice(0, 8)}`),
                 value: amount > 0 ? amount : 49000,
                 currency: "IDR",
+                debug_mode: 1,
                 items: [
                   {
                     item_id: "notaku_pro_monthly",
