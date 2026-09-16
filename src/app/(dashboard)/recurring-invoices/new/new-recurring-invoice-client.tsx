@@ -161,21 +161,21 @@ export function NewRecurringInvoiceClient({
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
-            <ArrowPathIcon className="w-6 h-6 sm:w-7 sm:h-7 text-[#0f6b4f]" />
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
+            <ArrowPathIcon className="w-6 h-6 sm:w-7 sm:h-7 text-[#0f6b4f] dark:text-emerald-400" />
             <span>{tRec("newRecurring")}</span>
           </h1>
         </div>
 
-        <div className="rounded-2xl border border-amber-200 bg-amber-50/80 p-6 sm:p-8 text-center max-w-2xl mx-auto space-y-4 shadow-xs">
-          <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center mx-auto">
-            <SparklesIcon className="w-6 h-6 text-amber-600" />
+        <div className="rounded-2xl border border-amber-200 dark:border-amber-800 bg-amber-50/80 dark:bg-amber-950/40 p-6 sm:p-8 text-center max-w-2xl mx-auto space-y-4 shadow-xs">
+          <div className="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-400 flex items-center justify-center mx-auto">
+            <SparklesIcon className="w-6 h-6 text-amber-600 dark:text-amber-400" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-slate-900">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
               {tRec("proFeatureNotice")}
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-lg mx-auto leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1 max-w-lg mx-auto leading-relaxed">
               {tRec("proFeatureDesc")}
             </p>
           </div>
@@ -192,38 +192,38 @@ export function NewRecurringInvoiceClient({
       {/* Header */}
       <div>
         <div className="flex items-center gap-2">
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
-            <ArrowPathIcon className="w-6 h-6 sm:w-7 sm:h-7 text-[#0f6b4f]" />
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
+            <ArrowPathIcon className="w-6 h-6 sm:w-7 sm:h-7 text-[#0f6b4f] dark:text-emerald-400" />
             <span>{tRec("newRecurring")}</span>
           </h1>
-          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-[#0f6b4f] border border-emerald-200 shadow-2xs">
-            <SparklesIcon className="w-3.5 h-3.5 text-[#0f6b4f]" />
+          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-0.5 text-xs font-bold text-[#0f6b4f] dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 shadow-2xs">
+            <SparklesIcon className="w-3.5 h-3.5 text-[#0f6b4f] dark:text-emerald-400" />
             PRO
           </span>
         </div>
-        <p className="text-xs sm:text-sm text-slate-500 mt-1">
+        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
           {tRec("formSubtitle")}
         </p>
       </div>
 
       {error && (
-        <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-xs sm:text-sm text-rose-800 shadow-2xs">
+        <div className="rounded-xl border border-rose-200 dark:border-rose-900 bg-rose-50 dark:bg-rose-950/60 p-4 text-xs sm:text-sm text-rose-800 dark:text-rose-300 shadow-2xs">
           {error}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Schedule Profile Card */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs space-y-4">
-          <h2 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
-            <CalendarDaysIcon className="w-5 h-5 text-[#0f6b4f]" />
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xs space-y-4">
+          <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+            <CalendarDaysIcon className="w-5 h-5 text-[#0f6b4f] dark:text-emerald-400" />
             <span>{tRec("scheduleInfo")}</span>
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Title / Label */}
             <div className="md:col-span-2">
-              <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">
+              <label className="block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
                 {tRec("scheduleTitle")}{" "}
                 <span className="text-rose-500">*</span>
               </label>
@@ -233,21 +233,21 @@ export function NewRecurringInvoiceClient({
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder={tRec("scheduleTitlePlaceholder")}
                 required
-                className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-2 focus:ring-[#0f6b4f]/20 min-h-[44px]"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-2 focus:ring-[#0f6b4f]/20 min-h-[44px]"
               />
             </div>
 
             {/* Customer Select */}
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="block text-xs sm:text-sm font-semibold text-slate-700">
+                <label className="block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">
                   {tRec("customer")}{" "}
                   <span className="text-rose-500">*</span>
                 </label>
                 <button
                   type="button"
                   onClick={() => setShowCustomerModal(true)}
-                  className="text-xs font-bold text-[#0f6b4f] hover:underline cursor-pointer flex items-center gap-1"
+                  className="text-xs font-bold text-[#0f6b4f] dark:text-emerald-400 hover:underline cursor-pointer flex items-center gap-1"
                 >
                   <PlusIcon className="w-3.5 h-3.5" />
                   <span>{tRec("addNew")}</span>
@@ -257,7 +257,7 @@ export function NewRecurringInvoiceClient({
                 value={customerId}
                 onChange={(e) => setCustomerId(e.target.value)}
                 required
-                className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-2 focus:ring-[#0f6b4f]/20 min-h-[44px]"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-2 focus:ring-[#0f6b4f]/20 min-h-[44px]"
               >
                 <option value="">{tRec("selectCustomer")}</option>
                 {customers.map((c) => (
@@ -270,14 +270,14 @@ export function NewRecurringInvoiceClient({
 
             {/* Frequency */}
             <div>
-              <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">
+              <label className="block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
                 {tRec("frequency")}{" "}
                 <span className="text-rose-500">*</span>
               </label>
               <select
                 value={frequency}
                 onChange={(e) => setFrequency(e.target.value as RecurringFrequency)}
-                className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-2 focus:ring-[#0f6b4f]/20 min-h-[44px]"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-2 focus:ring-[#0f6b4f]/20 min-h-[44px]"
               >
                 {[
                   { value: "WEEKLY" as const, label: tRec("freqWeeklyLabel"), desc: tRec("freqWeeklyDesc") },
@@ -295,7 +295,7 @@ export function NewRecurringInvoiceClient({
 
             {/* Start Date */}
             <div>
-              <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">
+              <label className="block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
                 {tRec("startDate")}{" "}
                 <span className="text-rose-500">*</span>
               </label>
@@ -304,16 +304,16 @@ export function NewRecurringInvoiceClient({
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 required
-                className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-2 focus:ring-[#0f6b4f]/20 min-h-[44px]"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-2 focus:ring-[#0f6b4f]/20 min-h-[44px]"
               />
-              <p className="text-[11px] text-slate-400 mt-1">
+              <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
                 {tRec("cronHint")}
               </p>
             </div>
 
             {/* Due Days Offset */}
             <div>
-              <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1">
+              <label className="block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
                 {tRec("dueDaysOffset")}{" "}
                 <span className="text-rose-500">*</span>
               </label>
@@ -325,21 +325,21 @@ export function NewRecurringInvoiceClient({
                   value={dueDaysOffset}
                   onChange={(e) => setDueDaysOffset(Math.max(0, parseInt(e.target.value) || 0))}
                   required
-                  className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-2 focus:ring-[#0f6b4f]/20 min-h-[44px]"
+                  className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-2 focus:ring-[#0f6b4f]/20 min-h-[44px]"
                 />
-                <span className="text-xs sm:text-sm font-medium text-slate-600 shrink-0">
+                <span className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300 shrink-0">
                   {tRec("days")}
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 mt-1">
+              <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
                 {tRec("dueDaysHint")}
               </p>
             </div>
           </div>
 
           {/* Auto Dispatch Toggles */}
-          <div className="pt-2 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <label className="flex items-start gap-3 p-3 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-slate-50 cursor-pointer transition-colors">
+          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <label className="flex items-start gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/80 cursor-pointer transition-colors min-h-[44px]">
               <input
                 type="checkbox"
                 checked={autoSendEmail}
@@ -347,17 +347,17 @@ export function NewRecurringInvoiceClient({
                 className="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#0f6b4f] focus:ring-[#0f6b4f]"
               />
               <div className="text-xs">
-                <span className="font-bold text-slate-900 flex items-center gap-1.5">
-                  <EnvelopeIcon className="w-3.5 h-3.5 text-emerald-600" />
+                <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <EnvelopeIcon className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                   {tRec("autoSendEmail")}
                 </span>
-                <p className="text-slate-500 mt-0.5">
+                <p className="text-slate-500 dark:text-slate-400 mt-0.5">
                   {tRec("autoSendEmailDesc")}
                 </p>
               </div>
             </label>
 
-            <label className="flex items-start gap-3 p-3 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-slate-50 cursor-pointer transition-colors">
+            <label className="flex items-start gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/80 cursor-pointer transition-colors min-h-[44px]">
               <input
                 type="checkbox"
                 checked={enableDirectTransfer}
@@ -365,11 +365,11 @@ export function NewRecurringInvoiceClient({
                 className="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#0f6b4f] focus:ring-[#0f6b4f]"
               />
               <div className="text-xs">
-                <span className="font-bold text-slate-900 flex items-center gap-1.5">
-                  <CreditCardIcon className="w-3.5 h-3.5 text-slate-600" />
+                <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <CreditCardIcon className="w-3.5 h-3.5 text-slate-600 dark:text-slate-400" />
                   {tRec("directTransfer")}
                 </span>
-                <p className="text-slate-500 mt-0.5">
+                <p className="text-slate-500 dark:text-slate-400 mt-0.5">
                   {userBankName
                     ? `${userBankName} (${userBankAccountNumber})`
                     : tRec("bankMissing")}
@@ -380,15 +380,15 @@ export function NewRecurringInvoiceClient({
         </div>
 
         {/* Line Items Card */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <h2 className="text-sm sm:text-base font-bold text-slate-900">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xs space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+            <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
               {tRec("itemsTitle")}
             </h2>
             <button
               type="button"
               onClick={addItem}
-              className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-[#0f6b4f] hover:underline cursor-pointer"
+              className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-[#0f6b4f] dark:text-emerald-400 hover:underline cursor-pointer min-h-[36px]"
             >
               <PlusIcon className="w-4 h-4" />
               <span>{tRec("addItem")}</span>
@@ -399,10 +399,10 @@ export function NewRecurringInvoiceClient({
             {items.map((item, index) => (
               <div
                 key={index}
-                className="grid grid-cols-12 gap-2 sm:gap-3 items-center rounded-xl bg-slate-50/70 p-3 border border-slate-200"
+                className="grid grid-cols-12 gap-2 sm:gap-3 items-center rounded-xl bg-slate-50/70 dark:bg-slate-800/50 p-3 border border-slate-200 dark:border-slate-700"
               >
                 <div className="col-span-12 sm:col-span-6">
-                  <label className="block text-[11px] font-semibold text-slate-500 mb-1 sm:hidden">
+                  <label className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1 sm:hidden">
                     {tRec("description")}
                   </label>
                   <input
@@ -411,12 +411,12 @@ export function NewRecurringInvoiceClient({
                     onChange={(e) => updateItem(index, "description", e.target.value)}
                     placeholder={tRec("itemPlaceholder")}
                     required
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs sm:text-sm text-slate-900 shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f]"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f]"
                   />
                 </div>
 
                 <div className="col-span-4 sm:col-span-2">
-                  <label className="block text-[11px] font-semibold text-slate-500 mb-1 sm:hidden">
+                  <label className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1 sm:hidden">
                     {tRec("quantity")}
                   </label>
                   <input
@@ -425,12 +425,12 @@ export function NewRecurringInvoiceClient({
                     value={item.quantity}
                     onChange={(e) => updateItem(index, "quantity", e.target.value)}
                     required
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs sm:text-sm text-slate-900 text-center shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f]"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white text-center shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f]"
                   />
                 </div>
 
                 <div className="col-span-6 sm:col-span-3">
-                  <label className="block text-[11px] font-semibold text-slate-500 mb-1 sm:hidden">
+                  <label className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1 sm:hidden">
                     {tRec("unitPrice")}
                   </label>
                   <input
@@ -440,7 +440,7 @@ export function NewRecurringInvoiceClient({
                     value={item.price}
                     onChange={(e) => updateItem(index, "price", e.target.value)}
                     required
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs sm:text-sm text-slate-900 text-right shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f]"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white text-right shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f]"
                   />
                 </div>
 
@@ -449,7 +449,7 @@ export function NewRecurringInvoiceClient({
                     type="button"
                     onClick={() => removeItem(index)}
                     disabled={items.length <= 1}
-                    className="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors disabled:opacity-30 cursor-pointer"
+                    className="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors disabled:opacity-30 cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
                     title={tRec("deleteItem")}
                   >
                     <TrashIcon className="w-4 h-4" />
@@ -460,17 +460,17 @@ export function NewRecurringInvoiceClient({
           </div>
 
           {/* Discount & Tax Options */}
-          <div className="pt-3 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             {/* Discount */}
             <div className="space-y-1.5">
-              <label className="font-semibold text-slate-700">
+              <label className="font-semibold text-slate-700 dark:text-slate-300">
                 {tRec("discount")}
               </label>
               <div className="flex items-center gap-2">
                 <select
                   value={discountType}
                   onChange={(e) => setDiscountType(e.target.value as DiscountType)}
-                  className="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-800 shadow-2xs focus:border-[#0f6b4f] focus:outline-none"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-2.5 py-1.5 text-xs text-slate-800 dark:text-slate-200 shadow-2xs focus:border-[#0f6b4f] focus:outline-none min-h-[38px]"
                 >
                   <option value="FIXED">{tRec("discountFixed")}</option>
                   <option value="PERCENTAGE">{tRec("discountPercent")}</option>
@@ -480,14 +480,14 @@ export function NewRecurringInvoiceClient({
                   min="0"
                   value={discountValue}
                   onChange={(e) => setDiscountValue(Math.max(0, Number(e.target.value) || 0))}
-                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-900 shadow-2xs focus:border-[#0f6b4f] focus:outline-none"
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-1.5 text-xs text-slate-900 dark:text-white shadow-2xs focus:border-[#0f6b4f] focus:outline-none min-h-[38px]"
                 />
               </div>
             </div>
 
             {/* Tax */}
             <div className="space-y-1.5">
-              <label className="font-semibold text-slate-700">
+              <label className="font-semibold text-slate-700 dark:text-slate-300">
                 {tRec("tax")}
               </label>
               <div className="flex items-center gap-2">
@@ -497,7 +497,7 @@ export function NewRecurringInvoiceClient({
                     const v = e.target.value;
                     setSelectedTaxMode(v === "custom" ? "custom" : Number(v));
                   }}
-                  className="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-800 shadow-2xs focus:border-[#0f6b4f] focus:outline-none"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-2.5 py-1.5 text-xs text-slate-800 dark:text-slate-200 shadow-2xs focus:border-[#0f6b4f] focus:outline-none min-h-[38px]"
                 >
                   <option value={0}>{tRec("taxNone")}</option>
                   <option value={11}>PPN 11%</option>
@@ -512,7 +512,7 @@ export function NewRecurringInvoiceClient({
                     value={customTaxRate}
                     onChange={(e) => setCustomTaxRate(Math.max(0, Number(e.target.value) || 0))}
                     placeholder="%"
-                    className="w-20 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-900 text-center shadow-2xs focus:border-[#0f6b4f] focus:outline-none"
+                    className="w-20 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-1.5 text-xs text-slate-900 dark:text-white text-center shadow-2xs focus:border-[#0f6b4f] focus:outline-none min-h-[38px]"
                   />
                 )}
               </div>
@@ -520,16 +520,16 @@ export function NewRecurringInvoiceClient({
           </div>
 
           {/* Totals Summary */}
-          <div className="pt-3 border-t border-slate-100 flex justify-end">
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end">
             <div className="w-full sm:w-64 space-y-1.5 text-xs">
-              <div className="flex justify-between text-slate-600">
+              <div className="flex justify-between text-slate-600 dark:text-slate-400">
                 <span>{tRec("subtotal")}</span>
-                <span className="font-mono tabular-nums font-semibold">
+                <span className="font-mono tabular-nums font-semibold text-slate-900 dark:text-white">
                   Rp{totals.subtotal.toLocaleString("id-ID")}
                 </span>
               </div>
               {totals.discountAmount > 0 && (
-                <div className="flex justify-between text-emerald-700">
+                <div className="flex justify-between text-emerald-700 dark:text-emerald-400">
                   <span>{tRec("discountSummary")}</span>
                   <span className="font-mono tabular-nums font-semibold">
                     -Rp{totals.discountAmount.toLocaleString("id-ID")}
@@ -537,16 +537,16 @@ export function NewRecurringInvoiceClient({
                 </div>
               )}
               {totals.taxAmount > 0 && (
-                <div className="flex justify-between text-slate-600">
+                <div className="flex justify-between text-slate-600 dark:text-slate-400">
                   <span>{tRec("taxSummary", { rate: activeTaxRate })}</span>
-                  <span className="font-mono tabular-nums font-semibold">
+                  <span className="font-mono tabular-nums font-semibold text-slate-900 dark:text-white">
                     +Rp{totals.taxAmount.toLocaleString("id-ID")}
                   </span>
                 </div>
               )}
-              <div className="flex justify-between text-sm font-bold text-slate-900 pt-1.5 border-t border-slate-200">
+              <div className="flex justify-between text-sm font-bold text-slate-900 dark:text-white pt-1.5 border-t border-slate-200 dark:border-slate-700">
                 <span>{tRec("estimatedGrandTotal")}</span>
-                <span className="font-mono tabular-nums text-[#0f6b4f]">
+                <span className="font-mono tabular-nums text-[#0f6b4f] dark:text-emerald-400">
                   Rp{totals.total.toLocaleString("id-ID")}
                 </span>
               </div>
@@ -555,8 +555,8 @@ export function NewRecurringInvoiceClient({
         </div>
 
         {/* Notes & Terms */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs space-y-3">
-          <label className="block text-xs sm:text-sm font-semibold text-slate-700">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xs space-y-3">
+          <label className="block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">
             {tRec("notes")}
           </label>
           <textarea
@@ -564,7 +564,7 @@ export function NewRecurringInvoiceClient({
             onChange={(e) => setNotes(e.target.value)}
             rows={3}
             placeholder={tRec("notesPlaceholder")}
-            className="w-full rounded-xl border border-slate-300 bg-white p-3 text-xs sm:text-sm text-slate-900 shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-2 focus:ring-[#0f6b4f]/20"
+            className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 p-3 text-xs sm:text-sm text-slate-900 dark:text-white shadow-2xs focus:border-[#0f6b4f] focus:outline-none focus:ring-2 focus:ring-[#0f6b4f]/20"
           />
         </div>
 
@@ -572,7 +572,8 @@ export function NewRecurringInvoiceClient({
         <div className="flex flex-col sm:flex-row items-center justify-end gap-3 pt-2">
           <Link
             href="/recurring-invoices"
-            className="w-full sm:w-auto text-center rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors shadow-2xs min-h-[44px] flex items-center justify-center"
+            prefetch={true}
+            className="w-full sm:w-auto text-center rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 py-2.5 text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-2xs min-h-[44px] flex items-center justify-center"
           >
             {tRec("cancel")}
           </Link>

@@ -135,7 +135,7 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
   // Banner jika bukan pengguna PRO
   if (!isPro) {
     return (
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-8 shadow-2xs">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 shadow-2xs">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-br from-purple-900 via-indigo-900 to-slate-900 text-white">
           <div className="space-y-1 max-w-xl">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-purple-500/20 border border-purple-400/30 text-purple-200 text-xs font-bold uppercase tracking-wider">
@@ -156,17 +156,17 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-7 shadow-2xs space-y-6">
+    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 sm:p-7 shadow-2xs space-y-6">
       <div>
         <div className="flex items-center gap-2">
-          <span className="p-2 rounded-xl bg-emerald-50 text-[#0f6b4f]">
+          <span className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800">
             <GlobeAltIcon className="w-5 h-5" />
           </span>
-          <h2 className="text-lg font-extrabold text-slate-900">
+          <h2 className="text-lg font-extrabold text-slate-900 dark:text-white">
             {tDom("title")}
           </h2>
         </div>
-        <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
+        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">
           {tDom("subtitle")}
         </p>
       </div>
@@ -175,8 +175,8 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
         <div
           className={`p-4 rounded-xl text-xs sm:text-sm font-medium flex items-start gap-2.5 ${
             message.type === "success"
-              ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
-              : "bg-rose-50 text-rose-800 border border-rose-200"
+              ? "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
+              : "bg-rose-50 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-900"
           }`}
         >
           <InformationCircleIcon className="w-5 h-5 shrink-0" />
@@ -187,41 +187,41 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
       <form onSubmit={handleSave} className="space-y-5">
         {/* Subdomain Instan bawaan */}
         <div>
-          <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+          <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
             {tDom("subdomainLabel")}
           </label>
-          <div className="flex rounded-xl shadow-2xs border border-slate-200 overflow-hidden focus-within:ring-2 focus-within:ring-[#0f6b4f] focus-within:border-transparent">
+          <div className="flex rounded-xl shadow-2xs border border-slate-200 dark:border-slate-700 overflow-hidden focus-within:ring-2 focus-within:ring-[#0f6b4f] focus-within:border-transparent min-h-[44px]">
             <input
               type="text"
               value={subdomain}
               onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
               placeholder="tokosaya"
-              className="flex-1 px-3.5 py-2.5 text-sm outline-none font-mono"
+              className="flex-1 px-3.5 py-2.5 text-sm outline-none font-mono bg-white dark:bg-slate-950 text-slate-900 dark:text-white"
             />
-            <span className="bg-slate-50 px-3.5 py-2.5 text-xs text-slate-500 font-bold border-l border-slate-200 flex items-center">
+            <span className="bg-slate-50 dark:bg-slate-800 px-3.5 py-2.5 text-xs text-slate-500 dark:text-slate-400 font-bold border-l border-slate-200 dark:border-slate-700 flex items-center">
               .notaku.store
             </span>
           </div>
-          <p className="text-[11px] text-slate-400 mt-1 font-medium">
+          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-medium">
             {tDom("subdomainDesc")}
           </p>
         </div>
 
         {/* Custom Domain Lengkap */}
-        <div className="pt-2 border-t border-slate-100">
+        <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
           <div className="flex items-center justify-between mb-1.5">
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
               {tDom("customDomainLabel")}
             </label>
             {data.customDomain && (
               <div>
                 {data.customDomainVerified ? (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-[#0f6b4f] border border-emerald-200">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
                     <CheckCircleIcon className="w-3.5 h-3.5" />
                     <span>{tDom("statusVerified")}</span>
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
                     <ClockIcon className="w-3.5 h-3.5" />
                     <span>{tDom("statusPending")}</span>
                   </span>
@@ -236,21 +236,21 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
               value={customDomain}
               onChange={(e) => setCustomDomain(e.target.value)}
               placeholder="invoice.tokosaya.com"
-              className="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm outline-none font-mono focus:ring-2 focus:ring-[#0f6b4f] focus:border-transparent"
+              className="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm outline-none font-mono focus:ring-2 focus:ring-[#0f6b4f] focus:border-transparent min-h-[44px]"
             />
             {data.customDomain && (
               <button
                 type="button"
                 onClick={handleRemove}
                 disabled={isPending}
-                className="p-2.5 rounded-xl text-rose-600 hover:bg-rose-50 border border-slate-200 transition-colors cursor-pointer"
+                className="p-2.5 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
                 title={tDom("deleteDomain")}
               >
                 <TrashIcon className="w-5 h-5" />
               </button>
             )}
           </div>
-          <p className="text-[11px] text-slate-400 mt-1 font-medium">
+          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-medium">
             {tDom("customDomainDesc")}
           </p>
         </div>
@@ -259,7 +259,7 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
           <button
             type="submit"
             disabled={isPending}
-            className="px-5 py-2.5 rounded-xl bg-[#0f6b4f] hover:bg-[#0c5740] text-white text-xs sm:text-sm font-bold shadow-xs transition-colors cursor-pointer disabled:opacity-50"
+            className="px-5 py-2.5 rounded-xl bg-[#0f6b4f] hover:bg-[#0c5740] text-white text-xs sm:text-sm font-bold shadow-xs transition-colors cursor-pointer disabled:opacity-50 min-h-[44px]"
           >
             {isPending
               ? tDom("saving")
@@ -270,7 +270,7 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
 
       {/* DNS Configuration Guide (Shown when custom domain is set) */}
       {data.customDomain && (
-        <div className="mt-6 rounded-2xl bg-slate-900 text-slate-100 p-5 sm:p-6 space-y-4 font-sans">
+        <div className="mt-6 rounded-2xl bg-slate-900 text-slate-100 p-5 sm:p-6 space-y-4 font-sans border border-slate-800">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
             <div>
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
@@ -284,7 +284,7 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
               type="button"
               onClick={handleVerify}
               disabled={isVerifying}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-md transition-all active:scale-95 cursor-pointer shrink-0 disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-md transition-all active:scale-95 cursor-pointer shrink-0 disabled:opacity-50 min-h-[44px]"
             >
               <ArrowPathIcon className={`w-4 h-4 ${isVerifying ? "animate-spin" : ""}`} />
               <span>{isVerifying ? tDom("verifying") : tDom("verifyBtn")}</span>
@@ -292,7 +292,7 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left text-xs min-w-[480px]">
               <thead className="text-[10px] uppercase tracking-wider text-slate-400 border-b border-slate-800">
                 <tr>
                   <th className="pb-2">{tDom("dnsType")}</th>
@@ -312,7 +312,7 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
                     <button
                       type="button"
                       onClick={handleCopyTarget}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-bold text-slate-200 transition-colors inline-flex items-center gap-1 cursor-pointer"
+                      className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-bold text-slate-200 transition-colors inline-flex items-center gap-1 cursor-pointer min-h-[36px]"
                     >
                       {copiedTarget ? (
                         <>

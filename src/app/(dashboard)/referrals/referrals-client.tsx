@@ -49,19 +49,19 @@ export function ReferralsClient({
   )}`;
 
   return (
-    <div className="flex-1 overflow-y-auto bg-slate-50 font-sans p-4 sm:p-6 lg:p-8 space-y-6">
+    <div className="space-y-6">
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-2 rounded-xl bg-emerald-50 text-[#0f6b4f] border border-emerald-100/80 shadow-2xs">
+            <span className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400 border border-emerald-100/80 dark:border-emerald-800 shadow-2xs">
               <GiftIcon className="w-6 h-6" />
             </span>
-            <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900">
+            <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               {tRef("title")}
             </h1>
           </div>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium max-w-2xl">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium max-w-2xl">
             {tRef("subtitle")}
           </p>
         </div>
@@ -70,9 +70,9 @@ export function ReferralsClient({
         <Link
           href="/wallet"
           prefetch={true}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-slate-200/80 hover:bg-slate-50 rounded-xl text-slate-800 text-xs sm:text-sm font-bold shadow-2xs transition-all active:scale-[0.98] min-h-[44px]"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl text-slate-800 dark:text-slate-200 text-xs sm:text-sm font-bold shadow-2xs transition-all active:scale-[0.98] min-h-[44px]"
         >
-          <BanknotesIcon className="w-4 h-4 text-[#0f6b4f]" />
+          <BanknotesIcon className="w-4 h-4 text-[#0f6b4f] dark:text-emerald-400" />
           <span>{tRef("withdrawNow")}</span>
           <ArrowRightIcon className="w-3.5 h-3.5 text-slate-400" />
         </Link>

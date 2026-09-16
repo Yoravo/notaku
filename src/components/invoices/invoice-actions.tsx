@@ -137,25 +137,25 @@ export function InvoiceActions({
           onClick={() => setDropdownOpen(!dropdownOpen)}
           disabled={busy}
           aria-label={tInv("moreActions")}
-          className="p-2 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shadow-2xs disabled:opacity-50"
+          className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer shadow-2xs disabled:opacity-50 min-h-[38px] min-w-[38px] flex items-center justify-center"
         >
           <EllipsisVerticalIcon className="w-4 h-4" />
         </button>
 
         {dropdownOpen && (
-          <div className="absolute right-0 top-full mt-1.5 w-52 rounded-2xl bg-white p-1.5 shadow-xl border border-slate-200 z-30 animate-in fade-in zoom-in-95 duration-100">
+          <div className="absolute right-0 top-full mt-1.5 w-52 rounded-2xl bg-white dark:bg-slate-900 p-1.5 shadow-xl border border-slate-200 dark:border-slate-800 z-30 animate-in fade-in zoom-in-95 duration-100">
             <button
               onClick={handleClone}
-              className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
             >
-              <DocumentDuplicateIcon className="w-4 h-4 text-slate-500" />
+              <DocumentDuplicateIcon className="w-4 h-4 text-slate-500 dark:text-slate-400" />
               <span>{tInv("duplicateInvoice")}</span>
             </button>
 
             {status === "DRAFT" && (
               <button
                 onClick={handleMarkPaid}
-                className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-[#0f6b4f] hover:bg-emerald-50 transition-colors cursor-pointer"
+                className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-[#0f6b4f] dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 transition-colors cursor-pointer"
               >
                 <CheckIcon className="w-4 h-4" />
                 <span>{tInv("markPaidDirect")}</span>
@@ -168,21 +168,21 @@ export function InvoiceActions({
                   setDropdownOpen(false);
                   setConfirmModal({ isOpen: true, type: "cancel" });
                 }}
-                className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-amber-700 hover:bg-amber-50 transition-colors cursor-pointer"
+                className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/60 transition-colors cursor-pointer"
               >
                 <XCircleIcon className="w-4 h-4 text-amber-500" />
                 <span>{tInv("cancelInvoice")}</span>
               </button>
             )}
 
-            <div className="my-1 border-t border-slate-100" />
+            <div className="my-1 border-t border-slate-100 dark:border-slate-800" />
 
             <button
               onClick={() => {
                 setDropdownOpen(false);
                 setConfirmModal({ isOpen: true, type: "delete" });
               }}
-              className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+              className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/60 transition-colors cursor-pointer"
             >
               <TrashIcon className="w-4 h-4" />
               <span>{tInv("deleteInvoice")}</span>

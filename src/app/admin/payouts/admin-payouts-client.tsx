@@ -110,15 +110,15 @@ export function AdminPayoutsClient({
   return (
     <div className="space-y-6">
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-2 overflow-x-auto">
+      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2 overflow-x-auto">
         {(["ALL", "PENDING", "COMPLETED", "REJECTED"] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`rounded-xl px-3.5 py-2 text-xs font-bold transition-all cursor-pointer whitespace-nowrap min-h-[44px] ${
               activeTab === tab
-                ? "bg-slate-900 text-white shadow-xs"
-                : "text-slate-600 hover:bg-slate-100 bg-white border border-slate-200"
+                ? "bg-slate-900 dark:bg-slate-800 text-white shadow-xs"
+                : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700"
             }`}
           >
             {tab === "ALL"
@@ -139,15 +139,15 @@ export function AdminPayoutsClient({
       </div>
 
       {/* Payouts Table */}
-      <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-2xs">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-2xs">
         {filteredPayouts.length === 0 ? (
-          <div className="p-12 text-center text-xs text-slate-500 font-medium">
+          <div className="p-12 text-center text-xs text-slate-500 dark:text-slate-400 font-medium">
             {tAdmin("emptyPayouts")}
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-600 font-bold uppercase tracking-wider text-[10px]">
+            <table className="w-full text-left text-xs min-w-[620px]">
+              <thead className="bg-slate-50/80 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider text-[10px]">
                 <tr>
                   <th className="px-4 py-3.5">{tAdmin("colRequestedDate")}</th>
                   <th className="px-4 py-3.5">{tAdmin("colUser")}</th>
@@ -157,39 +157,39 @@ export function AdminPayoutsClient({
                   <th className="px-4 py-3.5 text-center">{tAdmin("colActions")}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {filteredPayouts.map((p) => {
                   const statusMap: Record<PayoutRecord["status"], { label: string; badge: string; dot: string }> = {
                     PENDING: {
                       label: tAdmin("tabPending"),
-                      badge: "bg-amber-50 text-amber-800 border-amber-200/60",
+                      badge: "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200/60 dark:border-amber-800",
                       dot: "bg-amber-500",
                     },
                     PROCESSING: {
                       label: tAdmin("statusProcessing"),
-                      badge: "bg-blue-50 text-blue-800 border-blue-200/60",
+                      badge: "bg-blue-50 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border-blue-200/60 dark:border-blue-800",
                       dot: "bg-blue-500",
                     },
                     COMPLETED: {
                       label: tAdmin("tabCompleted"),
-                      badge: "bg-emerald-50 text-[#0f6b4f] border-emerald-200/60",
+                      badge: "bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-300 border-emerald-200/60 dark:border-emerald-800",
                       dot: "bg-emerald-500",
                     },
                     REJECTED: {
                       label: tAdmin("tabRejected"),
-                      badge: "bg-rose-50 text-rose-700 border-rose-200/60",
+                      badge: "bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-200/60 dark:border-rose-800",
                       dot: "bg-rose-500",
                     },
                   };
                   const s = statusMap[p.status];
 
                   return (
-                    <tr key={p.id} className="hover:bg-slate-50/80 transition-colors">
+                    <tr key={p.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition-colors">
                       <td className="px-4 py-3.5 whitespace-nowrap">
-                        <p className="font-mono text-[11px] text-slate-500 font-bold">
+                        <p className="font-mono text-[11px] text-slate-500 dark:text-slate-400 font-bold">
                           #{p.id.slice(-6)}
                         </p>
-                        <p className="text-[11px] text-slate-400 mt-0.5 font-medium">
+                        <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5 font-medium">
                           {formatDateWIB(p.createdAt, {
                             day: "numeric",
                             month: "short",
@@ -200,23 +200,23 @@ export function AdminPayoutsClient({
                         </p>
                       </td>
                       <td className="px-4 py-3.5">
-                        <p className="font-bold text-slate-900">{p.userName}</p>
-                        <p className="text-[11px] text-slate-500 font-medium">{p.userEmail}</p>
+                        <p className="font-bold text-slate-900 dark:text-white">{p.userName}</p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">{p.userEmail}</p>
                       </td>
                       <td className="px-4 py-3.5">
-                        <p className="font-bold text-slate-900">
+                        <p className="font-bold text-slate-900 dark:text-white">
                           {p.bankName} — <span className="font-mono">{p.accountNumber}</span>
                         </p>
-                        <p className="text-[11px] text-slate-500 font-medium">
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                           a/n {p.accountName}
                         </p>
                         {p.notes && (
-                          <p className="text-[10px] text-slate-400 italic mt-0.5">
+                          <p className="text-[10px] text-slate-400 dark:text-slate-500 italic mt-0.5">
                             Note: &quot;{p.notes}&quot;
                           </p>
                         )}
                       </td>
-                      <td className="px-4 py-3.5 text-right font-bold text-slate-900 tabular-nums whitespace-nowrap">
+                      <td className="px-4 py-3.5 text-right font-bold text-slate-900 dark:text-white tabular-nums whitespace-nowrap">
                         {formatMoney(p.amount, "IDR", locale)}
                       </td>
                       <td className="px-4 py-3.5 text-center whitespace-nowrap">
@@ -227,7 +227,7 @@ export function AdminPayoutsClient({
                           {s.label}
                         </span>
                         {p.adminNotes && (
-                          <p className="text-[10px] text-rose-500 mt-1 font-medium">
+                          <p className="text-[10px] text-rose-500 dark:text-rose-400 mt-1 font-medium">
                             {p.adminNotes}
                           </p>
                         )}
@@ -248,14 +248,14 @@ export function AdminPayoutsClient({
                               onClick={() => handleOpenConfirm(p, "REJECTED")}
                               disabled={processingId === p.id}
                               title={tAdmin("rejectBtn")}
-                              className="inline-flex items-center gap-1 rounded-xl bg-rose-50 border border-rose-200/60 px-3 py-1.5 text-xs font-bold text-rose-700 hover:bg-rose-100 disabled:opacity-50 transition-all cursor-pointer shadow-2xs min-h-[36px]"
+                              className="inline-flex items-center gap-1 rounded-xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200/60 dark:border-rose-900 px-3 py-1.5 text-xs font-bold text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-900/60 disabled:opacity-50 transition-all cursor-pointer shadow-2xs min-h-[36px]"
                             >
                               <XCircleIcon className="h-3.5 w-3.5" />
                               <span>{tAdmin("rejectBtn")}</span>
                             </button>
                           </div>
                         ) : (
-                          <span className="text-[11px] text-slate-400 font-medium">
+                          <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">
                             {tAdmin("tabCompleted")}
                           </span>
                         )}
@@ -317,7 +317,7 @@ export function AdminPayoutsClient({
       >
         {isRejecting && (
           <div className="space-y-1.5">
-            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700">
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
               {tAdmin("adminNotesLabel")}
             </label>
             <input
@@ -327,13 +327,13 @@ export function AdminPayoutsClient({
                 setDialogState((prev) => ({ ...prev, adminNotes: e.target.value }))
               }
               placeholder={tAdmin("adminNotesPlaceholder")}
-              className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-xs text-slate-900 focus:border-rose-500 focus:ring-1 focus:ring-rose-500 bg-slate-50/50 focus:bg-white min-h-[44px]"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:border-rose-500 focus:ring-1 focus:ring-rose-500 bg-slate-50/50 dark:bg-slate-950 focus:bg-white dark:focus:bg-slate-900 min-h-[44px]"
             />
           </div>
         )}
 
         {dialogState.errorMsg && (
-          <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700 font-medium">
+          <div className="rounded-xl border border-rose-200 dark:border-rose-900 bg-rose-50 dark:bg-rose-950/60 p-3 text-xs text-rose-700 dark:text-rose-300 font-medium">
             {dialogState.errorMsg}
           </div>
         )}

@@ -162,8 +162,8 @@ export function UserRowActions({
             disabled={isPending}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer disabled:opacity-50 shadow-2xs active:scale-[0.98] min-h-[38px] ${
               currentPlan === "PRO"
-                ? "bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200/60"
-                : "bg-emerald-50 text-[#0f6b4f] hover:bg-emerald-100 border border-emerald-200/60"
+                ? "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/60 border border-amber-200/60 dark:border-amber-800"
+                : "bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200/60 dark:border-emerald-800"
             }`}
             title={currentPlan === "PRO" ? tAdmin("actionDowngradeFree") : tAdmin("actionUpgradePro")}
           >
@@ -182,8 +182,8 @@ export function UserRowActions({
             disabled={isPending}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer disabled:opacity-50 shadow-2xs active:scale-[0.98] min-h-[38px] ${
               currentRole === "ADMIN"
-                ? "bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200/60"
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200"
+                ? "bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-900/60 border border-rose-200/60 dark:border-rose-800"
+                : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700"
             }`}
             title={
               currentRole === "ADMIN"

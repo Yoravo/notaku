@@ -95,20 +95,20 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Form Section */}
       <div className="lg:col-span-2 space-y-6">
-        <form onSubmit={handleSend} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-2xs space-y-5">
+        <form onSubmit={handleSend} className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-2xs space-y-5">
           {/* Feedback Alert */}
           {feedback && (
             <div
               className={`p-4 rounded-xl flex items-start gap-3 text-xs sm:text-sm font-medium ${
                 feedback.type === "success"
-                  ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
-                  : "bg-rose-50 text-rose-800 border border-rose-200"
+                  ? "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
+                  : "bg-rose-50 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-900"
               }`}
             >
               {feedback.type === "success" ? (
-                <CheckCircleIcon className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                <CheckCircleIcon className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
               ) : (
-                <ExclamationCircleIcon className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+                <ExclamationCircleIcon className="w-5 h-5 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
               )}
               <div className="flex-1 leading-relaxed">{feedback.message}</div>
             </div>
@@ -116,7 +116,7 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
 
           {/* Audience Segment Selection */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
               {t("targetAudience")}
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -144,25 +144,25 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
                   key={opt.id}
                   type="button"
                   onClick={() => setAudience(opt.id)}
-                  className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
+                  className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer min-h-[44px] ${
                     audience === opt.id
-                      ? "border-[#0f6b4f] bg-emerald-50/50 ring-1 ring-[#0f6b4f]"
-                      : "border-slate-200 bg-white hover:bg-slate-50"
+                      ? "border-[#0f6b4f] dark:border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/40 ring-1 ring-[#0f6b4f]"
+                      : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700"
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-900">{opt.label}</span>
-                    <span className="text-xs font-mono font-bold text-[#0f6b4f]">
+                    <span className="text-xs font-bold text-slate-900 dark:text-white">{opt.label}</span>
+                    <span className="text-xs font-mono font-bold text-[#0f6b4f] dark:text-emerald-400">
                       {t("userCount", { count: opt.count })}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-500 mt-1">{opt.desc}</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">{opt.desc}</p>
                 </button>
               ))}
             </div>
 
             {/* Newsletter Opt-in checkbox */}
-            <label className="flex items-center gap-2 mt-3 text-xs text-slate-600 cursor-pointer">
+            <label className="flex items-center gap-2 mt-3 text-xs text-slate-600 dark:text-slate-300 cursor-pointer min-h-[32px]">
               <input
                 type="checkbox"
                 checked={respectOptIn}
@@ -176,7 +176,7 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
           {/* Badge & Category */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1.5">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                 {t("badgeCategory")}
               </label>
               <select
@@ -189,7 +189,7 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
                   if (val === "promo") setBadgeText(t("badgeSpecial"));
                   if (val === "security") setBadgeText(t("badgeSystem"));
                 }}
-                className="w-full text-xs sm:text-sm rounded-xl border border-slate-300 px-3.5 py-2.5 bg-white focus:border-[#0f6b4f] focus:ring-1 focus:ring-[#0f6b4f]"
+                className="w-full text-xs sm:text-sm rounded-xl border border-slate-300 dark:border-slate-700 px-3.5 py-2.5 bg-white dark:bg-slate-950 text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:ring-1 focus:ring-[#0f6b4f] min-h-[44px]"
               >
                 <option value="announcement">{t("badgeAnnouncement")}</option>
                 <option value="update">{t("badgeUpdate")}</option>
@@ -199,7 +199,7 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1.5">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                 {t("badgeTextLabel")}
               </label>
               <input
@@ -207,14 +207,14 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
                 value={badgeText}
                 onChange={(e) => setBadgeText(e.target.value)}
                 placeholder={t("badgeTextPlaceholder")}
-                className="w-full text-xs sm:text-sm rounded-xl border border-slate-300 px-3.5 py-2.5 bg-white focus:border-[#0f6b4f] focus:ring-1 focus:ring-[#0f6b4f]"
+                className="w-full text-xs sm:text-sm rounded-xl border border-slate-300 dark:border-slate-700 px-3.5 py-2.5 bg-white dark:bg-slate-950 text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:ring-1 focus:ring-[#0f6b4f] min-h-[44px]"
               />
             </div>
           </div>
 
           {/* Subject */}
           <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1.5">
+            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1.5">
               {t("subjectLabel")} <span className="text-red-500">*</span>
             </label>
             <input
@@ -223,13 +223,13 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               placeholder={t("subjectPlaceholder")}
-              className="w-full text-xs sm:text-sm rounded-xl border border-slate-300 px-3.5 py-2.5 bg-white focus:border-[#0f6b4f] focus:ring-1 focus:ring-[#0f6b4f]"
+              className="w-full text-xs sm:text-sm rounded-xl border border-slate-300 dark:border-slate-700 px-3.5 py-2.5 bg-white dark:bg-slate-950 text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:ring-1 focus:ring-[#0f6b4f] min-h-[44px]"
             />
           </div>
 
           {/* Content Body */}
           <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1.5">
+            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1.5">
               {t("contentLabel")} <span className="text-red-500">*</span>
             </label>
             <textarea
@@ -238,9 +238,9 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder={t("contentPlaceholder")}
-              className="w-full text-xs sm:text-sm rounded-xl border border-slate-300 p-3.5 bg-white focus:border-[#0f6b4f] focus:ring-1 focus:ring-[#0f6b4f] leading-relaxed font-sans"
+              className="w-full text-xs sm:text-sm rounded-xl border border-slate-300 dark:border-slate-700 p-3.5 bg-white dark:bg-slate-950 text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:ring-1 focus:ring-[#0f6b4f] leading-relaxed font-sans"
             />
-            <p className="text-[11px] text-slate-400 mt-1">
+            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
               {t("contentHint")}
             </p>
           </div>
@@ -248,7 +248,7 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
           {/* CTA Link (Optional) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1.5">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                 {t("ctaTextLabel")}
               </label>
               <input
@@ -256,12 +256,12 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
                 value={ctaText}
                 onChange={(e) => setCtaText(e.target.value)}
                 placeholder={t("ctaTextPlaceholder")}
-                className="w-full text-xs sm:text-sm rounded-xl border border-slate-300 px-3.5 py-2.5 bg-white focus:border-[#0f6b4f] focus:ring-1 focus:ring-[#0f6b4f]"
+                className="w-full text-xs sm:text-sm rounded-xl border border-slate-300 dark:border-slate-700 px-3.5 py-2.5 bg-white dark:bg-slate-950 text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:ring-1 focus:ring-[#0f6b4f] min-h-[44px]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1.5">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                 {t("ctaUrlLabel")}
               </label>
               <input
@@ -269,26 +269,26 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
                 value={ctaUrl}
                 onChange={(e) => setCtaUrl(e.target.value)}
                 placeholder="https://notaku.store/dashboard"
-                className="w-full text-xs sm:text-sm rounded-xl border border-slate-300 px-3.5 py-2.5 bg-white focus:border-[#0f6b4f] focus:ring-1 focus:ring-[#0f6b4f]"
+                className="w-full text-xs sm:text-sm rounded-xl border border-slate-300 dark:border-slate-700 px-3.5 py-2.5 bg-white dark:bg-slate-950 text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] min-h-[44px]"
               />
             </div>
           </div>
 
           {/* Actions */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100">
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
             <button
               type="button"
               onClick={() => setShowPreview(!showPreview)}
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 text-xs font-semibold hover:bg-slate-50 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer min-h-[44px]"
             >
-              <EyeIcon className="w-4 h-4 text-slate-500" />
+              <EyeIcon className="w-4 h-4 text-slate-500 dark:text-slate-400" />
               <span>{showPreview ? t("hidePreview") : t("showPreview")}</span>
             </button>
 
             <button
               type="submit"
               disabled={isPending || !subject.trim() || !content.trim()}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0f6b4f] text-white text-xs sm:text-sm font-bold hover:bg-[#0c553e] disabled:opacity-50 transition-all cursor-pointer shadow-xs"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0f6b4f] text-white text-xs sm:text-sm font-bold hover:bg-[#0c553e] disabled:opacity-50 transition-all cursor-pointer shadow-xs min-h-[44px]"
             >
               <PaperAirplaneIcon className="w-4 h-4" />
               <span>
@@ -302,11 +302,11 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
 
         {/* Live Email Preview Box */}
         {showPreview && (
-          <div className="rounded-2xl border border-slate-200 bg-slate-100 p-4 sm:p-6 space-y-3">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-800/60 p-4 sm:p-6 space-y-3">
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               {t("htmlPreview")}
             </span>
-            <div className="max-w-[540px] mx-auto bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-md">
+            <div className="max-w-[540px] mx-auto bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-md">
               {/* Header */}
               <div className="bg-[#0f172a] p-6 text-center">
                 <span className="text-xl font-bold text-white tracking-tight">
@@ -320,10 +320,10 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
               </div>
               {/* Body */}
               <div className="p-6 space-y-4">
-                <h2 className="text-base font-bold text-slate-900 leading-snug">
+                <h2 className="text-base font-bold text-slate-900 dark:text-white leading-snug">
                   {subject || t("previewTitleFallback")}
                 </h2>
-                <div className="text-xs sm:text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">
+                <div className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed">
                   {content || t("previewContentFallback")}
                 </div>
                 {ctaUrl && (
@@ -335,7 +335,7 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
                 )}
               </div>
               {/* Footer */}
-              <div className="p-4 bg-slate-50 border-t border-slate-100 text-center text-[11px] text-slate-400">
+              <div className="p-4 bg-slate-50 dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800 text-center text-[11px] text-slate-400 dark:text-slate-500">
                 &copy; {new Date().getFullYear()} NotaKu &bull; Simple & Fast Invoicing
               </div>
             </div>
@@ -345,14 +345,14 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
 
       {/* History & Insights Sidebar */}
       <div className="space-y-6">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs space-y-4">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-2xs space-y-4">
           <div className="flex items-center gap-2">
-            <InboxStackIcon className="w-5 h-5 text-[#0f6b4f]" />
-            <h3 className="text-sm font-bold text-slate-900">{t("historyTitle")}</h3>
+            <InboxStackIcon className="w-5 h-5 text-[#0f6b4f] dark:text-emerald-400" />
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white">{t("historyTitle")}</h3>
           </div>
 
           {history.length === 0 ? (
-            <div className="p-6 text-center text-slate-400 text-xs">
+            <div className="p-6 text-center text-slate-400 dark:text-slate-500 text-xs">
               {t("emptyHistory")}
             </div>
           ) : (
@@ -360,24 +360,24 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
               {history.map((log) => (
                 <div
                   key={log.id}
-                  className="p-3.5 rounded-xl border border-slate-100 bg-slate-50/70 hover:bg-slate-50 transition-colors space-y-1.5"
+                  className="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors space-y-1.5"
                 >
                   <div className="flex items-center justify-between text-[11px]">
-                    <span className="font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded">
+                    <span className="font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100/70 dark:bg-emerald-950/80 px-2 py-0.5 rounded">
                       {log.badge}
                     </span>
-                    <span className="text-slate-400 font-mono">
+                    <span className="text-slate-400 dark:text-slate-500 font-mono">
                       {formatDateWIB(log.createdAt)}
                     </span>
                   </div>
-                  <h4 className="text-xs font-bold text-slate-900 line-clamp-1">
+                  <h4 className="text-xs font-bold text-slate-900 dark:text-white line-clamp-1">
                     {log.subject}
                   </h4>
-                  <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
+                  <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 pt-1">
                     <span>
-                      {t("targetLabel")} <strong className="text-slate-700">{log.audience}</strong>
+                      {t("targetLabel")} <strong className="text-slate-700 dark:text-slate-300">{log.audience}</strong>
                     </span>
-                    <span className="text-emerald-600 font-medium">
+                    <span className="text-emerald-600 dark:text-emerald-400 font-medium">
                       ✓ {log.recipientsCount}
                     </span>
                   </div>

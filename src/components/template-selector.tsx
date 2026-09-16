@@ -59,21 +59,21 @@ export function TemplateSelector({ current }: TemplateSelectorProps) {
               disabled={loading}
               className={`rounded-2xl border-2 p-4 text-left transition-all cursor-pointer shadow-2xs relative min-h-[44px] ${
                 isSelected
-                  ? "border-[#0f6b4f] bg-emerald-50/60 ring-1 ring-[#0f6b4f]/20"
-                  : "border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50/50"
+                  ? "border-[#0f6b4f] dark:border-emerald-500 bg-emerald-50/60 dark:bg-emerald-950/60 ring-1 ring-[#0f6b4f]/20 dark:ring-emerald-500/30"
+                  : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50/50 dark:hover:bg-slate-800"
               }`}
             >
               <div className="flex items-center justify-between">
-                <p className={`text-sm font-bold ${isSelected ? "text-[#0f6b4f]" : "text-slate-900"}`}>
+                <p className={`text-sm font-bold ${isSelected ? "text-[#0f6b4f] dark:text-emerald-400" : "text-slate-900 dark:text-white"}`}>
                   {tmpl.label}
                 </p>
                 {isSelected ? (
-                  <CheckCircleIcon className="w-5 h-5 text-[#0f6b4f]" />
+                  <CheckCircleIcon className="w-5 h-5 text-[#0f6b4f] dark:text-emerald-400" />
                 ) : (
-                  <span className="w-4 h-4 rounded-full border border-slate-300" />
+                  <span className="w-4 h-4 rounded-full border border-slate-300 dark:border-slate-600" />
                 )}
               </div>
-              <p className="mt-1 text-xs text-slate-500 font-medium leading-relaxed">{tmpl.desc}</p>
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">{tmpl.desc}</p>
             </button>
           );
         })}

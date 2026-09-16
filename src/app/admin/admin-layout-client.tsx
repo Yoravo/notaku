@@ -190,7 +190,7 @@ export function AdminLayoutClient({
             {/* Mobile Toggle Button */}
             <button
               onClick={() => setMobileOpen(true)}
-              className="md:hidden p-1.5 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              className="md:hidden inline-flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               aria-label="Buka menu"
             >
               <Bars3Icon className="w-6 h-6" />

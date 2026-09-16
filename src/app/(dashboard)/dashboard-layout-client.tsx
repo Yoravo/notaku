@@ -90,7 +90,7 @@ export function DashboardLayoutClient({
             {/* Mobile Toggle Button */}
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="md:hidden inline-flex items-center justify-center rounded-md p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-900 dark:text-white cursor-pointer"
+              className="md:hidden inline-flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-900 dark:text-white cursor-pointer"
               aria-label="Toggle sidebar"
               aria-expanded={sidebarOpen}
             >

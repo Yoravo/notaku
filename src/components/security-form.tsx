@@ -66,15 +66,15 @@ export function SecurityForm() {
 
   return (
     <div className="max-w-xl">
-      <div className="flex items-center gap-2.5 pb-4 border-b border-slate-100 mb-5">
-        <div className="w-8 h-8 rounded-xl bg-emerald-50 text-[#0f6b4f] flex items-center justify-center border border-emerald-100">
+      <div className="flex items-center gap-2.5 pb-4 border-b border-slate-100 dark:border-slate-800 mb-5">
+        <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400 flex items-center justify-center border border-emerald-100 dark:border-emerald-800">
           <KeyIcon className="w-4 h-4" />
         </div>
         <div>
-          <h3 className="text-sm sm:text-base font-bold text-slate-900">
+          <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
             {tSet("tabSecurity")}
           </h3>
-          <p className="text-[11px] text-slate-500 font-medium">
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
             {tSec("subtitle")}
           </p>
         </div>
@@ -84,16 +84,16 @@ export function SecurityForm() {
         {error && (
           <div
             role="alert"
-            className="rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-xs text-rose-700 flex items-center gap-2 font-medium"
+            className="rounded-xl border border-rose-200 dark:border-rose-900 bg-rose-50 dark:bg-rose-950/60 p-3.5 text-xs text-rose-700 dark:text-rose-300 flex items-center gap-2 font-medium"
           >
-            <ExclamationCircleIcon className="w-4 h-4 shrink-0 text-rose-600" />
+            <ExclamationCircleIcon className="w-4 h-4 shrink-0 text-rose-600 dark:text-rose-400" />
             <span>{error}</span>
           </div>
         )}
 
         {success && (
-          <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3.5 text-xs text-[#0f6b4f] flex items-center gap-2 font-semibold shadow-2xs">
-            <CheckCircleIcon className="w-4 h-4 shrink-0 text-[#0f6b4f]" />
+          <div className="rounded-xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/60 p-3.5 text-xs text-[#0f6b4f] dark:text-emerald-300 flex items-center gap-2 font-semibold shadow-2xs">
+            <CheckCircleIcon className="w-4 h-4 shrink-0 text-[#0f6b4f] dark:text-emerald-400" />
             <span>
               {tSec("successAlert")}
             </span>
@@ -104,7 +104,7 @@ export function SecurityForm() {
         <div>
           <label
             htmlFor="currentPassword"
-            className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5"
+            className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5"
           >
             {tSet("currentPassword")}{" "}
             <span className="text-rose-500">*</span>
@@ -121,7 +121,7 @@ export function SecurityForm() {
                 setError(null);
               }}
               placeholder={tSet("currentPasswordPlaceholder")}
-              className="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-medium"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-medium min-h-[44px]"
             />
           </div>
         </div>
@@ -130,7 +130,7 @@ export function SecurityForm() {
         <div>
           <label
             htmlFor="newPassword"
-            className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5"
+            className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5"
           >
             {tSet("newPassword")}{" "}
             <span className="text-rose-500">*</span>
@@ -148,7 +148,7 @@ export function SecurityForm() {
                 setError(null);
               }}
               placeholder={tSet("newPasswordPlaceholder")}
-              className="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-medium"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-medium min-h-[44px]"
             />
           </div>
         </div>
@@ -157,7 +157,7 @@ export function SecurityForm() {
         <div>
           <label
             htmlFor="confirmPassword"
-            className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5"
+            className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5"
           >
             {tSet("confirmPassword")}{" "}
             <span className="text-rose-500">*</span>
@@ -175,25 +175,25 @@ export function SecurityForm() {
                 setError(null);
               }}
               placeholder={tSet("confirmPasswordPlaceholder")}
-              className="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-medium"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-medium min-h-[44px]"
             />
           </div>
         </div>
 
         {/* Revoke other sessions checkbox */}
         <div className="pt-2">
-          <label className="flex items-start gap-2.5 cursor-pointer select-none">
+          <label className="flex items-start gap-2.5 cursor-pointer select-none min-h-[36px]">
             <input
               type="checkbox"
               checked={revokeOtherSessions}
               onChange={(e) => setRevokeOtherSessions(e.target.checked)}
-              className="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#0f6b4f] focus:ring-[#0f6b4f] cursor-pointer"
+              className="mt-0.5 h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-[#0f6b4f] focus:ring-[#0f6b4f] cursor-pointer"
             />
             <div>
-              <p className="text-xs font-semibold text-slate-700">
+              <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                 {tSec("revokeLabel")}
               </p>
-              <p className="text-[11px] text-slate-500">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
                 {tSec("revokeDesc")}
               </p>
             </div>
@@ -201,11 +201,11 @@ export function SecurityForm() {
         </div>
 
         {/* Submit Button */}
-        <div className="pt-4 border-t border-slate-100 flex items-center justify-end">
+        <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end">
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-[#0f6b4f] px-5 py-2.5 text-xs sm:text-sm font-bold text-white cursor-pointer hover:bg-[#0c553e] disabled:opacity-50 transition-all shadow-xs active:scale-[0.98]"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#0f6b4f] px-5 py-2.5 text-xs sm:text-sm font-bold text-white cursor-pointer hover:bg-[#0c553e] disabled:opacity-50 transition-all shadow-xs active:scale-[0.98] min-h-[44px]"
           >
             {loading ? (
               <>

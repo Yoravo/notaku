@@ -184,23 +184,23 @@ export function BankSettingsForm({
     <div className="space-y-6">
       {/* Active Bank Card Display */}
       {hasExistingAccount && !isEditing && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 pb-4">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xs space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-[#0f6b4f] border border-emerald-200/60">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800">
                 <BuildingLibraryIcon className="h-5 w-5" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-bold text-slate-900">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">
                     {bankName}
                   </h3>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-bold text-[#0f6b4f] border border-emerald-200/60 shadow-2xs">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-0.5 text-[10px] font-bold text-[#0f6b4f] dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800 shadow-2xs">
                     <CheckCircleIcon className="h-3 w-3" />
                     {tBank("cardTitleVerified")}
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 font-medium">
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                   {tBank("cardDescription")}
                 </p>
               </div>
@@ -213,7 +213,7 @@ export function BankSettingsForm({
                 setError(null);
                 setSuccess(null);
               }}
-              className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 shadow-2xs hover:bg-slate-50 transition-all cursor-pointer min-h-[44px] sm:min-h-[38px]"
+              className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-700 transition-all cursor-pointer min-h-[44px] sm:min-h-[38px]"
             >
               <PencilSquareIcon className="h-4 w-4 text-slate-400" />
               <span>{tBank("changeAccountBtn")}</span>
@@ -221,21 +221,21 @@ export function BankSettingsForm({
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div className="rounded-xl bg-slate-50/80 p-3 border border-slate-200/60 shadow-2xs">
-              <span className="text-slate-500 text-[11px] font-semibold">{tBank("accountNumberCardLabel")}</span>
-              <p className="font-mono font-bold text-slate-900 text-sm tracking-wider mt-0.5">
+            <div className="rounded-xl bg-slate-50/80 dark:bg-slate-800/60 p-3 border border-slate-200/60 dark:border-slate-700 shadow-2xs">
+              <span className="text-slate-500 dark:text-slate-400 text-[11px] font-semibold">{tBank("accountNumberCardLabel")}</span>
+              <p className="font-mono font-bold text-slate-900 dark:text-white text-sm tracking-wider mt-0.5">
                 {bankAccountNumber}
               </p>
             </div>
-            <div className="rounded-xl bg-slate-50/80 p-3 border border-slate-200/60 shadow-2xs">
-              <span className="text-slate-500 text-[11px] font-semibold">{tBank("accountHolderCardLabel")}</span>
-              <p className="font-bold text-slate-900 text-sm uppercase mt-0.5">
+            <div className="rounded-xl bg-slate-50/80 dark:bg-slate-800/60 p-3 border border-slate-200/60 dark:border-slate-700 shadow-2xs">
+              <span className="text-slate-500 dark:text-slate-400 text-[11px] font-semibold">{tBank("accountHolderCardLabel")}</span>
+              <p className="font-bold text-slate-900 dark:text-white text-sm uppercase mt-0.5">
                 {bankAccountName || userFullName}
               </p>
             </div>
           </div>
 
-          <p className="text-[11px] text-slate-400 font-medium flex items-center gap-1">
+          <p className="text-[11px] text-slate-400 dark:text-slate-500 font-medium flex items-center gap-1">
             <LockClosedIcon className="h-3.5 w-3.5 shrink-0" />
             <span>
               {tBank("otpSecurityNotice")}
@@ -246,11 +246,11 @@ export function BankSettingsForm({
 
       {/* Form Card (Setup or Edit with OTP) */}
       {(!hasExistingAccount || isEditing) && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs space-y-5">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xs space-y-5">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3.5">
+          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3.5">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-[#0f6b4f] border border-emerald-200/60">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800">
                 {hasExistingAccount ? (
                   <KeyIcon className="h-5 w-5" />
                 ) : (
@@ -258,12 +258,12 @@ export function BankSettingsForm({
                 )}
               </div>
               <div>
-                <h3 className="text-sm font-bold text-slate-900">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
                   {hasExistingAccount
                     ? tBank("editTitle")
                     : tBank("initialTitle")}
                 </h3>
-                <p className="text-xs text-slate-500 font-medium">
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                   {hasExistingAccount
                     ? tBank("editSubtitle")
                     : tBank("initialSubtitle")}
@@ -279,7 +279,7 @@ export function BankSettingsForm({
                   setOtpSent(false);
                   setError(null);
                 }}
-                className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 cursor-pointer"
+                className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
                 title={tBank("cancelEdit")}
               >
                 <XMarkIcon className="h-5 w-5" />
@@ -289,15 +289,15 @@ export function BankSettingsForm({
 
           {/* Feedback Messages */}
           {error && (
-            <div className="flex items-start gap-2.5 rounded-xl bg-rose-50 border border-rose-200/80 p-3.5 text-xs font-semibold text-rose-700 shadow-2xs animate-in fade-in">
-              <ExclamationTriangleIcon className="h-4 w-4 shrink-0 mt-0.5 text-rose-600" />
+            <div className="flex items-start gap-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200/80 dark:border-rose-900 p-3.5 text-xs font-semibold text-rose-700 dark:text-rose-300 shadow-2xs animate-in fade-in">
+              <ExclamationTriangleIcon className="h-4 w-4 shrink-0 mt-0.5 text-rose-600 dark:text-rose-400" />
               <span>{error}</span>
             </div>
           )}
 
           {success && (
-            <div className="flex items-start gap-2.5 rounded-xl bg-emerald-50 border border-emerald-200/80 p-3.5 text-xs font-semibold text-[#0f6b4f] shadow-2xs animate-in fade-in">
-              <CheckCircleIcon className="h-4 w-4 shrink-0 mt-0.5 text-[#0f6b4f]" />
+            <div className="flex items-start gap-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800 p-3.5 text-xs font-semibold text-[#0f6b4f] dark:text-emerald-300 shadow-2xs animate-in fade-in">
+              <CheckCircleIcon className="h-4 w-4 shrink-0 mt-0.5 text-[#0f6b4f] dark:text-emerald-400" />
               <span>{success}</span>
             </div>
           )}
@@ -311,7 +311,7 @@ export function BankSettingsForm({
           >
             {/* Bank / E-Wallet Selector */}
             <div>
-              <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+              <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                 {tBank("targetBankLabel")}{" "}
                 <span className="text-rose-500">*</span>
               </label>
@@ -324,7 +324,7 @@ export function BankSettingsForm({
                   onChange={(e) =>
                     setFormData((prev) => ({ ...prev, bankName: e.target.value }))
                   }
-                  className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-11 pr-4 text-xs sm:text-sm font-semibold text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs min-h-[44px] sm:min-h-[40px]"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 py-2.5 pl-11 pr-4 text-xs sm:text-sm font-semibold text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs min-h-[44px] sm:min-h-[40px]"
                   required
                 >
                   <option value="">{tBank("selectBankPlaceholder")}</option>
@@ -352,7 +352,7 @@ export function BankSettingsForm({
 
             {/* Account Number */}
             <div>
-              <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+              <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                 {tBank("accountNumberFieldLabel")}{" "}
                 <span className="text-rose-500">*</span>
               </label>
@@ -370,7 +370,7 @@ export function BankSettingsForm({
                       bankAccountNumber: e.target.value.replace(/[^0-9]/g, ""),
                     }))
                   }
-                  className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-11 pr-4 text-xs sm:text-sm font-mono font-bold text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] tracking-wider shadow-2xs min-h-[44px] sm:min-h-[40px]"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 py-2.5 pl-11 pr-4 text-xs sm:text-sm font-mono font-bold text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] tracking-wider shadow-2xs min-h-[44px] sm:min-h-[40px]"
                   required
                 />
               </div>
@@ -378,7 +378,7 @@ export function BankSettingsForm({
 
             {/* Account Name */}
             <div>
-              <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+              <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                 {tBank("accountHolderFieldLabel")}{" "}
                 <span className="text-rose-500">*</span>
               </label>
@@ -396,7 +396,7 @@ export function BankSettingsForm({
                       bankAccountName: e.target.value.toUpperCase(),
                     }))
                   }
-                  className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-11 pr-4 text-xs sm:text-sm font-bold text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] uppercase shadow-2xs min-h-[44px] sm:min-h-[40px]"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 py-2.5 pl-11 pr-4 text-xs sm:text-sm font-bold text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] uppercase shadow-2xs min-h-[44px] sm:min-h-[40px]"
                   required
                 />
               </div>
@@ -404,14 +404,14 @@ export function BankSettingsForm({
 
             {/* OTP Section for Edit Mode */}
             {hasExistingAccount && (
-              <div className="rounded-2xl border border-emerald-200 bg-emerald-50/40 p-4 space-y-3 shadow-2xs">
+              <div className="rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50/40 dark:bg-emerald-950/30 p-4 space-y-3 shadow-2xs">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div>
-                    <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider">
+                    <label className="block text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
                       {tBank("otpFieldLabel")}{" "}
                       <span className="text-rose-500">*</span>
                     </label>
-                    <p className="text-[11px] text-slate-500 font-medium">
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                       {tBank("otpFieldHint")}
                     </p>
                   </div>
@@ -420,7 +420,7 @@ export function BankSettingsForm({
                     type="button"
                     onClick={handleRequestOtp}
                     disabled={loadingOtp}
-                    className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white border border-emerald-300 px-3 py-1.5 text-xs font-bold text-[#0f6b4f] hover:bg-emerald-50 disabled:opacity-50 transition-all cursor-pointer shadow-2xs shrink-0 min-h-[40px] sm:min-h-[34px]"
+                    className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white dark:bg-slate-800 border border-emerald-300 dark:border-emerald-700 px-3 py-1.5 text-xs font-bold text-[#0f6b4f] dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 disabled:opacity-50 transition-all cursor-pointer shadow-2xs shrink-0 min-h-[40px] sm:min-h-[34px]"
                   >
                     {loadingOtp ? (
                       <ArrowPathIcon className="w-3.5 h-3.5 animate-spin" />
@@ -442,7 +442,7 @@ export function BankSettingsForm({
                     placeholder="123456"
                     value={otpCode}
                     onChange={(e) => setOtpCode(e.target.value.replace(/[^0-9]/g, ""))}
-                    className="w-full rounded-xl border border-slate-200 bg-white py-2.5 px-4 text-center text-lg font-mono font-bold tracking-widest text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs"
+                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 py-2.5 px-4 text-center text-lg font-mono font-bold tracking-widest text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs"
                     required
                   />
                 </div>
@@ -458,7 +458,7 @@ export function BankSettingsForm({
                     setIsEditing(false);
                     setOtpSent(false);
                   }}
-                  className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer shadow-2xs min-h-[44px]"
+                  className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all cursor-pointer shadow-2xs min-h-[44px]"
                 >
                   {tBank("cancel")}
                 </button>
@@ -492,17 +492,17 @@ export function BankSettingsForm({
             className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity animate-in fade-in"
             onClick={() => setShowConfirmModal(false)}
           />
-          <div className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl space-y-5 animate-in zoom-in-95 border border-slate-200">
+          <div className="relative w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 p-6 shadow-2xl space-y-5 animate-in zoom-in-95 border border-slate-200 dark:border-slate-800">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 border border-amber-200/60">
+                <div className="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 flex items-center justify-center shrink-0 border border-amber-200/60 dark:border-amber-800">
                   <ExclamationTriangleIcon className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-900">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
                     {tBank("confirmModalTitle")}
                   </h3>
-                  <p className="text-xs text-slate-500 font-medium">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                     {tBank("confirmModalSubtitle")}
                   </p>
                 </div>
@@ -510,27 +510,27 @@ export function BankSettingsForm({
               <button
                 type="button"
                 onClick={() => setShowConfirmModal(false)}
-                className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 cursor-pointer"
+                className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
               >
                 <XMarkIcon className="w-5 h-5" />
               </button>
             </div>
 
             {/* Recap Card */}
-            <div className="rounded-xl bg-slate-50 p-4 border border-slate-200/80 space-y-2.5 text-xs shadow-2xs">
+            <div className="rounded-xl bg-slate-50 dark:bg-slate-800/60 p-4 border border-slate-200/80 dark:border-slate-700 space-y-2.5 text-xs shadow-2xs">
               <div className="flex justify-between">
-                <span className="text-slate-500 font-medium">{tBank("confirmBankLabel")}</span>
-                <span className="font-bold text-slate-900">{formData.bankName}</span>
+                <span className="text-slate-500 dark:text-slate-400 font-medium">{tBank("confirmBankLabel")}</span>
+                <span className="font-bold text-slate-900 dark:text-white">{formData.bankName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500 font-medium">{tBank("confirmAccNumberLabel")}</span>
-                <span className="font-mono font-bold text-slate-900 text-sm tracking-wider">
+                <span className="text-slate-500 dark:text-slate-400 font-medium">{tBank("confirmAccNumberLabel")}</span>
+                <span className="font-mono font-bold text-slate-900 dark:text-white text-sm tracking-wider">
                   {formData.bankAccountNumber}
                 </span>
               </div>
-              <div className="flex justify-between border-t border-slate-200/60 pt-2">
-                <span className="text-slate-500 font-medium">{tBank("confirmAccHolderLabel")}</span>
-                <span className="font-bold text-slate-900 uppercase">
+              <div className="flex justify-between border-t border-slate-200/60 dark:border-slate-700 pt-2">
+                <span className="text-slate-500 dark:text-slate-400 font-medium">{tBank("confirmAccHolderLabel")}</span>
+                <span className="font-bold text-slate-900 dark:text-white uppercase">
                   {formData.bankAccountName}
                 </span>
               </div>
@@ -542,9 +542,9 @@ export function BankSettingsForm({
                   type="checkbox"
                   checked={agreeCheck}
                   onChange={(e) => setAgreeCheck(e.target.checked)}
-                  className="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#0f6b4f] focus:ring-[#0f6b4f]"
+                  className="mt-0.5 h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-[#0f6b4f] focus:ring-[#0f6b4f]"
                 />
-                <span className="text-xs text-slate-700 font-medium leading-snug">
+                <span className="text-xs text-slate-700 dark:text-slate-300 font-medium leading-snug">
                   {tBank("agreeDeclaration")}
                 </span>
               </label>
@@ -554,7 +554,7 @@ export function BankSettingsForm({
               <button
                 type="button"
                 onClick={() => setShowConfirmModal(false)}
-                className="flex-1 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer min-h-[44px]"
+                className="flex-1 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer min-h-[44px]"
               >
                 {tBank("reviewAgain")}
               </button>

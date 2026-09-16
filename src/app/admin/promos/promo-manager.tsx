@@ -86,9 +86,9 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
       {/* Promo Creation Form */}
-      <div className="lg:col-span-5 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-2xs h-fit">
-        <h2 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2 mb-4">
-          <TagIcon className="w-5 h-5 text-[#0f6b4f]" />
+      <div className="lg:col-span-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-2xs h-fit">
+        <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-4">
+          <TagIcon className="w-5 h-5 text-[#0f6b4f] dark:text-emerald-400" />
           <span>{tAdmin("formTitle")}</span>
         </h2>
 
@@ -96,14 +96,14 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
           <div
             className={`p-3.5 rounded-xl text-xs font-bold mb-4 flex items-center gap-2 shadow-2xs ${
               feedback.type === "success"
-                ? "bg-emerald-50 text-[#0f6b4f] border border-emerald-200/60"
-                : "bg-rose-50 text-rose-800 border border-rose-200/60"
+                ? "bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800"
+                : "bg-rose-50 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-200/60 dark:border-rose-800"
             }`}
           >
             {feedback.type === "success" ? (
-              <CheckCircleIcon className="w-4 h-4 text-[#0f6b4f] shrink-0" />
+              <CheckCircleIcon className="w-4 h-4 text-[#0f6b4f] dark:text-emerald-400 shrink-0" />
             ) : (
-              <XCircleIcon className="w-4 h-4 text-rose-600 shrink-0" />
+              <XCircleIcon className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0" />
             )}
             <span>{feedback.text}</span>
           </div>
@@ -111,7 +111,7 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs sm:text-sm">
           <div>
-            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
               {tAdmin("codeLabel")} <span className="text-rose-500">*</span>
             </label>
             <input
@@ -120,12 +120,12 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
               value={code}
               onChange={(e) => setCode(e.target.value.toUpperCase())}
               placeholder={tAdmin("codePlaceholder")}
-              className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl uppercase font-mono font-bold tracking-wider focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] bg-slate-50/50 focus:bg-white transition-colors min-h-[44px]"
+              className="w-full px-3.5 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl uppercase font-mono font-bold tracking-wider focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] bg-slate-50/50 dark:bg-slate-950 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-slate-900 transition-colors min-h-[44px]"
             />
           </div>
 
           <div>
-            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
               {tAdmin("descLabel")}
             </label>
             <input
@@ -133,19 +133,19 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder={tAdmin("descPlaceholder")}
-              className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] bg-slate-50/50 focus:bg-white transition-colors font-medium min-h-[44px]"
+              className="w-full px-3.5 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] bg-slate-50/50 dark:bg-slate-950 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-slate-900 transition-colors font-medium min-h-[44px]"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                 {tAdmin("discountTypeLabel")}
               </label>
               <select
                 value={discountType}
                 onChange={(e) => setDiscountType(e.target.value as any)}
-                className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50/50 focus:bg-white font-medium text-slate-800 focus:ring-1 focus:ring-[#0f6b4f] min-h-[44px]"
+                className="w-full px-3.5 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50/50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-900 font-medium focus:ring-1 focus:ring-[#0f6b4f] min-h-[44px]"
               >
                 <option value="PERCENTAGE">{tAdmin("discountPercentage")}</option>
                 <option value="FIXED">{tAdmin("discountFixed")}</option>
@@ -153,7 +153,7 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
             </div>
 
             <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                 {tAdmin("discountValueLabel")} <span className="text-rose-500">*</span>
               </label>
               <input
@@ -162,14 +162,14 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
                 min={1}
                 value={discountValue}
                 onChange={(e) => setDiscountValue(Number(e.target.value))}
-                className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl font-mono font-bold bg-slate-50/50 focus:bg-white text-slate-900 focus:ring-1 focus:ring-[#0f6b4f] min-h-[44px]"
+                className="w-full px-3.5 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl font-mono font-bold bg-slate-50/50 dark:bg-slate-950 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-slate-900 focus:ring-1 focus:ring-[#0f6b4f] min-h-[44px]"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                 {tAdmin("maxUsesLabel")}
               </label>
               <input
@@ -178,19 +178,19 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
                 value={maxUses}
                 onChange={(e) => setMaxUses(e.target.value)}
                 placeholder={tAdmin("maxUsesPlaceholder")}
-                className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50/50 focus:bg-white text-slate-900 focus:ring-1 focus:ring-[#0f6b4f] min-h-[44px]"
+                className="w-full px-3.5 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50/50 dark:bg-slate-950 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-slate-900 focus:ring-1 focus:ring-[#0f6b4f] min-h-[44px]"
               />
             </div>
 
             <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                 {tAdmin("expiresAtLabel")}
               </label>
               <input
                 type="date"
                 value={expiresAt}
                 onChange={(e) => setExpiresAt(e.target.value)}
-                className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50/50 focus:bg-white text-slate-900 focus:ring-1 focus:ring-[#0f6b4f] font-mono text-xs min-h-[44px]"
+                className="w-full px-3.5 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50/50 dark:bg-slate-950 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-slate-900 focus:ring-1 focus:ring-[#0f6b4f] font-mono text-xs min-h-[44px]"
               />
             </div>
           </div>
@@ -201,9 +201,9 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
               id="isActive"
               checked={isActive}
               onChange={(e) => setIsActive(e.target.checked)}
-              className="w-4 h-4 rounded text-[#0f6b4f] focus:ring-[#0f6b4f] border-slate-300 cursor-pointer"
+              className="w-4 h-4 rounded text-[#0f6b4f] focus:ring-[#0f6b4f] border-slate-300 dark:border-slate-600 cursor-pointer"
             />
-            <label htmlFor="isActive" className="text-slate-700 font-semibold cursor-pointer select-none text-xs">
+            <label htmlFor="isActive" className="text-slate-700 dark:text-slate-300 font-semibold cursor-pointer select-none text-xs">
               {tAdmin("activateVoucherNow")}
             </label>
           </div>
@@ -224,15 +224,15 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
       </div>
 
       {/* Promo List Table */}
-      <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden flex flex-col">
-        <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-            <TagIcon className="w-4 h-4 text-slate-600" />
+      <div className="lg:col-span-7 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xs overflow-hidden flex flex-col">
+        <div className="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <h2 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <TagIcon className="w-4 h-4 text-slate-600 dark:text-slate-400" />
             <span>
               {tAdmin("tableTitle")} ({promos.length})
             </span>
           </h2>
-          <span className="text-xs text-slate-400 font-semibold">
+          <span className="text-xs text-slate-400 dark:text-slate-500 font-semibold">
             {tAdmin("readyForCheckout")}
           </span>
         </div>
@@ -240,18 +240,18 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
         <div className="flex-1 overflow-x-auto">
           {promos.length === 0 ? (
             <div className="p-12 text-center">
-              <TagIcon className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <p className="text-sm font-bold text-slate-700">
+              <TagIcon className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+              <p className="text-sm font-bold text-slate-700 dark:text-slate-300">
                 {tAdmin("emptyPromos")}
               </p>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
                 {tAdmin("firstPromoPrompt")}
               </p>
             </div>
           ) : (
-            <table className="w-full text-left text-xs border-collapse">
+            <table className="w-full text-left text-xs border-collapse min-w-[500px]">
               <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/80 text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+                <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/80 text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider">
                   <th className="py-3.5 px-4">{tAdmin("colCode")}</th>
                   <th className="py-3.5 px-4">{tAdmin("colDiscount")}</th>
                   <th className="py-3.5 px-4">{tAdmin("colUsage")} / {tAdmin("colExpires")}</th>
@@ -259,21 +259,21 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
                   <th className="py-3.5 px-4 text-right">{tAdmin("colAction")}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {promos.map((p) => (
-                  <tr key={p.code} className="hover:bg-slate-50/80 transition-colors">
+                  <tr key={p.code} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition-colors">
                     <td className="py-3.5 px-4">
-                      <span className="font-mono font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200 text-xs shadow-2xs">
+                      <span className="font-mono font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs shadow-2xs">
                         {p.code}
                       </span>
                       {p.description && (
-                        <p className="text-[11px] text-slate-500 mt-1 truncate max-w-xs font-medium">
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 truncate max-w-xs font-medium">
                           {p.description}
                         </p>
                       )}
                     </td>
 
-                    <td className="py-3.5 px-4 font-mono font-bold text-[#0f6b4f]">
+                    <td className="py-3.5 px-4 font-mono font-bold text-[#0f6b4f] dark:text-emerald-400">
                       {p.discountType === "PERCENTAGE"
                         ? `${p.discountValue}% OFF`
                         : `Rp ${p.discountValue.toLocaleString("id-ID")}`}

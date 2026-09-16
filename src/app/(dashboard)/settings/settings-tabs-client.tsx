@@ -83,16 +83,16 @@ export function SettingsTabsClient({
     <div className="space-y-6">
       {/* Page Header (Reactive Translation) */}
       <div>
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
           {tSet("title")}
         </h1>
-        <p className="text-xs sm:text-sm text-slate-500 mt-1">
+        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
           {tSet("subtitle")}
         </p>
       </div>
 
       {/* Tab Navigation */}
-      <div className="border-b border-slate-200 bg-white rounded-2xl p-1.5 shadow-2xs">
+      <div className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-1.5 shadow-2xs">
         <nav className="flex space-x-1 sm:space-x-2 overflow-x-auto no-scrollbar" aria-label="Tabs">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
@@ -100,13 +100,13 @@ export function SettingsTabsClient({
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 whitespace-nowrap px-3.5 sm:px-4 py-2.5 text-xs sm:text-sm rounded-xl transition-all cursor-pointer ${
+                className={`flex items-center gap-2 whitespace-nowrap px-3.5 sm:px-4 py-2.5 text-xs sm:text-sm rounded-xl transition-all cursor-pointer min-h-[40px] ${
                   isActive
-                    ? "bg-[#0f6b4f]/10 text-[#0f6b4f] border border-[#0f6b4f]/20 font-bold shadow-2xs"
-                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium"
+                    ? "bg-[#0f6b4f]/10 dark:bg-emerald-500/20 text-[#0f6b4f] dark:text-emerald-400 border border-[#0f6b4f]/20 dark:border-emerald-500/30 font-bold shadow-2xs"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 font-medium"
                 }`}
               >
-                <tab.icon className={`w-4 h-4 shrink-0 ${isActive ? "text-[#0f6b4f]" : "text-slate-400"}`} />
+                <tab.icon className={`w-4 h-4 shrink-0 ${isActive ? "text-[#0f6b4f] dark:text-emerald-400" : "text-slate-400 dark:text-slate-500"}`} />
                 <span>{tab.label}</span>
               </button>
             );
@@ -115,7 +115,7 @@ export function SettingsTabsClient({
       </div>
 
       {/* Tab Content Container */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-7 shadow-2xs">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-2xs">
         {/* Tab 1: Profile & Business */}
         {activeTab === "profile" && (
           <div className="space-y-4">

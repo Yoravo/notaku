@@ -111,29 +111,29 @@ export function AdminInvoicesClient({
       {/* Header & Quick Stats */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
-            <DocumentTextIcon className="w-6 h-6 sm:w-7 sm:h-7 text-amber-600" />
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
+            <DocumentTextIcon className="w-6 h-6 sm:w-7 sm:h-7 text-amber-600 dark:text-amber-400" />
             <span>{tAdmin("invoicesTitle")}</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
             {tAdmin("invoicesSubtitle")}
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="bg-white border border-slate-200 rounded-2xl px-4 py-2.5 shadow-2xs text-center min-w-28">
-            <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-2.5 shadow-2xs text-center min-w-28">
+            <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400 dark:text-slate-500">
               {tAdmin("totalInvoicesLabel")}
             </p>
-            <p className="text-lg font-extrabold text-slate-900 tabular-nums">
+            <p className="text-lg font-extrabold text-slate-900 dark:text-white tabular-nums">
               {totalAllInvoices.toLocaleString("id-ID")}
             </p>
           </div>
-          <div className="bg-emerald-50/50 border border-emerald-200/60 rounded-2xl px-4 py-2.5 shadow-2xs text-center min-w-32">
-            <p className="text-[10px] uppercase font-bold tracking-wider text-[#0f6b4f]">
+          <div className="bg-emerald-50/50 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800 rounded-2xl px-4 py-2.5 shadow-2xs text-center min-w-32">
+            <p className="text-[10px] uppercase font-bold tracking-wider text-[#0f6b4f] dark:text-emerald-400">
               {tAdmin("totalGmvPaid")}
             </p>
-            <p className="text-lg font-extrabold text-[#0f6b4f] tabular-nums">
+            <p className="text-lg font-extrabold text-[#0f6b4f] dark:text-emerald-400 tabular-nums">
               {formatCurrency(paidInvoicesTotal)}
             </p>
           </div>
@@ -141,15 +141,15 @@ export function AdminInvoicesClient({
       </div>
 
       {/* Filter by Status Quick Tabs & Search Form */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-3">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-2xs space-y-3">
         {/* Status Quick Pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
           <Link
             href={`/admin/invoices?q=${searchQuery}`}
-            className={`px-3 py-1.5 rounded-xl font-bold transition-all shrink-0 cursor-pointer shadow-2xs ${
+            className={`px-3.5 py-2 rounded-xl font-bold transition-all shrink-0 cursor-pointer shadow-2xs min-h-[36px] inline-flex items-center ${
               !statusFilter
-                ? "bg-slate-900 text-white"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                ? "bg-slate-900 dark:bg-slate-800 text-white"
+                : "bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
             }`}
           >
             {tAdmin("filterAll")} ({totalAllInvoices})
@@ -158,10 +158,10 @@ export function AdminInvoicesClient({
             <Link
               key={st}
               href={`/admin/invoices?q=${searchQuery}&status=${st}`}
-              className={`px-3 py-1.5 rounded-xl font-bold transition-all shrink-0 cursor-pointer shadow-2xs ${
+              className={`px-3.5 py-2 rounded-xl font-bold transition-all shrink-0 cursor-pointer shadow-2xs min-h-[36px] inline-flex items-center ${
                 statusFilter === st
-                  ? "bg-slate-900 text-white"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  ? "bg-slate-900 dark:bg-slate-800 text-white"
+                  : "bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
               }`}
             >
               {st} ({statusCountMap[st] || 0})
@@ -178,7 +178,7 @@ export function AdminInvoicesClient({
               name="q"
               defaultValue={searchQuery}
               placeholder={tAdmin("searchPlaceholder")}
-              className="w-full pl-10 pr-3.5 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] bg-slate-50/50 focus:bg-white transition-colors"
+              className="w-full pl-10 pr-3.5 py-2.5 text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] bg-slate-50/50 dark:bg-slate-950 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-slate-900 transition-colors min-h-[44px]"
             />
           </div>
 
@@ -186,7 +186,7 @@ export function AdminInvoicesClient({
             <input type="hidden" name="status" value={statusFilter} />
             <button
               type="submit"
-              className="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl py-2.5 transition-colors cursor-pointer shadow-2xs"
+              className="w-full bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-bold rounded-xl py-2.5 transition-colors cursor-pointer shadow-2xs min-h-[44px]"
             >
               Filter
             </button>
@@ -195,10 +195,10 @@ export function AdminInvoicesClient({
       </div>
 
       {/* Invoices Table */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xs overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs sm:text-sm">
-            <thead className="bg-slate-50/80 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+          <table className="w-full text-left text-xs sm:text-sm min-w-[700px]">
+            <thead className="bg-slate-50/80 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               <tr>
                 <th className="px-5 py-3.5">{tAdmin("colInvoiceNumber")}</th>
                 <th className="px-4 py-3.5">{tAdmin("colCreator")}</th>
@@ -209,12 +209,12 @@ export function AdminInvoicesClient({
                 <th className="px-5 py-3.5 text-right">{tAdmin("colAction")}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {invoices.length === 0 ? (
                 <tr>
                   <td
                     colSpan={7}
-                    className="text-center py-12 text-slate-400 text-xs font-medium"
+                    className="text-center py-12 text-slate-400 dark:text-slate-500 text-xs font-medium"
                   >
                     {tAdmin("emptyInvoices")}
                   </td>
@@ -223,27 +223,27 @@ export function AdminInvoicesClient({
                 invoices.map((inv) => {
                   const badge = getStatusBadge(inv.status);
                   return (
-                    <tr key={inv.id} className="hover:bg-slate-50/80 transition-colors">
+                    <tr key={inv.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition-colors">
                       {/* Invoice Number */}
                       <td className="px-5 py-3.5 whitespace-nowrap">
-                        <span className="font-mono font-bold text-slate-900 text-xs sm:text-sm">
+                        <span className="font-mono font-bold text-slate-900 dark:text-white text-xs sm:text-sm">
                           {inv.number}
                         </span>
-                        <p className="text-[11px] text-slate-400 font-mono">
+                        <p className="text-[11px] text-slate-400 dark:text-slate-500 font-mono">
                           {inv.itemCount} item
                         </p>
                       </td>
 
                       {/* Creator info */}
                       <td className="px-4 py-3.5">
-                        <p className="font-bold text-slate-900 truncate max-w-[160px] text-xs sm:text-sm">
+                        <p className="font-bold text-slate-900 dark:text-white truncate max-w-[160px] text-xs sm:text-sm">
                           {inv.user.name || "User"}
                         </p>
-                        <p className="text-[11px] text-slate-400 truncate max-w-[160px] font-mono">
+                        <p className="text-[11px] text-slate-400 dark:text-slate-500 truncate max-w-[160px] font-mono">
                           {inv.user.email}
                         </p>
                         {inv.user.businessName && (
-                          <p className="text-[11px] text-[#0f6b4f] font-semibold truncate max-w-[160px] mt-0.5">
+                          <p className="text-[11px] text-[#0f6b4f] dark:text-emerald-400 font-semibold truncate max-w-[160px] mt-0.5">
                             {inv.user.businessName}
                           </p>
                         )}
@@ -251,11 +251,11 @@ export function AdminInvoicesClient({
 
                       {/* Customer info */}
                       <td className="px-4 py-3.5">
-                        <p className="font-semibold text-slate-900 truncate max-w-[150px] text-xs sm:text-sm">
+                        <p className="font-semibold text-slate-900 dark:text-white truncate max-w-[150px] text-xs sm:text-sm">
                           {inv.customer.name}
                         </p>
                         {inv.customer.email && (
-                          <p className="text-[11px] text-slate-400 truncate max-w-[150px] font-mono">
+                          <p className="text-[11px] text-slate-400 dark:text-slate-500 truncate max-w-[150px] font-mono">
                             {inv.customer.email}
                           </p>
                         )}
@@ -272,12 +272,12 @@ export function AdminInvoicesClient({
                       </td>
 
                       {/* Total Amount */}
-                      <td className="px-4 py-3.5 text-right font-mono font-bold text-slate-900 tabular-nums whitespace-nowrap">
+                      <td className="px-4 py-3.5 text-right font-mono font-bold text-slate-900 dark:text-white tabular-nums whitespace-nowrap">
                         {formatCurrency(inv.total)}
                       </td>
 
                       {/* Created At */}
-                      <td className="px-4 py-3.5 text-xs text-slate-400 font-medium whitespace-nowrap">
+                      <td className="px-4 py-3.5 text-xs text-slate-400 dark:text-slate-500 font-medium whitespace-nowrap">
                         {formatDateWIB(inv.createdAt, {
                           day: "numeric",
                           month: "short",
@@ -291,7 +291,7 @@ export function AdminInvoicesClient({
                           href={`/i/${inv.publicId}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors shadow-2xs"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors shadow-2xs min-h-[36px]"
                         >
                           <span>{tAdmin("viewPublic")}</span>
                           <ArrowTopRightOnSquareIcon className="w-3.5 h-3.5 text-slate-400" />
@@ -307,7 +307,7 @@ export function AdminInvoicesClient({
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="bg-slate-50/80 px-5 py-3.5 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
+          <div className="bg-slate-50/80 dark:bg-slate-800/80 px-5 py-3.5 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
             <span>
               {tAdmin("paginationSummary", { current: currentPage, total: totalPages, count: `${totalFilteredInvoices} total invoice` })}
             </span>
@@ -317,7 +317,7 @@ export function AdminInvoicesClient({
                   href={`/admin/invoices?q=${searchQuery}&status=${statusFilter}&page=${
                     currentPage - 1
                   }`}
-                  className="px-3.5 py-1.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 font-bold text-slate-700 shadow-2xs transition-colors"
+                  className="px-3.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 font-bold text-slate-700 dark:text-slate-200 shadow-2xs transition-colors min-h-[36px] inline-flex items-center"
                 >
                   {tAdmin("paginationPrev")}
                 </Link>
@@ -327,7 +327,7 @@ export function AdminInvoicesClient({
                   href={`/admin/invoices?q=${searchQuery}&status=${statusFilter}&page=${
                     currentPage + 1
                   }`}
-                  className="px-3.5 py-1.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 font-bold text-slate-700 shadow-2xs transition-colors"
+                  className="px-3.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 font-bold text-slate-700 dark:text-slate-200 shadow-2xs transition-colors min-h-[36px] inline-flex items-center"
                 >
                   {tAdmin("paginationNext")}
                 </Link>

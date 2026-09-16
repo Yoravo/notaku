@@ -148,19 +148,19 @@ export function WhatsAppShareModal({
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 sm:p-6 backdrop-blur-xs animate-in fade-in">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-5 sm:p-6 shadow-2xl border border-slate-200 space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 sm:p-6 animate-in fade-in">
+          <div className="w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
             {/* Header Modal */}
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center text-[#0f6b4f] border border-emerald-200/60">
+                <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-[#0f6b4f] dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800">
                   <ChatBubbleLeftRightIcon className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm sm:text-base font-bold text-slate-900">
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
                     {tInv("whatsappModalTitle")}
                   </h3>
-                  <p className="text-[11px] text-slate-500 font-medium">
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                     {customerPhone
                       ? `${tInv("destination")}: ${customerName} (${customerPhone})`
                       : `${tInv("destination")}: ${customerName}`}
@@ -170,7 +170,7 @@ export function WhatsAppShareModal({
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 cursor-pointer transition-colors"
+                className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
               >
                 <XMarkIcon className="w-5 h-5" />
               </button>
@@ -178,7 +178,7 @@ export function WhatsAppShareModal({
 
             {/* Template Selector */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
                 {tInv("selectMessageScenario")}
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -189,14 +189,14 @@ export function WhatsAppShareModal({
                       key={tmpl.id}
                       type="button"
                       onClick={() => handleSelectTemplate(tmpl.id)}
-                      className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                      className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer min-h-[44px] ${
                         isSelected
-                          ? "border-[#0f6b4f] bg-emerald-50/70 text-[#0f6b4f] ring-1 ring-[#0f6b4f] shadow-2xs"
-                          : "border-slate-200 bg-slate-50/60 hover:bg-slate-100 text-slate-700"
+                          ? "border-[#0f6b4f] dark:border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400 ring-1 ring-[#0f6b4f] shadow-2xs"
+                          : "border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200"
                       }`}
                     >
                       <p className="text-xs font-bold">{tmpl.title}</p>
-                      <p className="text-[10px] text-slate-500 line-clamp-1 mt-0.5">
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
                         {tmpl.desc}
                       </p>
                     </button>
@@ -208,18 +208,18 @@ export function WhatsAppShareModal({
             {/* Custom Message Area */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-xs font-bold text-slate-700">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
                   {tInv("messagePreview")}
                 </label>
                 <button
                   type="button"
                   onClick={handleCopy}
-                  className="text-xs text-slate-600 hover:text-slate-900 font-semibold inline-flex items-center gap-1 cursor-pointer min-h-[32px] px-1"
+                  className="text-xs text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-semibold inline-flex items-center gap-1 cursor-pointer min-h-[32px] px-1"
                 >
                   {copied ? (
                     <>
-                      <CheckIcon className="w-3.5 h-3.5 text-[#0f6b4f]" />
-                      <span className="text-[#0f6b4f]">{tInv("copied")}</span>
+                      <CheckIcon className="w-3.5 h-3.5 text-[#0f6b4f] dark:text-emerald-400" />
+                      <span className="text-[#0f6b4f] dark:text-emerald-400">{tInv("copied")}</span>
                     </>
                   ) : (
                     <>
@@ -233,16 +233,16 @@ export function WhatsAppShareModal({
                 value={customMessage}
                 onChange={(e) => setCustomMessage(e.target.value)}
                 rows={6}
-                className="w-full rounded-xl border border-slate-200 p-3 text-xs sm:text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] font-sans leading-relaxed shadow-2xs"
+                className="w-full rounded-xl border border-slate-200 dark:border-slate-700 p-3 text-xs sm:text-sm text-slate-900 dark:text-white bg-white dark:bg-slate-950 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] font-sans leading-relaxed shadow-2xs"
               />
             </div>
 
             {/* Footer Modal */}
-            <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+            <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer shadow-2xs"
+                className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer shadow-2xs min-h-[44px]"
               >
                 {tInv("close")}
               </button>
@@ -251,7 +251,7 @@ export function WhatsAppShareModal({
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setIsOpen(false)}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-[#25D366] px-5 py-2.5 text-xs sm:text-sm font-bold text-white hover:bg-[#20ba5a] active:scale-[0.98] transition-all cursor-pointer shadow-xs"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-[#25D366] px-5 py-2.5 text-xs sm:text-sm font-bold text-white hover:bg-[#20ba5a] active:scale-[0.98] transition-all cursor-pointer shadow-xs min-h-[44px]"
               >
                 <span>{tInv("openWhatsApp")}</span>
                 <ArrowTopRightOnSquareIcon className="w-4 h-4" />

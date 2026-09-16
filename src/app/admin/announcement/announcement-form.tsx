@@ -84,19 +84,19 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Live Preview */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-2xs">
-        <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-1.5">
-          <SparklesIcon className="w-4 h-4 text-[#0f6b4f]" />
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-2xs">
+        <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-1.5">
+          <SparklesIcon className="w-4 h-4 text-[#0f6b4f] dark:text-emerald-400" />
           <span>{tAdmin("livePreviewTitle")}</span>
         </h3>
         {isActive && message.trim() ? (
           <div
             className={`p-4 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all shadow-2xs ${
               type === "info"
-                ? "bg-blue-50 border-blue-200/60 text-blue-900"
+                ? "bg-blue-50 dark:bg-blue-950/60 border-blue-200/60 dark:border-blue-900 text-blue-900 dark:text-blue-200"
                 : type === "warning"
-                ? "bg-amber-50 border-amber-200/60 text-amber-900"
-                : "bg-emerald-50 border-emerald-200/60 text-emerald-900"
+                ? "bg-amber-50 dark:bg-amber-950/60 border-amber-200/60 dark:border-amber-900 text-amber-900 dark:text-amber-200"
+                : "bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200/60 dark:border-emerald-900 text-emerald-900 dark:text-emerald-200"
             }`}
           >
             <div className="flex items-center gap-3 min-w-0">
@@ -110,21 +110,21 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
             )}
           </div>
         ) : (
-          <div className="p-6 rounded-xl border border-dashed border-slate-200 text-center text-slate-400 text-xs font-medium bg-slate-50/50">
+          <div className="p-6 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 text-center text-slate-400 dark:text-slate-500 text-xs font-medium bg-slate-50/50 dark:bg-slate-950/50">
             {tAdmin("announcementInactive")}
           </div>
         )}
       </div>
 
       {/* Main Settings */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-2xs space-y-5">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-2xs space-y-5">
         {/* Toggle Active Status */}
-        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
           <div>
-            <p className="text-sm font-bold text-slate-900">
+            <p className="text-sm font-bold text-slate-900 dark:text-white">
               {tAdmin("statusActiveTitle")}
             </p>
-            <p className="text-xs text-slate-500 font-medium">
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
               {tAdmin("statusActiveDesc")}
             </p>
           </div>
@@ -135,13 +135,13 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
               onChange={(e) => setIsActive(e.target.checked)}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#0f6b4f]"></div>
+            <div className="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#0f6b4f]"></div>
           </label>
         </div>
 
         {/* Target Placement */}
         <div>
-          <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-2">
+          <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
             {tAdmin("placementLabel")}
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -171,19 +171,19 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
                 onClick={() => setPlacement(p.id as AnnouncementPlacement)}
                 className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer shadow-2xs min-h-[44px] ${
                   placement === p.id
-                    ? "border-[#0f6b4f] bg-emerald-50/50 ring-1 ring-[#0f6b4f]"
-                    : "border-slate-200 bg-white hover:border-slate-300"
+                    ? "border-[#0f6b4f] dark:border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/40 ring-1 ring-[#0f6b4f]"
+                    : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600"
                 }`}
               >
                 <div className="flex items-center gap-2">
                   <p.icon
                     className={`w-4 h-4 ${
-                      placement === p.id ? "text-[#0f6b4f]" : "text-slate-400"
+                      placement === p.id ? "text-[#0f6b4f] dark:text-emerald-400" : "text-slate-400"
                     }`}
                   />
-                  <span className="text-xs font-bold text-slate-900">{p.label}</span>
+                  <span className="text-xs font-bold text-slate-900 dark:text-white">{p.label}</span>
                 </div>
-                <p className="text-[11px] text-slate-500 mt-1 font-medium">{p.desc}</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-medium">{p.desc}</p>
               </button>
             ))}
           </div>
@@ -191,7 +191,7 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
 
         {/* Message Input */}
         <div>
-          <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+          <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
             {tAdmin("messageLabel")}
           </label>
           <textarea
@@ -199,13 +199,13 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder={tAdmin("messagePlaceholder")}
-            className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] bg-slate-50/50 focus:bg-white transition-colors"
+            className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] bg-slate-50/50 dark:bg-slate-950 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-slate-900 transition-colors"
           />
         </div>
 
         {/* Banner Type / Tone */}
         <div>
-          <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+          <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
             {tAdmin("typeLabel")}
           </label>
           <div className="grid grid-cols-3 gap-3">
@@ -213,17 +213,17 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
               {
                 id: "info",
                 label: tAdmin("typeInfo"),
-                bg: "bg-blue-50 text-blue-800 border-blue-200/60",
+                bg: "bg-blue-50 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border-blue-200/60 dark:border-blue-900",
               },
               {
                 id: "warning",
                 label: tAdmin("typeWarning"),
-                bg: "bg-amber-50 text-amber-800 border-amber-200/60",
+                bg: "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200/60 dark:border-amber-900",
               },
               {
                 id: "success",
                 label: tAdmin("typeSuccess"),
-                bg: "bg-emerald-50 text-[#0f6b4f] border-emerald-200/60",
+                bg: "bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-300 border-emerald-200/60 dark:border-emerald-900",
               },
             ].map((bt) => (
               <button
@@ -233,7 +233,7 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
                 className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition-all text-center cursor-pointer shadow-2xs min-h-[44px] ${
                   type === bt.id
                     ? `${bt.bg} ring-1 ring-[#0f6b4f]`
-                    : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                    : "bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700"
                 }`}
               >
                 {bt.label}
@@ -243,9 +243,9 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
         </div>
 
         {/* Optional Action Link */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-100 pt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-100 dark:border-slate-800 pt-4">
           <div>
-            <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+            <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
               {tAdmin("linkTextLabel")}
             </label>
             <input
@@ -253,11 +253,11 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
               value={linkText}
               onChange={(e) => setLinkText(e.target.value)}
               placeholder={tAdmin("linkTextPlaceholder")}
-              className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] bg-slate-50/50 focus:bg-white transition-colors min-h-[44px]"
+              className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] bg-slate-50/50 dark:bg-slate-950 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-slate-900 transition-colors min-h-[44px]"
             />
           </div>
           <div>
-            <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+            <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
               {tAdmin("linkUrlLabel")}
             </label>
             <input
@@ -265,7 +265,7 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
               value={linkUrl}
               onChange={(e) => setLinkUrl(e.target.value)}
               placeholder={tAdmin("linkUrlPlaceholder")}
-              className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] bg-slate-50/50 focus:bg-white transition-colors min-h-[44px]"
+              className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] focus:border-[#0f6b4f] bg-slate-50/50 dark:bg-slate-950 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-slate-900 transition-colors min-h-[44px]"
             />
           </div>
         </div>

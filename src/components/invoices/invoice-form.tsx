@@ -198,13 +198,13 @@ export function InvoiceForm({
   return (
     <div className="max-w-4xl space-y-6 pb-24 md:pb-6">
       {/* Customer & Due Date Card */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs">
-        <h2 className="text-sm font-bold text-slate-900 mb-4">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xs">
+        <h2 className="text-sm font-bold text-slate-900 dark:text-white mb-4">
           {tInv("customerPaymentInfo")}
         </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
               {tInv("customer")}{" "}
               <span className="text-rose-500">*</span>
             </label>
@@ -212,7 +212,7 @@ export function InvoiceForm({
               <select
                 value={customerId}
                 onChange={(e) => setCustomerId(e.target.value)}
-                className="flex-1 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-medium"
+                className="flex-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-medium min-h-[44px]"
               >
                 <option value="">{tInv("selectCustomer")}</option>
                 {customers.map((c) => (
@@ -224,14 +224,14 @@ export function InvoiceForm({
               <button
                 type="button"
                 onClick={() => setShowCustomerModal(true)}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer whitespace-nowrap shadow-2xs"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all cursor-pointer whitespace-nowrap shadow-2xs min-h-[44px]"
               >
-                <PlusIcon className="h-4 w-4 text-[#0f6b4f]" />
+                <PlusIcon className="h-4 w-4 text-[#0f6b4f] dark:text-emerald-400" />
                 <span>{tInv("newCustomer")}</span>
               </button>
             </div>
             {customers.length === 0 && (
-              <p className="mt-2 text-xs text-amber-700 font-medium">
+              <p className="mt-2 text-xs text-amber-700 dark:text-amber-400 font-medium">
                 {tInv("noCustomers")}
               </p>
             )}
@@ -247,7 +247,7 @@ export function InvoiceForm({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
               {tInv("dueDate")}{" "}
               <span className="text-slate-400 font-normal">({tInv("optional")})</span>
             </label>
@@ -255,18 +255,18 @@ export function InvoiceForm({
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-medium"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-medium min-h-[44px]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
               {tInv("currency")}
             </label>
             <select
               value={currency}
               onChange={(e) => setCurrency(e.target.value as SupportedCurrency)}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-medium"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs font-medium min-h-[44px]"
             >
               {SUPPORTED_CURRENCIES.map((cur) => (
                 <option key={cur} value={cur}>
@@ -279,12 +279,12 @@ export function InvoiceForm({
       </div>
 
       {/* Line Items Card */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xs">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-bold text-slate-900">
+          <h2 className="text-sm font-bold text-slate-900 dark:text-white">
             {tInv("itemsTitle")}
           </h2>
-          <span className="text-xs text-slate-500 font-semibold">
+          <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">
             {tInv("itemCount", { count: items.length })}
           </span>
         </div>
@@ -294,10 +294,10 @@ export function InvoiceForm({
           {items.map((item, index) => (
             <div
               key={index}
-              className="rounded-xl border border-slate-200 p-4 bg-slate-50/60 space-y-3 relative"
+              className="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-slate-50/60 dark:bg-slate-800/40 space-y-3 relative"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-500">
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
                   {tInv("itemIndex", { number: index + 1 })}
                 </span>
                 {items.length > 1 && (
@@ -317,11 +317,11 @@ export function InvoiceForm({
                 onChange={(e) =>
                   updateItem(index, "description", e.target.value)
                 }
-                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f]"
+                className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] min-h-[44px]"
               />
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-500 mb-1">
+                  <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">
                     {tInv("quantityLabel")}
                   </label>
                   <input
@@ -336,11 +336,11 @@ export function InvoiceForm({
                         parseInt(e.target.value) || 0,
                       )
                     }
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs sm:text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] tabular-nums"
+                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] tabular-nums min-h-[40px]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-500 mb-1">
+                  <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">
                     {tInv("unitPrice", { symbol: currConf.symbol })}
                   </label>
                   <input
@@ -356,13 +356,13 @@ export function InvoiceForm({
                         parseFloat(e.target.value) || 0,
                       )
                     }
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs sm:text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] tabular-nums"
+                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] tabular-nums min-h-[40px]"
                   />
                 </div>
               </div>
-              <div className="text-right pt-2 border-t border-slate-200 flex items-center justify-between text-xs">
-                <span className="text-slate-500 font-medium">{tInv("subtotal")}:</span>
-                <span className="font-bold text-slate-900 tabular-nums">
+              <div className="text-right pt-2 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs">
+                <span className="text-slate-500 dark:text-slate-400 font-medium">{tInv("subtotal")}:</span>
+                <span className="font-bold text-slate-900 dark:text-white tabular-nums">
                   {formatMoney(item.quantity * item.price, currency, locale)}
                 </span>
               </div>
@@ -372,7 +372,7 @@ export function InvoiceForm({
 
         {/* Desktop Items Layout */}
         <div className="hidden md:block space-y-3">
-          <div className="grid grid-cols-12 gap-3 text-xs font-bold text-slate-500 uppercase tracking-wider px-1">
+          <div className="grid grid-cols-12 gap-3 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider px-1">
             <div className="col-span-5">{tInv("itemName")}</div>
             <div className="col-span-2 text-center">{tInv("quantity")}</div>
             <div className="col-span-2 text-right">{tInv("unitPrice", { symbol: currConf.symbol })}</div>
@@ -389,7 +389,7 @@ export function InvoiceForm({
                   onChange={(e) =>
                     updateItem(index, "description", e.target.value)
                   }
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f]"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f]"
                 />
               </div>
               <div className="col-span-2">
@@ -405,7 +405,7 @@ export function InvoiceForm({
                       parseInt(e.target.value) || 0,
                     )
                   }
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-center text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] tabular-nums"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-center text-sm text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] tabular-nums"
                 />
               </div>
               <div className="col-span-2">
@@ -422,10 +422,10 @@ export function InvoiceForm({
                       parseFloat(e.target.value) || 0,
                     )
                   }
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-right text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] tabular-nums"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-right text-sm text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] tabular-nums"
                 />
               </div>
-              <div className="col-span-2 text-right font-bold text-sm text-slate-900 tabular-nums">
+              <div className="col-span-2 text-right font-bold text-sm text-slate-900 dark:text-white tabular-nums">
                 {formatMoney(item.quantity * item.price, currency, locale)}
               </div>
               <div className="col-span-1 text-center">
@@ -433,7 +433,7 @@ export function InvoiceForm({
                   type="button"
                   onClick={() => removeItem(index)}
                   disabled={items.length === 1}
-                  className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer disabled:opacity-20 disabled:cursor-not-allowed"
+                  className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-xl transition-colors cursor-pointer disabled:opacity-20 disabled:cursor-not-allowed min-h-[36px] min-w-[36px] inline-flex items-center justify-center"
                   title={tInv("removeItem")}
                 >
                   <TrashIcon className="h-4 w-4" />
@@ -446,7 +446,7 @@ export function InvoiceForm({
         <button
           type="button"
           onClick={addItem}
-          className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-[#0f6b4f] hover:text-[#0c553e] transition-colors cursor-pointer bg-emerald-50 hover:bg-emerald-100/70 px-3.5 py-2 rounded-xl border border-emerald-200 shadow-2xs active:scale-[0.98]"
+          className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-[#0f6b4f] dark:text-emerald-400 hover:text-[#0c553e] dark:hover:text-emerald-300 transition-colors cursor-pointer bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100/70 dark:hover:bg-emerald-900/60 px-3.5 py-2 rounded-xl border border-emerald-200 dark:border-emerald-800 shadow-2xs active:scale-[0.98] min-h-[40px]"
         >
           <PlusIcon className="h-4 w-4" />
           <span>{tInv("addItem")}</span>
@@ -454,26 +454,26 @@ export function InvoiceForm({
       </div>
 
       {/* Diskon & Pajak (PPN) Card */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs space-y-6">
-        <h2 className="text-sm font-bold text-slate-900">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xs space-y-6">
+        <h2 className="text-sm font-bold text-slate-900 dark:text-white">
           {tInv("discountTaxSettings")}
         </h2>
 
         {/* Section Diskon */}
         <div className="space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+            <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
               {tInv("discount")}
             </label>
             {/* Toggle Tipe Diskon */}
-            <div className="inline-flex rounded-xl border border-slate-200 bg-slate-50 p-1 self-start sm:self-auto">
+            <div className="inline-flex rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-1 self-start sm:self-auto">
               <button
                 type="button"
                 onClick={() => setDiscountType("FIXED")}
                 className={`rounded-lg px-3 py-1 text-xs font-bold transition-all cursor-pointer ${
                   discountType === "FIXED"
-                    ? "bg-white text-[#0f6b4f] shadow-xs"
-                    : "text-slate-600 hover:text-slate-900"
+                    ? "bg-white dark:bg-slate-900 text-[#0f6b4f] dark:text-emerald-400 shadow-xs"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
                 {tInv("discountTypeFixed", { symbol: currConf.symbol })}
@@ -483,8 +483,8 @@ export function InvoiceForm({
                 onClick={() => setDiscountType("PERCENTAGE")}
                 className={`rounded-lg px-3 py-1 text-xs font-bold transition-all cursor-pointer ${
                   discountType === "PERCENTAGE"
-                    ? "bg-white text-[#0f6b4f] shadow-xs"
-                    : "text-slate-600 hover:text-slate-900"
+                    ? "bg-white dark:bg-slate-900 text-[#0f6b4f] dark:text-emerald-400 shadow-xs"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
                 {tInv("discountTypePercent")}
@@ -510,7 +510,7 @@ export function InvoiceForm({
                     setDiscountValue(Math.max(0, parseFloat(e.target.value) || 0))
                   }
                   placeholder={discountType === "FIXED" ? "0" : tInv("percentageExample")}
-                  className={`w-full rounded-xl border border-slate-200 bg-white py-2.5 text-xs sm:text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] tabular-nums font-medium ${
+                  className={`w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] tabular-nums font-medium min-h-[44px] ${
                     discountType === "FIXED" ? "pl-10 pr-3.5" : "px-3.5"
                   }`}
                 />
@@ -530,10 +530,10 @@ export function InvoiceForm({
                     key={pct}
                     type="button"
                     onClick={() => setDiscountValue(pct)}
-                    className={`rounded-lg px-2.5 py-1 text-xs font-semibold border transition-all cursor-pointer ${
+                    className={`rounded-lg px-2.5 py-1 text-xs font-semibold border transition-all cursor-pointer min-h-[32px] ${
                       discountValue === pct
                         ? "bg-[#0f6b4f] text-white border-[#0f6b4f]"
-                        : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                        : "bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700"
                     }`}
                   >
                     {pct}%
@@ -545,8 +545,8 @@ export function InvoiceForm({
         </div>
 
         {/* Section Pajak (PPN) */}
-        <div className="space-y-3 pt-4 border-t border-slate-100">
-          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+        <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
             {tInv("taxVatFull")}
           </label>
 
@@ -556,10 +556,10 @@ export function InvoiceForm({
                 key={String(preset.value)}
                 type="button"
                 onClick={() => setSelectedTaxMode(preset.value)}
-                className={`rounded-xl px-3.5 py-2 text-xs font-bold border transition-all cursor-pointer ${
+                className={`rounded-xl px-3.5 py-2 text-xs font-bold border transition-all cursor-pointer min-h-[38px] ${
                   selectedTaxMode === preset.value
-                    ? "bg-[#0f6b4f]/10 border-[#0f6b4f]/30 text-[#0f6b4f] shadow-2xs"
-                    : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                    ? "bg-[#0f6b4f]/10 dark:bg-emerald-500/20 border-[#0f6b4f]/30 dark:border-emerald-500/40 text-[#0f6b4f] dark:text-emerald-400 shadow-2xs"
+                    : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
                 }`}
               >
                 {preset.label}
@@ -569,7 +569,7 @@ export function InvoiceForm({
 
           {selectedTaxMode === "custom" && (
             <div className="max-w-xs pt-1">
-              <label className="block text-[11px] font-bold text-slate-500 mb-1">
+              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">
                 {tInv("customTaxRate")}
               </label>
               <div className="relative">
@@ -585,7 +585,7 @@ export function InvoiceForm({
                     )
                   }
                   placeholder={tInv("taxRateExample")}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 pr-8 text-xs sm:text-sm text-slate-900 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] font-medium"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 pr-8 text-xs sm:text-sm text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] font-medium min-h-[44px]"
                 />
                 <span className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-xs font-bold text-slate-400 pointer-events-none">
                   %
@@ -595,11 +595,11 @@ export function InvoiceForm({
           )}
 
           {activeTaxRate > 0 && (
-            <p className="text-xs text-slate-600 font-medium">
+            <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
               {tInv("taxCalculatedFrom")}{" "}
               <strong>{tInv("taxableBase")}</strong> ={" "}
               <span>{formatMoney(totals.taxableBase, currency, locale)}</span>:{" "}
-              <strong className="text-slate-900">
+              <strong className="text-slate-900 dark:text-white">
                 +{formatMoney(totals.taxAmount, currency, locale)}
               </strong>
             </p>
@@ -608,19 +608,19 @@ export function InvoiceForm({
       </div>
 
       {/* Payment Options Card */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs space-y-4">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xs space-y-4">
         <div>
-          <h2 className="text-sm font-bold text-slate-900">
+          <h2 className="text-sm font-bold text-slate-900 dark:text-white">
             {tInv("paymentMethodsForCustomer")}
           </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             {tInv("paymentMethodsDesc")}
           </p>
         </div>
 
         <div className="space-y-3">
           {/* Option 1: Direct Transfer */}
-          <label className="flex items-start gap-3 p-4 rounded-xl border border-slate-200 hover:border-slate-300 transition-colors cursor-pointer bg-slate-50/60">
+          <label className="flex items-start gap-3 p-4 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-colors cursor-pointer bg-slate-50/60 dark:bg-slate-800/40">
             <input
               type="checkbox"
               checked={enableDirectTransfer}
@@ -628,10 +628,10 @@ export function InvoiceForm({
               className="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#0f6b4f] focus:ring-[#0f6b4f]"
             />
             <div className="space-y-0.5">
-              <span className="text-xs font-bold text-slate-900">
+              <span className="text-xs font-bold text-slate-900 dark:text-white">
                 {tInv("directTransferFormTitle")}
               </span>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 {userBankName && userBankAccountNumber ? (
                   tInv.rich("directTransferConfigured", {
                     bank: userBankName,
@@ -642,7 +642,7 @@ export function InvoiceForm({
                 ) : (
                   tInv.rich("directTransferMissing", {
                     settings: (chunks) => (
-                      <Link href="/settings" className="text-[#0f6b4f] underline font-bold">
+                      <Link href="/settings" className="text-[#0f6b4f] dark:text-emerald-400 underline font-bold">
                         {chunks}
                       </Link>
                     ),
@@ -653,7 +653,7 @@ export function InvoiceForm({
           </label>
 
           {/* Option 2: Digital Payment via NotaKu */}
-          <label className="flex items-start gap-3 p-4 rounded-xl border border-emerald-200 hover:border-emerald-300 transition-colors cursor-pointer bg-emerald-50/40">
+          <label className="flex items-start gap-3 p-4 rounded-xl border border-emerald-200 dark:border-emerald-800 hover:border-emerald-300 dark:hover:border-emerald-700 transition-colors cursor-pointer bg-emerald-50/40 dark:bg-emerald-950/30">
             <input
               type="checkbox"
               checked={enableDigitalPayment}
@@ -662,21 +662,21 @@ export function InvoiceForm({
             />
             <div className="space-y-0.5">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-slate-900">
+                <span className="text-xs font-bold text-slate-900 dark:text-white">
                   {tInv("digitalPaymentFormTitle")}
                 </span>
-                <span className="rounded-md bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-[#0f6b4f]">
+                <span className="rounded-md bg-emerald-100 dark:bg-emerald-900/60 px-2 py-0.5 text-[10px] font-bold text-[#0f6b4f] dark:text-emerald-300">
                   {tInv("autoSettled")}
                 </span>
               </div>
-              <p className="text-xs text-slate-600">
+              <p className="text-xs text-slate-600 dark:text-slate-400">
                 {tInv("digitalPaymentFormDesc")}
               </p>
             </div>
           </label>
 
           {/* Option 3: Automated Payment Reminders */}
-          <label className="flex items-start gap-3 p-4 rounded-xl border border-slate-200 hover:border-slate-300 transition-colors cursor-pointer bg-slate-50/60">
+          <label className="flex items-start gap-3 p-4 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-colors cursor-pointer bg-slate-50/60 dark:bg-slate-800/40">
             <input
               type="checkbox"
               checked={enableReminder}
@@ -685,14 +685,14 @@ export function InvoiceForm({
             />
             <div className="space-y-0.5">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-slate-900">
+                <span className="text-xs font-bold text-slate-900 dark:text-white">
                   {tInv("automatedReminderTitle")}
                 </span>
-                <span className="rounded-md bg-slate-200/80 px-2 py-0.5 text-[10px] font-bold text-slate-700">
+                <span className="rounded-md bg-slate-200/80 dark:bg-slate-700 px-2 py-0.5 text-[10px] font-bold text-slate-700 dark:text-slate-300">
                   {tInv("reminderSchedule")}
                 </span>
               </div>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 {tInv("automatedReminderOptionDesc")}
               </p>
             </div>
@@ -701,8 +701,8 @@ export function InvoiceForm({
       </div>
 
       {/* Notes Card */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs">
-        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xs">
+        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
           {tInv("additionalNotes")}
         </label>
         <textarea
@@ -710,7 +710,7 @@ export function InvoiceForm({
           onChange={(e) => setNotes(e.target.value)}
           rows={2}
           placeholder={tInv("notesPlaceholder")}
-          className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] resize-none shadow-2xs"
+          className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] resize-none shadow-2xs min-h-[44px]"
         />
       </div>
 
@@ -718,24 +718,24 @@ export function InvoiceForm({
       {error && (
         <div
           role="alert"
-          className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs sm:text-sm text-rose-700 font-semibold shadow-2xs animate-in fade-in"
+          className="rounded-xl border border-rose-200 bg-rose-50 dark:bg-rose-950/60 dark:border-rose-900 px-4 py-3 text-xs sm:text-sm text-rose-700 dark:text-rose-300 font-semibold shadow-2xs animate-in fade-in"
         >
           {error}
         </div>
       )}
 
       {/* Desktop Summary & Action Buttons */}
-      <div className="hidden md:block rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-2xs">
-        <div className="space-y-2 border-b border-slate-100 pb-4 text-sm">
-          <div className="flex justify-between text-slate-600">
+      <div className="hidden md:block rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xs">
+        <div className="space-y-2 border-b border-slate-100 dark:border-slate-800 pb-4 text-sm">
+          <div className="flex justify-between text-slate-600 dark:text-slate-400">
             <span className="font-medium">{tInv("subtotal")}</span>
-            <span className="font-bold text-slate-900 tabular-nums">
+            <span className="font-bold text-slate-900 dark:text-white tabular-nums">
               {formatMoney(totals.subtotal, currency, locale)}
             </span>
           </div>
 
           {totals.discountAmount > 0 && (
-            <div className="flex justify-between text-[#0f6b4f] font-semibold">
+            <div className="flex justify-between text-[#0f6b4f] dark:text-emerald-400 font-semibold">
               <span>
                 {tInv("discount")}{" "}
                 {discountType === "PERCENTAGE"
@@ -749,9 +749,9 @@ export function InvoiceForm({
           )}
 
           {activeTaxRate > 0 && (
-            <div className="flex justify-between text-slate-600">
+            <div className="flex justify-between text-slate-600 dark:text-slate-400">
               <span className="font-medium">{tInv("taxVat")} ({activeTaxRate}%)</span>
-              <span className="font-bold text-slate-900 tabular-nums">
+              <span className="font-bold text-slate-900 dark:text-white tabular-nums">
                 +{formatMoney(totals.taxAmount, currency, locale)}
               </span>
             </div>
@@ -763,7 +763,7 @@ export function InvoiceForm({
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
               {tInv("total")}
             </span>
-            <p className="text-2xl font-bold text-slate-900 tabular-nums">
+            <p className="text-2xl font-bold text-slate-900 dark:text-white tabular-nums">
               {formatMoney(totals.total, currency, locale)}
             </p>
           </div>
@@ -771,14 +771,15 @@ export function InvoiceForm({
           <div className="flex items-center gap-3">
             <Link
               href="/invoices"
-              className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs"
+              prefetch={true}
+              className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-2xs min-h-[44px] inline-flex items-center"
             >
               {tInv("cancelBtn")}
             </Link>
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="rounded-xl bg-[#0f6b4f] px-6 py-2.5 text-xs sm:text-sm font-bold text-white cursor-pointer hover:bg-[#0c553e] active:scale-[0.98] disabled:opacity-50 transition-all shadow-xs"
+              className="rounded-xl bg-[#0f6b4f] px-6 py-2.5 text-xs sm:text-sm font-bold text-white cursor-pointer hover:bg-[#0c553e] active:scale-[0.98] disabled:opacity-50 transition-all shadow-xs min-h-[44px]"
             >
               {loading
                 ? tInv("savingBtn")
@@ -791,13 +792,13 @@ export function InvoiceForm({
       </div>
 
       {/* Mobile Sticky Bottom Action Bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur-md p-4 md:hidden shadow-lg">
+      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-4 md:hidden shadow-lg">
         <div className="flex items-center justify-between gap-3">
           <div>
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
               {tInv("total")}
             </span>
-            <p className="text-base font-extrabold text-slate-900 tabular-nums">
+            <p className="text-base font-extrabold text-slate-900 dark:text-white tabular-nums">
               {formatMoney(totals.total, currency, locale)}
             </p>
           </div>

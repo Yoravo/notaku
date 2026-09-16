@@ -84,15 +84,15 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
           <Link
             href="/invoices"
             prefetch={true}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors mb-2"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors mb-2"
           >
             <ArrowLeftIcon className="w-3.5 h-3.5" />
             <span>{tInv("backToList")}</span>
           </Link>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
             {invoice.number || tInv("draftInvoice")}
           </h1>
-          <p className="mt-1 text-xs text-slate-500 flex items-center gap-1.5 font-medium">
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5 font-medium">
             <CalendarDaysIcon className="w-3.5 h-3.5 text-slate-400" />
             <span>
               {tInv("createdOn")}{" "}
@@ -117,12 +117,12 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
         {/* Action Buttons Group */}
         <div className="flex flex-wrap items-center gap-2">
           {/* Quick PDF Action Group */}
-          <div className="inline-flex items-center rounded-xl border border-slate-200 bg-white shadow-2xs overflow-hidden">
+          <div className="inline-flex items-center rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xs overflow-hidden">
             <a
               href={`/api/invoices/${invoice.id}/pdf?preview=true`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors border-r border-slate-200"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border-r border-slate-200 dark:border-slate-800 min-h-[44px]"
               title={tInv("previewPdf")}
             >
               <EyeIcon className="w-4 h-4 text-slate-400" />
@@ -131,7 +131,7 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
             <a
               href={`/api/invoices/${invoice.id}/pdf`}
               download
-              className="inline-flex items-center p-2 text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
+              className="inline-flex items-center p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors min-h-[44px] min-w-[40px] justify-center"
               title={tInv("downloadPdf")}
             >
               <ArrowDownTrayIcon className="w-4 h-4" />
@@ -140,21 +140,21 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
 
           {/* Quick Receipt PDF Action Group (Hanya saat status PAID) */}
           {invoice.status === "PAID" && (
-            <div className="inline-flex items-center rounded-xl border border-emerald-200 bg-emerald-50/60 shadow-2xs overflow-hidden">
+            <div className="inline-flex items-center rounded-xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50/60 dark:bg-emerald-950/60 shadow-2xs overflow-hidden">
               <a
                 href={`/api/invoices/${invoice.id}/receipt?preview=true`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold text-[#0f6b4f] hover:bg-emerald-100/60 transition-colors border-r border-emerald-200"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold text-[#0f6b4f] dark:text-emerald-400 hover:bg-emerald-100/60 dark:hover:bg-emerald-900/60 transition-colors border-r border-emerald-200 dark:border-emerald-800 min-h-[44px]"
                 title={tInv("viewReceipt")}
               >
-                <DocumentCheckIcon className="w-4 h-4 text-[#0f6b4f]" />
+                <DocumentCheckIcon className="w-4 h-4 text-[#0f6b4f] dark:text-emerald-400" />
                 <span>{tInv("receipt")}</span>
               </a>
               <a
                 href={`/api/invoices/${invoice.id}/receipt`}
                 download
-                className="inline-flex items-center p-2 text-[#0f6b4f] hover:bg-emerald-100/80 transition-colors"
+                className="inline-flex items-center p-2 text-[#0f6b4f] dark:text-emerald-400 hover:bg-emerald-100/80 dark:hover:bg-emerald-900/80 transition-colors min-h-[44px] min-w-[40px] justify-center"
                 title={tInv("downloadReceipt")}
               >
                 <ArrowDownTrayIcon className="w-4 h-4" />
@@ -167,7 +167,7 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
             <Link
               href={`/invoices/${invoice.id}/edit`}
               prefetch={true}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-2xs min-h-[44px]"
             >
               <PencilSquareIcon className="w-4 h-4 text-slate-400" />
               <span>{tInv("edit")}</span>
@@ -221,39 +221,39 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
       </div>
 
       {/* Main Invoice Card Preview */}
-      <div className="rounded-2xl border border-slate-200 bg-white shadow-2xs overflow-hidden">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xs overflow-hidden">
         {/* Customer & Due Date Section */}
-        <div className="p-6 border-b border-slate-100 bg-slate-50/60 grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="p-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/50 grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 flex items-center gap-1">
               <UserIcon className="w-3.5 h-3.5" />
               {tInv("billedTo")}
             </span>
-            <p className="mt-1.5 font-bold text-slate-900 text-base">
+            <p className="mt-1.5 font-bold text-slate-900 dark:text-white text-base">
               {invoice.customer.name}
             </p>
             {invoice.customer.email && (
-              <p className="text-xs text-slate-600 font-mono mt-0.5">
+              <p className="text-xs text-slate-600 dark:text-slate-300 font-mono mt-0.5">
                 {invoice.customer.email}
               </p>
             )}
             {invoice.customer.phone && (
-              <p className="text-xs text-slate-600 font-mono mt-0.5">
+              <p className="text-xs text-slate-600 dark:text-slate-300 font-mono mt-0.5">
                 {invoice.customer.phone}
               </p>
             )}
             {invoice.customer.address && (
-              <p className="mt-1 text-xs text-slate-500 leading-relaxed">
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                 {invoice.customer.address}
               </p>
             )}
           </div>
 
           <div className="sm:text-right flex flex-col justify-start sm:items-end">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
               {tInv("dueDate")}
             </span>
-            <p className="mt-1.5 font-semibold text-slate-900 text-sm">
+            <p className="mt-1.5 font-semibold text-slate-900 dark:text-white text-sm">
               {invoice.dueDate
                 ? formatDateWIB(invoice.dueDate, {
                     day: "numeric",
@@ -264,10 +264,10 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
             </p>
             {invoice.notes && (
               <div className="mt-3 text-left sm:text-right max-w-xs">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">
                   {tInv("notes")}
                 </span>
-                <p className="text-xs text-slate-600 italic mt-0.5">
+                <p className="text-xs text-slate-600 dark:text-slate-400 italic mt-0.5">
                   &quot;{invoice.notes}&quot;
                 </p>
               </div>
@@ -277,8 +277,8 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
 
         {/* Line Items Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs sm:text-sm">
-            <thead className="border-b border-slate-200 bg-slate-50/80 text-slate-500 text-xs uppercase font-bold tracking-wider">
+          <table className="w-full text-left text-xs sm:text-sm min-w-[500px]">
+            <thead className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 text-xs uppercase font-bold tracking-wider">
               <tr>
                 <th className="px-6 py-3.5">{tInv("itemName")}</th>
                 <th className="px-4 py-3.5 text-center">{tInv("quantity")}</th>
@@ -286,39 +286,39 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
                 <th className="px-6 py-3.5 text-right">{tInv("amount")}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {invoice.items.map((item) => (
-                <tr key={item.id} className="hover:bg-slate-50/50">
-                  <td className="px-6 py-3.5 font-medium text-slate-900">
+                <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/60 transition-colors">
+                  <td className="px-6 py-3.5 font-medium text-slate-900 dark:text-white">
                     {item.description}
                   </td>
-                  <td className="px-4 py-3.5 text-center text-slate-600 font-mono">
+                  <td className="px-4 py-3.5 text-center text-slate-600 dark:text-slate-300 font-mono">
                     {item.quantity}
                   </td>
-                  <td className="px-4 py-3.5 text-right text-slate-600 tabular-nums">
+                  <td className="px-4 py-3.5 text-right text-slate-600 dark:text-slate-300 tabular-nums">
                     {formatMoney(item.price, invoice.currency, locale)}
                   </td>
-                  <td className="px-6 py-3.5 text-right font-semibold text-slate-900 tabular-nums">
+                  <td className="px-6 py-3.5 text-right font-semibold text-slate-900 dark:text-white tabular-nums">
                     {formatMoney(item.amount, invoice.currency, locale)}
                   </td>
                 </tr>
               ))}
             </tbody>
-            <tfoot className="border-t-2 border-slate-200 bg-slate-50/40 divide-y divide-slate-200/60">
+            <tfoot className="border-t-2 border-slate-200 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-800/40 divide-y divide-slate-200/60 dark:divide-slate-800">
               <tr>
                 <td
                   colSpan={3}
-                  className="px-6 py-3 text-right font-semibold text-slate-600 text-xs"
+                  className="px-6 py-3 text-right font-semibold text-slate-600 dark:text-slate-300 text-xs"
                 >
                   {tInv("subtotal")}
                 </td>
-                <td className="px-6 py-3 text-right font-semibold text-slate-900 text-sm tabular-nums">
+                <td className="px-6 py-3 text-right font-semibold text-slate-900 dark:text-white text-sm tabular-nums">
                   {formatMoney(invoice.subtotal || invoice.total, invoice.currency, locale)}
                 </td>
               </tr>
 
               {invoice.discountAmount > 0 && (
-                <tr className="text-[#0f6b4f]">
+                <tr className="text-[#0f6b4f] dark:text-emerald-400">
                   <td
                     colSpan={3}
                     className="px-6 py-2.5 text-right font-semibold text-xs"
@@ -336,24 +336,24 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
                 <tr>
                   <td
                     colSpan={3}
-                    className="px-6 py-2.5 text-right font-semibold text-slate-600 text-xs"
+                    className="px-6 py-2.5 text-right font-semibold text-slate-600 dark:text-slate-300 text-xs"
                   >
                     {tInv("taxVat")} ({invoice.taxRate}%)
                   </td>
-                  <td className="px-6 py-2.5 text-right font-bold text-slate-900 text-sm tabular-nums">
+                  <td className="px-6 py-2.5 text-right font-bold text-slate-900 dark:text-white text-sm tabular-nums">
                     +{formatMoney(invoice.taxAmount, invoice.currency, locale)}
                   </td>
                 </tr>
               )}
 
-              <tr className="bg-slate-100/70">
+              <tr className="bg-slate-100/70 dark:bg-slate-800/80">
                 <td
                   colSpan={3}
-                  className="px-6 py-4 text-right font-bold text-slate-800 uppercase tracking-wider text-xs sm:text-sm"
+                  className="px-6 py-4 text-right font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider text-xs sm:text-sm"
                 >
                   {tInv("grandTotal")}
                 </td>
-                <td className="px-6 py-4 text-right font-bold text-slate-900 text-lg sm:text-xl tabular-nums">
+                <td className="px-6 py-4 text-right font-bold text-slate-900 dark:text-white text-lg sm:text-xl tabular-nums">
                   {formatMoney(invoice.total, invoice.currency, locale)}
                 </td>
               </tr>

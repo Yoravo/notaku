@@ -131,18 +131,18 @@ export function SignaturePadModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="w-full max-w-lg rounded-2xl bg-white p-5 sm:p-6 shadow-2xl space-y-4 animate-in zoom-in-95 duration-150">
+      <div className="w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-2xl space-y-4 animate-in zoom-in-95 duration-150">
         {/* Header Modal */}
-        <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+        <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-800 pb-3">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-emerald-50 text-[#0f6b4f] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400 flex items-center justify-center border border-emerald-100 dark:border-emerald-800">
               <PencilSquareIcon className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-gray-900">
+              <h3 className="text-base font-bold text-gray-900 dark:text-white">
                 {tSig("title")}
               </h3>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-slate-400">
                 {tSig("subtitle")}
               </p>
             </div>
@@ -150,17 +150,17 @@ export function SignaturePadModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors cursor-pointer"
+            className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-700 dark:hover:text-slate-200 transition-colors cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
           >
             <XMarkIcon className="w-5 h-5" />
           </button>
         </div>
 
         {/* Toolbar Pengaturan Coretan */}
-        <div className="flex flex-wrap items-center justify-between gap-3 text-xs bg-gray-50 p-2.5 rounded-xl border border-gray-200/70">
+        <div className="flex flex-wrap items-center justify-between gap-3 text-xs bg-gray-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-gray-200/70 dark:border-slate-700">
           {/* Warna Tinta */}
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-gray-600">{tSig("inkColor")}</span>
+            <span className="font-semibold text-gray-600 dark:text-slate-300">{tSig("inkColor")}</span>
             <button
               type="button"
               onClick={() => setStrokeColor("#111827")}
@@ -185,7 +185,7 @@ export function SignaturePadModal({
 
           {/* Ketebalan Goresan */}
           <div className="flex items-center gap-1.5">
-            <span className="font-semibold text-gray-600">{tSig("strokeWidth")}</span>
+            <span className="font-semibold text-gray-600 dark:text-slate-300">{tSig("strokeWidth")}</span>
             {[
               { label: tSig("strokeThin"), val: 1.8 },
               { label: tSig("strokeMedium"), val: 2.5 },
@@ -195,10 +195,10 @@ export function SignaturePadModal({
                 key={st.val}
                 type="button"
                 onClick={() => setStrokeWidth(st.val)}
-                className={`px-2 py-1 rounded-md font-medium transition-colors cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer min-h-[32px] ${
                   strokeWidth === st.val
                     ? "bg-[#0f6b4f] text-white shadow-xs"
-                    : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
+                    : "bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 border border-gray-200 dark:border-slate-700"
                 }`}
               >
                 {st.label}
@@ -207,8 +207,8 @@ export function SignaturePadModal({
           </div>
         </div>
 
-        {/* Drawing Canvas Area */}
-        <div className="relative w-full h-56 sm:h-64 rounded-xl border-2 border-dashed border-gray-300 bg-gradient-to-b from-gray-50 to-white flex items-center justify-center overflow-hidden touch-none select-none shadow-inner">
+        {/* Drawing Canvas Area - Canvas stays light for clean dark ink visibility */}
+        <div className="relative w-full h-56 sm:h-64 rounded-xl border-2 border-dashed border-gray-300 dark:border-slate-600 bg-white flex items-center justify-center overflow-hidden touch-none select-none shadow-inner">
           <canvas
             ref={canvasRef}
             className="w-full h-full cursor-crosshair"
@@ -246,7 +246,7 @@ export function SignaturePadModal({
             type="button"
             onClick={handleClear}
             disabled={isEmpty}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-gray-600 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-gray-600 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition-colors cursor-pointer disabled:opacity-40 disabled:pointer-events-none min-h-[44px]"
           >
             <ArrowPathIcon className="w-4 h-4" />
             <span>{tSig("clear")}</span>
@@ -256,7 +256,7 @@ export function SignaturePadModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+              className="px-4 py-2 text-xs font-semibold text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer min-h-[44px]"
             >
               {tSig("cancel")}
             </button>
@@ -264,7 +264,7 @@ export function SignaturePadModal({
               type="button"
               onClick={handleSave}
               disabled={isEmpty}
-              className="inline-flex items-center gap-1.5 px-5 py-2 text-xs font-semibold text-white bg-[#0f6b4f] hover:bg-[#0c5740] rounded-lg transition-colors cursor-pointer shadow-xs disabled:opacity-50 disabled:pointer-events-none"
+              className="inline-flex items-center gap-1.5 px-5 py-2 text-xs font-semibold text-white bg-[#0f6b4f] hover:bg-[#0c5740] rounded-xl transition-colors cursor-pointer shadow-xs disabled:opacity-50 disabled:pointer-events-none min-h-[44px]"
             >
               <CheckIcon className="w-4 h-4 stroke-[2.5]" />
               <span>{tSig("useSignature")}</span>
