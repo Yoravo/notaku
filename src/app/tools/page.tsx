@@ -11,6 +11,7 @@ import {
   BuildingOffice2Icon,
 } from "@heroicons/react/24/outline";
 import { LandingNavbar } from "@/components/landing-navbar";
+import { LandingFooter } from "@/components/layout/landing-footer";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
@@ -137,32 +138,32 @@ export default async function ToolsHubPage() {
                 key={tool.href}
                 href={tool.href}
                 prefetch={true}
-                className="group relative p-6 rounded-3xl bg-surface border border-border-light hover:border-emerald-500/40 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+                className="group relative p-6 rounded-3xl bg-white dark:bg-slate-900 border border-line dark:border-slate-800 hover:border-emerald/40 dark:hover:border-emerald-500/40 hover:shadow-xl transition-all duration-300 flex flex-col justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald min-h-[44px]"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                    <div className="p-3 rounded-2xl bg-emerald/10 text-emerald dark:text-emerald-400 group-hover:bg-emerald group-hover:text-white transition-colors">
                       <Icon className="w-6 h-6" />
                     </div>
                     {tool.badge && (
-                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 border border-emerald-500/20">
+                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald/10 text-emerald dark:text-emerald-400 border border-emerald/20">
                         {tool.badge}
                       </span>
                     )}
                   </div>
 
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-ink-soft">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-ink-soft dark:text-slate-400">
                     {tool.tag}
                   </span>
-                  <h2 className="text-base sm:text-lg font-bold text-ink group-hover:text-emerald-600 transition-colors mt-1 mb-2">
+                  <h2 className="text-base sm:text-lg font-bold text-ink group-hover:text-emerald dark:group-hover:text-emerald-400 transition-colors mt-1 mb-2">
                     {tool.title}
                   </h2>
-                  <p className="text-xs text-ink-soft leading-relaxed line-clamp-3">
+                  <p className="text-xs text-ink-soft dark:text-slate-400 leading-relaxed line-clamp-3">
                     {tool.desc}
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-border-light flex items-center justify-between text-xs font-bold text-emerald-600">
+                <div className="mt-6 pt-4 border-t border-line dark:border-slate-800 flex items-center justify-between text-xs font-bold text-emerald dark:text-emerald-400 min-h-[36px]">
                   <span>Gunakan Alat Sekarang</span>
                   <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -183,12 +184,16 @@ export default async function ToolsHubPage() {
           </div>
           <Link
             href="/register"
-            className="px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs sm:text-sm shrink-0 shadow-lg hover:shadow-xl transition-all"
+            prefetch={true}
+            className="px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs sm:text-sm shrink-0 shadow-lg hover:shadow-xl transition-all min-h-[44px] flex items-center justify-center"
           >
             Daftar Akun Gratis Sekarang
           </Link>
         </div>
       </main>
+
+      {/* Footer */}
+      <LandingFooter />
     </div>
   );
 }

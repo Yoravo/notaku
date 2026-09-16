@@ -74,7 +74,7 @@ export function LanguageDropdown({ variant = "light" }: LanguageDropdownProps) {
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
         aria-haspopup="true"
-        className={`inline-flex items-center gap-1.5 rounded-xl border h-9 px-3 text-xs font-semibold transition-colors cursor-pointer ${buttonStyles[variant]}`}
+        className={`inline-flex items-center gap-1.5 rounded-xl border h-10 sm:h-9 min-h-[44px] sm:min-h-0 px-3 text-xs font-semibold transition-colors cursor-pointer ${buttonStyles[variant]}`}
       >
         <GlobeAltIcon className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
         <span className="font-medium">{currentLang.flag}</span>

@@ -13,7 +13,7 @@ export default function Loading() {
           <div className="h-4 w-2/3 bg-ink/5 rounded" />
         </div>
 
-        <div className="p-6 sm:p-8 rounded-3xl bg-surface border border-border-light space-y-6">
+        <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-line dark:border-slate-800 space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="h-10 bg-paper-deep rounded-xl" />
             <div className="h-10 bg-paper-deep rounded-xl" />

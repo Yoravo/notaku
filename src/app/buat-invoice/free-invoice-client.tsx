@@ -25,6 +25,7 @@ import { formatMoney, SUPPORTED_CURRENCIES, type SupportedCurrency } from "@/lib
 import { NICHE_TEMPLATES } from "@/lib/templates-data";
 import { FreeToolsNav } from "@/components/free-tools-nav";
 import { LandingNavbar } from "@/components/landing-navbar";
+import { LandingFooter } from "@/components/layout/landing-footer";
 
 interface InvoiceItem {
   id: string;
@@ -478,30 +479,30 @@ export function FreeInvoiceGeneratorClient({ session }: { session?: any }) {
                       />
                     </div>
 
-                    <div className="flex items-center gap-2 w-full sm:w-auto">
-                      <div className="w-20">
+                    <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full sm:w-auto">
+                      <div className="w-20 min-w-[70px] flex-1 sm:flex-initial">
                         <input
                           type="number"
                           min="1"
                           value={item.quantity}
                           onChange={(e) => handleItemChange(item.id, "quantity", e.target.value)}
                           placeholder="Qty"
-                          className="w-full rounded-lg border border-line bg-white p-2 text-xs text-center text-ink focus:border-emerald focus:outline-none font-mono"
+                          className="w-full rounded-lg border border-line dark:border-slate-800 bg-white dark:bg-slate-950 p-2 text-xs text-center text-ink dark:text-white focus:border-emerald focus:outline-none font-mono"
                         />
                       </div>
 
-                      <div className="w-32">
+                      <div className="w-32 min-w-[100px] flex-2 sm:flex-initial">
                         <input
                           type="number"
                           min="0"
                           value={item.price}
                           onChange={(e) => handleItemChange(item.id, "price", e.target.value)}
                           placeholder="Harga"
-                          className="w-full rounded-lg border border-line bg-white p-2 text-xs text-right text-ink focus:border-emerald focus:outline-none font-mono"
+                          className="w-full rounded-lg border border-line dark:border-slate-800 bg-white dark:bg-slate-950 p-2 text-xs text-right text-ink dark:text-white focus:border-emerald focus:outline-none font-mono"
                         />
                       </div>
 
-                      <div className="w-28 text-right font-bold text-xs text-ink tabular-nums px-2">
+                      <div className="w-auto sm:w-28 text-right font-bold text-xs text-ink dark:text-white tabular-nums px-2 ml-auto">
                         {formatMoney(item.quantity * item.price, currency)}
                       </div>
 
@@ -510,7 +511,7 @@ export function FreeInvoiceGeneratorClient({ session }: { session?: any }) {
                         onClick={() => handleRemoveItem(item.id)}
                         disabled={items.length <= 1}
                         aria-label="Hapus Baris"
-                        className="p-1.5 text-ink-soft hover:text-rose-600 disabled:opacity-30 transition-colors"
+                        className="p-2 text-ink-soft hover:text-rose-600 disabled:opacity-30 transition-colors cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center rounded-lg"
                       >
                         <TrashIcon className="w-4 h-4" />
                       </button>
@@ -773,6 +774,9 @@ export function FreeInvoiceGeneratorClient({ session }: { session?: any }) {
         {/* Cross-linking Free Tools Navigation */}
         <FreeToolsNav />
       </main>
+
+      {/* Footer */}
+      <LandingFooter />
     </div>
   );
 }

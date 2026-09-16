@@ -14,6 +14,7 @@ import {
 import { terbilangRupiah, terbilang } from "@/lib/terbilang";
 import { FreeToolsNav } from "@/components/free-tools-nav";
 import { LandingNavbar } from "@/components/landing-navbar";
+import { LandingFooter } from "@/components/layout/landing-footer";
 
 export function TerbilangConverterClient({ session }: { session?: any }) {
   const [amountInput, setAmountInput] = useState<string>("25500000");
@@ -227,6 +228,9 @@ export function TerbilangConverterClient({ session }: { session?: any }) {
         {/* Cross-linking Free Tools Navigation */}
         <FreeToolsNav />
       </main>
+
+      {/* Footer */}
+      <LandingFooter />
     </div>
   );
 }

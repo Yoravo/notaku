@@ -13,6 +13,7 @@ import {
 import { NICHE_TEMPLATES, NicheTemplate } from "@/lib/templates-data";
 import { formatMoney } from "@/lib/currencies";
 import { LandingNavbar } from "@/components/landing-navbar";
+import { LandingFooter } from "@/components/layout/landing-footer";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
@@ -317,6 +318,9 @@ export default async function NicheTemplateDetailPage({
           )}
         </section>
       </main>
+
+      {/* Footer */}
+      <LandingFooter />
     </div>
   );
 }

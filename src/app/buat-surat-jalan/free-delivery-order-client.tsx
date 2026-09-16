@@ -19,6 +19,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { FreeToolsNav } from "@/components/free-tools-nav";
 import { LandingNavbar } from "@/components/landing-navbar";
+import { LandingFooter } from "@/components/layout/landing-footer";
 
 interface DeliveryItem {
   id: string;
@@ -200,68 +201,68 @@ export function FreeDeliveryOrderGeneratorClient({ session }: { session?: any })
           {/* Form Editor (Left) */}
           <div className="lg:col-span-6 space-y-6">
             {/* Dokumen & Pengangkutan */}
-            <div className="p-5 sm:p-6 rounded-2xl bg-surface border border-border-light shadow-sm space-y-4">
-              <h2 className="text-sm font-bold text-ink flex items-center gap-2 border-b border-border-light pb-3">
-                <TruckIcon className="w-4 h-4 text-emerald-600" />
+            <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-line dark:border-slate-800 shadow-sm space-y-4">
+              <h2 className="text-sm font-bold text-ink flex items-center gap-2 border-b border-line dark:border-slate-800 pb-3">
+                <TruckIcon className="w-4 h-4 text-emerald dark:text-emerald-400" />
                 Informasi Surat Jalan & Kendaraan
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-[11px] font-bold text-ink-soft mb-1">
+                  <label className="block text-[11px] font-bold text-ink-soft dark:text-slate-400 mb-1">
                     No. Surat Jalan
                   </label>
                   <input
                     type="text"
                     value={orderNumber}
                     onChange={(e) => setOrderNumber(e.target.value)}
-                    className="w-full text-xs bg-paper border border-border rounded-xl px-3 py-2 focus:ring-1 focus:ring-emerald-500 outline-none font-medium"
+                    className="w-full text-xs bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-xl px-3 py-2.5 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none font-medium min-h-[44px]"
                     placeholder="SJ-202608-001"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-ink-soft mb-1">
+                  <label className="block text-[11px] font-bold text-ink-soft dark:text-slate-400 mb-1">
                     Tanggal Pengiriman
                   </label>
                   <input
                     type="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="w-full text-xs bg-paper border border-border rounded-xl px-3 py-2 focus:ring-1 focus:ring-emerald-500 outline-none font-medium"
+                    className="w-full text-xs bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-xl px-3 py-2.5 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none font-medium min-h-[44px]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-ink-soft mb-1">
+                  <label className="block text-[11px] font-bold text-ink-soft dark:text-slate-400 mb-1">
                     No. Referensi PO (Opsional)
                   </label>
                   <input
                     type="text"
                     value={poNumber}
                     onChange={(e) => setPoNumber(e.target.value)}
-                    className="w-full text-xs bg-paper border border-border rounded-xl px-3 py-2 focus:ring-1 focus:ring-emerald-500 outline-none font-medium"
+                    className="w-full text-xs bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-xl px-3 py-2.5 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none font-medium min-h-[44px]"
                     placeholder="PO-982103"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-ink-soft mb-1">
+                  <label className="block text-[11px] font-bold text-ink-soft dark:text-slate-400 mb-1">
                     No. Plat Kendaraan / Ekspedisi
                   </label>
                   <input
                     type="text"
                     value={vehicleNumber}
                     onChange={(e) => setVehicleNumber(e.target.value)}
-                    className="w-full text-xs bg-paper border border-border rounded-xl px-3 py-2 focus:ring-1 focus:ring-emerald-500 outline-none font-medium"
+                    className="w-full text-xs bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-xl px-3 py-2.5 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none font-medium min-h-[44px]"
                     placeholder="B 1234 CD / JNE Cargo"
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-[11px] font-bold text-ink-soft mb-1">
+                  <label className="block text-[11px] font-bold text-ink-soft dark:text-slate-400 mb-1">
                     Nama Sopir / Kurir
                   </label>
                   <input
                     type="text"
                     value={driverName}
                     onChange={(e) => setDriverName(e.target.value)}
-                    className="w-full text-xs bg-paper border border-border rounded-xl px-3 py-2 focus:ring-1 focus:ring-emerald-500 outline-none font-medium"
+                    className="w-full text-xs bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-xl px-3 py-2.5 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none font-medium min-h-[44px]"
                     placeholder="Nama Pengemudi / Petugas Ekspedisi"
                   />
                 </div>
@@ -271,76 +272,76 @@ export function FreeDeliveryOrderGeneratorClient({ session }: { session?: any })
             {/* Pihak Pengirim & Penerima */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Pengirim */}
-              <div className="p-4 sm:p-5 rounded-2xl bg-surface border border-border-light shadow-sm space-y-3">
-                <h2 className="text-xs font-bold text-ink flex items-center gap-1.5 border-b border-border-light pb-2">
-                  <BuildingOffice2Icon className="w-3.5 h-3.5 text-emerald-600" />
+              <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-line dark:border-slate-800 shadow-sm space-y-3">
+                <h2 className="text-xs font-bold text-ink flex items-center gap-1.5 border-b border-line dark:border-slate-800 pb-2">
+                  <BuildingOffice2Icon className="w-3.5 h-3.5 text-emerald dark:text-emerald-400" />
                   Pengirim / Gudang
                 </h2>
                 <div>
-                  <label className="block text-[10px] font-bold text-ink-soft mb-1">Nama Usaha / PT</label>
+                  <label className="block text-[10px] font-bold text-ink-soft dark:text-slate-400 mb-1">Nama Usaha / PT</label>
                   <input
                     type="text"
                     value={senderBusinessName}
                     onChange={(e) => setSenderBusinessName(e.target.value)}
-                    className="w-full text-xs bg-paper border border-border rounded-lg px-2.5 py-1.5 focus:ring-1 focus:ring-emerald-500 outline-none"
+                    className="w-full text-xs bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-xl px-3 py-2 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none min-h-[40px]"
                     placeholder="PT Pengirim Logistik"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold text-ink-soft mb-1">Penanggung Jawab</label>
+                  <label className="block text-[10px] font-bold text-ink-soft dark:text-slate-400 mb-1">Penanggung Jawab</label>
                   <input
                     type="text"
                     value={senderName}
                     onChange={(e) => setSenderName(e.target.value)}
-                    className="w-full text-xs bg-paper border border-border rounded-lg px-2.5 py-1.5 focus:ring-1 focus:ring-emerald-500 outline-none"
+                    className="w-full text-xs bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-xl px-3 py-2 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none min-h-[40px]"
                     placeholder="Nama Kepala Gudang / PIC"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold text-ink-soft mb-1">Alamat Asal</label>
+                  <label className="block text-[10px] font-bold text-ink-soft dark:text-slate-400 mb-1">Alamat Asal</label>
                   <input
                     type="text"
                     value={senderAddress}
                     onChange={(e) => setSenderAddress(e.target.value)}
-                    className="w-full text-xs bg-paper border border-border rounded-lg px-2.5 py-1.5 focus:ring-1 focus:ring-emerald-500 outline-none"
+                    className="w-full text-xs bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-xl px-3 py-2 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none min-h-[40px]"
                     placeholder="Alamat gudang asal"
                   />
                 </div>
               </div>
 
               {/* Penerima */}
-              <div className="p-4 sm:p-5 rounded-2xl bg-surface border border-border-light shadow-sm space-y-3">
-                <h2 className="text-xs font-bold text-ink flex items-center gap-1.5 border-b border-border-light pb-2">
-                  <UserIcon className="w-3.5 h-3.5 text-emerald-600" />
+              <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-line dark:border-slate-800 shadow-sm space-y-3">
+                <h2 className="text-xs font-bold text-ink flex items-center gap-1.5 border-b border-line dark:border-slate-800 pb-2">
+                  <UserIcon className="w-3.5 h-3.5 text-emerald dark:text-emerald-400" />
                   Tujuan Pengiriman (Penerima)
                 </h2>
                 <div>
-                  <label className="block text-[10px] font-bold text-ink-soft mb-1">Nama Penerima <span className="text-rose-500">*</span></label>
+                  <label className="block text-[10px] font-bold text-ink-soft dark:text-slate-400 mb-1">Nama Penerima <span className="text-rose-500">*</span></label>
                   <input
                     type="text"
                     value={recipientName}
                     onChange={(e) => setRecipientName(e.target.value)}
-                    className="w-full text-xs bg-paper border border-border rounded-lg px-2.5 py-1.5 focus:ring-1 focus:ring-emerald-500 outline-none font-medium"
+                    className="w-full text-xs bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-xl px-3 py-2 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none font-medium min-h-[40px]"
                     placeholder="Nama PIC Penerima"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold text-ink-soft mb-1">Perusahaan / Toko</label>
+                  <label className="block text-[10px] font-bold text-ink-soft dark:text-slate-400 mb-1">Perusahaan / Toko</label>
                   <input
                     type="text"
                     value={recipientCompany}
                     onChange={(e) => setRecipientCompany(e.target.value)}
-                    className="w-full text-xs bg-paper border border-border rounded-lg px-2.5 py-1.5 focus:ring-1 focus:ring-emerald-500 outline-none"
+                    className="w-full text-xs bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-xl px-3 py-2 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none min-h-[40px]"
                     placeholder="Nama Toko Cabang"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold text-ink-soft mb-1">Alamat Tujuan</label>
+                  <label className="block text-[10px] font-bold text-ink-soft dark:text-slate-400 mb-1">Alamat Tujuan</label>
                   <input
                     type="text"
                     value={recipientAddress}
                     onChange={(e) => setRecipientAddress(e.target.value)}
-                    className="w-full text-xs bg-paper border border-border rounded-lg px-2.5 py-1.5 focus:ring-1 focus:ring-emerald-500 outline-none"
+                    className="w-full text-xs bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-xl px-3 py-2 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none min-h-[40px]"
                     placeholder="Alamat lengkap penerima barang"
                   />
                 </div>
@@ -348,16 +349,16 @@ export function FreeDeliveryOrderGeneratorClient({ session }: { session?: any })
             </div>
 
             {/* Daftar Barang */}
-            <div className="p-5 sm:p-6 rounded-2xl bg-surface border border-border-light shadow-sm space-y-4">
-              <div className="flex items-center justify-between border-b border-border-light pb-3">
+            <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-line dark:border-slate-800 shadow-sm space-y-4">
+              <div className="flex items-center justify-between border-b border-line dark:border-slate-800 pb-3">
                 <h2 className="text-sm font-bold text-ink flex items-center gap-2">
-                  <ClipboardDocumentListIcon className="w-4 h-4 text-emerald-600" />
+                  <ClipboardDocumentListIcon className="w-4 h-4 text-emerald dark:text-emerald-400" />
                   Daftar Barang yang Dikirim
                 </h2>
                 <button
                   type="button"
                   onClick={addItem}
-                  className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1 rounded-lg transition"
+                  className="inline-flex items-center gap-1 text-xs font-bold text-emerald dark:text-emerald-400 hover:text-white bg-emerald/10 hover:bg-emerald px-3 py-1.5 rounded-xl transition-all cursor-pointer min-h-[36px]"
                 >
                   <PlusIcon className="w-3.5 h-3.5" />
                   Tambah Barang
@@ -368,52 +369,53 @@ export function FreeDeliveryOrderGeneratorClient({ session }: { session?: any })
                 {items.map((item, idx) => (
                   <div
                     key={item.id}
-                    className="p-3.5 rounded-xl bg-paper border border-border-light space-y-2 relative"
+                    className="p-3.5 rounded-xl bg-paper dark:bg-slate-950 border border-line dark:border-slate-800 space-y-2 relative"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-bold text-ink-soft">
+                      <span className="text-[11px] font-bold text-ink-soft dark:text-slate-400">
                         Barang #{idx + 1}
                       </span>
                       {items.length > 1 && (
                         <button
                           type="button"
                           onClick={() => removeItem(item.id)}
-                          className="text-rose-500 hover:text-rose-700 p-1 rounded transition"
+                          className="text-rose-500 hover:text-rose-700 p-1.5 rounded-lg transition-colors cursor-pointer min-h-[32px] min-w-[32px] flex items-center justify-center"
                           title="Hapus Barang"
+                          aria-label="Hapus Barang"
                         >
-                          <TrashIcon className="w-3.5 h-3.5" />
+                          <TrashIcon className="w-4 h-4" />
                         </button>
                       )}
                     </div>
 
                     <div className="grid grid-cols-12 gap-2">
                       <div className="col-span-12 sm:col-span-6">
-                        <label className="block text-[10px] font-bold text-ink-soft mb-0.5">Nama & Spesifikasi Barang</label>
+                        <label className="block text-[10px] font-bold text-ink-soft dark:text-slate-400 mb-0.5">Nama & Spesifikasi Barang</label>
                         <input
                           type="text"
                           value={item.description}
                           onChange={(e) => updateItem(item.id, "description", e.target.value)}
-                          className="w-full text-xs bg-surface border border-border rounded-lg px-2.5 py-1.5 focus:ring-1 focus:ring-emerald-500 outline-none"
+                          className="w-full text-xs bg-white dark:bg-slate-900 border border-line dark:border-slate-700 rounded-lg px-2.5 py-2 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none min-h-[38px]"
                           placeholder="Nama barang..."
                         />
                       </div>
                       <div className="col-span-6 sm:col-span-3">
-                        <label className="block text-[10px] font-bold text-ink-soft mb-0.5">Jumlah (Qty)</label>
+                        <label className="block text-[10px] font-bold text-ink-soft dark:text-slate-400 mb-0.5">Jumlah (Qty)</label>
                         <input
                           type="number"
                           min={1}
                           value={item.quantity}
                           onChange={(e) => updateItem(item.id, "quantity", Math.max(1, Number(e.target.value) || 1))}
-                          className="w-full text-xs bg-surface border border-border rounded-lg px-2.5 py-1.5 focus:ring-1 focus:ring-emerald-500 outline-none font-bold"
+                          className="w-full text-xs bg-white dark:bg-slate-900 border border-line dark:border-slate-700 rounded-lg px-2.5 py-2 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none font-bold min-h-[38px]"
                         />
                       </div>
                       <div className="col-span-6 sm:col-span-3">
-                        <label className="block text-[10px] font-bold text-ink-soft mb-0.5">Satuan</label>
+                        <label className="block text-[10px] font-bold text-ink-soft dark:text-slate-400 mb-0.5">Satuan</label>
                         <input
                           type="text"
                           value={item.unit}
                           onChange={(e) => updateItem(item.id, "unit", e.target.value)}
-                          className="w-full text-xs bg-surface border border-border rounded-lg px-2.5 py-1.5 focus:ring-1 focus:ring-emerald-500 outline-none"
+                          className="w-full text-xs bg-white dark:bg-slate-900 border border-line dark:border-slate-700 rounded-lg px-2.5 py-2 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none min-h-[38px]"
                           placeholder="Pcs / Dus / Sak"
                         />
                       </div>
@@ -422,7 +424,7 @@ export function FreeDeliveryOrderGeneratorClient({ session }: { session?: any })
                           type="text"
                           value={item.notes}
                           onChange={(e) => updateItem(item.id, "notes", e.target.value)}
-                          className="w-full text-[11px] bg-surface border border-border rounded-lg px-2.5 py-1 focus:ring-1 focus:ring-emerald-500 outline-none text-ink-soft"
+                          className="w-full text-[11px] bg-white dark:bg-slate-900 border border-line dark:border-slate-700 rounded-lg px-2.5 py-1.5 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none text-ink-soft dark:text-slate-300 min-h-[36px]"
                           placeholder="Keterangan tambahan (cth: Segel utuh, fragile, warna merah)..."
                         />
                       </div>
@@ -439,7 +441,7 @@ export function FreeDeliveryOrderGeneratorClient({ session }: { session?: any })
                   rows={2}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="w-full text-xs bg-paper border border-border rounded-xl px-3 py-2 focus:ring-1 focus:ring-emerald-500 outline-none font-medium"
+                  className="w-full text-xs bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-xl px-3 py-2.5 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none font-medium"
                 />
               </div>
             </div>
@@ -449,7 +451,7 @@ export function FreeDeliveryOrderGeneratorClient({ session }: { session?: any })
               type="button"
               onClick={handleDownloadPdf}
               disabled={isGeneratingPdf}
-              className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-3.5 px-4 rounded-xl bg-emerald hover:bg-emerald-bright text-white font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 min-h-[48px] cursor-pointer"
             >
               {isGeneratingPdf ? (
                 <>
@@ -505,8 +507,8 @@ export function FreeDeliveryOrderGeneratorClient({ session }: { session?: any })
               </div>
 
               {/* Table */}
-              <div className="border border-slate-200 rounded-lg overflow-hidden mb-4">
-                <table className="w-full text-left text-xs border-collapse">
+              <div className="border border-slate-200 rounded-lg overflow-x-auto mb-4">
+                <table className="w-full text-left text-xs border-collapse min-w-[340px]">
                   <thead>
                     <tr className="bg-emerald-700 text-white font-bold text-[10px] uppercase">
                       <th className="py-2 px-2.5 text-center w-8">No</th>
@@ -566,17 +568,17 @@ export function FreeDeliveryOrderGeneratorClient({ session }: { session?: any })
             </div>
 
             {/* Quick FAQ */}
-            <div className="mt-8 p-5 rounded-2xl bg-surface border border-border-light space-y-3">
+            <div className="mt-8 p-5 rounded-2xl bg-white dark:bg-slate-900 border border-line dark:border-slate-800 space-y-3">
               <h2 className="text-xs font-bold text-ink uppercase tracking-wider flex items-center gap-1.5">
-                <ShieldCheckIcon className="w-4 h-4 text-emerald-600" />
+                <ShieldCheckIcon className="w-4 h-4 text-emerald dark:text-emerald-400" />
                 Panduan & Pertanyaan Umum Surat Jalan
               </h2>
 
               <details className="text-xs group">
-                <summary className="cursor-pointer font-bold text-ink-soft hover:text-ink py-1">
+                <summary className="cursor-pointer font-bold text-ink-soft dark:text-slate-300 hover:text-ink dark:hover:text-white py-1">
                   Mengapa nominal harga tidak dicantumkan di Surat Jalan?
                 </summary>
-                <p className="mt-1 text-ink-soft pl-3 border-l-2 border-emerald-500 leading-relaxed">
+                <p className="mt-1 text-ink-soft dark:text-slate-400 pl-3 border-l-2 border-emerald leading-relaxed">
                   Surat Jalan adalah dokumen operasional logistik untuk memverifikasi fisik barang dan kuantiti yang dibawa kurir/ekspedisi. Informasi nominal harga merupakan data finansial yang secara resmi dicantumkan pada <strong>Invoice / Faktur Tagihan</strong>.
                 </p>
               </details>
@@ -587,6 +589,9 @@ export function FreeDeliveryOrderGeneratorClient({ session }: { session?: any })
         {/* Cross-linking Free Tools Navigation */}
         <FreeToolsNav />
       </main>
+
+      {/* Footer */}
+      <LandingFooter />
     </div>
   );
 }

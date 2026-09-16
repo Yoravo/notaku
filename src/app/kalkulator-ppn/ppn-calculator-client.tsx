@@ -14,6 +14,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { FreeToolsNav } from "@/components/free-tools-nav";
 import { LandingNavbar } from "@/components/landing-navbar";
+import { LandingFooter } from "@/components/layout/landing-footer";
 
 export function PpnCalculatorClient({ session }: { session?: any }) {
   const [calculationMode, setCalculationMode] = useState<"EXCLUDE_PPN" | "INCLUDE_PPN">("EXCLUDE_PPN");
@@ -318,6 +319,9 @@ export function PpnCalculatorClient({ session }: { session?: any }) {
         {/* Cross-linking Free Tools Navigation */}
         <FreeToolsNav />
       </main>
+
+      {/* Footer */}
+      <LandingFooter />
     </div>
   );
 }

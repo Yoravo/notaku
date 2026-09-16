@@ -26,18 +26,18 @@ export default function Loading() {
           {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
-              className="p-6 rounded-3xl bg-surface border border-border-light space-y-4"
+              className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-line dark:border-slate-800 space-y-4"
             >
               <div className="flex justify-between items-center">
                 <div className="w-12 h-12 rounded-2xl bg-emerald/10" />
-                <div className="w-16 h-5 rounded-full bg-ink/5" />
+                <div className="w-16 h-5 rounded-full bg-ink/5 dark:bg-slate-800" />
               </div>
-              <div className="h-5 w-3/4 bg-ink/10 rounded" />
+              <div className="h-5 w-3/4 bg-ink/10 dark:bg-slate-800 rounded" />
               <div className="space-y-2">
-                <div className="h-3.5 w-full bg-ink/5 rounded" />
-                <div className="h-3.5 w-5/6 bg-ink/5 rounded" />
+                <div className="h-3.5 w-full bg-ink/5 dark:bg-slate-800/60 rounded" />
+                <div className="h-3.5 w-5/6 bg-ink/5 dark:bg-slate-800/60 rounded" />
               </div>
-              <div className="pt-4 border-t border-border-light flex justify-between items-center">
+              <div className="pt-4 border-t border-line dark:border-slate-800 flex justify-between items-center">
                 <div className="h-4 w-28 bg-emerald/20 rounded" />
                 <div className="h-4 w-4 bg-emerald/20 rounded-full" />
               </div>

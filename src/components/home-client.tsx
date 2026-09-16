@@ -510,7 +510,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                     type="button"
                     onClick={() => setIsPaid(!isPaid)}
                     style={{ transform: "translateZ(36px)" }}
-                    className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold shadow-xs cursor-pointer transition-colors duration-150 ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 sm:py-1 rounded-full text-xs font-bold shadow-xs cursor-pointer transition-colors duration-150 min-h-[32px] sm:min-h-0 ${
                       isPaid
                         ? "bg-emerald-50 text-[#0f6b4f] dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-500/40"
                         : "bg-amber-50 text-amber-700 dark:bg-amber-950/80 dark:text-amber-300 border border-amber-200 dark:border-amber-500/40"
@@ -617,7 +617,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                     setTimeout(() => setShowCopied(false), 2200);
                   }}
                   style={{ transform: "translateZ(48px)" }}
-                  className="absolute -bottom-3.5 -right-2 sm:-right-4 rounded-xl border border-emerald-500/40 bg-white/95 dark:bg-slate-800/95 text-[#0f6b4f] dark:text-emerald-300 px-3.5 py-2 shadow-lg flex items-center gap-2 text-xs font-bold transition-colors duration-150 hover:bg-emerald-50 dark:hover:bg-slate-700/90 cursor-pointer group/wa"
+                  className="absolute -bottom-3.5 right-2 sm:-right-4 rounded-xl border border-emerald-500/40 bg-white/95 dark:bg-slate-800/95 text-[#0f6b4f] dark:text-emerald-300 px-3.5 py-2 shadow-lg flex items-center gap-2 text-xs font-bold transition-colors duration-150 hover:bg-emerald-50 dark:hover:bg-slate-700/90 cursor-pointer group/wa min-h-[36px]"
                   title="Klik untuk simulasi kirim nota WhatsApp"
                 >
                   <ChatBubbleLeftRightIcon className="w-4 h-4 text-emerald group-hover/wa:rotate-12 transition-transform duration-200" />

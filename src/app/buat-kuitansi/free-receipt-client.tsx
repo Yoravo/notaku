@@ -21,6 +21,7 @@ import { numberToWordsRupiah } from "@/lib/terbilang";
 import { formatMoney, SUPPORTED_CURRENCIES, type SupportedCurrency } from "@/lib/currencies";
 import { FreeToolsNav } from "@/components/free-tools-nav";
 import { LandingNavbar } from "@/components/landing-navbar";
+import { LandingFooter } from "@/components/layout/landing-footer";
 
 export function FreeReceiptGeneratorClient({ session }: { session?: any }) {
   const [currency, setCurrency] = useState<SupportedCurrency>("IDR");
@@ -169,19 +170,19 @@ export function FreeReceiptGeneratorClient({ session }: { session?: any }) {
           {/* Form Editor */}
           <div className="lg:col-span-6 space-y-6">
             {/* Box 1: Info Kuitansi & Mata Uang */}
-            <div className="p-5 sm:p-6 rounded-2xl bg-surface border border-border-light shadow-sm space-y-4">
-              <div className="flex items-center justify-between border-b border-border-light pb-3">
+            <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-line dark:border-slate-800 shadow-sm space-y-4">
+              <div className="flex items-center justify-between border-b border-line dark:border-slate-800 pb-3">
                 <h2 className="text-sm font-bold text-ink flex items-center gap-2">
-                  <BanknotesIcon className="w-4 h-4 text-emerald-600" />
+                  <BanknotesIcon className="w-4 h-4 text-emerald dark:text-emerald-400" />
                   Informasi Dokumen & Pembayaran
                 </h2>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[11px] font-bold text-ink-soft">Mata Uang:</span>
+                  <span className="text-[11px] font-bold text-ink-soft dark:text-slate-400">Mata Uang:</span>
                   <select
                     value={currency}
                     onChange={(e) => setCurrency(e.target.value as SupportedCurrency)}
                     aria-label="Pilih Mata Uang"
-                    className="text-xs font-bold bg-paper border border-border rounded-lg px-2 py-1 focus:ring-1 focus:ring-emerald-500 outline-none"
+                    className="text-xs font-bold bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-lg px-2 py-1 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none"
                   >
                     {SUPPORTED_CURRENCIES.map((c) => (
                       <option key={c} value={c}>{c}</option>
@@ -192,49 +193,49 @@ export function FreeReceiptGeneratorClient({ session }: { session?: any }) {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-[11px] font-bold text-ink-soft mb-1">
+                  <label className="block text-[11px] font-bold text-ink-soft dark:text-slate-400 mb-1">
                     No. Kuitansi
                   </label>
                   <input
                     type="text"
                     value={receiptNumber}
                     onChange={(e) => setReceiptNumber(e.target.value)}
-                    className="w-full text-xs bg-paper border border-border rounded-xl px-3 py-2 focus:ring-1 focus:ring-emerald-500 outline-none font-medium"
+                    className="w-full text-xs bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-xl px-3 py-2.5 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none font-medium min-h-[44px]"
                     placeholder="KW-202608-001"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-ink-soft mb-1">
+                  <label className="block text-[11px] font-bold text-ink-soft dark:text-slate-400 mb-1">
                     Referensi No. Invoice (Opsional)
                   </label>
                   <input
                     type="text"
                     value={invoiceNumber}
                     onChange={(e) => setInvoiceNumber(e.target.value)}
-                    className="w-full text-xs bg-paper border border-border rounded-xl px-3 py-2 focus:ring-1 focus:ring-emerald-500 outline-none font-medium"
+                    className="w-full text-xs bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-xl px-3 py-2.5 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none font-medium min-h-[44px]"
                     placeholder="INV/2026/08/01"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-ink-soft mb-1">
+                  <label className="block text-[11px] font-bold text-ink-soft dark:text-slate-400 mb-1">
                     Tanggal Pembayaran
                   </label>
                   <input
                     type="date"
                     value={paidAt}
                     onChange={(e) => setPaidAt(e.target.value)}
-                    className="w-full text-xs bg-paper border border-border rounded-xl px-3 py-2 focus:ring-1 focus:ring-emerald-500 outline-none font-medium"
+                    className="w-full text-xs bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-xl px-3 py-2.5 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none font-medium min-h-[44px]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-ink-soft mb-1">
+                  <label className="block text-[11px] font-bold text-ink-soft dark:text-slate-400 mb-1">
                     Metode Pembayaran
                   </label>
                   <input
                     type="text"
                     value={paymentMethod}
                     onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="w-full text-xs bg-paper border border-border rounded-xl px-3 py-2 focus:ring-1 focus:ring-emerald-500 outline-none font-medium"
+                    className="w-full text-xs bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-xl px-3 py-2.5 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none font-medium min-h-[44px]"
                     placeholder="Transfer Bank BCA / Tunai / QRIS"
                   />
                 </div>
@@ -242,33 +243,33 @@ export function FreeReceiptGeneratorClient({ session }: { session?: any }) {
             </div>
 
             {/* Box 2: Pihak Pembayar (Sudah Terima Dari) */}
-            <div className="p-5 sm:p-6 rounded-2xl bg-surface border border-border-light shadow-sm space-y-4">
-              <h2 className="text-sm font-bold text-ink flex items-center gap-2 border-b border-border-light pb-3">
-                <UserIcon className="w-4 h-4 text-emerald-600" />
+            <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-line dark:border-slate-800 shadow-sm space-y-4">
+              <h2 className="text-sm font-bold text-ink flex items-center gap-2 border-b border-line dark:border-slate-800 pb-3">
+                <UserIcon className="w-4 h-4 text-emerald dark:text-emerald-400" />
                 Pihak Pembayar (Telah Terima Dari)
               </h2>
               <div className="space-y-3">
                 <div>
-                  <label className="block text-[11px] font-bold text-ink-soft mb-1">
+                  <label className="block text-[11px] font-bold text-ink-soft dark:text-slate-400 mb-1">
                     Nama Pembayar / Perusahaan <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    className="w-full text-xs bg-paper border border-border rounded-xl px-3 py-2 focus:ring-1 focus:ring-emerald-500 outline-none font-medium"
+                    className="w-full text-xs bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-xl px-3 py-2.5 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none font-medium min-h-[44px]"
                     placeholder="Nama klien atau pembeli"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-ink-soft mb-1">
+                  <label className="block text-[11px] font-bold text-ink-soft dark:text-slate-400 mb-1">
                     Alamat Pembayar (Opsional)
                   </label>
                   <input
                     type="text"
                     value={customerAddress}
                     onChange={(e) => setCustomerAddress(e.target.value)}
-                    className="w-full text-xs bg-paper border border-border rounded-xl px-3 py-2 focus:ring-1 focus:ring-emerald-500 outline-none font-medium"
+                    className="w-full text-xs bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-xl px-3 py-2.5 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none font-medium min-h-[44px]"
                     placeholder="Kota atau alamat lengkap pembayar"
                   />
                 </div>
@@ -276,18 +277,18 @@ export function FreeReceiptGeneratorClient({ session }: { session?: any }) {
             </div>
 
             {/* Box 3: Nominal & Peruntukan Pembayaran */}
-            <div className="p-5 sm:p-6 rounded-2xl bg-surface border border-border-light shadow-sm space-y-4">
-              <h2 className="text-sm font-bold text-ink flex items-center gap-2 border-b border-border-light pb-3">
-                <CurrencyDollarIcon className="w-4 h-4 text-emerald-600" />
+            <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-line dark:border-slate-800 shadow-sm space-y-4">
+              <h2 className="text-sm font-bold text-ink flex items-center gap-2 border-b border-line dark:border-slate-800 pb-3">
+                <CurrencyDollarIcon className="w-4 h-4 text-emerald dark:text-emerald-400" />
                 Nominal & Peruntukan Pembayaran
               </h2>
               <div className="space-y-3">
                 <div>
-                  <label className="block text-[11px] font-bold text-ink-soft mb-1">
+                  <label className="block text-[11px] font-bold text-ink-soft dark:text-slate-400 mb-1">
                     Jumlah Pembayaran (Nominal Angka) <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
-                    <span className="absolute left-3 top-2 text-xs font-bold text-ink-soft">
+                    <span className="absolute left-3 top-2.5 text-xs font-bold text-ink-soft dark:text-slate-400">
                       {currency}
                     </span>
                     <input
@@ -295,31 +296,31 @@ export function FreeReceiptGeneratorClient({ session }: { session?: any }) {
                       min={0}
                       value={total}
                       onChange={(e) => setTotal(Math.max(0, Number(e.target.value) || 0))}
-                      className="w-full text-xs bg-paper border border-border rounded-xl pl-12 pr-3 py-2 focus:ring-1 focus:ring-emerald-500 outline-none font-bold text-emerald-600"
+                      className="w-full text-xs bg-paper dark:bg-slate-950 border border-line dark:border-slate-700 rounded-xl pl-14 pr-3 py-2.5 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none font-bold text-emerald dark:text-emerald-400 min-h-[44px]"
                       placeholder="3500000"
                     />
                   </div>
                 </div>
 
                 {/* Live Terbilang Preview Box */}
-                <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200">
-                  <div className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider mb-1">
+                <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800">
+                  <div className="text-[10px] font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider mb-1">
                     Terbilang Otomatis:
                   </div>
-                  <div className="text-xs font-bold text-emerald-900 italic leading-relaxed">
+                  <div className="text-xs font-bold text-emerald-900 dark:text-emerald-100 italic leading-relaxed">
                     &ldquo;{words}&rdquo;
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold text-ink-soft mb-1">
+                  <label className="block text-[11px] font-bold text-ink-soft dark:text-slate-400 mb-1">
                     Untuk Pembayaran
                   </label>
                   <textarea
                     rows={2}
                     value={itemsSummary}
                     onChange={(e) => setItemsSummary(e.target.value)}
-                    className="w-full text-xs bg-paper border border-border rounded-xl px-3 py-2 focus:ring-1 focus:ring-emerald-500 outline-none font-medium"
+                    className="w-full text-xs bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-xl px-3 py-2.5 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none font-medium"
                     placeholder="Contoh: Pembayaran Pelunasan Jasa Pembuatan Website & Aplikasi"
                   />
                 </div>
@@ -327,45 +328,45 @@ export function FreeReceiptGeneratorClient({ session }: { session?: any }) {
             </div>
 
             {/* Box 4: Penerima / Penjual */}
-            <div className="p-5 sm:p-6 rounded-2xl bg-surface border border-border-light shadow-sm space-y-4">
-              <h2 className="text-sm font-bold text-ink flex items-center gap-2 border-b border-border-light pb-3">
-                <BuildingOffice2Icon className="w-4 h-4 text-emerald-600" />
+            <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-line dark:border-slate-800 shadow-sm space-y-4">
+              <h2 className="text-sm font-bold text-ink flex items-center gap-2 border-b border-line dark:border-slate-800 pb-3">
+                <BuildingOffice2Icon className="w-4 h-4 text-emerald dark:text-emerald-400" />
                 Pihak Penerima (Penjual / Pemberi Kuitansi)
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] font-bold text-ink-soft mb-1">
+                  <label className="block text-[11px] font-bold text-ink-soft dark:text-slate-400 mb-1">
                     Nama Usaha / Toko
                   </label>
                   <input
                     type="text"
                     value={businessName}
                     onChange={(e) => setBusinessName(e.target.value)}
-                    className="w-full text-xs bg-paper border border-border rounded-xl px-3 py-2 focus:ring-1 focus:ring-emerald-500 outline-none font-medium"
+                    className="w-full text-xs bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-xl px-3 py-2.5 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none font-medium min-h-[44px]"
                     placeholder="CV / Toko Anda"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-ink-soft mb-1">
+                  <label className="block text-[11px] font-bold text-ink-soft dark:text-slate-400 mb-1">
                     Nama Penandatangan
                   </label>
                   <input
                     type="text"
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
-                    className="w-full text-xs bg-paper border border-border rounded-xl px-3 py-2 focus:ring-1 focus:ring-emerald-500 outline-none font-medium"
+                    className="w-full text-xs bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-xl px-3 py-2.5 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none font-medium min-h-[44px]"
                     placeholder="Nama Lengkap Penjual"
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-[11px] font-bold text-ink-soft mb-1">
+                  <label className="block text-[11px] font-bold text-ink-soft dark:text-slate-400 mb-1">
                     Alamat / Kontak
                   </label>
                   <input
                     type="text"
                     value={userAddress}
                     onChange={(e) => setUserAddress(e.target.value)}
-                    className="w-full text-xs bg-paper border border-border rounded-xl px-3 py-2 focus:ring-1 focus:ring-emerald-500 outline-none font-medium"
+                    className="w-full text-xs bg-paper dark:bg-slate-950 text-ink dark:text-white border border-line dark:border-slate-700 rounded-xl px-3 py-2.5 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none font-medium min-h-[44px]"
                     placeholder="Alamat atau nomor telepon usaha"
                   />
                 </div>
@@ -378,7 +379,7 @@ export function FreeReceiptGeneratorClient({ session }: { session?: any }) {
                 type="button"
                 onClick={handleDownloadPdf}
                 disabled={isGeneratingPdf}
-                className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-3.5 px-4 rounded-xl bg-emerald hover:bg-emerald-bright text-white font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 min-h-[48px] cursor-pointer"
               >
                 {isGeneratingPdf ? (
                   <>
@@ -506,26 +507,26 @@ export function FreeReceiptGeneratorClient({ session }: { session?: any }) {
             </div>
 
             {/* Quick SEO FAQ Accordion */}
-            <div className="mt-8 p-5 rounded-2xl bg-surface border border-border-light space-y-3">
+            <div className="mt-8 p-5 rounded-2xl bg-white dark:bg-slate-900 border border-line dark:border-slate-800 space-y-3">
               <h2 className="text-xs font-bold text-ink uppercase tracking-wider flex items-center gap-1.5">
-                <ShieldCheckIcon className="w-4 h-4 text-emerald-600" />
+                <ShieldCheckIcon className="w-4 h-4 text-emerald dark:text-emerald-400" />
                 Panduan & Pertanyaan Umum (FAQ Kuitansi)
               </h2>
 
               <details className="text-xs group">
-                <summary className="cursor-pointer font-bold text-ink-soft hover:text-ink py-1">
+                <summary className="cursor-pointer font-bold text-ink-soft dark:text-slate-300 hover:text-ink dark:hover:text-white py-1">
                   Apa perbedaan invoice dan kuitansi?
                 </summary>
-                <p className="mt-1 text-ink-soft pl-3 border-l-2 border-emerald-500 leading-relaxed">
+                <p className="mt-1 text-ink-soft dark:text-slate-400 pl-3 border-l-2 border-emerald leading-relaxed">
                   <strong>Invoice</strong> adalah dokumen penagihan yang dikirimkan sebelum klien membayar, sedangkan <strong>Kuitansi</strong> adalah bukti tanda terima sah yang diterbitkan <em>setelah</em> pembayaran berhasil diterima (lunas).
                 </p>
               </details>
 
               <details className="text-xs group">
-                <summary className="cursor-pointer font-bold text-ink-soft hover:text-ink py-1">
+                <summary className="cursor-pointer font-bold text-ink-soft dark:text-slate-300 hover:text-ink dark:hover:text-white py-1">
                   Mengapa kuitansi wajib mencantumkan huruf terbilang?
                 </summary>
-                <p className="mt-1 text-ink-soft pl-3 border-l-2 border-emerald-500 leading-relaxed">
+                <p className="mt-1 text-ink-soft dark:text-slate-400 pl-3 border-l-2 border-emerald leading-relaxed">
                   Penulisan terbilang rupiah berfungsi untuk mencegah manipulasi atau perubahan nominal angka oleh pihak tidak bertanggung jawab, sehingga diakui secara hukum dalam pembukuan keuangan.
                 </p>
               </details>
@@ -536,6 +537,9 @@ export function FreeReceiptGeneratorClient({ session }: { session?: any }) {
         {/* Cross-linking Free Tools Navigation */}
         <FreeToolsNav />
       </main>
+
+      {/* Footer */}
+      <LandingFooter />
     </div>
   );
 }

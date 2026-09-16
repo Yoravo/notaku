@@ -13,6 +13,7 @@ import {
 import { NICHE_TEMPLATES, NicheTemplate } from "@/lib/templates-data";
 import { FreeToolsNav } from "@/components/free-tools-nav";
 import { LandingNavbar } from "@/components/landing-navbar";
+import { LandingFooter } from "@/components/layout/landing-footer";
 
 export function TemplatesCatalogClient({ session }: { session?: any }) {
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
@@ -164,6 +165,9 @@ export function TemplatesCatalogClient({ session }: { session?: any }) {
         {/* Cross-linking Free Tools Navigation */}
         <FreeToolsNav />
       </main>
+
+      {/* Footer */}
+      <LandingFooter />
     </div>
   );
 }
