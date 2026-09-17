@@ -590,8 +590,8 @@ export function ProfileForm({
       </div>
 
       <div>
-        <label className="block font-bold text-slate-700 mb-1.5 flex items-center gap-1.5 text-xs sm:text-sm">
-          <MapPinIcon className="w-4 h-4 text-slate-400" />
+        <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5 text-xs sm:text-sm">
+          <MapPinIcon className="w-4 h-4 text-slate-400 dark:text-slate-500" />
           <span>{tSet("businessAddress")}</span>
         </label>
         <textarea
@@ -600,25 +600,25 @@ export function ProfileForm({
           onChange={handleChange}
           rows={3}
           placeholder={tProf("addressPlaceholder")}
-          className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 font-medium focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] resize-none shadow-2xs leading-relaxed"
+          className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white font-medium focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] resize-none shadow-2xs leading-relaxed"
         />
       </div>
 
       {/* Preferensi Email & Komunikasi Resmi */}
-      <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 sm:p-5 space-y-2">
-        <label className="flex items-start gap-3 cursor-pointer">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/60 p-4 sm:p-5 space-y-2">
+        <label className="flex items-start gap-3 cursor-pointer min-h-[44px]">
           <input
             type="checkbox"
             checked={optInNewsletter}
             onChange={(e) => setOptInNewsletter(e.target.checked)}
-            className="mt-1 rounded border-slate-300 text-[#0f6b4f] focus:ring-[#0f6b4f]"
+            className="mt-1 h-4 w-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-[#0f6b4f] focus:ring-[#0f6b4f]"
           />
           <div>
-            <span className="text-xs sm:text-sm font-bold text-slate-900 block flex items-center gap-1.5">
-              <EnvelopeIcon className="w-4 h-4 text-slate-500" />
+            <span className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white block flex items-center gap-1.5">
+              <EnvelopeIcon className="w-4 h-4 text-slate-500 dark:text-slate-400" />
               <span>{tProf("newsletterTitle")}</span>
             </span>
-            <span className="text-xs text-slate-500 block mt-0.5 leading-relaxed">
+            <span className="text-xs text-slate-500 dark:text-slate-400 block mt-0.5 leading-relaxed">
               {tProf("newsletterDesc")}
             </span>
           </div>

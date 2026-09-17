@@ -378,3 +378,150 @@ export function renderBroadcastEmailHtml({
 </html>
 `;
 }
+
+export type WeeklyDigestEmailTemplateProps = {
+  userName: string;
+  startDate: string; // ex: 12 Agu
+  endDate: string; // ex: 18 Agu
+  newInvoicesCount: number;
+  newInvoicesValue: number;
+  paidInvoicesCount: number;
+  paidInvoicesValue: number;
+  outstandingInvoicesCount: number;
+  outstandingInvoicesValue: number;
+  weeklyTip: string;
+};
+
+export function renderWeeklyDigestEmailHtml({
+  userName,
+  startDate,
+  endDate,
+  newInvoicesCount,
+  newInvoicesValue,
+  paidInvoicesCount,
+  paidInvoicesValue,
+  outstandingInvoicesCount,
+  outstandingInvoicesValue,
+  weeklyTip,
+}: WeeklyDigestEmailTemplateProps): string {
+  const safeUserName = escapeHtml(userName || "Pengguna");
+
+  const formatIdr = (val: number) => `Rp${Number(val).toLocaleString("id-ID")}`;
+
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rangkuman Tagihan Mingguan NotaKu</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+  <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f8fafc; padding: 32px 16px;">
+    <tr>
+      <td align="center">
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 580px; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); border: 1px solid #e2e8f0;">
+
+          <!-- Header Branding -->
+          <tr>
+            <td style="padding: 28px 32px; background-color: #0f172a; text-align: center;">
+              <a href="https://notaku.store" style="text-decoration: none;">
+                <span style="font-size: 24px; font-weight: 800; color: #ffffff; letter-spacing: -0.5px;">Nota<span style="color: #34d399;">Ku</span></span>
+              </a>
+              <div style="margin-top: 8px;">
+                <span style="display: inline-block; background-color: #f0fdf4; color: #16a34a; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.5px;">
+                  Weekly Digest
+                </span>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Main Content -->
+          <tr>
+            <td style="padding: 36px 32px;">
+              <h1 style="margin: 0 0 8px 0; font-size: 20px; font-weight: 800; color: #0f172a; line-height: 1.3;">
+                Performa Tagihan Anda
+              </h1>
+              <p style="margin: 0 0 24px 0; font-size: 14px; color: #64748b;">
+                Halo <strong>${safeUserName}</strong>, berikut adalah rangkuman performa invoice Anda untuk periode <strong>${escapeHtml(startDate)} - ${escapeHtml(endDate)}</strong>.
+              </p>
+
+              <!-- Metrics Grid -->
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 24px;">
+                <tr>
+                  <!-- Card 1: Paid -->
+                  <td width="48%" style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 16px;">
+                    <p style="margin: 0 0 4px 0; font-size: 11px; font-weight: 700; color: #16a34a; text-transform: uppercase; letter-spacing: 0.5px;">Pendapatan Masuk</p>
+                    <p style="margin: 0 0 4px 0; font-size: 18px; font-weight: 800; color: #14532d;">${formatIdr(paidInvoicesValue)}</p>
+                    <p style="margin: 0; font-size: 12px; color: #166534;">Dari ${paidInvoicesCount} invoice lunas</p>
+                  </td>
+                  <td width="4%"></td>
+                  <!-- Card 2: New -->
+                  <td width="48%" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px;">
+                    <p style="margin: 0 0 4px 0; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Tagihan Baru</p>
+                    <p style="margin: 0 0 4px 0; font-size: 18px; font-weight: 800; color: #0f172a;">${formatIdr(newInvoicesValue)}</p>
+                    <p style="margin: 0; font-size: 12px; color: #475569;">Dari ${newInvoicesCount} invoice terbit</p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Outstanding Row -->
+              ${outstandingInvoicesCount > 0 ? `
+              <div style="background-color: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 16px; margin-bottom: 28px;">
+                <p style="margin: 0 0 4px 0; font-size: 12px; font-weight: 700; color: #b45309;">Menunggu Pembayaran</p>
+                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                  <span style="font-size: 18px; font-weight: 800; color: #92400e;">${formatIdr(outstandingInvoicesValue)}</span>
+                  <span style="font-size: 12px; color: #b45309;">(${outstandingInvoicesCount} Invoice Belum Lunas)</span>
+                </div>
+              </div>
+              ` : `
+              <div style="background-color: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 16px; margin-bottom: 28px; text-align: center;">
+                <p style="margin: 0; font-size: 13px; font-weight: 600; color: #64748b;">Luar biasa! Tidak ada tagihan yang menunggak minggu ini.</p>
+              </div>
+              `}
+
+              <!-- CTA Button -->
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 32px;">
+                <tr>
+                  <td align="center">
+                    <a href="https://notaku.store/dashboard" target="_blank" style="display: inline-block; background-color: #0f6b4f; color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 13px 32px; border-radius: 10px; box-shadow: 0 2px 4px rgba(15, 107, 79, 0.2);">
+                      Buka Dashboard →
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Weekly Tip -->
+              <div style="background-color: #f1f5f9; border-radius: 12px; padding: 20px;">
+                <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 700; color: #334155; display: flex; align-items: center;">
+                  💡 Tips Bisnis Minggu Ini
+                </h3>
+                <p style="margin: 0; font-size: 13px; line-height: 1.6; color: #475569;">
+                  ${escapeHtml(weeklyTip)}
+                </p>
+              </div>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 20px 32px; background-color: #f8fafc; border-top: 1px solid #f1f5f9; text-align: center;">
+              <p style="margin: 0; font-size: 11px; color: #64748b; line-height: 1.5;">
+                Anda menerima rangkuman ini karena mengaktifkan fitur buletin mingguan di <a href="https://notaku.store" style="color: #0f6b4f; text-decoration: none; font-weight: 600;">NotaKu</a>.<br>
+                Berhenti menerima email mingguan di <a href="https://notaku.store/settings" style="color: #0f6b4f; text-decoration: underline;">Pengaturan Akun</a>.
+              </p>
+              <p style="margin: 6px 0 0 0; font-size: 11px; color: #94a3b8;">
+                &copy; ${new Date().getFullYear()} NotaKu &bull; Simple & Fast Invoicing
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `;
+}

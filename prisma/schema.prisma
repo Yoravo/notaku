@@ -69,6 +69,7 @@ model User {
 
   // Preferensi Email & Komunikasi Resmi
   receiveNewsletter    Boolean   @default(true)
+  lastDigestAt         DateTime?
 
   @@map("user")
 }
