@@ -32,6 +32,8 @@ model User {
   sessions      Session[]
   accounts      Account[]
   invoiceTemplate InvoiceTemplate @default(CLASSIC)
+  invoiceColor    String?       @default("#0f6b4f")
+  invoiceFont     String?       @default("Helvetica")
 
   // Rekening Bank & E-Wallet Penjual (Direct Transfer & Payout)
   bankName          String?

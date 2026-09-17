@@ -6,11 +6,21 @@ import { useTranslations } from "next-intl";
 
 export default function TemplatePreview({
   template,
+  color,
+  font,
 }: {
   template: "CLASSIC" | "MODERN" | "MINIMAL";
+  color?: string;
+  font?: string;
 }) {
   const tTmpl = useTranslations("templates");
   const [loading, setLoading] = useState(true);
+
+  const previewQuery = new URLSearchParams({
+    template: template.toLowerCase(),
+    ...(color ? { color } : {}),
+    ...(font ? { font } : {}),
+  }).toString();
 
   return (
     <div className="relative w-full h-[580px] rounded-2xl border border-gray-200 bg-gray-100/60 overflow-hidden shadow-xs">
@@ -26,7 +36,7 @@ export default function TemplatePreview({
 
       {/* Embedded Native PDF Viewer */}
       <iframe
-        src={`/api/invoices/preview?template=${template.toLowerCase()}#toolbar=0&navpanes=0`}
+        src={`/api/invoices/preview?${previewQuery}#toolbar=0&navpanes=0`}
         className="w-full h-full border-0 bg-white"
         title={tTmpl("previewTitle", { template })}
         onLoad={() => setLoading(false)}
@@ -35,7 +45,7 @@ export default function TemplatePreview({
       {/* Floating Action Button to open in new tab */}
       <div className="absolute bottom-3 right-3 z-20">
         <a
-          href={`/api/invoices/preview?template=${template.toLowerCase()}`}
+          href={`/api/invoices/preview?${previewQuery}`}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 rounded-lg bg-gray-900/85 hover:bg-gray-900 text-white px-3 py-1.5 text-xs font-semibold shadow-lg backdrop-blur-xs transition-colors"

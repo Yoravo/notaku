@@ -60,6 +60,8 @@ export default async function SettingsPage({
           receiveNewsletter: user.receiveNewsletter,
           plan: user.plan,
           invoiceTemplate: user.invoiceTemplate,
+          invoiceColor: (user as any).invoiceColor ?? "#0f6b4f",
+          invoiceFont: (user as any).invoiceFont ?? "Helvetica",
         }}
         domainData={{
           plan: (user.plan as "FREE" | "PRO") || "FREE",

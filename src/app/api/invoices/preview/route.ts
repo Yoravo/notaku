@@ -18,6 +18,8 @@ export async function GET(request: Request) {
     | "classic"
     | "modern"
     | "minimal";
+  const colorParam = searchParams.get("color");
+  const fontParam = searchParams.get("font");
 
   // Ambil data profil bisnis & preferensi user saat ini
   const user = await prisma.user.findUnique({
@@ -35,7 +37,7 @@ export async function GET(request: Request) {
       bankAccountNumber: true,
       bankAccountName: true,
       plan: true,
-    },
+    } as any,
   });
 
   const now = new Date();
@@ -95,6 +97,8 @@ export async function GET(request: Request) {
     total: 1998000,
     isFree: user?.plan === "FREE",
     template: templateParam,
+    themeColor: colorParam || (user as any)?.invoiceColor || "#0f6b4f",
+    themeFont: fontParam || (user as any)?.invoiceFont || "Helvetica",
   };
 
   try {

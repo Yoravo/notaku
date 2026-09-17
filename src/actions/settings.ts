@@ -58,7 +58,11 @@ export async function updateBankAccount(data: {
   return { success: true };
 }
 
-export async function updateInvoiceTemplate(template: InvoiceTemplate) {
+export async function updateInvoiceDesign(
+  template: InvoiceTemplate,
+  color: string,
+  font: string
+) {
   const user = await getUser();
   await checkServerActionRateLimit(user.id, "write");
 
@@ -71,9 +75,13 @@ export async function updateInvoiceTemplate(template: InvoiceTemplate) {
     throw new Error("Fitur ini hanya untuk pengguna Pro");
   }
 
-  await prisma.user.update({
+  await (prisma.user as any).update({
     where: { id: user.id },
-    data: { invoiceTemplate: template },
+    data: {
+      invoiceTemplate: template,
+      invoiceColor: color,
+      invoiceFont: font
+    },
   });
 
   revalidatePath("/settings");

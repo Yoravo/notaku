@@ -2,168 +2,174 @@ import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/render
 import type { InvoiceData } from "../types";
 import { statusText } from "../types";
 import { formatCurrency } from "@/lib/pdf/format";
+import { getFontFamilies } from "@/lib/pdf/theme-helper";
 
-const styles = StyleSheet.create({
-  page: { padding: 0, fontSize: 10, fontFamily: "Helvetica" },
-  header: { backgroundColor: "#1b1916", padding: 40, paddingBottom: 32 },
-  logoWrapper: {
-    width: "100%",
-    alignItems: "flex-end",
-    marginBottom: 6,
-  },
-  logo: {
-    height: 42,
-    objectFit: "contain",
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontFamily: "Helvetica-Bold",
-    color: "#ffffff",
-    letterSpacing: 3,
-  },
-  headerNumber: { fontSize: 10, color: "#9ca3af", marginTop: 4 },
-  headerBusiness: { width: 220, alignItems: "flex-end" },
-  headerBusinessName: {
-    fontFamily: "Helvetica-Bold",
-    color: "#ffffff",
-    fontSize: 12,
-  },
-  headerBusinessDetail: { color: "#9ca3af", marginTop: 2 },
-  statusBadge: { marginTop: 8, alignSelf: "flex-start" },
-  body: { padding: 40 },
-  label: {
-    fontSize: 8,
-    color: "#888",
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-    marginBottom: 4,
-  },
-  bold: { fontFamily: "Helvetica-Bold" },
-  text: { color: "#333", lineHeight: 1.5 },
-  section: { marginBottom: 20 },
-  divider: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#e5e7eb",
-    marginVertical: 20,
-  },
-  table: { marginTop: 8 },
-  tableHeader: {
-    flexDirection: "row",
-    backgroundColor: "#f9fafb",
-    padding: 10,
-    borderRadius: 4,
-    marginBottom: 4,
-  },
-  tableRow: {
-    flexDirection: "row",
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#f3f4f6",
-  },
-  colDesc: { flex: 1 },
-  colQty: { width: 40, textAlign: "right" },
-  colPrice: { width: 90, textAlign: "right" },
-  colAmount: { width: 90, textAlign: "right" },
-  summaryRow: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    paddingVertical: 3,
-  },
-  summaryLabel: {
-    width: 140,
-    textAlign: "right",
-    fontFamily: "Helvetica",
-    fontSize: 9,
-    color: "#6b7280",
-  },
-  summaryValue: {
-    width: 90,
-    textAlign: "right",
-    fontFamily: "Helvetica-Bold",
-    fontSize: 9,
-    color: "#111827",
-  },
-  totalBox: {
-    marginTop: 10,
-    backgroundColor: "#1b1916",
-    borderRadius: 6,
-    padding: 14,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  totalLabel: {
-    color: "#9ca3af",
-    fontSize: 10,
-    fontFamily: "Helvetica-Bold",
-    letterSpacing: 1,
-  },
-  totalValue: { color: "#ffffff", fontSize: 16, fontFamily: "Helvetica-Bold" },
-  signatureContainer: {
-    marginTop: 24,
-    flexDirection: "row",
-    justifyContent: "flex-end",
-  },
-  signatureBox: {
-    width: 170,
-    alignItems: "center",
-    textAlign: "center",
-  },
-  signatureImageWrapper: {
-    height: 55,
-    width: "100%",
-    position: "relative",
-    alignItems: "center",
-    justifyContent: "center",
-    marginVertical: 4,
-  },
-  signatureImg: {
-    maxHeight: 50,
-    maxWidth: 130,
-    objectFit: "contain",
-  },
-  stampImg: {
-    position: "absolute",
-    height: 55,
-    width: 55,
-    right: 15,
-    top: -2,
-    opacity: 0.85,
-    objectFit: "contain",
-  },
-  signatureName: {
-    fontSize: 9,
-    fontFamily: "Helvetica-Bold",
-    color: "#222",
-    borderTopWidth: 1,
-    borderTopColor: "#333",
-    paddingTop: 4,
-    width: "100%",
-    textAlign: "center",
-  },
-  signatureTitle: {
-    fontSize: 8,
-    color: "#666",
-    marginTop: 2,
-  },
-  footer: {
-    position: "absolute",
-    bottom: 20,
-    left: 40,
-    right: 40,
-    textAlign: "center",
-    fontSize: 8,
-    color: "#aaa",
-  },
-});
+const makeStyles = (fonts: any, accentColor: string) =>
+  StyleSheet.create({
+    page: { padding: 0, fontSize: 10, fontFamily: fonts.regular },
+    header: { backgroundColor: accentColor, padding: 40, paddingBottom: 32 },
+    logoWrapper: {
+      width: "100%",
+      alignItems: "flex-end",
+      marginBottom: 6,
+    },
+    logo: {
+      height: 42,
+      objectFit: "contain",
+    },
+    headerTitle: {
+      fontSize: 28,
+      fontFamily: fonts.bold,
+      color: "#ffffff",
+      letterSpacing: 3,
+    },
+    headerNumber: { fontSize: 10, color: "#9ca3af", marginTop: 4 },
+    headerBusiness: { width: 220, alignItems: "flex-end" },
+    headerBusinessName: {
+      fontFamily: fonts.bold,
+      color: "#ffffff",
+      fontSize: 12,
+    },
+    headerBusinessDetail: { color: "#9ca3af", marginTop: 2 },
+    statusBadge: { marginTop: 8, alignSelf: "flex-start" },
+    body: { padding: 40 },
+    label: {
+      fontSize: 8,
+      color: "#888",
+      textTransform: "uppercase",
+      letterSpacing: 0.5,
+      marginBottom: 4,
+    },
+    bold: { fontFamily: fonts.bold },
+    text: { color: "#333", lineHeight: 1.5 },
+    section: { marginBottom: 20 },
+    divider: {
+      borderBottomWidth: 1,
+      borderBottomColor: "#e5e7eb",
+      marginVertical: 20,
+    },
+    table: { marginTop: 8 },
+    tableHeader: {
+      flexDirection: "row",
+      backgroundColor: "#f9fafb",
+      padding: 10,
+      borderRadius: 4,
+      marginBottom: 4,
+    },
+    tableRow: {
+      flexDirection: "row",
+      paddingVertical: 10,
+      borderBottomWidth: 1,
+      borderBottomColor: "#f3f4f6",
+    },
+    colDesc: { flex: 1 },
+    colQty: { width: 40, textAlign: "right" },
+    colPrice: { width: 90, textAlign: "right" },
+    colAmount: { width: 90, textAlign: "right" },
+    summaryRow: {
+      flexDirection: "row",
+      justifyContent: "flex-end",
+      paddingVertical: 3,
+    },
+    summaryLabel: {
+      width: 140,
+      textAlign: "right",
+      fontFamily: fonts.regular,
+      fontSize: 9,
+      color: "#6b7280",
+    },
+    summaryValue: {
+      width: 90,
+      textAlign: "right",
+      fontFamily: fonts.bold,
+      fontSize: 9,
+      color: "#111827",
+    },
+    totalBox: {
+      marginTop: 10,
+      backgroundColor: accentColor,
+      borderRadius: 6,
+      padding: 14,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    totalLabel: {
+      color: "#ffffff",
+      opacity: 0.85,
+      fontSize: 10,
+      fontFamily: fonts.bold,
+      letterSpacing: 1,
+    },
+    totalValue: { color: "#ffffff", fontSize: 16, fontFamily: fonts.bold },
+    signatureContainer: {
+      marginTop: 24,
+      flexDirection: "row",
+      justifyContent: "flex-end",
+    },
+    signatureBox: {
+      width: 170,
+      alignItems: "center",
+      textAlign: "center",
+    },
+    signatureImageWrapper: {
+      height: 55,
+      width: "100%",
+      position: "relative",
+      alignItems: "center",
+      justifyContent: "center",
+      marginVertical: 4,
+    },
+    signatureImg: {
+      maxHeight: 50,
+      maxWidth: 130,
+      objectFit: "contain",
+    },
+    stampImg: {
+      position: "absolute",
+      height: 55,
+      width: 55,
+      right: 15,
+      top: -2,
+      opacity: 0.85,
+      objectFit: "contain",
+    },
+    signatureName: {
+      fontSize: 9,
+      fontFamily: fonts.bold,
+      color: "#222",
+      borderTopWidth: 1,
+      borderTopColor: "#333",
+      paddingTop: 4,
+      width: "100%",
+      textAlign: "center",
+    },
+    signatureTitle: {
+      fontSize: 8,
+      color: "#666",
+      marginTop: 2,
+    },
+    footer: {
+      position: "absolute",
+      bottom: 20,
+      left: 40,
+      right: 40,
+      textAlign: "center",
+      fontSize: 8,
+      color: "#aaa",
+    },
+  });
 
 export function ModernTemplate({ data }: { data: InvoiceData }) {
   const status = statusText[data.status] || data.status;
+  const fonts = getFontFamilies(data.themeFont);
+  const accentColor = data.themeColor || "#1b1916";
+  const styles = makeStyles(fonts, accentColor);
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        {/* Dark Header */}
+        {/* Dark/Accent Header */}
         <View style={styles.header}>
           <View
             style={{
@@ -179,7 +185,7 @@ export function ModernTemplate({ data }: { data: InvoiceData }) {
                 style={[
                   styles.statusBadge,
                   {
-                    backgroundColor: "#374151",
+                    backgroundColor: "rgba(255,255,255,0.15)",
                     borderRadius: 4,
                     paddingHorizontal: 8,
                     paddingVertical: 3,
@@ -189,8 +195,8 @@ export function ModernTemplate({ data }: { data: InvoiceData }) {
                 <Text
                   style={{
                     fontSize: 9,
-                    color: "#d1d5db",
-                    fontFamily: "Helvetica-Bold",
+                    color: "#ffffff",
+                    fontFamily: fonts.bold,
                   }}
                 >
                   {status}
@@ -370,7 +376,7 @@ export function ModernTemplate({ data }: { data: InvoiceData }) {
               )}
             </View>
 
-            {/* Signature & Stamp Section (Jika ada) */}
+            {/* Signature & Stamp Section */}
             {(data.user.signatureUrl || data.user.stampUrl) && (
               <View style={styles.signatureBox}>
                 <Text style={{ fontSize: 8, color: "#666", marginBottom: 2 }}>
@@ -398,12 +404,16 @@ export function ModernTemplate({ data }: { data: InvoiceData }) {
         {/* Footer */}
         {data.isFree ? (
           <Text style={styles.footer}>
-            Dibuat dengan NotaKu — Aplikasi Invoice & Billing UMKM Indonesia (notaku.store)
+            Dibuat gratis dengan NotaKu — https://notaku.store
           </Text>
         ) : (
-          <Text style={styles.footer}>
-            {data.user.businessName || data.user.name}
-          </Text>
+          <Text
+            style={styles.footer}
+            render={({ pageNumber, totalPages }) =>
+              `Halaman ${pageNumber} dari ${totalPages} — Invoice ${data.number}`
+            }
+            fixed
+          />
         )}
       </Page>
     </Document>

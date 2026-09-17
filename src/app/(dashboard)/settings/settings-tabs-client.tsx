@@ -42,6 +42,8 @@ type UserData = {
   receiveNewsletter?: boolean;
   plan: string;
   invoiceTemplate: InvoiceTemplate;
+  invoiceColor?: string | null;
+  invoiceFont?: string | null;
 };
 
 export function SettingsTabsClient({
@@ -164,7 +166,11 @@ export function SettingsTabsClient({
                 </div>
               )}
             </div>
-            <TemplateSelector current={user.invoiceTemplate} />
+            <TemplateSelector
+              current={user.invoiceTemplate}
+              currentColor={user.invoiceColor}
+              currentFont={user.invoiceFont}
+            />
           </div>
         )}
 

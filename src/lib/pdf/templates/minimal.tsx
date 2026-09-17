@@ -2,179 +2,182 @@ import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/render
 import type { InvoiceData } from "../types";
 import { statusText } from "../types";
 import { formatCurrency } from "@/lib/pdf/format";
+import { getFontFamilies } from "@/lib/pdf/theme-helper";
 
-const ACCENT = "#0f6b4f";
-
-const styles = StyleSheet.create({
-  page: {
-    padding: 50,
-    fontSize: 10,
-    fontFamily: "Helvetica",
-    backgroundColor: "#ffffff",
-  },
-  accentLine: { height: 4, backgroundColor: ACCENT, marginBottom: 36 },
-  logo: {
-    height: 50,
-    objectFit: "contain",
-    marginBottom: 6,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 40,
-  },
-  brand: {
-    fontSize: 11,
-    fontFamily: "Helvetica-Bold",
-    color: ACCENT,
-    letterSpacing: 2,
-    textTransform: "uppercase",
-  },
-  businessDetail: { color: "#666", marginTop: 2 },
-  invoiceTitle: {
-    fontSize: 32,
-    fontFamily: "Helvetica-Bold",
-    color: "#111",
-    marginBottom: 4,
-  },
-  invoiceMeta: { color: "#888", fontSize: 9 },
-  label: {
-    fontSize: 8,
-    color: ACCENT,
-    textTransform: "uppercase",
-    letterSpacing: 1,
-    marginBottom: 4,
-    fontFamily: "Helvetica-Bold",
-  },
-  bold: { fontFamily: "Helvetica-Bold" },
-  text: { color: "#444", lineHeight: 1.6 },
-  section: { marginBottom: 20 },
-  divider: {
-    borderBottomWidth: 0.5,
-    borderBottomColor: "#e5e7eb",
-    marginVertical: 24,
-  },
-  table: {},
-  tableHeader: {
-    flexDirection: "row",
-    paddingBottom: 8,
-    borderBottomWidth: 2,
-    borderBottomColor: ACCENT,
-    marginBottom: 4,
-  },
-  tableRow: {
-    flexDirection: "row",
-    paddingVertical: 10,
-    borderBottomWidth: 0.5,
-    borderBottomColor: "#f0f0f0",
-  },
-  colDesc: { flex: 1 },
-  colQty: { width: 40, textAlign: "right" },
-  colPrice: { width: 90, textAlign: "right" },
-  colAmount: { width: 90, textAlign: "right" },
-  summaryRow: {
-    flexDirection: "row",
-    paddingVertical: 3,
-  },
-  summaryLabel: {
-    flex: 1,
-    textAlign: "right",
-    fontFamily: "Helvetica",
-    fontSize: 9,
-    color: "#666",
-  },
-  summaryValue: {
-    width: 90,
-    textAlign: "right",
-    fontFamily: "Helvetica-Bold",
-    fontSize: 9,
-    color: "#222",
-  },
-  totalRow: {
-    flexDirection: "row",
-    marginTop: 10,
-    paddingTop: 10,
-    borderTopWidth: 1.5,
-    borderTopColor: ACCENT,
-  },
-  totalLabel: {
-    flex: 1,
-    textAlign: "right",
-    fontFamily: "Helvetica-Bold",
-    color: ACCENT,
-    fontSize: 11,
-    letterSpacing: 0.5,
-  },
-  totalValue: {
-    width: 90,
-    textAlign: "right",
-    fontFamily: "Helvetica-Bold",
-    fontSize: 12,
-    color: "#111",
-  },
-  signatureContainer: {
-    marginTop: 24,
-    flexDirection: "row",
-    justifyContent: "flex-end",
-  },
-  signatureBox: {
-    width: 170,
-    alignItems: "center",
-    textAlign: "center",
-  },
-  signatureImageWrapper: {
-    height: 55,
-    width: "100%",
-    position: "relative",
-    alignItems: "center",
-    justifyContent: "center",
-    marginVertical: 4,
-  },
-  signatureImg: {
-    maxHeight: 50,
-    maxWidth: 130,
-    objectFit: "contain",
-  },
-  stampImg: {
-    position: "absolute",
-    height: 55,
-    width: 55,
-    right: 15,
-    top: -2,
-    opacity: 0.85,
-    objectFit: "contain",
-  },
-  signatureName: {
-    fontSize: 9,
-    fontFamily: "Helvetica-Bold",
-    color: "#222",
-    borderTopWidth: 1,
-    borderTopColor: "#333",
-    paddingTop: 4,
-    width: "100%",
-    textAlign: "center",
-  },
-  signatureTitle: {
-    fontSize: 8,
-    color: "#666",
-    marginTop: 2,
-  },
-  footer: {
-    position: "absolute",
-    bottom: 30,
-    left: 50,
-    right: 50,
-    borderTopWidth: 0.5,
-    borderTopColor: "#e5e7eb",
-    paddingTop: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  footerText: { fontSize: 8, color: "#aaa" },
-});
+const makeStyles = (fonts: any, ACCENT: string) =>
+  StyleSheet.create({
+    page: {
+      padding: 50,
+      fontSize: 10,
+      fontFamily: fonts.regular,
+      backgroundColor: "#ffffff",
+    },
+    accentLine: { height: 4, backgroundColor: ACCENT, marginBottom: 36 },
+    logo: {
+      height: 50,
+      objectFit: "contain",
+      marginBottom: 6,
+    },
+    header: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginBottom: 40,
+    },
+    brand: {
+      fontSize: 11,
+      fontFamily: fonts.bold,
+      color: ACCENT,
+      letterSpacing: 2,
+      textTransform: "uppercase",
+    },
+    businessDetail: { color: "#666", marginTop: 2 },
+    invoiceTitle: {
+      fontSize: 32,
+      fontFamily: fonts.bold,
+      color: "#111",
+      marginBottom: 4,
+    },
+    invoiceMeta: { color: "#888", fontSize: 9 },
+    label: {
+      fontSize: 8,
+      color: ACCENT,
+      textTransform: "uppercase",
+      letterSpacing: 1,
+      marginBottom: 4,
+      fontFamily: fonts.bold,
+    },
+    bold: { fontFamily: fonts.bold },
+    text: { color: "#444", lineHeight: 1.6 },
+    section: { marginBottom: 20 },
+    divider: {
+      borderBottomWidth: 0.5,
+      borderBottomColor: "#e5e7eb",
+      marginVertical: 24,
+    },
+    table: {},
+    tableHeader: {
+      flexDirection: "row",
+      paddingBottom: 8,
+      borderBottomWidth: 2,
+      borderBottomColor: ACCENT,
+      marginBottom: 4,
+    },
+    tableRow: {
+      flexDirection: "row",
+      paddingVertical: 10,
+      borderBottomWidth: 0.5,
+      borderBottomColor: "#f0f0f0",
+    },
+    colDesc: { flex: 1 },
+    colQty: { width: 40, textAlign: "right" },
+    colPrice: { width: 90, textAlign: "right" },
+    colAmount: { width: 90, textAlign: "right" },
+    summaryRow: {
+      flexDirection: "row",
+      paddingVertical: 3,
+    },
+    summaryLabel: {
+      flex: 1,
+      textAlign: "right",
+      fontFamily: fonts.regular,
+      fontSize: 9,
+      color: "#666",
+    },
+    summaryValue: {
+      width: 90,
+      textAlign: "right",
+      fontFamily: fonts.bold,
+      fontSize: 9,
+      color: "#222",
+    },
+    totalRow: {
+      flexDirection: "row",
+      marginTop: 10,
+      paddingTop: 10,
+      borderTopWidth: 1.5,
+      borderTopColor: ACCENT,
+    },
+    totalLabel: {
+      flex: 1,
+      textAlign: "right",
+      fontFamily: fonts.bold,
+      color: ACCENT,
+      fontSize: 11,
+      letterSpacing: 0.5,
+    },
+    totalValue: {
+      width: 90,
+      textAlign: "right",
+      fontFamily: fonts.bold,
+      fontSize: 12,
+      color: "#111",
+    },
+    signatureContainer: {
+      marginTop: 24,
+      flexDirection: "row",
+      justifyContent: "flex-end",
+    },
+    signatureBox: {
+      width: 170,
+      alignItems: "center",
+      textAlign: "center",
+    },
+    signatureImageWrapper: {
+      height: 55,
+      width: "100%",
+      position: "relative",
+      alignItems: "center",
+      justifyContent: "center",
+      marginVertical: 4,
+    },
+    signatureImg: {
+      maxHeight: 50,
+      maxWidth: 130,
+      objectFit: "contain",
+    },
+    stampImg: {
+      position: "absolute",
+      height: 55,
+      width: 55,
+      right: 15,
+      top: -2,
+      opacity: 0.85,
+      objectFit: "contain",
+    },
+    signatureName: {
+      fontSize: 9,
+      fontFamily: fonts.bold,
+      color: "#222",
+      borderTopWidth: 1,
+      borderTopColor: "#333",
+      paddingTop: 4,
+      width: "100%",
+      textAlign: "center",
+    },
+    signatureTitle: {
+      fontSize: 8,
+      color: "#666",
+      marginTop: 2,
+    },
+    footer: {
+      position: "absolute",
+      bottom: 30,
+      left: 50,
+      right: 50,
+      borderTopWidth: 0.5,
+      borderTopColor: "#e5e7eb",
+      paddingTop: 10,
+      flexDirection: "row",
+      justifyContent: "space-between",
+    },
+    footerText: { fontSize: 8, color: "#aaa" },
+  });
 
 export function MinimalTemplate({ data }: { data: InvoiceData }) {
   const status = statusText[data.status] || data.status;
+  const fonts = getFontFamilies(data.themeFont);
+  const ACCENT = data.themeColor || "#0f6b4f";
+  const styles = makeStyles(fonts, ACCENT);
 
   return (
     <Document>
@@ -242,17 +245,17 @@ export function MinimalTemplate({ data }: { data: InvoiceData }) {
         {/* Items */}
         <View style={styles.table}>
           <View style={styles.tableHeader}>
-            <Text style={{ ...styles.colDesc, ...styles.bold, color: ACCENT }}>
+            <Text style={{ ...styles.colDesc, fontFamily: fonts.bold, color: ACCENT }}>
               Deskripsi
             </Text>
-            <Text style={{ ...styles.colQty, ...styles.bold, color: ACCENT }}>
+            <Text style={{ ...styles.colQty, fontFamily: fonts.bold, color: ACCENT }}>
               Qty
             </Text>
-            <Text style={{ ...styles.colPrice, ...styles.bold, color: ACCENT }}>
+            <Text style={{ ...styles.colPrice, fontFamily: fonts.bold, color: ACCENT }}>
               Harga
             </Text>
             <Text
-              style={{ ...styles.colAmount, ...styles.bold, color: ACCENT }}
+              style={{ ...styles.colAmount, fontFamily: fonts.bold, color: ACCENT }}
             >
               Jumlah
             </Text>
@@ -269,7 +272,7 @@ export function MinimalTemplate({ data }: { data: InvoiceData }) {
                 {formatCurrency(item.price, data.currency)}
               </Text>
               <Text
-                style={{ ...styles.colAmount, ...styles.bold, color: "#222" }}
+                style={{ ...styles.colAmount, fontFamily: fonts.bold, color: "#222" }}
               >
                 {formatCurrency(item.amount, data.currency)}
               </Text>

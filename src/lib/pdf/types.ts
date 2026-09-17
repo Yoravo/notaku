@@ -39,6 +39,8 @@ export type InvoiceData = {
   total: number;
   isFree: boolean;
   template?: "classic" | "modern" | "minimal";
+  themeColor?: string; // Accent color hex (PRO)
+  themeFont?: string; // "Helvetica" | "Times-Roman" | "Courier" (PRO)
 };
 
 export type ReceiptData = {
