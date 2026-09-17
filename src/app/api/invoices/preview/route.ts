@@ -37,7 +37,9 @@ export async function GET(request: Request) {
       bankAccountNumber: true,
       bankAccountName: true,
       plan: true,
-    } as any,
+      invoiceColor: true,
+      invoiceFont: true,
+    },
   });
 
   const now = new Date();
@@ -97,8 +99,8 @@ export async function GET(request: Request) {
     total: 1998000,
     isFree: user?.plan === "FREE",
     template: templateParam,
-    themeColor: colorParam || (user as any)?.invoiceColor || "#0f6b4f",
-    themeFont: fontParam || (user as any)?.invoiceFont || "Helvetica",
+    themeColor: colorParam || user?.invoiceColor || "#0f6b4f",
+    themeFont: fontParam || user?.invoiceFont || "Helvetica",
   };
 
   try {

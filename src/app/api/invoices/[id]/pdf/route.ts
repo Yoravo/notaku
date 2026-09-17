@@ -76,8 +76,8 @@ export async function GET(
       | "classic"
       | "modern"
       | "minimal",
-    themeColor: (invoice.user as any).invoiceColor || "#0f6b4f",
-    themeFont: (invoice.user as any).invoiceFont || "Helvetica",
+    themeColor: invoice.user.invoiceColor || "#0f6b4f",
+    themeFont: invoice.user.invoiceFont || "Helvetica",
   };
 
   try {

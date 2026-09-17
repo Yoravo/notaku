@@ -67,7 +67,7 @@ export async function GET(request: Request) {
   const endDateStr = formatDateWIBShort(now);
 
   // Ambil user yang menerima newsletter dan belum dikirimi dalam 6 hari terakhir
-  const targetUsers = await (prisma.user as any).findMany({
+  const targetUsers = await prisma.user.findMany({
     where: {
       receiveNewsletter: true,
       OR: [
@@ -154,7 +154,7 @@ export async function GET(request: Request) {
       });
 
       // Update state mutlak tanggal pengiriman pada user
-      await (prisma.user as any).update({
+      await prisma.user.update({
         where: { id: user.id },
         data: { lastDigestAt: new Date() },
       });
