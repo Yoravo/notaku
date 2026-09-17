@@ -19,6 +19,7 @@ import {
   DocumentChartBarIcon,
   GiftIcon,
   ArchiveBoxIcon,
+  WalletIcon,
 } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
 
@@ -75,6 +76,11 @@ export function Sidebar({
       icon: ArchiveBoxIcon,
     },
     {
+      href: "/expenses",
+      label: tDash("expenses"),
+      icon: BanknotesIcon,
+    },
+    {
       href: "/tax-reports",
       label: tDash("taxReports"),
       icon: DocumentChartBarIcon,
@@ -87,7 +93,7 @@ export function Sidebar({
     {
       href: "/wallet",
       label: tDash("wallet"),
-      icon: BanknotesIcon,
+      icon: WalletIcon,
     },
     {
       href: "/referrals",

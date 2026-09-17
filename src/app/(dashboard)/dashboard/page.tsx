@@ -35,6 +35,7 @@ export default async function DashboardPage({
     paidAgg,
     pendingAgg,
     totalVolumeAgg,
+    expenseAgg,
     user,
     recentInvoices,
     announcement,
@@ -71,6 +72,13 @@ export default async function DashboardPage({
       },
       _sum: { total: true },
     }),
+    prisma.expense.aggregate({
+      where: {
+        userId,
+        ...(dateFilter ? { date: dateFilter } : {}),
+      },
+      _sum: { amount: true },
+    }),
     prisma.user.findUnique({
       where: { id: userId },
       select: { plan: true, businessName: true, bankName: true, bankAccountNumber: true },
@@ -88,6 +96,8 @@ export default async function DashboardPage({
   const paidRevenue = Number(paidAgg._sum.total || 0);
   const pendingRevenue = Number(pendingAgg._sum.total || 0);
   const totalVolume = Number(totalVolumeAgg._sum.total || 0);
+  const totalExpenses = Number(expenseAgg._sum.amount || 0);
+  const netProfit = paidRevenue - totalExpenses;
   const isPro = user?.plan === "PRO";
   const { used, limit } = await canCreateInvoice(userId);
 
@@ -122,6 +132,8 @@ export default async function DashboardPage({
       paidRevenue={paidRevenue}
       pendingRevenue={pendingRevenue}
       totalVolume={totalVolume}
+      totalExpenses={totalExpenses}
+      netProfit={netProfit}
       invoiceCount={invoiceCount}
       used={used}
       limit={limit}

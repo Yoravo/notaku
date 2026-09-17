@@ -20,6 +20,25 @@ export const catalogItemSchema = z.object({
   unit: z.string().max(30).nullable().or(z.literal("")),
 });
 
+export const EXPENSE_CATEGORIES = [
+  "OPERASIONAL",
+  "GAJI",
+  "PEMASARAN",
+  "SEWA",
+  "ALAT",
+  "LAINNYA",
+] as const;
+
+export const expenseSchema = z.object({
+  title: z.string().min(1, "Judul pengeluaran wajib diisi").max(200),
+  amount: z.number().positive("Nominal harus lebih dari 0"),
+  category: z.enum(EXPENSE_CATEGORIES).default("OPERASIONAL"),
+  date: z.string().refine((val) => !isNaN(new Date(val).getTime()), {
+    message: "Tanggal tidak valid",
+  }),
+  notes: z.string().max(500).nullable().or(z.literal("")),
+});
+
 export const invoiceSchema = z.object({
   customerId: z.string().min(1, "Pelanggan wajib dipilih"),
   dueDate: z.string().nullable().refine((val) => val === null || !isNaN(new Date(val).getTime()), {

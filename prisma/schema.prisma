@@ -24,6 +24,7 @@ model User {
   customers     Customer[]
   items         Item[]
   invoices      Invoice[]
+  expenses      Expense[]
   subscription  Subscription?
   transactions  Transaction[]
   payouts       Payout[]
@@ -103,6 +104,24 @@ model Item {
 
   @@index([userId])
   @@map("item")
+}
+
+// Pencatatan Pengeluaran & Beban Usaha
+model Expense {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  amount    Decimal  @default(0)
+  category  String   @default("OPERASIONAL") // OPERASIONAL, GAJI, PEMASARAN, SEWA, ALAT, LAINNYA
+  date      DateTime @default(now())
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([userId, date])
+  @@map("expense")
 }
 
 model Invoice {
