@@ -22,11 +22,16 @@ export default async function NewInvoicePage(props: {
   const initialCustomerId = searchParams?.customerId;
   const cloneFromId = searchParams?.cloneFrom;
 
-  const [customers, user, cloneSource] = await Promise.all([
+  const [customers, catalogItems, user, cloneSource] = await Promise.all([
     prisma.customer.findMany({
       where: { userId: session.user.id },
       orderBy: { name: "asc" },
       select: { id: true, name: true },
+    }),
+    prisma.item.findMany({
+      where: { userId: session.user.id },
+      orderBy: { name: "asc" },
+      select: { id: true, name: true, description: true, price: true, unit: true },
     }),
     prisma.user.findUnique({
       where: { id: session.user.id },
@@ -67,9 +72,18 @@ export default async function NewInvoicePage(props: {
 
   const { allowed, used, limit } = await canCreateInvoice(session.user.id);
 
+  const serializedCatalogItems = catalogItems.map((c) => ({
+    id: c.id,
+    name: c.name,
+    description: c.description,
+    price: Number(c.price),
+    unit: c.unit,
+  }));
+
   return (
     <NewInvoiceClient
       customers={customers}
+      catalogItems={serializedCatalogItems}
       initialCustomerId={initialCustomerId || cloneSource?.customerId}
       initialInvoiceData={initialInvoiceData}
       isCloning={Boolean(cloneSource)}

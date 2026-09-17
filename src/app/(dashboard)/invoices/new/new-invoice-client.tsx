@@ -6,9 +6,17 @@ import { SparklesIcon, DocumentPlusIcon } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
 
 type Customer = { id: string; name: string };
+type CatalogItem = {
+  id: string;
+  name: string;
+  description: string | null;
+  price: number;
+  unit: string | null;
+};
 
 type NewInvoiceClientProps = {
   customers: Customer[];
+  catalogItems?: CatalogItem[];
   initialCustomerId?: string;
   initialInvoiceData?: any;
   isCloning?: boolean;
@@ -22,6 +30,7 @@ type NewInvoiceClientProps = {
 
 export function NewInvoiceClient({
   customers,
+  catalogItems = [],
   initialCustomerId,
   initialInvoiceData,
   isCloning = false,
@@ -68,6 +77,7 @@ export function NewInvoiceClient({
         <div className="mt-2">
           <InvoiceForm
             customers={customers}
+            catalogItems={catalogItems}
             invoice={initialInvoiceData}
             isCloneMode={isCloning}
             defaultCustomerId={initialCustomerId}

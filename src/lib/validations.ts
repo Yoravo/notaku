@@ -13,6 +13,13 @@ export const invoiceItemSchema = z.object({
   price: z.number().nonnegative("Harga tidak boleh negatif"),
 });
 
+export const catalogItemSchema = z.object({
+  name: z.string().min(1, "Nama produk/jasa wajib diisi").max(200),
+  description: z.string().max(500).nullable().or(z.literal("")),
+  price: z.number().nonnegative("Harga tidak boleh negatif"),
+  unit: z.string().max(30).nullable().or(z.literal("")),
+});
+
 export const invoiceSchema = z.object({
   customerId: z.string().min(1, "Pelanggan wajib dipilih"),
   dueDate: z.string().nullable().refine((val) => val === null || !isNaN(new Date(val).getTime()), {

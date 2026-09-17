@@ -5,7 +5,7 @@ import { createInvoice, updateInvoice } from "@/actions/invoices";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CustomerModal } from "@/components/customers/customer-modal";
-import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, TrashIcon, ArchiveBoxIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import {
   calculateInvoiceTotals,
   DiscountType,
@@ -37,8 +37,17 @@ type Invoice = {
 
 const DISCOUNT_PERCENT_PRESETS = [5, 10, 15, 20, 50];
 
+type CatalogItem = {
+  id: string;
+  name: string;
+  description: string | null;
+  price: number;
+  unit: string | null;
+};
+
 export function InvoiceForm({
   customers,
+  catalogItems = [],
   invoice,
   isCloneMode = false,
   defaultCustomerId,
@@ -47,6 +56,7 @@ export function InvoiceForm({
   userBankAccountName,
 }: {
   customers: Customer[];
+  catalogItems?: CatalogItem[];
   invoice?: Invoice;
   isCloneMode?: boolean;
   defaultCustomerId?: string;
@@ -108,6 +118,11 @@ export function InvoiceForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showCustomerModal, setShowCustomerModal] = useState(false);
+
+  // Catalog Picker State
+  const [showCatalogPicker, setShowCatalogPicker] = useState(false);
+  const [catalogSearch, setCatalogSearch] = useState("");
+
   const router = useRouter();
 
   const currConf = CURRENCY_MAP[currency] || CURRENCY_MAP.IDR;
@@ -124,6 +139,25 @@ export function InvoiceForm({
 
   const addItem = () => {
     setItems([...items, { description: "", quantity: 1, price: 0 }]);
+  };
+
+  const addFromCatalog = (catItem: CatalogItem) => {
+    const label = catItem.unit
+      ? `${catItem.name} (${catItem.unit})`
+      : catItem.name;
+    const newLine: InvoiceItem = {
+      description: label,
+      quantity: 1,
+      price: catItem.price,
+    };
+    // Jika baris pertama masih kosong, timpa; jika tidak, tambahkan baris baru
+    setItems((prev) => {
+      const isFirstEmpty =
+        prev.length === 1 && !prev[0].description && prev[0].price === 0;
+      return isFirstEmpty ? [newLine] : [...prev, newLine];
+    });
+    setShowCatalogPicker(false);
+    setCatalogSearch("");
   };
 
   const removeItem = (index: number) => {
@@ -443,15 +477,118 @@ export function InvoiceForm({
           ))}
         </div>
 
-        <button
-          type="button"
-          onClick={addItem}
-          className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-[#0f6b4f] dark:text-emerald-400 hover:text-[#0c553e] dark:hover:text-emerald-300 transition-colors cursor-pointer bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100/70 dark:hover:bg-emerald-900/60 px-3.5 py-2 rounded-xl border border-emerald-200 dark:border-emerald-800 shadow-2xs active:scale-[0.98] min-h-[40px]"
-        >
-          <PlusIcon className="h-4 w-4" />
-          <span>{tInv("addItem")}</span>
-        </button>
+        <div className="mt-4 flex flex-wrap items-center gap-2.5">
+          <button
+            type="button"
+            onClick={addItem}
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0f6b4f] dark:text-emerald-400 hover:text-[#0c553e] dark:hover:text-emerald-300 transition-colors cursor-pointer bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100/70 dark:hover:bg-emerald-900/60 px-3.5 py-2 rounded-xl border border-emerald-200 dark:border-emerald-800 shadow-2xs active:scale-[0.98] min-h-[44px]"
+          >
+            <PlusIcon className="h-4 w-4" />
+            <span>{tInv("addItem")}</span>
+          </button>
+
+          {catalogItems.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setShowCatalogPicker(true)}
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-700 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors cursor-pointer bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100/70 dark:hover:bg-indigo-900/60 px-3.5 py-2 rounded-xl border border-indigo-200 dark:border-indigo-800 shadow-2xs active:scale-[0.98] min-h-[44px]"
+            >
+              <ArchiveBoxIcon className="h-4 w-4" />
+              <span>Pilih dari Katalog</span>
+            </button>
+          )}
+        </div>
       </div>
+
+      {/* Modal Picker Katalog Item */}
+      {showCatalogPicker && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 sm:p-6 animate-in fade-in">
+          <div className="w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400">
+                  <ArchiveBoxIcon className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+                    Pilih Item dari Katalog
+                  </h3>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    Klik item untuk menyisipkan rincian dan harga otomatis.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowCatalogPicker(false)}
+                className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
+              >
+                <XMarkIcon className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Search filter */}
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Cari item di katalog..."
+                value={catalogSearch}
+                onChange={(e) => setCatalogSearch(e.target.value)}
+                className="w-full pl-3.5 pr-4 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#0f6b4f] min-h-[44px]"
+              />
+            </div>
+
+            {/* List */}
+            <div className="max-h-60 overflow-y-auto space-y-2 pr-1">
+              {catalogItems
+                .filter((ci) =>
+                  ci.name.toLowerCase().includes(catalogSearch.toLowerCase()) ||
+                  (ci.description && ci.description.toLowerCase().includes(catalogSearch.toLowerCase()))
+                )
+                .map((ci) => (
+                  <button
+                    key={ci.id}
+                    type="button"
+                    onClick={() => addFromCatalog(ci)}
+                    className="w-full text-left p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-[#0f6b4f] dark:hover:border-emerald-500 hover:bg-emerald-50/40 dark:hover:bg-emerald-950/40 transition-all cursor-pointer flex items-center justify-between group min-h-[44px]"
+                  >
+                    <div>
+                      <p className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white group-hover:text-[#0f6b4f] dark:group-hover:text-emerald-400">
+                        {ci.name}
+                      </p>
+                      {ci.description && (
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">
+                          {ci.description}
+                        </p>
+                      )}
+                    </div>
+                    <div className="text-right shrink-0 ml-3">
+                      <p className="text-xs sm:text-sm font-extrabold text-[#0f6b4f] dark:text-emerald-400">
+                        {formatMoney(ci.price, currency, locale)}
+                      </p>
+                      {ci.unit && (
+                        <p className="text-[10px] text-slate-400">/ {ci.unit}</p>
+                      )}
+                    </div>
+                  </button>
+                ))}
+            </div>
+
+            <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+              <span className="text-[11px] text-slate-400 font-medium">
+                Total {catalogItems.length} item tersimpan
+              </span>
+              <button
+                type="button"
+                onClick={() => setShowCatalogPicker(false)}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors min-h-[44px]"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Diskon & Pajak (PPN) Card */}
       <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xs space-y-6">

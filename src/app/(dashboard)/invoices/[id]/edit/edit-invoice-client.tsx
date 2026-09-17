@@ -6,6 +6,13 @@ import { useTranslations } from "next-intl";
 import { DiscountType } from "@/lib/invoice-calculations";
 
 type Customer = { id: string; name: string };
+type CatalogItem = {
+  id: string;
+  name: string;
+  description: string | null;
+  price: number;
+  unit: string | null;
+};
 type InvoiceData = {
   id: string;
   customerId: string;
@@ -23,12 +30,14 @@ type InvoiceData = {
 
 export function EditInvoiceClient({
   customers,
+  catalogItems = [],
   userBankName,
   userBankAccountNumber,
   userBankAccountName,
   invoice,
 }: {
   customers: Customer[];
+  catalogItems?: CatalogItem[];
   userBankName?: string | null;
   userBankAccountNumber?: string | null;
   userBankAccountName?: string | null;
@@ -51,6 +60,7 @@ export function EditInvoiceClient({
       <div className="mt-2">
         <InvoiceForm
           customers={customers}
+          catalogItems={catalogItems}
           userBankName={userBankName}
           userBankAccountNumber={userBankAccountNumber}
           userBankAccountName={userBankAccountName}

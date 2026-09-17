@@ -18,6 +18,7 @@ import {
   ArrowPathIcon,
   DocumentChartBarIcon,
   GiftIcon,
+  ArchiveBoxIcon,
 } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
 
@@ -67,6 +68,11 @@ export function Sidebar({
       href: "/recurring-invoices",
       label: tDash("recurringInvoices"),
       icon: ArrowPathIcon,
+    },
+    {
+      href: "/items",
+      label: tDash("catalog"),
+      icon: ArchiveBoxIcon,
     },
     {
       href: "/tax-reports",

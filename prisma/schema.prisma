@@ -22,6 +22,8 @@ model User {
   role          Role          @default(USER)
   createdAt     DateTime      @default(now())
   customers     Customer[]
+  customers     Customer[]
+  items         Item[]
   invoices      Invoice[]
   subscription  Subscription?
   transactions  Transaction[]
@@ -86,6 +88,22 @@ model Customer {
   createdAt DateTime  @default(now())
   user      User      @relation(fields: [userId], references: [id])
   invoices  Invoice[]
+}
+
+// Katalog Produk & Jasa Tersimpan (autofill invoice)
+model Item {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  description String?
+  price       Decimal  @default(0)
+  unit        String?  // e.g. "Pcs", "Jam", "Hari", "Bulan", "Paket"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("item")
 }
 
 model Invoice {
