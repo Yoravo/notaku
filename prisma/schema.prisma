@@ -22,7 +22,6 @@ model User {
   role          Role          @default(USER)
   createdAt     DateTime      @default(now())
   customers     Customer[]
-  customers     Customer[]
   items         Item[]
   invoices      Invoice[]
   subscription  Subscription?
