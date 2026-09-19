@@ -75,7 +75,7 @@ export async function updateInvoiceDesign(
     throw new Error("Fitur ini hanya untuk pengguna Pro");
   }
 
-  await (prisma.user as any).update({
+  await prisma.user.update({
     where: { id: user.id },
     data: {
       invoiceTemplate: template,

@@ -63,8 +63,8 @@ export function ItemModal({
         await createItem(formData);
       }
       onClose();
-    } catch (err: any) {
-      setError(err.message || "Terjadi kesalahan saat menyimpan");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Terjadi kesalahan saat menyimpan");
     } finally {
       setLoading(false);
     }

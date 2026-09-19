@@ -51,6 +51,11 @@ DESIGN.md
 
 # Testing
 test-dashboard-mobile.py
+
+# graphify
+.graphify*
+graphify-out/
+
 scripts/audit-output*
 scripts/capture-landing-baseline.cjs
 scripts/capture-redesign-verification.cjs

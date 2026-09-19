@@ -79,8 +79,8 @@ export function ExpenseModal({
         await createExpense(formData);
       }
       onClose();
-    } catch (err: any) {
-      setError(err.message || "Gagal menyimpan pengeluaran");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Gagal menyimpan pengeluaran");
     } finally {
       setLoading(false);
     }

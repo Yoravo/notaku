@@ -23,7 +23,9 @@ export default async function ExpensesPage({
   const skip = (currentPage - 1) * PER_PAGE;
 
   const now = new Date();
-  const currentMonth = month || `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  const defaultMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  const validMonthRegex = /^\d{4}-(0[1-9]|1[0-2])$/;
+  const currentMonth = month && validMonthRegex.test(month) ? month : defaultMonth;
 
   // Hitung awal dan akhir bulan yang dipilih (dalam WIB)
   const [yearStr, monthStr] = currentMonth.split("-");

@@ -50,8 +50,8 @@ export function ItemsClient({
     setIsDeleting(id);
     try {
       await deleteItem(id);
-    } catch (err: any) {
-      alert(err.message || "Gagal menghapus item");
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : "Gagal menghapus item");
     } finally {
       setIsDeleting(null);
     }
