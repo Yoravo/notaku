@@ -39,7 +39,7 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${template.title} Gratis - Download Format PDF & Excel · NotaKu`;
+  const title = `${template.title} Gratis - Download Format PDF & Excel`;
   const description = `${template.shortDesc} Dilengkapi contoh isian item, ketentuan pembayaran, dan generator PDF instan tanpa login.`;
 
   return {
@@ -96,6 +96,31 @@ export default async function NicheTemplateDetailPage({
     description: template.shortDesc,
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Beranda",
+        item: baseUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Katalog Template",
+        item: `${baseUrl}/templates`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: template.title,
+        item: `${baseUrl}/templates/${template.slug}`,
+      },
+    ],
+  };
+
   const sampleSubtotal = template.sampleData.items.reduce(
     (acc, it) => acc + it.amount,
     0
@@ -106,6 +131,10 @@ export default async function NicheTemplateDetailPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
       {/* Top Header */}

@@ -58,11 +58,46 @@ export default async function Pph23CalculatorPage() {
       "Kalkulator potongan pajak PPh 23 atas jasa dan sewa untuk akuntan, perusahaan, konsultan, dan freelancer Indonesia.",
   };
 
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Siapa yang wajib memotong pajak PPh 23?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Pihak yang wajib memotong dan menyetorkan PPh 23 ke kas negara adalah pihak pembeli atau klien (pemberi penghasilan). Penjual atau penyedia jasa akan menerima Bukti Potong (Bupot) sebagai kredit pajak saat pelaporan SPT Tahunan.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Apa saja objek jasa yang dikenakan PPh Pasal 23?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Objek jasa kena PPh 23 meliputi jasa teknik, manajemen, konsultan hukum/bisnis, desain grafis, software development, periklanan/agensi, katering, serta sewa harta selain tanah dan/atau bangunan.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Berapa tarif pajak PPh Pasal 23?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Tarif resmi PPh Pasal 23 atas jasa dan sewa adalah 2% bagi wajib pajak yang memiliki NPWP, dan 4% (100% lebih tinggi) bagi wajib pajak yang tidak memiliki NPWP.",
+        },
+      },
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
       <Pph23CalculatorClient session={session} />
     </>

@@ -299,41 +299,6 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
 
   return (
     <div className="grain min-h-screen bg-paper text-ink flex flex-col selection:bg-emerald/20 selection:text-emerald-900">
-      {/* JSON-LD Structured Data for SEO */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "SoftwareApplication",
-            name: "NotaKu",
-            description:
-              "Invoice generator dan aplikasi penagihan praktis untuk UMKM, freelancer, dan bisnis Indonesia. Bikin invoice profesional dalam hitungan detik.",
-            applicationCategory: "BusinessApplication",
-            operatingSystem: "Web",
-            offers: [
-              {
-                "@type": "Offer",
-                name: "Free",
-                price: "0",
-                priceCurrency: "IDR",
-                description:
-                  "5 invoice per bulan, pelanggan maks. 20, PDF download, share WhatsApp",
-              },
-              {
-                "@type": "Offer",
-                name: "Pro",
-                price: "49000",
-                priceCurrency: "IDR",
-                priceUnit: "month",
-                description:
-                  "Invoice unlimited, tanpa watermark, custom branding, TTD digital, ekspor laporan",
-              },
-            ],
-          }),
-        }}
-      />
-
       {/* Global Broadcast Announcement Banner for Landing Page */}
       {announcementBanner}
 

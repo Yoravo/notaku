@@ -59,11 +59,46 @@ export default async function PpnCalculatorPage() {
       "Kalkulator hitung otomatis nilai DPP, PPN 11%, dan PPN 12% untuk tagihan dan transaksi bisnis di Indonesia.",
   };
 
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Bagaimana rumus menghitung PPN Exclude (belum termasuk pajak)?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Jika harga belum termasuk pajak (DPP), rumus perhitungannya adalah PPN = DPP × Tarif Pajak (11% atau 12%), dan Total Tagihan = DPP + PPN.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Bagaimana rumus menghitung PPN Include (sudah termasuk pajak)?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Jika harga sudah termasuk pajak, nilai DPP dihitung dengan DPP = Total Akhir ÷ (1 + Tarif Pajak), dan PPN = Total Akhir - DPP.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Berapa tarif PPN yang berlaku di Indonesia?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Tarif PPN yang berlaku di Indonesia saat ini adalah 11% dan 12% sesuai regulasi Undang-Undang Harmonisasi Peraturan Perpajakan (UU HPP).",
+        },
+      },
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
       <PpnCalculatorClient session={session} />
     </>

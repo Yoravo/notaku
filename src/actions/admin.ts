@@ -234,6 +234,7 @@ export async function savePromoCode(data: PromoData) {
 }
 
 export async function getPromoCodes(): Promise<PromoData[]> {
+  await requireAdmin();
   try {
     const logs = await prisma.auditLog.findMany({
       where: { event: "admin.promo_saved" },

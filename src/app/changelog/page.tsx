@@ -28,8 +28,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: isEn
-      ? "Release Notes & Version History (Changelog) · NotaKu"
-      : "Catatan Rilis & Riwayat Versi (Changelog) · NotaKu",
+      ? "Release Notes & Version History (Changelog)"
+      : "Catatan Rilis & Riwayat Versi (Changelog)",
     description: isEn
       ? "Version history, new features, performance improvements, and development updates of the NotaKu platform."
       : "Riwayat pembaruan, rilis fitur baru, peningkatan performa, dan catatan pengembangan platform NotaKu dari waktu ke waktu.",

@@ -4,7 +4,7 @@
  * berdasarkan riwayat commit git riil dan mendukung dwibahasa (ID & EN).
  */
 
-export const APP_VERSION = "0.6.0";
+export const APP_VERSION = "0.6.1";
 export const APP_RELEASE_DATE = {
   id: "19 September 2026",
   en: "September 19, 2026",
@@ -42,6 +42,53 @@ export interface ChangelogRelease {
 
 export const CHANGELOG_RELEASES: ChangelogRelease[] = [
   {
+    version: "0.6.1",
+    type: "patch",
+    date: {
+      id: "19 September 2026",
+      en: "September 19, 2026",
+    },
+    title: {
+      id: "Optimasi SEO Google Maksimal, Rich Snippets & Penguatan Keamanan",
+      en: "Google SEO Maximization, Rich Snippets & Security Hardening",
+    },
+    summary: {
+      id: "Penyempurnaan teknis SEO & indexing: penambahan schema markup terstruktur (WebSite Sitelinks Searchbox, FAQPage, ItemList, BreadcrumbList), eliminasi dobel suffix title, audit robots.txt & hreflang, serta penguatan proteksi otorisasi admin.",
+      en: "Technical SEO and indexation polish: structured JSON-LD schemas (WebSite Sitelinks Searchbox, FAQPage, ItemList, Breadcrumbs), title de-duplication, robots.txt and hreflang alternates, plus admin authorization guard hardening.",
+    },
+    isLatest: true,
+    highlights: [
+      {
+        category: "perf",
+        text: {
+          id: "Google Rich Results & Sitelinks Searchbox: Penambahan WebSite SearchAction schema pada homepage untuk mendukung pencarian langsung dari Google SERP.",
+          en: "Google Rich Results & Sitelinks Searchbox: Added WebSite SearchAction schema to support direct template search from Google SERP.",
+        },
+      },
+      {
+        category: "perf",
+        text: {
+          id: "FAQPage & Breadcrumbs Schema: Integrasi schema FAQ interaktif pada kalkulator pajak (PPN & PPh 23) serta BreadcrumbList pada katalog template.",
+          en: "FAQPage & Breadcrumbs Schema: Integrated rich Q&A snippets on tax calculators and BreadcrumbList on invoice template catalog pages.",
+        },
+      },
+      {
+        category: "fix",
+        text: {
+          id: "De-duplikasi Title & Meta Robots: Pencegahan penumpukan suffix brand dobel pada SERP dan penambahan proteksi noindex di layout dashboard & admin.",
+          en: "Title De-duplication & Meta Robots: Prevented duplicate brand title suffixes and enforced noindex headers across dashboard and admin areas.",
+        },
+      },
+      {
+        category: "security",
+        text: {
+          id: "Penguatan Otorisasi Admin: Penambahan guard requireAdmin() pada Server Action getPromoCodes untuk mencegah akses data voucher tanpa login admin.",
+          en: "Admin Authorization Hardening: Enforced requireAdmin() check on getPromoCodes action to protect voucher data from unauthorized queries.",
+        },
+      },
+    ],
+  },
+  {
     version: "0.6.0",
     type: "minor",
     date: {
@@ -56,7 +103,6 @@ export const CHANGELOG_RELEASES: ChangelogRelease[] = [
       id: "Peningkatan aksesibilitas mobile dan produktivitas: dukungan PWA modern dengan aksi cepat long-press icon aplikasi, command palette global keyboard-driven, ekspor laporan laba rugi CSV, serta penguatan dark mode.",
       en: "Mobile accessibility and productivity enhancements: modern PWA support with long-press quick actions, global keyboard-driven command palette, CSV profit and loss financial export, and dark-mode style hardening.",
     },
-    isLatest: true,
     highlights: [
       {
         category: "feat",

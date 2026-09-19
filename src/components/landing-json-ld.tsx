@@ -8,10 +8,26 @@ export const LandingJsonLd: FC = () => {
     "@type": "Organization",
     name: "NotaKu",
     url: baseUrl,
-    logo: `${baseUrl}/favicon.ico`,
+    logo: `${baseUrl}/logo.png`,
+    image: `${baseUrl}/opengraph-image`,
     sameAs: [],
     description:
       "Aplikasi invoice generator online, manajemen tagihan, kuitansi digital, dan billing SaaS terpercaya untuk UMKM dan bisnis Indonesia.",
+  };
+
+  const webSiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "NotaKu",
+    url: baseUrl,
+    description:
+      "Aplikasi invoice generator online dan billing SaaS untuk UMKM dan bisnis Indonesia.",
+    inLanguage: ["id", "en"],
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${baseUrl}/templates?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
   };
 
   const softwareApplicationSchema = {
@@ -112,6 +128,10 @@ export const LandingJsonLd: FC = () => {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteSchema) }}
       />
       <script
         type="application/ld+json"

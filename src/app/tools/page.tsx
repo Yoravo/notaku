@@ -19,7 +19,7 @@ import { headers } from "next/headers";
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
 
 export const metadata: Metadata = {
-  title: "Pusat Alat & Kalkulator Bisnis Online Gratis Indonesia · NotaKu Tools Hub",
+  title: "Pusat Alat & Kalkulator Bisnis Online Gratis Indonesia",
   description:
     "Kumpulan alat bantu keuangan, generator faktur invoice, kuitansi ejaan terbilang, surat jalan, dan kalkulator pajak PPN & PPh 23 gratis untuk UMKM, freelancer, dan pengusaha Indonesia.",
   keywords: [
@@ -110,8 +110,31 @@ export default async function ToolsHubPage() {
     },
   ];
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Pusat Alat & Kalkulator Bisnis Online Gratis Indonesia - NotaKu",
+    url: `${baseUrl}/tools`,
+    description:
+      "Kumpulan generator dokumen bisnis (invoice, kuitansi, surat jalan) dan kalkulator pajak (PPN, PPh 23) gratis untuk UMKM dan bisnis Indonesia.",
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: tools.map((t, idx) => ({
+        "@type": "ListItem",
+        position: idx + 1,
+        name: t.title,
+        description: t.desc,
+        url: `${baseUrl}${t.href}`,
+      })),
+    },
+  };
+
   return (
     <div className="min-h-screen bg-paper text-ink font-sans">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Top Navbar */}
       <LandingNavbar session={session} />
 
