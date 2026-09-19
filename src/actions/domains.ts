@@ -22,7 +22,7 @@ async function getUser() {
 }
 
 export interface CustomDomainData {
-  plan: "FREE" | "PRO";
+  plan: "FREE" | "PRO" | "BUSINESS";
   customDomain: string | null;
   customDomainVerified: boolean;
   customDomainTxt: string | null;
@@ -49,11 +49,10 @@ export async function getCustomDomainSettings(): Promise<CustomDomainData> {
     },
   });
 
-  const isPro = user?.plan === "PRO";
   const baseDomain = process.env.NEXT_PUBLIC_APP_DOMAIN || "notaku.store";
 
   return {
-    plan: (user?.plan as "FREE" | "PRO") || "FREE",
+    plan: (user?.plan as "FREE" | "PRO" | "BUSINESS") || "FREE",
     customDomain: user?.customDomain || null,
     customDomainVerified: Boolean(user?.customDomainVerified),
     customDomainTxt: user?.customDomainTxt || null,
@@ -82,8 +81,8 @@ export async function saveDomainSettings(data: {
     select: { plan: true, customDomain: true, customDomainTxt: true, subdomainSlug: true },
   });
 
-  if (dbUser?.plan !== "PRO") {
-    throw new Error("Fitur Custom Domain dan Subdomain White-Label eksklusif untuk pelanggan NotaKu PRO.");
+  if (dbUser?.plan !== "BUSINESS") {
+    throw new Error("Fitur Custom Domain dan Subdomain White-Label eksklusif untuk pelanggan NotaKu Business.");
   }
 
   const cleanSubdomain = validated.subdomainSlug ? validated.subdomainSlug.trim().toLowerCase() : null;
@@ -161,8 +160,8 @@ export async function verifyCustomDomain(): Promise<DnsCheckResult> {
     },
   });
 
-  if (dbUser?.plan !== "PRO") {
-    throw new Error("Fitur ini hanya untuk pengguna NotaKu PRO.");
+  if (dbUser?.plan !== "BUSINESS") {
+    throw new Error("Fitur verifikasi domain hanya untuk pengguna NotaKu Business.");
   }
 
   if (!dbUser?.customDomain) {

@@ -143,7 +143,7 @@ export async function notifySellerInvoicePaid(
       },
     });
 
-    if (!user || user.plan !== "PRO" || !user.notifyOnPayment) return;
+    if (!user || user.plan !== "BUSINESS" || !user.notifyOnPayment) return;
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
     const invoiceUrl = `${appUrl}/i/${invoice.publicId}`;
@@ -222,7 +222,7 @@ export async function notifySellerDueToday(
       },
     });
 
-    if (!user || user.plan !== "PRO" || !user.notifyOnDueDate) return;
+    if (!user || user.plan !== "BUSINESS" || !user.notifyOnDueDate) return;
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
 
@@ -304,7 +304,7 @@ export async function notifySellerRecurringGenerated(
       },
     });
 
-    if (!user || user.plan !== "PRO" || !user.notifyOnRecurring) return;
+    if (!user || user.plan !== "BUSINESS" || !user.notifyOnRecurring) return;
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
     const invoiceUrl = `${appUrl}/i/${invoice.publicId}`;

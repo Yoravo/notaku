@@ -339,7 +339,9 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
                     <td className="py-2.5">
                       <span
                         className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                          u.plan === "PRO"
+                          u.plan === "BUSINESS"
+                            ? "bg-violet-50 dark:bg-violet-950/60 text-violet-800 dark:text-violet-300 border border-violet-200/60 dark:border-violet-800 shadow-2xs"
+                            : u.plan === "PRO"
                             ? "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800 shadow-2xs"
                             : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
                         }`}

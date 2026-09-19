@@ -110,6 +110,7 @@ export function AdminUsersClient({
               <option value="">{tAdmin("filterAllPlans")}</option>
               <option value="FREE">FREE</option>
               <option value="PRO">PRO</option>
+              <option value="BUSINESS">BUSINESS</option>
             </select>
           </div>
 
@@ -202,13 +203,15 @@ export function AdminUsersClient({
                         <div className="flex flex-col gap-1 items-start">
                           <span
                             className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                              u.plan === "PRO"
+                              u.plan === "BUSINESS"
+                                ? "bg-violet-50 dark:bg-violet-950/60 text-violet-800 dark:text-violet-300 border border-violet-200/60 dark:border-violet-800 shadow-2xs"
+                                : u.plan === "PRO"
                                 ? "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800 shadow-2xs"
                                 : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
                             }`}
                           >
-                            {u.plan === "PRO" && (
-                              <SparklesIcon className="w-3 h-3 text-amber-600" />
+                            {(u.plan === "PRO" || u.plan === "BUSINESS") && (
+                              <SparklesIcon className={`w-3 h-3 ${u.plan === "BUSINESS" ? "text-violet-600" : "text-amber-600"}`} />
                             )}
                             {u.plan}
                           </span>
@@ -246,7 +249,7 @@ export function AdminUsersClient({
                           userId={u.id}
                           userName={u.name || ""}
                           userEmail={u.email}
-                          currentPlan={u.plan as "FREE" | "PRO"}
+                          currentPlan={u.plan as "FREE" | "PRO" | "BUSINESS"}
                           currentRole={u.role as "USER" | "ADMIN"}
                           isCurrentAdmin={isCurrentAdmin}
                         />

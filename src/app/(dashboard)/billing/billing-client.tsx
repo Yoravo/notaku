@@ -40,13 +40,15 @@ export function BillingClient({
   customerUsage,
 }: BillingClientProps) {
   const tBilling = useTranslations("billing");
+  const isBusiness = user.plan === "BUSINESS";
   const isPro = user.plan === "PRO";
+  const isPaid = isPro || isBusiness;
 
-  const invoicePercent = isPro
+  const invoicePercent = isPaid
     ? 0
     : Math.min(100, Math.round((invoiceUsage.used / invoiceUsage.limit) * 100));
 
-  const customerPercent = isPro
+  const customerPercent = isPaid
     ? 0
     : Math.min(100, Math.round((customerUsage.used / customerUsage.limit) * 100));
 
@@ -68,12 +70,14 @@ export function BillingClient({
           <div className="flex items-center gap-3.5">
             <div
               className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${
-                isPro
+                isBusiness
+                  ? "bg-violet-100 dark:bg-violet-950/60 text-violet-700 dark:text-violet-400"
+                  : isPro
                   ? "bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400"
                   : "bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400"
               }`}
             >
-              {isPro ? (
+              {isBusiness || isPro ? (
                 <SparklesIcon className="h-6 w-6" />
               ) : (
                 <BoltIcon className="h-6 w-6" />
@@ -82,31 +86,41 @@ export function BillingClient({
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-lg font-bold text-slate-900 dark:text-white">
-                  {isPro ? tBilling("proMember") : tBilling("freeMember")}
+                  {isBusiness
+                    ? tBilling("bizMember")
+                    : isPro
+                    ? tBilling("proMember")
+                    : tBilling("freeMember")}
                 </h2>
                 <span
                   className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold ${
-                    isPro
+                    isBusiness
+                      ? "bg-violet-50 dark:bg-violet-950/60 text-violet-800 dark:text-violet-300 border border-violet-300 dark:border-violet-700"
+                      : isPro
                       ? "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-700"
                       : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
                   }`}
                 >
-                  {isPro ? tBilling("activeBadge") : tBilling("freeBadge")}
+                  {isPaid ? tBilling("activeBadge") : tBilling("freeBadge")}
                 </span>
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                {isPro ? tBilling("proDesc") : tBilling("freeDesc")}
+                {isBusiness
+                  ? tBilling("bizDesc")
+                  : isPro
+                  ? tBilling("proDesc")
+                  : tBilling("freeDesc")}
               </p>
             </div>
           </div>
 
-          {!isPro && (
+          {!isBusiness && (
             <UpgradeButton className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0f6b4f] px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-xs hover:bg-[#0c5740] transition-colors cursor-pointer min-h-[44px]" />
           )}
         </div>
 
-        {/* PRO Expiration details if active */}
-        {isPro && user.subscription?.currentPeriodEnd && (
+        {/* Expiration details if active */}
+        {isPaid && user.subscription?.currentPeriodEnd && (
           <div className="rounded-xl bg-amber-50/60 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs">
             <div className="flex items-center gap-2 text-amber-900 dark:text-amber-200 font-medium">
               <CheckBadgeIcon className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
@@ -139,7 +153,7 @@ export function BillingClient({
                 </span>
               </div>
               <span className="text-xs font-bold font-mono text-slate-900 dark:text-white">
-                {isPro ? (
+                {isPaid ? (
                   <span className="text-emerald-700 dark:text-emerald-400">{tBilling("quotaUnlimited")}</span>
                 ) : (
                   `${invoiceUsage.used} / ${invoiceUsage.limit}`
@@ -147,7 +161,7 @@ export function BillingClient({
               </span>
             </div>
 
-            {!isPro && (
+            {!isPaid && (
               <>
                 <div className="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
                   <div
@@ -163,7 +177,7 @@ export function BillingClient({
               </>
             )}
 
-            {isPro && (
+            {isPaid && (
               <p className="text-[11px] text-emerald-700 dark:text-emerald-400 flex items-center gap-1 font-medium">
                 <CheckBadgeIcon className="w-3.5 h-3.5" />
                 {tBilling("proBenefitInvoices")}
@@ -181,7 +195,7 @@ export function BillingClient({
                 </span>
               </div>
               <span className="text-xs font-bold font-mono text-slate-900 dark:text-white">
-                {isPro ? (
+                {isPaid ? (
                   <span className="text-emerald-700 dark:text-emerald-400">{tBilling("quotaUnlimited")}</span>
                 ) : (
                   `${customerUsage.used} / ${customerUsage.limit}`
@@ -189,7 +203,7 @@ export function BillingClient({
               </span>
             </div>
 
-            {!isPro && (
+            {!isPaid && (
               <>
                 <div className="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
                   <div
@@ -205,7 +219,7 @@ export function BillingClient({
               </>
             )}
 
-            {isPro && (
+            {isPaid && (
               <p className="text-[11px] text-emerald-700 dark:text-emerald-400 flex items-center gap-1 font-medium">
                 <CheckBadgeIcon className="w-3.5 h-3.5" />
                 {tBilling("proBenefitCustomers")}
@@ -227,86 +241,147 @@ export function BillingClient({
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs min-w-[320px]">
+          <table className="w-full text-left text-xs min-w-[500px]">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-semibold">
                 <th className="py-3 px-3">{tBilling("tableFeature")}</th>
                 <th className="py-3 px-3 text-center">{tBilling("tableFree")}</th>
-                <th className="py-3 px-3 text-center text-[#0f6b4f] bg-emerald-50/50 rounded-t-lg">
+                <th className="py-3 px-3 text-center text-[#0f6b4f] bg-emerald-50/40 dark:bg-emerald-950/20">
                   {tBilling("tablePro")}
+                </th>
+                <th className="py-3 px-3 text-center text-violet-700 dark:text-violet-400 bg-violet-50/40 dark:bg-violet-950/20">
+                  {tBilling("tableBiz")}
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               <tr>
-                <td className="py-3 px-3 font-medium text-slate-900">
+                <td className="py-3 px-3 font-medium text-slate-900 dark:text-slate-200">
                   {tBilling("monthlyInvoiceLimit")}
                 </td>
-                <td className="py-3 px-3 text-center text-slate-600">
+                <td className="py-3 px-3 text-center text-slate-600 dark:text-slate-400">
                   {tBilling("fiveInvoices")}
                 </td>
-                <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] bg-emerald-50/50">
+                <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] dark:text-emerald-400 bg-emerald-50/40 dark:bg-emerald-950/20">
+                  {tBilling("unlimited")}
+                </td>
+                <td className="py-3 px-3 text-center font-bold text-violet-700 dark:text-violet-400 bg-violet-50/40 dark:bg-violet-950/20">
                   {tBilling("unlimited")}
                 </td>
               </tr>
               <tr>
-                <td className="py-3 px-3 font-medium text-slate-900">
+                <td className="py-3 px-3 font-medium text-slate-900 dark:text-slate-200">
                   {tBilling("watermarkBranding")}
                 </td>
-                <td className="py-3 px-3 text-center text-slate-600">
+                <td className="py-3 px-3 text-center text-slate-600 dark:text-slate-400">
                   {tBilling("withWatermark")}
                 </td>
-                <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] bg-emerald-50/50">
+                <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] dark:text-emerald-400 bg-emerald-50/40 dark:bg-emerald-950/20">
+                  {tBilling("noWatermark")}
+                </td>
+                <td className="py-3 px-3 text-center font-bold text-violet-700 dark:text-violet-400 bg-violet-50/40 dark:bg-violet-950/20">
                   {tBilling("noWatermark")}
                 </td>
               </tr>
               <tr>
-                <td className="py-3 px-3 font-medium text-slate-900">
+                <td className="py-3 px-3 font-medium text-slate-900 dark:text-slate-200">
                   {tBilling("pdfTemplates")}
                 </td>
-                <td className="py-3 px-3 text-center text-slate-600">
+                <td className="py-3 px-3 text-center text-slate-600 dark:text-slate-400">
                   {tBilling("classicOnly")}
                 </td>
-                <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] bg-emerald-50/50">
+                <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] dark:text-emerald-400 bg-emerald-50/40 dark:bg-emerald-950/20">
+                  {tBilling("allTemplates")}
+                </td>
+                <td className="py-3 px-3 text-center font-bold text-violet-700 dark:text-violet-400 bg-violet-50/40 dark:bg-violet-950/20">
                   {tBilling("allTemplates")}
                 </td>
               </tr>
               <tr>
-                <td className="py-3 px-3 font-medium text-slate-900">
+                <td className="py-3 px-3 font-medium text-slate-900 dark:text-slate-200">
                   {tBilling("automatedPayments")}
                 </td>
-                <td className="py-3 px-3 text-center text-emerald-600 font-bold">
+                <td className="py-3 px-3 text-center text-emerald-600 dark:text-emerald-400 font-bold">
                   {tBilling("available")}
                 </td>
-                <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] bg-emerald-50/50">
-                  {tBilling("availableWithAlerts")}
+                <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] dark:text-emerald-400 bg-emerald-50/40 dark:bg-emerald-950/20">
+                  {tBilling("available")}
+                </td>
+                <td className="py-3 px-3 text-center font-bold text-violet-700 dark:text-violet-400 bg-violet-50/40 dark:bg-violet-950/20">
+                  {tBilling("available")}
                 </td>
               </tr>
               <tr>
-                <td className="py-3 px-3 font-medium text-slate-900">
+                <td className="py-3 px-3 font-medium text-slate-900 dark:text-slate-200">
                   {tBilling("savedClientLimit")}
                 </td>
-                <td className="py-3 px-3 text-center text-slate-600">
+                <td className="py-3 px-3 text-center text-slate-600 dark:text-slate-400">
                   {tBilling("twentyClients")}
                 </td>
-                <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] bg-emerald-50/50">
+                <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] dark:text-emerald-400 bg-emerald-50/40 dark:bg-emerald-950/20">
+                  {tBilling("unlimited")}
+                </td>
+                <td className="py-3 px-3 text-center font-bold text-violet-700 dark:text-violet-400 bg-violet-50/40 dark:bg-violet-950/20">
                   {tBilling("unlimited")}
                 </td>
               </tr>
               <tr>
-                <td className="py-3 px-3 font-medium text-slate-900">
+                <td className="py-3 px-3 font-medium text-slate-900 dark:text-slate-200">
                   {tBilling("digitalSignatureStamp")}
                 </td>
                 <td className="py-3 px-3 text-center text-slate-400">-</td>
-                <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] bg-emerald-50/50 rounded-b-lg">
-                  {tBilling("available")}
+                <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] dark:text-emerald-400 bg-emerald-50/40 dark:bg-emerald-950/20">
+                  {tBilling("included")}
+                </td>
+                <td className="py-3 px-3 text-center font-bold text-violet-700 dark:text-violet-400 bg-violet-50/40 dark:bg-violet-950/20">
+                  {tBilling("included")}
+                </td>
+              </tr>
+              <tr>
+                <td className="py-3 px-3 font-medium text-slate-900 dark:text-slate-200">
+                  {tBilling("customDomainFeature")}
+                </td>
+                <td className="py-3 px-3 text-center text-slate-400">-</td>
+                <td className="py-3 px-3 text-center text-slate-400 bg-emerald-50/40 dark:bg-emerald-950/20">-</td>
+                <td className="py-3 px-3 text-center font-bold text-violet-700 dark:text-violet-400 bg-violet-50/40 dark:bg-violet-950/20">
+                  {tBilling("included")}
+                </td>
+              </tr>
+              <tr>
+                <td className="py-3 px-3 font-medium text-slate-900 dark:text-slate-200">
+                  {tBilling("apiWebhooksFeature")}
+                </td>
+                <td className="py-3 px-3 text-center text-slate-400">-</td>
+                <td className="py-3 px-3 text-center text-slate-400 bg-emerald-50/40 dark:bg-emerald-950/20">-</td>
+                <td className="py-3 px-3 text-center font-bold text-violet-700 dark:text-violet-400 bg-violet-50/40 dark:bg-violet-950/20">
+                  {tBilling("included")}
+                </td>
+              </tr>
+              <tr>
+                <td className="py-3 px-3 font-medium text-slate-900 dark:text-slate-200">
+                  {tBilling("botAlertsFeature")}
+                </td>
+                <td className="py-3 px-3 text-center text-slate-400">-</td>
+                <td className="py-3 px-3 text-center text-slate-400 bg-emerald-50/40 dark:bg-emerald-950/20">-</td>
+                <td className="py-3 px-3 text-center font-bold text-violet-700 dark:text-violet-400 bg-violet-50/40 dark:bg-violet-950/20">
+                  {tBilling("included")}
+                </td>
+              </tr>
+              <tr>
+                <td className="py-3 px-3 font-medium text-slate-900 dark:text-slate-200">
+                  {tBilling("payoutPriorityFeature")}
+                </td>
+                <td className="py-3 px-3 text-center text-slate-600 dark:text-slate-400">{tBilling("standard")}</td>
+                <td className="py-3 px-3 text-center text-slate-600 dark:text-slate-400 bg-emerald-50/40 dark:bg-emerald-950/20">{tBilling("standard")}</td>
+                <td className="py-3 px-3 text-center font-bold text-violet-700 dark:text-violet-400 bg-violet-50/40 dark:bg-violet-950/20">
+                  {tBilling("priorityFast")}
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        {!isPro && (
+        {!isBusiness && (
           <div className="pt-3 flex justify-end">
             <UpgradeButton className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0f6b4f] px-6 py-2.5 text-xs sm:text-sm font-bold text-white shadow-xs hover:bg-[#0c5740] transition-colors cursor-pointer" />
           </div>

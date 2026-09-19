@@ -37,7 +37,7 @@ export default async function NewRecurringInvoicePage(props: {
     }),
   ]);
 
-  const isPro = user?.plan === "PRO";
+  const isPro = user?.plan === "PRO" || user?.plan === "BUSINESS";
 
   return (
     <NewRecurringInvoiceClient

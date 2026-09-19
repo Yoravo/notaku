@@ -8,8 +8,10 @@ import {
   TagIcon,
   ArrowPathIcon,
   CheckCircleIcon,
+  BriefcaseIcon,
 } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
+import { PLAN_PRICES, type PlanType, type PlanInterval } from "@/lib/plan-constants";
 
 type PromoState = {
   code: string;
@@ -21,8 +23,16 @@ type PromoState = {
   finalPrice: number;
 } | null;
 
-export function UpgradeModal({ onClose }: { onClose: () => void }) {
+export function UpgradeModal({
+  onClose,
+  initialPlan = "PRO",
+}: {
+  onClose: () => void;
+  initialPlan?: PlanType;
+}) {
   const t = useTranslations("upgradeModal");
+  const [selectedPlan, setSelectedPlan] = useState<PlanType>(initialPlan);
+  const [selectedInterval, setSelectedInterval] = useState<PlanInterval>("MONTHLY");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,6 +41,8 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
   const [validatingPromo, setValidatingPromo] = useState(false);
   const [promoError, setPromoError] = useState<string | null>(null);
   const [appliedPromo, setAppliedPromo] = useState<PromoState>(null);
+
+  const basePrice = PLAN_PRICES[selectedPlan][selectedInterval];
 
   const handleApplyPromo = async () => {
     if (!inputCode.trim()) return;
@@ -41,7 +53,11 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
       const res = await fetch("/api/payment/promo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: inputCode.trim() }),
+        body: JSON.stringify({
+          code: inputCode.trim(),
+          plan: selectedPlan,
+          interval: selectedInterval,
+        }),
       });
 
       const data = await res.json();
@@ -62,6 +78,18 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
   const handleRemovePromo = () => {
     setAppliedPromo(null);
     setInputCode("");
+    setPromoError(null);
+  };
+
+  const handlePlanChange = (plan: PlanType) => {
+    setSelectedPlan(plan);
+    setAppliedPromo(null);
+    setPromoError(null);
+  };
+
+  const handleIntervalChange = (interval: PlanInterval) => {
+    setSelectedInterval(interval);
+    setAppliedPromo(null);
     setPromoError(null);
   };
 
@@ -88,10 +116,13 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
         getGaId("client_id"),
         getGaId("session_id"),
       ]);
+
       const res = await fetch("/api/payment/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          plan: selectedPlan,
+          interval: selectedInterval,
           promoCode: appliedPromo ? appliedPromo.code : undefined,
           gaClientId: gaClientId || undefined,
           gaSessionId: gaSessionId || undefined,
@@ -113,7 +144,7 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
     }
   };
 
-  const currentPrice = appliedPromo ? appliedPromo.finalPrice : 49000;
+  const currentPrice = appliedPromo ? appliedPromo.finalPrice : basePrice;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -121,15 +152,26 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
         className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity animate-in fade-in"
         onClick={onClose}
       />
-      <div className="relative w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xl space-y-4 animate-in zoom-in-95 border border-gray-100 dark:border-slate-800 max-h-[90vh] overflow-y-auto">
+      <div className="relative w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xl space-y-4 animate-in zoom-in-95 border border-gray-100 dark:border-slate-800 max-h-[90vh] overflow-y-auto">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400 flex items-center justify-center border border-emerald-100 dark:border-emerald-800">
-              <SparklesIcon className="w-5 h-5" />
+            <div
+              className={`w-9 h-9 rounded-xl flex items-center justify-center border shrink-0 ${
+                selectedPlan === "BUSINESS"
+                  ? "bg-violet-50 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300 border-violet-200 dark:border-violet-800"
+                  : "bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"
+              }`}
+            >
+              {selectedPlan === "BUSINESS" ? (
+                <BriefcaseIcon className="w-5 h-5" />
+              ) : (
+                <SparklesIcon className="w-5 h-5" />
+              )}
             </div>
             <div>
               <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-                {t("titlePrefix")} Nota<span className="text-[#0f6b4f] dark:text-emerald-400">Ku</span> PRO
+                {t("titlePrefix")} Nota<span className="text-[#0f6b4f] dark:text-emerald-400">Ku</span>{" "}
+                {selectedPlan === "BUSINESS" ? "Business" : "PRO"}
               </h2>
               <p className="text-xs text-gray-500 dark:text-slate-400">
                 {t("subtitle")}
@@ -144,28 +186,108 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
+        {/* Tier Selector (PRO vs BUSINESS) */}
+        <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl">
+          <button
+            type="button"
+            onClick={() => handlePlanChange("PRO")}
+            className={`py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer min-h-[40px] flex items-center justify-center gap-1.5 ${
+              selectedPlan === "PRO"
+                ? "bg-white dark:bg-slate-900 text-[#0f6b4f] dark:text-emerald-400 shadow-xs"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+            }`}
+          >
+            <SparklesIcon className="w-3.5 h-3.5" />
+            <span>NotaKu {t("planPro")}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => handlePlanChange("BUSINESS")}
+            className={`py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer min-h-[40px] flex items-center justify-center gap-1.5 ${
+              selectedPlan === "BUSINESS"
+                ? "bg-white dark:bg-slate-900 text-violet-700 dark:text-violet-400 shadow-xs"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+            }`}
+          >
+            <BriefcaseIcon className="w-3.5 h-3.5" />
+            <span>NotaKu {t("planBusiness")}</span>
+          </button>
+        </div>
+
+        {/* Billing Interval Toggle (Monthly vs Annually) */}
+        <div className="flex items-center justify-between px-1 text-xs">
+          <span className="text-slate-600 dark:text-slate-400 font-medium">
+            {t("selectPlan")}:
+          </span>
+          <div className="inline-flex rounded-lg border border-slate-200 dark:border-slate-700 p-0.5 bg-slate-50 dark:bg-slate-800">
+            <button
+              type="button"
+              onClick={() => handleIntervalChange("MONTHLY")}
+              className={`px-3 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer min-h-[32px] ${
+                selectedInterval === "MONTHLY"
+                  ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs"
+                  : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+              }`}
+            >
+              {t("billingMonthly")}
+            </button>
+            <button
+              type="button"
+              onClick={() => handleIntervalChange("ANNUALLY")}
+              className={`px-3 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer min-h-[32px] flex items-center gap-1 ${
+                selectedInterval === "ANNUALLY"
+                  ? "bg-emerald-600 text-white shadow-2xs"
+                  : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+              }`}
+            >
+              <span>{t("billingAnnually")}</span>
+              <span className="text-[9px] bg-white/20 px-1.5 py-0.2 rounded-full font-extrabold uppercase">
+                {t("annualSaveBadge")}
+              </span>
+            </button>
+          </div>
+        </div>
+
         {/* Pricing Box with Promo Support */}
-        <div className="rounded-xl bg-linear-to-br from-emerald-500/10 to-teal-500/5 dark:from-emerald-950/40 dark:to-teal-950/20 p-4 border border-emerald-200/80 dark:border-emerald-800/80">
+        <div
+          className={`rounded-xl p-4 border transition-all ${
+            selectedPlan === "BUSINESS"
+              ? "bg-linear-to-br from-violet-500/10 to-indigo-500/5 dark:from-violet-950/40 dark:to-indigo-950/20 border-violet-200/80 dark:border-violet-800/80"
+              : "bg-linear-to-br from-emerald-500/10 to-teal-500/5 dark:from-emerald-950/40 dark:to-teal-950/20 border-emerald-200/80 dark:border-emerald-800/80"
+          }`}
+        >
           <div className="flex items-baseline justify-between">
             <div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
+              <span
+                className={`text-[11px] font-bold uppercase tracking-wider ${
+                  selectedPlan === "BUSINESS"
+                    ? "text-violet-800 dark:text-violet-300"
+                    : "text-emerald-800 dark:text-emerald-300"
+                }`}
+              >
                 {t("unlimitedAccess")}
               </span>
               <div className="flex items-baseline gap-2 mt-1">
                 <p className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">
                   Rp{currentPrice.toLocaleString("id-ID")}
                   <span className="text-xs font-medium text-gray-500 dark:text-slate-400 ml-1">
-                    {t("per30Days")}
+                    {selectedInterval === "ANNUALLY" ? t("perYear") : t("per30Days")}
                   </span>
                 </p>
                 {appliedPromo && (
                   <span className="text-xs text-gray-400 dark:text-slate-500 line-through font-semibold">
-                    Rp49.000
+                    Rp{basePrice.toLocaleString("id-ID")}
                   </span>
                 )}
               </div>
             </div>
-            <span className="inline-flex items-center rounded-full bg-emerald-100 dark:bg-emerald-900/60 px-2.5 py-0.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700">
+            <span
+              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold border ${
+                selectedPlan === "BUSINESS"
+                  ? "bg-violet-100 dark:bg-violet-900/60 text-violet-800 dark:text-violet-300 border-violet-200 dark:border-violet-700"
+                  : "bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700"
+              }`}
+            >
               {appliedPromo
                 ? appliedPromo.discountType === "PERCENTAGE"
                   ? t("savePercent", { value: appliedPromo.discountValue })
@@ -244,18 +366,33 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
           </div>
         )}
 
-        {/* Feature List */}
+        {/* Feature List for Selected Plan */}
         <ul className="space-y-2 text-xs text-gray-700 dark:text-slate-300">
-          {[
-            t("feature1"),
-            t("feature2"),
-            t("feature3"),
-            t("feature4"),
-            t("feature5"),
-            t("feature6"),
-          ].map((item, idx) => (
+          {(selectedPlan === "BUSINESS"
+            ? [
+                t("bizFeature1"),
+                t("bizFeature2"),
+                t("bizFeature3"),
+                t("bizFeature4"),
+                t("bizFeature5"),
+              ]
+            : [
+                t("feature1"),
+                t("feature2"),
+                t("feature3"),
+                t("feature4"),
+                t("feature5"),
+                t("feature6"),
+              ]
+          ).map((item, idx) => (
             <li key={idx} className="flex items-center gap-2 font-medium">
-              <div className="w-4 h-4 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-[#0f6b4f] dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-200/60 dark:border-emerald-800">
+              <div
+                className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 border ${
+                  selectedPlan === "BUSINESS"
+                    ? "bg-violet-100 dark:bg-violet-950/80 text-violet-700 dark:text-violet-300 border-violet-200/60 dark:border-violet-800"
+                    : "bg-emerald-100 dark:bg-emerald-950/80 text-[#0f6b4f] dark:text-emerald-400 border-emerald-200/60 dark:border-emerald-800"
+                }`}
+              >
                 <CheckIcon className="w-2.5 h-2.5 stroke-[3]" />
               </div>
               <span>{item}</span>
@@ -283,7 +420,11 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
             type="button"
             onClick={handleUpgrade}
             disabled={loading}
-            className="flex-1 rounded-xl bg-[#0f6b4f] px-4 py-2.5 text-xs font-bold text-white hover:bg-[#0c5740] disabled:opacity-50 transition-colors cursor-pointer shadow-xs min-h-[44px]"
+            className={`flex-1 rounded-xl px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50 transition-colors cursor-pointer shadow-xs min-h-[44px] ${
+              selectedPlan === "BUSINESS"
+                ? "bg-violet-700 hover:bg-violet-800"
+                : "bg-[#0f6b4f] hover:bg-[#0c5740]"
+            }`}
           >
             {loading ? t("preparingPayment") : t("payBtn", { price: currentPrice.toLocaleString("id-ID") })}
           </button>

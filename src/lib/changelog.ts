@@ -4,10 +4,10 @@
  * berdasarkan riwayat commit git riil dan mendukung dwibahasa (ID & EN).
  */
 
-export const APP_VERSION = "0.6.1";
+export const APP_VERSION = "0.7.0";
 export const APP_RELEASE_DATE = {
-  id: "19 September 2026",
-  en: "September 19, 2026",
+  id: "20 September 2026",
+  en: "September 20, 2026",
 };
 
 export type ChangelogCategory = "feat" | "perf" | "fix" | "security";
@@ -42,6 +42,53 @@ export interface ChangelogRelease {
 
 export const CHANGELOG_RELEASES: ChangelogRelease[] = [
   {
+    version: "0.7.0",
+    type: "minor",
+    date: {
+      id: "20 September 2026",
+      en: "September 20, 2026",
+    },
+    title: {
+      id: "Arsitektur 3-Tier Pricing (Starter, Pro, Business) & Standar Keamanan OWASP",
+      en: "3-Tier Pricing Architecture (Starter, Pro, Business) & OWASP Security Standards",
+    },
+    summary: {
+      id: "Restrukturisasi paket komersial menjadi 3 tier (Starter Rp0, Pro Rp49k, Business Rp99k), pemisahan fitur branding agensi & developer tools ke tier Business, serta penguatan keamanan pembayaran sesuai standar OWASP.",
+      en: "Commercial tier restructuring into 3 plans (Starter Rp0, Pro Rp49k, Business Rp99k), dedicated Business tier for agency branding and developer APIs, plus OWASP payment security hardening.",
+    },
+    isLatest: true,
+    highlights: [
+      {
+        category: "feat",
+        text: {
+          id: "Paket NotaKu Business: Tier khusus agensi dan software house dengan fitur Custom Domain, REST API Keys, Webhooks, dan bot notifikasi.",
+          en: "NotaKu Business Plan: Dedicated agency tier featuring Custom Domains, REST API Keys, HMAC Webhooks, and notification bots.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "Upgrade Modal & Billing Terintegrasi: Pilihan langganan bulanan dan tahunan (hemat 2 bulan) untuk Pro dan Business dengan dukungan kode voucher promo.",
+          en: "Integrated Upgrade Modal & Billing: Monthly and annual options (save 2 months) for Pro and Business with promo voucher support.",
+        },
+      },
+      {
+        category: "security",
+        text: {
+          id: "Standar Keamanan OWASP pada Pembayaran: Validasi parameter ketat, kalkulasi harga server-side anti-tampering, rate limit, dan audit logging komprehensif.",
+          en: "OWASP Payment Security Standards: Strict parameter whitelisting, server-side anti-tampering price calculation, rate limiting, and comprehensive audit logs.",
+        },
+      },
+      {
+        category: "perf",
+        text: {
+          id: "Harmonisasi UI 3-Tier: Tampilan tabel perbandingan fitur 3 kolom di billing dan 3 kartu paket responsif di landing page.",
+          en: "3-Tier UI Harmonization: 3-column feature comparison table in billing and 3 responsive plan cards on the landing page.",
+        },
+      },
+    ],
+  },
+  {
     version: "0.6.1",
     type: "patch",
     date: {
@@ -56,7 +103,7 @@ export const CHANGELOG_RELEASES: ChangelogRelease[] = [
       id: "Penyempurnaan teknis SEO & indexing: penambahan schema markup terstruktur (WebSite Sitelinks Searchbox, FAQPage, ItemList, BreadcrumbList), eliminasi dobel suffix title, audit robots.txt & hreflang, serta penguatan proteksi otorisasi admin.",
       en: "Technical SEO and indexation polish: structured JSON-LD schemas (WebSite Sitelinks Searchbox, FAQPage, ItemList, Breadcrumbs), title de-duplication, robots.txt and hreflang alternates, plus admin authorization guard hardening.",
     },
-    isLatest: true,
+    isLatest: false,
     highlights: [
       {
         category: "perf",

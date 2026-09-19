@@ -4,7 +4,22 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { createMayarPayment } from "@/lib/mayar";
 import { checkRateLimit } from "@/lib/rate-limit";
-import { validatePromoCode, BASE_PRO_PRICE } from "@/lib/promos";
+import {
+  validatePromoCode,
+  getPlanPrice,
+  type PlanType,
+  type PlanInterval,
+} from "@/lib/promos";
+
+// Label paket & durasi aktif untuk deskripsi checkout dan periode langganan.
+const PLAN_LABELS: Record<PlanType, string> = {
+  PRO: "NotaKu PRO",
+  BUSINESS: "NotaKu BUSINESS",
+};
+const INTERVAL_META: Record<PlanInterval, { label: string; days: number }> = {
+  MONTHLY: { label: "1 Bulan", days: 30 },
+  ANNUALLY: { label: "1 Tahun", days: 365 },
+};
 
 export async function POST(request: Request) {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -12,6 +27,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // OWASP A04 (Rate limiting): batasi pembuatan link pembayaran per user.
   if (!(await checkRateLimit(`payment:${session.user.id}`, 5, 60))) {
     return NextResponse.json(
       { error: "Too many requests" },
@@ -22,10 +38,19 @@ export async function POST(request: Request) {
   let promoCode: string | null = null;
   let gaClientId: string | null = null;
   let gaSessionId: string | null = null;
+  // OWASP A03 (Injection) & A08: plan/interval WAJIB divalidasi ke whitelist enum ketat.
+  let plan: PlanType = "PRO";
+  let interval: PlanInterval = "MONTHLY";
   try {
     const body = await request.json().catch(() => ({}));
     if (body.promoCode && typeof body.promoCode === "string") {
       promoCode = body.promoCode.trim().toUpperCase();
+    }
+    if (body.plan === "BUSINESS" || body.plan === "PRO") {
+      plan = body.plan;
+    }
+    if (body.interval === "ANNUALLY" || body.interval === "MONTHLY") {
+      interval = body.interval;
     }
     if (typeof body.gaClientId === "string" && /^\d{1,20}\.\d{1,20}$/.test(body.gaClientId)) {
       gaClientId = body.gaClientId;
@@ -38,11 +63,14 @@ export async function POST(request: Request) {
     // Body optional
   }
 
-  let finalPrice = BASE_PRO_PRICE;
+  // OWASP A04 (Insecure Design): harga DIKUNCI di server, tidak pernah menerima nominal dari client.
+  const basePrice = getPlanPrice(plan, interval);
+  let finalPrice = basePrice;
   let appliedPromoDescription = "";
 
   if (promoCode) {
-    const promoCheck = await validatePromoCode(promoCode, BASE_PRO_PRICE);
+    // Promo divalidasi ulang di server terhadap base price server-side (bukan client).
+    const promoCheck = await validatePromoCode(promoCode, basePrice);
     if (!promoCheck.valid) {
       return NextResponse.json(
         { error: promoCheck.error },
@@ -54,29 +82,34 @@ export async function POST(request: Request) {
   }
 
   const user = session.user;
-  const orderId = `PRO-${user.id.slice(0, 8)}-${Date.now()}`;
+  const intervalDays = INTERVAL_META[interval].days;
+  const orderId = `${plan}-${user.id.slice(0, 8)}-${Date.now()}`;
 
   try {
     const { paymentUrl, paymentId } = await createMayarPayment({
-      name: `NotaKu PRO - 1 Bulan${appliedPromoDescription}`,
+      name: `${PLAN_LABELS[plan]} - ${INTERVAL_META[interval].label}${appliedPromoDescription}`,
       amount: finalPrice,
       customerName: user.name || "Pelanggan NotaKu",
       customerEmail: user.email,
       orderId,
     });
 
-    // Simpan orderId & payment reference di subscription
+    // Simpan orderId, tier, & durasi di subscription untuk aktivasi tier yang benar saat settlement.
     await prisma.subscription.upsert({
       where: { userId: user.id },
       create: {
         userId: user.id,
         midtransOrderId: paymentId || orderId,
         status: "INACTIVE",
+        plan,
+        intervalDays,
         gaClientId: gaClientId || null,
         gaSessionId: gaSessionId || null,
       },
       update: {
         midtransOrderId: paymentId || orderId,
+        plan,
+        intervalDays,
         gaClientId,
         gaSessionId,
       },
@@ -86,12 +119,15 @@ export async function POST(request: Request) {
       paymentUrl,
       paymentId: paymentId || orderId,
       finalPrice,
+      plan,
+      interval,
       promoCode,
     });
   } catch (err) {
+    // OWASP A09: log detail di server, jangan bocorkan pesan error internal mentah ke client.
     console.error("Error creating Mayar payment:", err);
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : "Failed to create payment link" },
+      { error: "Gagal membuat tautan pembayaran. Silakan coba lagi." },
       { status: 502 },
     );
   }

@@ -356,7 +356,7 @@ export function ReferralsClient({
                       {formatDateWIB(friend.createdAt)}
                     </td>
                     <td className="px-5 py-3.5 whitespace-nowrap">
-                      {friend.plan === "PRO" ? (
+                      {friend.plan === "PRO" || friend.plan === "BUSINESS" ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-50 text-purple-700 border border-purple-200/60">
                           <SparklesIcon className="w-3 h-3" />
                           <span>{tRef("statusPro")}</span>

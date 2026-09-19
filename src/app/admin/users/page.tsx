@@ -39,7 +39,7 @@ export default async function AdminUsersPage(props: {
     ];
   }
 
-  if (planFilter === "FREE" || planFilter === "PRO") {
+  if (planFilter === "FREE" || planFilter === "PRO" || planFilter === "BUSINESS") {
     where.plan = planFilter;
   }
 

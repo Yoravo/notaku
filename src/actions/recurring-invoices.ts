@@ -125,9 +125,9 @@ export async function createRecurringInvoice(data: {
     select: { plan: true },
   });
 
-  if (dbUser?.plan !== "PRO") {
+  if (dbUser?.plan !== "PRO" && dbUser?.plan !== "BUSINESS") {
     throw new Error(
-      "Fitur Invoice Berulang (Recurring Invoices) adalah fitur eksklusif paket NotaKu PRO. Silakan upgrade paket Anda."
+      "Fitur Invoice Berulang (Recurring Invoices) adalah fitur eksklusif paket NotaKu PRO dan Business. Silakan upgrade paket Anda."
     );
   }
 

@@ -66,13 +66,13 @@ export async function updateInvoiceDesign(
   const user = await getUser();
   await checkServerActionRateLimit(user.id, "write");
 
-  // Verify user is Pro
+  // Verify user is Pro or Business
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },
     select: { plan: true },
   });
-  if (dbUser?.plan !== "PRO") {
-    throw new Error("Fitur ini hanya untuk pengguna Pro");
+  if (dbUser?.plan !== "PRO" && dbUser?.plan !== "BUSINESS") {
+    throw new Error("Fitur kustomisasi desain invoice hanya untuk pengguna Pro dan Business");
   }
 
   await prisma.user.update({

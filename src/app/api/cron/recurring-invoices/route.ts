@@ -90,13 +90,13 @@ export async function GET(request: Request) {
     }
 
     try {
-      // Cek apakah pemilik invoice masih aktif PRO
+      // Cek apakah pemilik invoice masih aktif PRO atau BUSINESS
       const user = await prisma.user.findUnique({
         where: { id: profile.userId },
         select: { id: true, plan: true, businessName: true, name: true },
       });
 
-      if (!user || user.plan !== "PRO") {
+      if (!user || (user.plan !== "PRO" && user.plan !== "BUSINESS")) {
         results.skippedNonPro++;
         continue;
       }

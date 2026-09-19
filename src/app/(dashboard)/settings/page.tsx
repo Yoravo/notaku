@@ -64,7 +64,7 @@ export default async function SettingsPage({
           invoiceFont: user.invoiceFont ?? "Helvetica",
         }}
         domainData={{
-          plan: (user.plan as "FREE" | "PRO") || "FREE",
+          plan: user.plan,
           customDomain: user.customDomain,
           customDomainVerified: user.customDomainVerified,
           customDomainTxt: user.customDomainTxt,

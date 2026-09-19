@@ -15,7 +15,7 @@ type UserActionsProps = {
   userId: string;
   userName: string;
   userEmail: string;
-  currentPlan: "FREE" | "PRO";
+  currentPlan: "FREE" | "PRO" | "BUSINESS";
   currentRole: "USER" | "ADMIN";
   isCurrentAdmin: boolean;
 };
@@ -27,7 +27,7 @@ type DialogState = {
   description: string;
   confirmLabel: string;
   variant: ConfirmVariant;
-  newPlan?: "FREE" | "PRO";
+  newPlan?: "FREE" | "PRO" | "BUSINESS";
   newRole?: "USER" | "ADMIN";
   itemDetails: { label: string; value: string }[];
 };
@@ -57,8 +57,9 @@ export function UserRowActions({
   const [selfAdminAlertOpen, setSelfAdminAlertOpen] = useState(false);
 
   const handleOpenPlanDialog = () => {
-    const isUpgrading = currentPlan !== "PRO";
-    const nextPlan: "FREE" | "PRO" = isUpgrading ? "PRO" : "FREE";
+    const nextPlan: "FREE" | "PRO" | "BUSINESS" =
+      currentPlan === "FREE" ? "PRO" : currentPlan === "PRO" ? "BUSINESS" : "FREE";
+    const isUpgrading = nextPlan !== "FREE";
 
     setDialogState({
       isOpen: true,
@@ -69,7 +70,7 @@ export function UserRowActions({
         email: userEmail,
         plan: nextPlan,
       }),
-      confirmLabel: isUpgrading ? tAdmin("actionUpgradePro") : tAdmin("actionDowngradeFree"),
+      confirmLabel: isUpgrading ? `Ganti ke ${nextPlan}` : tAdmin("actionDowngradeFree"),
       variant: isUpgrading ? "upgrade" : "warning",
       newPlan: nextPlan,
       itemDetails: [
@@ -155,24 +156,32 @@ export function UserRowActions({
     <>
       <div className="flex flex-col items-end gap-1">
         <div className="flex items-center gap-1.5">
-          {/* Toggle Plan Button */}
+          {/* Cycle Plan Button: FREE → PRO → BUSINESS → FREE */}
           <button
             type="button"
             onClick={handleOpenPlanDialog}
             disabled={isPending}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer disabled:opacity-50 shadow-2xs active:scale-[0.98] min-h-[44px] sm:min-h-[38px] ${
-              currentPlan === "PRO"
+              currentPlan === "BUSINESS"
+                ? "bg-violet-50 dark:bg-violet-950/60 text-violet-800 dark:text-violet-300 hover:bg-violet-100 dark:hover:bg-violet-900/60 border border-violet-200/60 dark:border-violet-800"
+                : currentPlan === "PRO"
                 ? "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/60 border border-amber-200/60 dark:border-amber-800"
                 : "bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200/60 dark:border-emerald-800"
             }`}
-            title={currentPlan === "PRO" ? tAdmin("actionDowngradeFree") : tAdmin("actionUpgradePro")}
+            title={tAdmin("confirmPlanChangeTitle")}
           >
             {isPending ? (
               <ArrowPathIcon className="w-3.5 h-3.5 animate-spin" />
             ) : (
               <SparklesIcon className="w-3.5 h-3.5" />
             )}
-            <span>{currentPlan === "PRO" ? tAdmin("setFree") : tAdmin("setPro")}</span>
+            <span>
+              {currentPlan === "FREE"
+                ? tAdmin("setPro")
+                : currentPlan === "PRO"
+                ? tAdmin("setBusiness")
+                : tAdmin("setFree")}
+            </span>
           </button>
 
           {/* Toggle Role Button */}

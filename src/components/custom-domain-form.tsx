@@ -32,7 +32,7 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
   const [copiedTarget, setCopiedTarget] = useState(false);
   const [copiedTxt, setCopiedTxt] = useState(false);
 
-  const isPro = data.plan === "PRO";
+  const isPro = data.plan === "BUSINESS";
 
   const handleCopyTarget = () => {
     navigator.clipboard.writeText(data.cnameTarget);

@@ -5,10 +5,10 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { auditLog } from "@/lib/audit-log";
 
-export async function updateUserPlan(userId: string, plan: "FREE" | "PRO") {
+export async function updateUserPlan(userId: string, plan: "FREE" | "PRO" | "BUSINESS") {
   const admin = await requireAdmin();
 
-  if (!userId || !["FREE", "PRO"].includes(plan)) {
+  if (!userId || !["FREE", "PRO", "BUSINESS"].includes(plan)) {
     return { success: false, error: "Data input tidak valid" };
   }
 

@@ -4,6 +4,18 @@ import type { PrismaClientOrTx } from "./prisma";
 const FREE_INVOICE_LIMIT = 5;
 const FREE_CUSTOMER_LIMIT = 20;
 
+export type PlanTier = "FREE" | "PRO" | "BUSINESS";
+
+/** PRO & BUSINESS berbagi seluruh fitur inti berbayar (unlimited, watermark-free, branding, dll). */
+export function isPaidPlan(plan: string | null | undefined): boolean {
+  return plan === "PRO" || plan === "BUSINESS";
+}
+
+/** Fitur enterprise (custom domain, REST API, webhook, bot alert) eksklusif tier BUSINESS. */
+export function hasBusinessFeatures(plan: string | null | undefined): boolean {
+  return plan === "BUSINESS";
+}
+
 export async function canCreateInvoice(
   userId: string,
   tx?: PrismaClientOrTx,
@@ -27,7 +39,7 @@ export async function canCreateInvoice(
     select: { plan: true },
   });
 
-  if (user?.plan === "PRO") {
+  if (user?.plan === "PRO" || user?.plan === "BUSINESS") {
     return { allowed: true, used: 0, limit: Infinity };
   }
 
@@ -56,7 +68,7 @@ export async function canCreateCustomer(
     select: { plan: true },
   });
 
-  if (user?.plan === "PRO") {
+  if (user?.plan === "PRO" || user?.plan === "BUSINESS") {
     return { allowed: true, used: 0, limit: Infinity };
   }
 

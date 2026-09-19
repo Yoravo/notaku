@@ -69,7 +69,7 @@ export function SettingsTabsClient({
     "profile" | "bank" | "template" | "domain" | "developer" | "notifications" | "security"
   >(initialTab);
 
-  const isPro = user.plan === "PRO";
+  const isPro = user.plan === "PRO" || user.plan === "BUSINESS";
 
   const tabs = [
     { id: "profile", label: tSet("tabProfile"), icon: UserIcon },

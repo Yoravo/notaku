@@ -23,8 +23,8 @@ async function authenticateRequest(request: Request) {
     return { error: "Invalid or inactive API Key.", status: 401 };
   }
 
-  if (keyRecord.user.plan !== "PRO") {
-    return { error: "Developer API is only available for NotaKu PRO accounts.", status: 403 };
+  if (keyRecord.user.plan !== "BUSINESS") {
+    return { error: "Developer API is exclusively available for NotaKu Business accounts.", status: 403 };
   }
 
   const isRateLimitOk = await checkRateLimit(`api:key:${keyRecord.id}`, 120, 60);

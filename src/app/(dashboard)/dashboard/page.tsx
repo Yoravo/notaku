@@ -98,7 +98,7 @@ export default async function DashboardPage({
   const totalVolume = Number(totalVolumeAgg._sum.total || 0);
   const totalExpenses = Number(expenseAgg._sum.amount || 0);
   const netProfit = paidRevenue - totalExpenses;
-  const isPro = user?.plan === "PRO";
+  const isPro = user?.plan === "PRO" || user?.plan === "BUSINESS";
   const { used, limit } = await canCreateInvoice(userId);
 
   const serializedInvoices: SerializedInvoice[] = recentInvoices.map((inv) => ({

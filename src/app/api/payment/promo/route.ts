@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import { validatePromoCode } from "@/lib/promos";
+import { validatePromoCode, getPlanPrice, type PlanType, type PlanInterval } from "@/lib/promos";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +14,8 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const code = String(body.code || "").trim();
+    const plan: PlanType = body.plan === "BUSINESS" ? "BUSINESS" : "PRO";
+    const interval: PlanInterval = body.interval === "ANNUALLY" ? "ANNUALLY" : "MONTHLY";
 
     if (!code) {
       return NextResponse.json(
@@ -22,7 +24,8 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = await validatePromoCode(code);
+    const basePrice = getPlanPrice(plan, interval);
+    const result = await validatePromoCode(code, basePrice);
     if (!result.valid) {
       return NextResponse.json({ error: result.error }, { status: 400 });
     }

@@ -257,6 +257,8 @@ model Subscription {
   userId           String    @unique
   midtransOrderId  String?
   status           SubStatus @default(INACTIVE)
+  plan             Plan      @default(PRO)
+  intervalDays     Int       @default(30)
   currentPeriodEnd DateTime?
   gaClientId       String?
   gaSessionId      String?
@@ -274,6 +276,7 @@ enum InvoiceTemplate {
 enum Plan {
   FREE
   PRO
+  BUSINESS
 }
 
 enum InvoiceStatus {

@@ -199,10 +199,21 @@ export async function POST(request: Request) {
         return NextResponse.json({ message: "User or Invoice not found for this transaction" });
       }
 
-      // Upgrade / perpanjang masa aktif PRO 30 hari
+      // Upgrade / perpanjang masa aktif langganan (PRO atau BUSINESS)
       const existingSub = await prisma.subscription.findUnique({
         where: { userId: user.id },
       });
+
+      // OWASP A04: Tentukan target tier dan durasi dari data tersimpan / prefix orderId
+      const targetPlan: "PRO" | "BUSINESS" =
+        existingSub?.plan === "BUSINESS" || String(orderId).startsWith("BUSINESS")
+          ? "BUSINESS"
+          : "PRO";
+
+      const daysToAdd =
+        existingSub?.intervalDays && existingSub.intervalDays > 0
+          ? existingSub.intervalDays
+          : String(orderId).includes("ANNUALLY") ? 365 : 30;
 
       const baseDate =
         existingSub?.currentPeriodEnd && existingSub.currentPeriodEnd > new Date()
@@ -210,7 +221,7 @@ export async function POST(request: Request) {
           : new Date();
 
       const newPeriodEnd = new Date(baseDate);
-      newPeriodEnd.setDate(newPeriodEnd.getDate() + 30);
+      newPeriodEnd.setDate(newPeriodEnd.getDate() + daysToAdd);
 
       const isFirstUpgrade = !existingSub?.upgradeEventAt;
       const now = new Date();
@@ -222,11 +233,15 @@ export async function POST(request: Request) {
             userId: user.id,
             midtransOrderId: String(paymentId || `MAYAR-${Date.now()}`),
             status: "ACTIVE",
+            plan: targetPlan,
+            intervalDays: daysToAdd,
             currentPeriodEnd: newPeriodEnd,
             upgradeEventAt: now,
           },
           update: {
             status: "ACTIVE",
+            plan: targetPlan,
+            intervalDays: daysToAdd,
             currentPeriodEnd: newPeriodEnd,
             midtransOrderId: String(paymentId || existingSub?.midtransOrderId),
             ...(isFirstUpgrade ? { upgradeEventAt: now } : {}),
@@ -234,7 +249,7 @@ export async function POST(request: Request) {
         }),
         prisma.user.update({
           where: { id: user.id },
-          data: { plan: "PRO" },
+          data: { plan: targetPlan },
         }),
       ]);
 

@@ -103,13 +103,15 @@ export default async function AdminUserDetailPage(props: {
               </h1>
               <span
                 className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                  targetUser.plan === "PRO"
+                  targetUser.plan === "BUSINESS"
+                    ? "bg-violet-50 dark:bg-violet-950/60 text-violet-800 dark:text-violet-300 border border-violet-200/60 dark:border-violet-800 shadow-2xs"
+                    : targetUser.plan === "PRO"
                     ? "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800 shadow-2xs"
                     : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
                 }`}
               >
-                {targetUser.plan === "PRO" && (
-                  <SparklesIcon className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+                {(targetUser.plan === "PRO" || targetUser.plan === "BUSINESS") && (
+                  <SparklesIcon className={`w-3 h-3 ${targetUser.plan === "BUSINESS" ? "text-violet-600 dark:text-violet-400" : "text-amber-600 dark:text-amber-400"}`} />
                 )}
                 {targetUser.plan}
               </span>
@@ -132,7 +134,7 @@ export default async function AdminUserDetailPage(props: {
             userId={targetUser.id}
             userName={targetUser.name}
             userEmail={targetUser.email}
-            currentPlan={targetUser.plan as "FREE" | "PRO"}
+            currentPlan={targetUser.plan as "FREE" | "PRO" | "BUSINESS"}
             currentRole={targetUser.role as "USER" | "ADMIN"}
             isCurrentAdmin={isCurrentAdmin}
           />

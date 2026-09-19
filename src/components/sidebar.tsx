@@ -273,12 +273,14 @@ export function Sidebar({
               <div className="flex items-center gap-1 mt-0.5">
                 <span
                   className={`inline-block text-[9px] font-extrabold uppercase px-1.5 py-0.2 rounded-md ${
-                    user.plan === "PRO"
+                    user.plan === "BUSINESS"
+                      ? "bg-violet-100 text-violet-800 dark:bg-violet-950/80 dark:text-violet-300 border border-violet-300 dark:border-violet-700"
+                      : user.plan === "PRO"
                       ? "bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300 border border-amber-300 dark:border-amber-700"
                       : "bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300"
                   }`}
                 >
-                  {user.plan === "PRO" ? "PRO" : "FREE"}
+                  {user.plan}
                 </span>
               </div>
             </div>

@@ -43,6 +43,7 @@ export type WebhookEndpointData = {
 };
 
 export async function getDeveloperSettings(): Promise<{
+  isBusiness: boolean;
   isPro: boolean;
   apiKeys: ApiKeyData[];
   webhooks: WebhookEndpointData[];
@@ -78,10 +79,11 @@ export async function getDeveloperSettings(): Promise<{
     }),
   ]);
 
-  const isPro = dbUser?.plan === "PRO";
+  const isBusiness = dbUser?.plan === "BUSINESS";
 
   return {
-    isPro,
+    isBusiness,
+    isPro: isBusiness,
     apiKeys: apiKeys.map((k) => ({
       id: k.id,
       name: k.name,
@@ -124,8 +126,8 @@ export async function createApiKeyAction(data: { name: string }): Promise<{
       select: { plan: true },
     });
 
-    if (dbUser?.plan !== "PRO") {
-      throw new Error("Fitur Developer API Keys hanya tersedia untuk paket NotaKu PRO.");
+    if (dbUser?.plan !== "BUSINESS") {
+      throw new Error("Fitur Developer API Keys eksklusif untuk pelanggan NotaKu Business.");
     }
 
     const name = data.name.trim();
@@ -200,8 +202,8 @@ export async function createWebhookAction(data: {
       select: { plan: true },
     });
 
-    if (dbUser?.plan !== "PRO") {
-      throw new Error("Fitur Webhook Endpoints hanya tersedia untuk paket NotaKu PRO.");
+    if (dbUser?.plan !== "BUSINESS") {
+      throw new Error("Fitur Webhook Endpoints eksklusif untuk pelanggan NotaKu Business.");
     }
 
     const parsed = webhookSchema.safeParse(data);

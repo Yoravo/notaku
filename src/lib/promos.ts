@@ -1,4 +1,7 @@
 import { prisma } from "./prisma";
+import { BASE_PRO_PRICE } from "./plan-constants";
+
+export * from "./plan-constants";
 
 export type PromoValidationResult =
   | {
@@ -15,8 +18,6 @@ export type PromoValidationResult =
       valid: false;
       error: string;
     };
-
-export const BASE_PRO_PRICE = 49000;
 
 /**
  * Validasi dan hitung potongan harga promo voucher untuk Paket PRO

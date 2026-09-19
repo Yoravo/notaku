@@ -805,9 +805,9 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
             </p>
           </div>
 
-          <div className="mt-14 max-w-5xl mx-auto grid grid-cols-1 gap-8 md:grid-cols-2">
-            {/* Free Plan */}
-            <div className="flex flex-col justify-between rounded-2xl border border-line bg-white dark:bg-slate-900 p-8 sm:p-10 shadow-xs">
+          <div className="mt-14 max-w-7xl mx-auto grid grid-cols-1 gap-6 lg:grid-cols-3 items-stretch">
+            {/* 1. Starter Plan */}
+            <div className="flex flex-col justify-between rounded-2xl border border-line bg-white dark:bg-slate-900 p-6 sm:p-8 shadow-xs">
               <div>
                 <div className="flex items-center justify-between">
                   <h3 className="font-sans text-2xl font-bold text-ink">{tPricing("freeTitle")}</h3>
@@ -815,7 +815,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                     {tPricing("freeBadge")}
                   </span>
                 </div>
-                <p className="mt-2 text-sm text-ink-soft">
+                <p className="mt-2 text-sm text-ink-soft min-h-[40px]">
                   {tPricing("freeDesc")}
                 </p>
                 <div className="mt-6 border-b border-line dark:border-slate-800 pb-6">
@@ -824,6 +824,9 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                     <span className="text-sm font-normal text-ink-soft ml-1">
                       {tPricing("freePeriod")}
                     </span>
+                  </p>
+                  <p className="text-[11px] text-ink-soft mt-1">
+                    Cocok untuk memulai tanpa risiko biaya
                   </p>
                 </div>
 
@@ -866,8 +869,8 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
               </div>
             </div>
 
-            {/* Pro Plan */}
-            <div className="relative flex flex-col justify-between rounded-2xl bg-[#09110E] dark:bg-slate-900 border border-emerald/30 p-8 sm:p-10 text-slate-100 shadow-xl shadow-emerald-950/20">
+            {/* 2. Pro Plan (Highlighted) */}
+            <div className="relative flex flex-col justify-between rounded-2xl bg-[#09110E] dark:bg-slate-900 border-2 border-emerald p-6 sm:p-8 text-slate-100 shadow-xl shadow-emerald-950/20">
               <div>
                 <div className="flex items-center justify-between">
                   <h3 className="font-sans text-2xl font-bold text-white">
@@ -877,7 +880,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                     {tPricing("proBadge")}
                   </span>
                 </div>
-                <p className="mt-2 text-sm text-slate-300">
+                <p className="mt-2 text-sm text-slate-300 min-h-[40px]">
                   {tPricing("proDesc")}
                 </p>
                 <div className="mt-6 border-b border-white/15 pb-6">
@@ -888,7 +891,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                     </span>
                   </p>
                   <p className="text-[11px] text-emerald-400 font-medium mt-1">
-                    {tPricing("proPaymentNote")}
+                    {tPricing("proAnnualPrice")}
                   </p>
                 </div>
 
@@ -897,7 +900,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                     <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald text-white shrink-0">
                       <CheckIcon className="h-3.5 w-3.5 stroke-[3]" />
                     </div>
-                    <span>{tPricing("proItem1")}</span>
+                    <span className="font-semibold text-white">{tPricing("proItem1")}</span>
                   </li>
                   <li className="flex items-center gap-3">
                     <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald text-white shrink-0">
@@ -930,9 +933,80 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                 <Link
                   href={session ? "/dashboard" : "/register"}
                   prefetch={true}
-                  className="flex items-center justify-center w-full rounded-xl bg-emerald hover:bg-emerald-bright py-3.5 text-sm font-bold text-white transition-colors cursor-pointer min-h-[48px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald focus-visible:ring-offset-2"
+                  className="flex items-center justify-center w-full rounded-xl bg-emerald hover:bg-emerald-bright py-3.5 text-sm font-bold text-white transition-colors cursor-pointer min-h-[48px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald focus-visible:ring-offset-2 shadow-sm"
                 >
                   {session ? tPricing("proBtnUser") : tPricing("proBtnGuest")}
+                </Link>
+              </div>
+            </div>
+
+            {/* 3. Business Plan */}
+            <div className="flex flex-col justify-between rounded-2xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-8 shadow-xs">
+              <div>
+                <div className="flex items-center justify-between">
+                  <h3 className="font-sans text-2xl font-bold text-ink">
+                    Nota<span className="text-[#0f6b4f] dark:text-emerald-400">Ku</span> Business
+                  </h3>
+                  <span className="rounded-lg bg-violet-100 dark:bg-violet-950/80 text-violet-800 dark:text-violet-300 px-2.5 py-1 text-xs font-bold border border-violet-200 dark:border-violet-800">
+                    {tPricing("bizBadge")}
+                  </span>
+                </div>
+                <p className="mt-2 text-sm text-ink-soft min-h-[40px]">
+                  {tPricing("bizDesc")}
+                </p>
+                <div className="mt-6 border-b border-line dark:border-slate-800 pb-6">
+                  <p className="tnum font-sans text-4xl font-black text-ink tracking-tight">
+                    {formatMoney(99000, "IDR")}
+                    <span className="text-sm font-normal text-ink-soft ml-1">
+                      {tPricing("bizPeriod")}
+                    </span>
+                  </p>
+                  <p className="text-[11px] text-violet-700 dark:text-violet-400 font-medium mt-1">
+                    {tPricing("bizAnnualPrice")}
+                  </p>
+                </div>
+
+                <ul className="mt-6 space-y-3.5 text-sm text-ink-soft">
+                  <li className="flex items-center gap-3">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300 shrink-0">
+                      <CheckIcon className="h-3.5 w-3.5 stroke-[3]" />
+                    </div>
+                    <span className="font-bold text-ink">{tPricing("bizItem1")}</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300 shrink-0">
+                      <CheckIcon className="h-3.5 w-3.5 stroke-[3]" />
+                    </div>
+                    <span>{tPricing("bizItem2")}</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300 shrink-0">
+                      <CheckIcon className="h-3.5 w-3.5 stroke-[3]" />
+                    </div>
+                    <span>{tPricing("bizItem3")}</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300 shrink-0">
+                      <CheckIcon className="h-3.5 w-3.5 stroke-[3]" />
+                    </div>
+                    <span>{tPricing("bizItem4")}</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300 shrink-0">
+                      <CheckIcon className="h-3.5 w-3.5 stroke-[3]" />
+                    </div>
+                    <span>{tPricing("bizItem5")}</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="mt-8 pt-4">
+                <Link
+                  href={session ? "/dashboard" : "/register"}
+                  prefetch={true}
+                  className="flex items-center justify-center w-full rounded-xl bg-violet-700 hover:bg-violet-800 text-white py-3.5 text-sm font-bold transition-colors cursor-pointer min-h-[48px] shadow-sm hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-600"
+                >
+                  {session ? tPricing("bizBtnUser") : tPricing("bizBtnGuest")}
                 </Link>
               </div>
             </div>

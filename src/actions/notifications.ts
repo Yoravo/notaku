@@ -56,7 +56,7 @@ export async function getBotNotificationSettings(): Promise<BotNotificationSetti
   });
 
   return {
-    isPro: dbUser?.plan === "PRO",
+    isPro: dbUser?.plan === "BUSINESS",
     telegramChatId: dbUser?.telegramChatId || null,
     telegramBotToken: dbUser?.telegramBotToken || null,
     telegramEnabled: dbUser?.telegramEnabled || false,
@@ -80,8 +80,8 @@ export async function updateBotNotificationSettings(data: z.infer<typeof updateS
     select: { plan: true },
   });
 
-  if (dbUser?.plan !== "PRO") {
-    throw new Error("Fitur notifikasi bot Telegram & Discord hanya tersedia untuk member NotaKu PRO.");
+  if (dbUser?.plan !== "BUSINESS") {
+    throw new Error("Fitur notifikasi bot Telegram & Discord eksklusif untuk member NotaKu Business.");
   }
 
   // Validasi Discord URL jika diaktifkan

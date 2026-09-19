@@ -10,7 +10,7 @@ export interface ReferralFriend {
   id: string;
   name: string;
   email: string;
-  plan: "FREE" | "PRO";
+  plan: "FREE" | "PRO" | "BUSINESS";
   createdAt: string;
   rewardEarned: number;
 }
@@ -79,7 +79,7 @@ export async function getReferralStats(): Promise<ReferralStats | null> {
     }
   });
 
-  const proFriends = referrals.filter((f) => f.plan === "PRO").length;
+  const proFriends = referrals.filter((f) => f.plan === "PRO" || f.plan === "BUSINESS").length;
 
   const friends: ReferralFriend[] = referrals.map((f) => {
     // Sensor sebagian nama dan email demi privasi
@@ -94,7 +94,7 @@ export async function getReferralStats(): Promise<ReferralStats | null> {
       id: f.id,
       name: f.name,
       email: maskedEmail,
-      plan: f.plan as "FREE" | "PRO",
+      plan: f.plan as "FREE" | "PRO" | "BUSINESS",
       createdAt: f.createdAt.toISOString(),
       rewardEarned: rewardMap.get(f.id) || 0,
     };
