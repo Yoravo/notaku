@@ -23,6 +23,7 @@ type NewInvoiceClientProps = {
   userBankName?: string | null;
   userBankAccountNumber?: string | null;
   userBankAccountName?: string | null;
+  currentUserId?: string;
   allowed: boolean;
   used: number;
   limit: number;
@@ -37,6 +38,7 @@ export function NewInvoiceClient({
   userBankName,
   userBankAccountNumber,
   userBankAccountName,
+  currentUserId,
   allowed,
   used,
   limit,
@@ -84,6 +86,7 @@ export function NewInvoiceClient({
             userBankName={userBankName}
             userBankAccountNumber={userBankAccountNumber}
             userBankAccountName={userBankAccountName}
+            currentUserId={currentUserId}
           />
         </div>
       )}

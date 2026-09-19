@@ -681,7 +681,13 @@
     "saveInvoice": "Simpan Invoice",
     "validationCustomer": "Pilih pelanggan terlebih dahulu",
     "validationItems": "Lengkapi semua deskripsi dan harga item (minimal 1)",
-    "saveError": "Terjadi kesalahan saat menyimpan invoice"
+    "saveError": "Terjadi kesalahan saat menyimpan invoice",
+    "draftFoundTitle": "Draf Belum Selesai Ditemukan",
+    "draftFoundDesc": "Kami menyimpan otomatis isian invoice Anda dari {time}. Lanjutkan dari sana?",
+    "draftRestore": "Pulihkan Draf",
+    "draftDiscard": "Buang",
+    "draftRestored": "Draf berhasil dipulihkan",
+    "draftJustNow": "beberapa saat lalu"
   },
   "bank": {
     "cardTitleVerified": "Terverifikasi",

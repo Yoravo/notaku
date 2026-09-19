@@ -1,15 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createInvoice, updateInvoice } from "@/actions/invoices";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CustomerModal } from "@/components/customers/customer-modal";
-import { PlusIcon, TrashIcon, ArchiveBoxIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  PlusIcon,
+  TrashIcon,
+  ArchiveBoxIcon,
+  XMarkIcon,
+  ArrowUturnLeftIcon,
+  ClockIcon,
+} from "@heroicons/react/24/outline";
 import {
   calculateInvoiceTotals,
   DiscountType,
 } from "@/lib/invoice-calculations";
+import {
+  type InvoiceDraft,
+  readDraft,
+  writeDraft,
+  clearDraft as clearStoredDraft,
+} from "@/lib/invoice-draft";
 import { useLocale, useTranslations } from "next-intl";
 import {
   CURRENCY_MAP,
@@ -54,6 +67,7 @@ export function InvoiceForm({
   userBankName,
   userBankAccountNumber,
   userBankAccountName,
+  currentUserId,
 }: {
   customers: Customer[];
   catalogItems?: CatalogItem[];
@@ -63,6 +77,7 @@ export function InvoiceForm({
   userBankName?: string | null;
   userBankAccountNumber?: string | null;
   userBankAccountName?: string | null;
+  currentUserId?: string;
 }) {
   const locale = useLocale() as "id" | "en";
   const tInv = useTranslations("invoices");
@@ -122,6 +137,94 @@ export function InvoiceForm({
   // Catalog Picker State
   const [showCatalogPicker, setShowCatalogPicker] = useState(false);
   const [catalogSearch, setCatalogSearch] = useState("");
+
+  // Offline Draft State (hanya aktif pada mode buat invoice baru)
+  const isDraftEligible = !isEdit && !isCloneMode && !invoice && Boolean(currentUserId);
+  const [pendingDraft, setPendingDraft] = useState<InvoiceDraft | null>(null);
+  const [restoredToast, setRestoredToast] = useState(false);
+  const hasInitializedDraft = useRef(false);
+
+  // 1. Deteksi draf offline saat mount
+  useEffect(() => {
+    if (!isDraftEligible || !currentUserId || hasInitializedDraft.current) return;
+    hasInitializedDraft.current = true;
+    const existing = readDraft(currentUserId);
+    if (existing) {
+      setPendingDraft(existing);
+    }
+  }, [isDraftEligible, currentUserId]);
+
+  // 2. Debounced auto-save draf saat field berubah
+  useEffect(() => {
+    if (!isDraftEligible || !currentUserId) return;
+
+    const timer = setTimeout(() => {
+      const draftPayload: InvoiceDraft = {
+        customerId,
+        dueDate,
+        currency,
+        notes,
+        enableDirectTransfer,
+        enableDigitalPayment,
+        enableReminder,
+        items,
+        discountType,
+        discountValue,
+        selectedTaxMode,
+        customTaxRate,
+        savedAt: Date.now(),
+      };
+      writeDraft(currentUserId, draftPayload);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [
+    isDraftEligible,
+    currentUserId,
+    customerId,
+    dueDate,
+    currency,
+    notes,
+    enableDirectTransfer,
+    enableDigitalPayment,
+    enableReminder,
+    items,
+    discountType,
+    discountValue,
+    selectedTaxMode,
+    customTaxRate,
+  ]);
+
+  const handleRestoreDraft = () => {
+    if (!pendingDraft) return;
+    if (pendingDraft.customerId) setCustomerId(pendingDraft.customerId);
+    setDueDate(pendingDraft.dueDate || "");
+    if (pendingDraft.currency && SUPPORTED_CURRENCIES.includes(pendingDraft.currency as SupportedCurrency)) {
+      setCurrency(pendingDraft.currency as SupportedCurrency);
+    }
+    setNotes(pendingDraft.notes || "");
+    setEnableDirectTransfer(pendingDraft.enableDirectTransfer ?? true);
+    setEnableDigitalPayment(pendingDraft.enableDigitalPayment ?? false);
+    setEnableReminder(pendingDraft.enableReminder ?? true);
+    if (Array.isArray(pendingDraft.items) && pendingDraft.items.length > 0) {
+      setItems(pendingDraft.items);
+    }
+    setDiscountType(pendingDraft.discountType || "PERCENTAGE");
+    setDiscountValue(Number(pendingDraft.discountValue) || 0);
+    setSelectedTaxMode(pendingDraft.selectedTaxMode ?? 0);
+    setCustomTaxRate(Number(pendingDraft.customTaxRate) || 0);
+
+    setPendingDraft(null);
+    setRestoredToast(true);
+    setTimeout(() => setRestoredToast(false), 3500);
+  };
+
+  const handleDiscardDraft = () => {
+    if (currentUserId) {
+      clearStoredDraft(currentUserId);
+    }
+    setPendingDraft(null);
+  };
 
   const router = useRouter();
 
@@ -204,6 +307,9 @@ export function InvoiceForm({
       if (isEdit) {
         await updateInvoice(invoice.id, payload);
       } else {
+        if (currentUserId) {
+          clearStoredDraft(currentUserId);
+        }
         await createInvoice(payload);
       }
     } catch (err: any) {
@@ -229,8 +335,83 @@ export function InvoiceForm({
     { label: tInv("taxPresetCustom"), value: "custom" },
   ] as const;
 
+  const formatDraftTime = (ts: number) => {
+    const diffMs = Date.now() - ts;
+    const diffMin = Math.floor(diffMs / 60000);
+    if (diffMin < 1) return tInv("draftJustNow");
+    if (diffMin < 60) return `${diffMin} menit lalu`;
+    const d = new Date(ts);
+    return `${d.toLocaleDateString(locale === "en" ? "en-US" : "id-ID", {
+      day: "numeric",
+      month: "short",
+    })} ${d.toLocaleTimeString(locale === "en" ? "en-US" : "id-ID", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}`;
+  };
+
   return (
     <div className="w-full max-w-7xl mx-auto space-y-6 pb-24 md:pb-6">
+      {/* Recovery Banner: jika ada draf tersimpan di localStorage */}
+      {pendingDraft && (
+        <div
+          role="region"
+          aria-label={tInv("draftFoundTitle")}
+          className="rounded-2xl border border-emerald-300 dark:border-emerald-800 bg-emerald-50/70 dark:bg-emerald-950/40 p-4 sm:p-5 shadow-2xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3.5 transition-all animate-in fade-in slide-in-from-top-2"
+        >
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-xl bg-emerald-100 dark:bg-emerald-900/60 text-[#0f6b4f] dark:text-emerald-400 shrink-0 mt-0.5">
+              <ClockIcon className="w-5 h-5" />
+            </div>
+            <div className="min-w-0">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                {tInv("draftFoundTitle")}
+              </h3>
+              <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5 leading-relaxed">
+                {tInv("draftFoundDesc", { time: formatDraftTime(pendingDraft.savedAt) })}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 self-end sm:self-center shrink-0 w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={handleDiscardDraft}
+              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-200/60 dark:hover:bg-slate-800/80 transition-colors min-h-[44px] sm:min-h-[38px] cursor-pointer"
+            >
+              <XMarkIcon className="w-4 h-4" />
+              <span>{tInv("draftDiscard")}</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleRestoreDraft}
+              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#0f6b4f] hover:bg-[#0c5740] active:scale-[0.98] transition-all shadow-xs min-h-[44px] sm:min-h-[38px] cursor-pointer"
+            >
+              <ArrowUturnLeftIcon className="w-3.5 h-3.5" />
+              <span>{tInv("draftRestore")}</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Restored Toast Notice */}
+      {restoredToast && (
+        <div
+          role="status"
+          className="rounded-xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/60 px-4 py-2.5 text-xs font-semibold text-[#0f6b4f] dark:text-emerald-300 flex items-center justify-between gap-2 shadow-2xs"
+        >
+          <span>{tInv("draftRestored")}</span>
+          <button
+            type="button"
+            onClick={() => setRestoredToast(false)}
+            className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 min-h-[32px] min-w-[32px] flex items-center justify-center"
+            aria-label="Dismiss"
+          >
+            <XMarkIcon className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
       {/* Customer & Due Date Card */}
       <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xs">
         <h2 className="text-sm font-bold text-slate-900 dark:text-white mb-4">

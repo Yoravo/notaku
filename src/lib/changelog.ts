@@ -4,7 +4,7 @@
  * berdasarkan riwayat commit git riil dan mendukung dwibahasa (ID & EN).
  */
 
-export const APP_VERSION = "0.7.0";
+export const APP_VERSION = "0.7.1";
 export const APP_RELEASE_DATE = {
   id: "20 September 2026",
   en: "September 20, 2026",
@@ -42,6 +42,46 @@ export interface ChangelogRelease {
 
 export const CHANGELOG_RELEASES: ChangelogRelease[] = [
   {
+    version: "0.7.1",
+    type: "patch",
+    date: {
+      id: "20 September 2026",
+      en: "September 20, 2026",
+    },
+    title: {
+      id: "Auto-Save Draf Offline & Harmonisasi Kontras Dark Mode Menyeluruh",
+      en: "Offline Invoice Auto-Save & Comprehensive Dark Mode Contrast Polish",
+    },
+    summary: {
+      id: "Pencegahan kehilangan data formulir invoice dengan auto-save lokal di browser dan banner pemulihan otomatis, ditambah peningkatan kontras visual chart (Cashflow & Trafik) dan harmonisasi token dark mode di seluruh antarmuka.",
+      en: "Prevention of form data loss with browser-local auto-save and seamless recovery banners, alongside visual contrast enhancements across charts (Cashflow & Traffic) and full dark mode color token harmonization.",
+    },
+    isLatest: true,
+    highlights: [
+      {
+        category: "feat",
+        text: {
+          id: "Auto-Save Draf Invoice Offline: Simpan isian form secara otomatis (debounced) ke localStorage dan tampilkan banner pemulihan bila tab tertutup atau koneksi terputus.",
+          en: "Offline Invoice Auto-Save: Automatically debounces and saves form progress to localStorage with an intuitive recovery banner upon browser restart or connection drop.",
+        },
+      },
+      {
+        category: "perf",
+        text: {
+          id: "Peningkatan Kontras Visual Chart & Data-Viz: Batang chart Collected & Billed, tooltip hover, dan ringkasan P&L dioptimalkan agar kontras tajam di mode gelap.",
+          en: "Chart & Data-Viz Contrast Polish: Collected & Billed chart bars, hover tooltips, and P&L cards optimized for razor-sharp legibility in dark mode.",
+        },
+      },
+      {
+        category: "fix",
+        text: {
+          id: "Harmonisasi Token Warna Dark Mode: Penyesuaian global status badge faktur dan chip metrik agar tidak nyaru atau menyilaukan di latar gelap.",
+          en: "Dark Mode Color Token Harmonization: System-wide adjustment of invoice status badges and metric chips to eliminate washed-out or blinding contrast.",
+        },
+      },
+    ],
+  },
+  {
     version: "0.7.0",
     type: "minor",
     date: {
@@ -56,7 +96,7 @@ export const CHANGELOG_RELEASES: ChangelogRelease[] = [
       id: "Restrukturisasi paket komersial menjadi 3 tier (Starter Rp0, Pro Rp49k, Business Rp99k), pemisahan fitur branding agensi & developer tools ke tier Business, serta penguatan keamanan pembayaran sesuai standar OWASP.",
       en: "Commercial tier restructuring into 3 plans (Starter Rp0, Pro Rp49k, Business Rp99k), dedicated Business tier for agency branding and developer APIs, plus OWASP payment security hardening.",
     },
-    isLatest: true,
+    isLatest: false,
     highlights: [
       {
         category: "feat",

@@ -681,7 +681,13 @@
     "saveInvoice": "Create Invoice",
     "validationCustomer": "Please select a client first",
     "validationItems": "Complete all item descriptions and unit prices (min. 1)",
-    "saveError": "An error occurred while saving the invoice"
+    "saveError": "An error occurred while saving the invoice",
+    "draftFoundTitle": "Unsaved Invoice Draft Found",
+    "draftFoundDesc": "We auto-saved your in-progress invoice from {time}. Would you like to resume from it?",
+    "draftRestore": "Restore Draft",
+    "draftDiscard": "Discard",
+    "draftRestored": "Draft restored successfully",
+    "draftJustNow": "just now"
   },
   "bank": {
     "cardTitleVerified": "Verified",

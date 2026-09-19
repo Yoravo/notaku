@@ -90,6 +90,7 @@ export default async function NewInvoicePage(props: {
       userBankName={user?.bankName}
       userBankAccountNumber={user?.bankAccountNumber}
       userBankAccountName={user?.bankAccountName}
+      currentUserId={session.user.id}
       allowed={allowed}
       used={used}
       limit={limit}
