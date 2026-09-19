@@ -22,6 +22,8 @@ import {
 } from "@heroicons/react/24/outline";
 import { LanguageDropdown } from "@/components/language-dropdown";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { CommandPalette } from "@/components/command-palette";
+import { CommandTrigger } from "@/components/command-trigger";
 import { useTranslations } from "next-intl";
 
 type AdminUser = {
@@ -62,6 +64,9 @@ export function AdminLayoutClient({
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-900 text-slate-100">
+      {/* Global Command Palette (Ctrl+K) */}
+      <CommandPalette isAdmin={true} />
+
       {/* Mobile Backdrop */}
       {mobileOpen && (
         <div
@@ -242,6 +247,9 @@ export function AdminLayoutClient({
           </div>
 
           <div className="flex items-center gap-2.5 sm:gap-3">
+            {/* Global Command Palette Trigger (Ctrl+K) */}
+            <CommandTrigger />
+
             {/* Theme Toggle (Light / Dark / System) */}
             <ThemeToggle />
 

@@ -14,9 +14,11 @@ interface Customer {
 export function CustomersClient({
   customers,
   errorMessage,
+  autoOpen = false,
 }: {
   customers: Customer[];
   errorMessage?: string;
+  autoOpen?: boolean;
 }) {
   const tCust = useTranslations("customers");
   const locale = useLocale();
@@ -41,7 +43,7 @@ export function CustomersClient({
           </p>
         </div>
       </div>
-      <CustomerList customers={customers} />
+      <CustomerList customers={customers} autoOpen={autoOpen} />
     </div>
   );
 }

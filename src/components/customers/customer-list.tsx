@@ -27,13 +27,15 @@ type Customer = {
 
 export function CustomerList({
   customers: initial,
+  autoOpen = false,
 }: {
   customers: Customer[];
+  autoOpen?: boolean;
 }) {
   const tCust = useTranslations("customers");
   const locale = useLocale();
   const [searchQuery, setSearchQuery] = useState("");
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(autoOpen);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
 
   // Delete Confirm Dialog State

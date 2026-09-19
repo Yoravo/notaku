@@ -13,6 +13,8 @@ import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { LanguageDropdown } from "@/components/language-dropdown";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { CommandPalette } from "@/components/command-palette";
+import { CommandTrigger } from "@/components/command-trigger";
 import { useTranslations } from "next-intl";
 
 type User = {
@@ -47,6 +49,9 @@ export function DashboardLayoutClient({
 
   return (
     <div className="flex h-screen overflow-hidden bg-white dark:bg-slate-950">
+      {/* Global Command Palette (Ctrl+K / Cmd+K) */}
+      <CommandPalette isAdmin={user.role === "ADMIN"} />
+
       {/* Mobile Backdrop */}
       {sidebarOpen && (
         <div
@@ -141,6 +146,9 @@ export function DashboardLayoutClient({
           </div>
 
           <div className="flex items-center gap-2.5 sm:gap-3">
+            {/* Global Command Palette Trigger (Ctrl+K) */}
+            <CommandTrigger />
+
             {/* Theme Toggle (Light / Dark / System) */}
             <ThemeToggle />
 

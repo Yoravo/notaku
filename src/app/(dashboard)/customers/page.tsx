@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { CustomersClient } from "./customers-client";
 
 export default async function CustomerPage(props: {
-  searchParams?: Promise<{ error?: string }>;
+  searchParams?: Promise<{ error?: string; new?: string }>;
 }) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/login");
@@ -21,6 +21,7 @@ export default async function CustomerPage(props: {
     <CustomersClient
       customers={customers}
       errorMessage={searchParams?.error}
+      autoOpen={searchParams?.new === "1"}
     />
   );
 }
