@@ -120,7 +120,7 @@ export function PortalClient({
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-[#0f6b4f]/20">
       {/* Top Header */}
       <header className="border-b border-slate-200/80 bg-white/80 backdrop-blur-md sticky top-0 z-30">
-        <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             {seller.logoUrl ? (
               <img
@@ -155,7 +155,7 @@ export function PortalClient({
       </header>
 
       {/* Main Workspace */}
-      <main className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6 sm:space-y-8">
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6 sm:space-y-8">
         {/* Customer Profile Banner */}
         <div className="rounded-3xl border border-slate-200/80 bg-white p-5 sm:p-7 shadow-xl shadow-slate-200/40 flex flex-col md:flex-row md:items-center justify-between gap-5">
           <div className="space-y-2">

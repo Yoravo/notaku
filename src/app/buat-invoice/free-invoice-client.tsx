@@ -212,7 +212,7 @@ export function FreeInvoiceGeneratorClient({ session }: { session?: any }) {
       </section>
 
       {/* Main Workspace: Form & Summary */}
-      <main className="mx-auto max-w-[1440px] px-6 lg:px-8 py-8 sm:py-12">
+      <main className="mx-auto max-w-7xl px-6 lg:px-8 py-8 sm:py-12">
         {errorMsg && (
           <div className="mb-6 rounded-xl border border-rose-200 bg-rose-50 p-4 text-xs sm:text-sm font-semibold text-rose-700">
             {errorMsg}

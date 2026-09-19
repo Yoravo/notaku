@@ -343,7 +343,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
 
       {/* Hero Section */}
       <section className="relative overflow-hidden pt-10 pb-20 sm:pt-20 sm:pb-32">
-        <div className="mx-auto max-w-[1440px] px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-10">
             {/* Left Content */}
             <div className="lg:col-span-7 space-y-6">
@@ -643,7 +643,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
 
       {/* Feature Section */}
       <section id="fitur" className="border-y border-line bg-paper-deep/60 dark:bg-slate-900/40 py-20 sm:py-28">
-        <div className="mx-auto max-w-[1440px] px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto">
             <span className="text-xs font-bold uppercase tracking-wider text-emerald">
               {tFeatures("tag")}
@@ -687,7 +687,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
 
       {/* How it Works / Workflow */}
       <section id="cara-kerja" className="py-20 sm:py-28">
-        <div className="mx-auto max-w-[1440px] px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto">
             <span className="text-xs font-bold uppercase tracking-wider text-emerald">
               {tWorkflow("tag")}
@@ -723,7 +723,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
 
       {/* Free Business Tools & Calculators Showcase */}
       <section id="tools" className="border-t border-line bg-paper py-20 sm:py-28">
-        <div className="mx-auto max-w-[1440px] px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-12">
             <div className="max-w-2xl">
               <span className="text-xs font-bold uppercase tracking-wider text-emerald">
@@ -829,7 +829,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
 
       {/* Pricing Section */}
       <section id="pricing" className="border-t border-line bg-paper-deep/60 dark:bg-slate-900/40 py-20 sm:py-28">
-        <div className="mx-auto max-w-[1440px] px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto">
             <span className="text-xs font-bold uppercase tracking-wider text-emerald">
               {tPricing("tag")}
@@ -982,7 +982,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
 
       {/* Bottom CTA Banner */}
       <section className="border-t border-line bg-paper-deep/60 dark:bg-slate-900/40 py-20">
-        <div className="mx-auto max-w-[1440px] px-6 lg:px-8 text-center">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8 text-center">
           <div className="max-w-3xl mx-auto">
             <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald/10 text-emerald mb-6">
               <BuildingStorefrontIcon className="h-6 w-6" />

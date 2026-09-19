@@ -76,7 +76,7 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
   const displayStatus = sellerStatusLabelMap[invoice.status];
 
   return (
-    <div className="w-full max-w-[1440px] mx-auto space-y-6">
+    <div className="w-full max-w-7xl mx-auto space-y-6">
       {/* Top Navigation & Action Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {/* Invoice Identification with Status under Date */}

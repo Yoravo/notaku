@@ -21,7 +21,7 @@ export function LandingFAQ() {
 
   return (
     <section id="faq" className="py-20 sm:py-28">
-      <div className="mx-auto max-w-[1440px] px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <span className="text-xs font-bold uppercase tracking-wider text-emerald">
             {t("tag")}

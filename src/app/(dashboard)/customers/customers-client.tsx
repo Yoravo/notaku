@@ -24,7 +24,7 @@ export function CustomersClient({
   const locale = useLocale();
 
   return (
-    <div className="w-full max-w-[1440px] mx-auto space-y-6">
+    <div className="w-full max-w-7xl mx-auto space-y-6">
       {errorMessage && (
         <div
           role="alert"

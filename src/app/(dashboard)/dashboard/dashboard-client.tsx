@@ -78,7 +78,7 @@ export function DashboardClient({
   const periodLabel = rangeLabels[selectedRange] || tDash("rangeMonth");
 
   return (
-    <div className="w-full max-w-[1440px] mx-auto space-y-6 sm:space-y-8">
+    <div className="w-full max-w-7xl mx-auto space-y-6 sm:space-y-8">
       {/* Global Broadcast Announcement */}
       {announcement && <AnnouncementBanner announcement={announcement} />}
 

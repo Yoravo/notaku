@@ -128,7 +128,7 @@ export function LandingNavbar({ session }: NavbarProps) {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-line/60 bg-paper/85 backdrop-blur-md transition-all">
-      <div className="mx-auto flex max-w-[1440px] items-center justify-between px-6 lg:px-8 py-3.5">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8 py-3.5">
         {/* Left: Brand Logo */}
         <div className="flex items-center md:flex-1 justify-start">
           <Link

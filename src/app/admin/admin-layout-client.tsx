@@ -275,7 +275,7 @@ export function AdminLayoutClient({
 
         {/* Scrollable Main Content */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-          <div className="w-full max-w-[1440px] mx-auto">{children}</div>
+          <div className="w-full max-w-7xl mx-auto">{children}</div>
         </main>
       </div>
     </div>

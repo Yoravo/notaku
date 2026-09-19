@@ -70,7 +70,7 @@ export function TemplatesCatalogClient({ session }: { session?: any }) {
       </section>
 
       {/* Category Pills & Grid */}
-      <main className="mx-auto max-w-[1440px] px-6 lg:px-8 py-10 sm:py-14 space-y-10">
+      <main className="mx-auto max-w-7xl px-6 lg:px-8 py-10 sm:py-14 space-y-10">
         {/* Filter Pills */}
         <div className="flex flex-wrap items-center justify-center gap-2">
           {categories.map((cat) => (
