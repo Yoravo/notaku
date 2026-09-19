@@ -98,50 +98,53 @@
     color-scheme: dark;
   }
 
-  /* 1. Surfaces & Backgrounds */
-  .dark .bg-white {
+  /* 1. Surfaces & Backgrounds
+     Fallback otomatis HANYA untuk elemen tanpa varian dark eksplisit.
+     Guard :not([class*="dark:bg-"]) mencegah !important menimpa
+     dark:bg-* lokal yang sengaja ditulis developer (CLAUDE.md #33). */
+  .dark .bg-white:not([class*="dark:bg-"]) {
     background-color: #0f172a !important; /* slate-900 */
   }
 
-  .dark .bg-slate-50,
-  .dark .bg-gray-50 {
+  .dark .bg-slate-50:not([class*="dark:bg-"]),
+  .dark .bg-gray-50:not([class*="dark:bg-"]) {
     background-color: #020617 !important; /* slate-950 */
   }
 
-  .dark .bg-slate-100,
-  .dark .bg-gray-100 {
+  .dark .bg-slate-100:not([class*="dark:bg-"]),
+  .dark .bg-gray-100:not([class*="dark:bg-"]) {
     background-color: #1e293b !important; /* slate-800 */
   }
 
   /* 2. Text Colors */
-  .dark .text-slate-900,
-  .dark .text-gray-900,
-  .dark .text-slate-800,
-  .dark .text-gray-800 {
+  .dark .text-slate-900:not([class*="dark:text-"]),
+  .dark .text-gray-900:not([class*="dark:text-"]),
+  .dark .text-slate-800:not([class*="dark:text-"]),
+  .dark .text-gray-800:not([class*="dark:text-"]) {
     color: #f8fafc !important; /* slate-50 */
   }
 
-  .dark .text-slate-700,
-  .dark .text-gray-700,
-  .dark .text-slate-600,
-  .dark .text-gray-600 {
+  .dark .text-slate-700:not([class*="dark:text-"]),
+  .dark .text-gray-700:not([class*="dark:text-"]),
+  .dark .text-slate-600:not([class*="dark:text-"]),
+  .dark .text-gray-600:not([class*="dark:text-"]) {
     color: #cbd5e1 !important; /* slate-300 */
   }
 
-  .dark .text-slate-500,
-  .dark .text-gray-500,
-  .dark .text-slate-400,
-  .dark .text-gray-400 {
+  .dark .text-slate-500:not([class*="dark:text-"]),
+  .dark .text-gray-500:not([class*="dark:text-"]),
+  .dark .text-slate-400:not([class*="dark:text-"]),
+  .dark .text-gray-400:not([class*="dark:text-"]) {
     color: #94a3b8 !important; /* slate-400 */
   }
 
   /* 3. Borders & Dividers */
-  .dark .border-slate-200,
-  .dark .border-gray-200,
-  .dark .border-slate-300,
-  .dark .border-gray-300,
-  .dark .border-slate-100,
-  .dark .border-gray-100 {
+  .dark .border-slate-200:not([class*="dark:border-"]),
+  .dark .border-gray-200:not([class*="dark:border-"]),
+  .dark .border-slate-300:not([class*="dark:border-"]),
+  .dark .border-gray-300:not([class*="dark:border-"]),
+  .dark .border-slate-100:not([class*="dark:border-"]),
+  .dark .border-gray-100:not([class*="dark:border-"]) {
     border-color: #334155 !important; /* slate-700 */
   }
 
@@ -238,12 +241,24 @@
     color: #f1f5f9 !important; /* slate-100 */
   }
 
-  /* 5. Inputs & Form Controls */
-  .dark input:not([type="checkbox"]):not([type="radio"]),
-  .dark textarea,
-  .dark select {
+  /* 5. Inputs & Form Controls
+     Fallback terisolasi agar tidak menimpa border validasi error (rose/red/emerald)
+     maupun styling eksplisit dark:bg-* / dark:border-* dari komponen */
+  .dark input:not([type="checkbox"]):not([type="radio"]):not([class*="dark:bg-"]),
+  .dark textarea:not([class*="dark:bg-"]),
+  .dark select:not([class*="dark:bg-"]) {
     background-color: #0f172a !important;
+  }
+
+  .dark input:not([type="checkbox"]):not([type="radio"]):not([class*="dark:text-"]),
+  .dark textarea:not([class*="dark:text-"]),
+  .dark select:not([class*="dark:text-"]) {
     color: #f8fafc !important;
+  }
+
+  .dark input:not([type="checkbox"]):not([type="radio"]):not([class*="dark:border-"]):not([class*="border-rose"]):not([class*="border-red"]):not([class*="border-emerald"]),
+  .dark textarea:not([class*="dark:border-"]):not([class*="border-rose"]):not([class*="border-red"]):not([class*="border-emerald"]),
+  .dark select:not([class*="dark:border-"]):not([class*="border-rose"]):not([class*="border-red"]):not([class*="border-emerald"]) {
     border-color: #334155 !important;
   }
 
