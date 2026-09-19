@@ -129,7 +129,7 @@ export function InvoicesClient({
               key={tab.value}
               href={buildHref(tab.value)}
               prefetch={true}
-              className={`whitespace-nowrap px-3.5 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all min-h-[38px] inline-flex items-center ${
+              className={`whitespace-nowrap px-3.5 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all min-h-[44px] sm:min-h-[38px] inline-flex items-center ${
                 isActive
                   ? "bg-[#0f6b4f]/10 dark:bg-emerald-500/20 text-[#0f6b4f] dark:text-emerald-400 border border-[#0f6b4f]/20 dark:border-emerald-500/30 shadow-2xs"
                   : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
@@ -183,7 +183,7 @@ export function InvoicesClient({
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <p className="font-mono font-bold text-slate-900 dark:text-white text-xs truncate group-hover:text-[#0f6b4f] dark:group-hover:text-emerald-400 transition-colors">
-                        {invoice.number || "—"}
+                        {invoice.number || "-"}
                       </p>
                       <p className="mt-1 text-xs text-slate-600 dark:text-slate-300 font-medium truncate">
                         {invoice.customer.name}
@@ -251,7 +251,7 @@ export function InvoicesClient({
                           prefetch={true}
                           className="font-mono text-xs font-bold text-slate-900 dark:text-white group-hover:text-[#0f6b4f] dark:group-hover:text-emerald-400 transition-colors"
                         >
-                          {invoice.number || "—"}
+                          {invoice.number || "-"}
                         </Link>
                       </td>
                       <td className="px-5 py-3.5 font-medium text-slate-900 dark:text-white">
@@ -296,7 +296,7 @@ export function InvoicesClient({
                 <Link
                   href={buildHref(activeStatus ?? "", currentPage - 1)}
                   prefetch={true}
-                  className={`flex items-center gap-1 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs sm:text-sm font-semibold transition-all min-h-[36px] ${
+                  className={`flex items-center gap-1 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs sm:text-sm font-semibold transition-all min-h-[44px] sm:min-h-[36px] ${
                     currentPage <= 1
                       ? "pointer-events-none opacity-40"
                       : "hover:bg-slate-50 text-slate-700 shadow-2xs"

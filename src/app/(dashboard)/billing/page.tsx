@@ -7,7 +7,7 @@ import { BillingClient } from "./billing-client";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Paket & Kuota — NotaKu",
+  title: "Paket & Kuota",
 };
 
 export const dynamic = "force-dynamic";

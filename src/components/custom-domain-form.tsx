@@ -312,7 +312,7 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
                     <button
                       type="button"
                       onClick={handleCopyTarget}
-                      className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-bold text-slate-200 transition-colors inline-flex items-center gap-1 cursor-pointer min-h-[36px]"
+                      className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-bold text-slate-200 transition-colors inline-flex items-center gap-1 cursor-pointer min-h-[44px] sm:min-h-[36px]"
                     >
                       {copiedTarget ? (
                         <>

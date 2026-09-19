@@ -31,7 +31,7 @@ export function RecentInvoices({ invoices }: RecentInvoicesProps) {
         <Link
           href="/invoices"
           prefetch={true}
-          className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-[#0f6b4f] dark:text-emerald-400 hover:text-[#0c553e] dark:hover:text-emerald-300 transition-colors group min-h-[36px]"
+          className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-[#0f6b4f] dark:text-emerald-400 hover:text-[#0c553e] dark:hover:text-emerald-300 transition-colors group min-h-[44px] sm:min-h-[36px]"
         >
           <span>{tDash("viewAll")}</span>
           <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />

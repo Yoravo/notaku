@@ -408,7 +408,7 @@ export function DeveloperSettingsForm({
                 <button
                   type="button"
                   onClick={() => handleDeleteKey(key.id, key.name)}
-                  className="p-2 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/50 transition-colors self-end sm:self-auto cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
+                  className="p-2 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/50 transition-colors self-end sm:self-auto cursor-pointer min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[36px] flex items-center justify-center"
                   title={tDev("deleteKeyConfirm", { name: key.name })}
                 >
                   <TrashIcon className="w-4 h-4" />
@@ -575,7 +575,7 @@ export function DeveloperSettingsForm({
                   <button
                     type="button"
                     onClick={() => handleDeleteWebhook(wh.id, wh.url)}
-                    className="p-2 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/50 transition-colors shrink-0 cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
+                    className="p-2 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/50 transition-colors shrink-0 cursor-pointer min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[36px] flex items-center justify-center"
                     title={tDev("deleteWebhookConfirm")}
                   >
                     <TrashIcon className="w-4 h-4" />
@@ -594,7 +594,7 @@ export function DeveloperSettingsForm({
                   <button
                     type="button"
                     onClick={() => copyToClipboard(wh.secret, "secret", wh.id)}
-                    className="text-[#0f6b4f] dark:text-emerald-400 hover:text-[#0c5740] font-bold text-xs flex items-center gap-1 shrink-0 cursor-pointer min-h-[32px] px-1"
+                    className="text-[#0f6b4f] dark:text-emerald-400 hover:text-[#0c5740] font-bold text-xs flex items-center gap-1 shrink-0 cursor-pointer min-h-[44px] sm:min-h-[32px] px-1"
                   >
                     {copiedSecretId === wh.id ? (
                       <>

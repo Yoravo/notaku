@@ -146,7 +146,7 @@ export function AdminInvoicesClient({
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
           <Link
             href={`/admin/invoices?q=${searchQuery}`}
-            className={`px-3.5 py-2 rounded-xl font-bold transition-all shrink-0 cursor-pointer shadow-2xs min-h-[36px] inline-flex items-center ${
+            className={`px-3.5 py-2 rounded-xl font-bold transition-all shrink-0 cursor-pointer shadow-2xs min-h-[44px] sm:min-h-[36px] inline-flex items-center ${
               !statusFilter
                 ? "bg-slate-900 dark:bg-slate-800 text-white"
                 : "bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
@@ -158,7 +158,7 @@ export function AdminInvoicesClient({
             <Link
               key={st}
               href={`/admin/invoices?q=${searchQuery}&status=${st}`}
-              className={`px-3.5 py-2 rounded-xl font-bold transition-all shrink-0 cursor-pointer shadow-2xs min-h-[36px] inline-flex items-center ${
+              className={`px-3.5 py-2 rounded-xl font-bold transition-all shrink-0 cursor-pointer shadow-2xs min-h-[44px] sm:min-h-[36px] inline-flex items-center ${
                 statusFilter === st
                   ? "bg-slate-900 dark:bg-slate-800 text-white"
                   : "bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
@@ -291,7 +291,7 @@ export function AdminInvoicesClient({
                           href={`/i/${inv.publicId}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors shadow-2xs min-h-[36px]"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors shadow-2xs min-h-[44px] sm:min-h-[36px]"
                         >
                           <span>{tAdmin("viewPublic")}</span>
                           <ArrowTopRightOnSquareIcon className="w-3.5 h-3.5 text-slate-400" />
@@ -317,7 +317,7 @@ export function AdminInvoicesClient({
                   href={`/admin/invoices?q=${searchQuery}&status=${statusFilter}&page=${
                     currentPage - 1
                   }`}
-                  className="px-3.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 font-bold text-slate-700 dark:text-slate-200 shadow-2xs transition-colors min-h-[36px] inline-flex items-center"
+                  className="px-3.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 font-bold text-slate-700 dark:text-slate-200 shadow-2xs transition-colors min-h-[44px] sm:min-h-[36px] inline-flex items-center"
                 >
                   {tAdmin("paginationPrev")}
                 </Link>
@@ -327,7 +327,7 @@ export function AdminInvoicesClient({
                   href={`/admin/invoices?q=${searchQuery}&status=${statusFilter}&page=${
                     currentPage + 1
                   }`}
-                  className="px-3.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 font-bold text-slate-700 dark:text-slate-200 shadow-2xs transition-colors min-h-[36px] inline-flex items-center"
+                  className="px-3.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 font-bold text-slate-700 dark:text-slate-200 shadow-2xs transition-colors min-h-[44px] sm:min-h-[36px] inline-flex items-center"
                 >
                   {tAdmin("paginationNext")}
                 </Link>

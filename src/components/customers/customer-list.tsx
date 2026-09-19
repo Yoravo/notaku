@@ -157,13 +157,13 @@ export function CustomerList({
                       {cust.name}
                     </td>
                     <td className="px-5 py-3.5 text-slate-600 dark:text-slate-300 font-mono text-xs">
-                      {cust.email || "—"}
+                      {cust.email || "-"}
                     </td>
                     <td className="px-5 py-3.5 text-slate-600 dark:text-slate-300 font-mono text-xs">
-                      {cust.phone || "—"}
+                      {cust.phone || "-"}
                     </td>
                     <td className="px-5 py-3.5 text-slate-500 dark:text-slate-400 hidden md:table-cell max-w-xs truncate text-xs">
-                      {cust.address || "—"}
+                      {cust.address || "-"}
                     </td>
                     <td className="px-5 py-3.5 text-right">
                       <div className="inline-flex items-center gap-1 sm:gap-1.5">
@@ -171,7 +171,7 @@ export function CustomerList({
                         <button
                           onClick={() => handleCopyPortalLink(cust.id)}
                           title={tCust("sharePortal")}
-                          className={`p-2 rounded-xl border transition-all cursor-pointer min-h-[36px] min-w-[36px] inline-flex items-center justify-center ${
+                          className={`p-2 rounded-xl border transition-all cursor-pointer min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[36px] inline-flex items-center justify-center ${
                             copiedPortalId === cust.id
                               ? "bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"
                               : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
@@ -188,7 +188,7 @@ export function CustomerList({
                         <Link
                           href={`/invoices/new?customerId=${cust.id}`}
                           prefetch={true}
-                          className="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-[#0f6b4f] dark:hover:text-emerald-400 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors min-h-[36px] min-w-[36px] inline-flex items-center justify-center"
+                          className="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-[#0f6b4f] dark:hover:text-emerald-400 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[36px] inline-flex items-center justify-center"
                           title={tCust("createInvoiceFor")}
                         >
                           <DocumentPlusIcon className="h-4 w-4" />
@@ -200,7 +200,7 @@ export function CustomerList({
                             setEditingCustomer(cust);
                             setShowModal(true);
                           }}
-                          className="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer min-h-[36px] min-w-[36px] inline-flex items-center justify-center"
+                          className="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[36px] inline-flex items-center justify-center"
                           title={tCust("editCustomer")}
                         >
                           <PencilSquareIcon className="h-4 w-4" />
@@ -209,7 +209,7 @@ export function CustomerList({
                         {/* Delete Customer */}
                         <button
                           onClick={() => setDeletingCustomer(cust)}
-                          className="p-2 rounded-xl text-rose-500 hover:text-rose-700 dark:hover:text-rose-400 border border-rose-100 dark:border-rose-900/60 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors cursor-pointer min-h-[36px] min-w-[36px] inline-flex items-center justify-center"
+                          className="p-2 rounded-xl text-rose-500 hover:text-rose-700 dark:hover:text-rose-400 border border-rose-100 dark:border-rose-900/60 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors cursor-pointer min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[36px] inline-flex items-center justify-center"
                           title={tCust("deleteCustomer")}
                         >
                           <TrashIcon className="h-4 w-4" />

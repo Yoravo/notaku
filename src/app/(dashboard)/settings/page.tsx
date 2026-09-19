@@ -8,7 +8,7 @@ import { getBotNotificationSettings } from "@/actions/notifications";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Pengaturan Akun & Bisnis — NotaKu",
+  title: "Pengaturan Akun & Bisnis",
 };
 
 export const dynamic = "force-dynamic";

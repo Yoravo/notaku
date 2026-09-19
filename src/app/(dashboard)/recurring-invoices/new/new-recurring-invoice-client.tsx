@@ -388,7 +388,7 @@ export function NewRecurringInvoiceClient({
             <button
               type="button"
               onClick={addItem}
-              className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-[#0f6b4f] dark:text-emerald-400 hover:underline cursor-pointer min-h-[36px]"
+              className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-[#0f6b4f] dark:text-emerald-400 hover:underline cursor-pointer min-h-[44px] sm:min-h-[36px]"
             >
               <PlusIcon className="w-4 h-4" />
               <span>{tRec("addItem")}</span>
@@ -449,7 +449,7 @@ export function NewRecurringInvoiceClient({
                     type="button"
                     onClick={() => removeItem(index)}
                     disabled={items.length <= 1}
-                    className="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors disabled:opacity-30 cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
+                    className="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors disabled:opacity-30 cursor-pointer min-h-[44px] sm:min-h-[36px] min-w-[36px] flex items-center justify-center"
                     title={tRec("deleteItem")}
                   >
                     <TrashIcon className="w-4 h-4" />
@@ -470,7 +470,7 @@ export function NewRecurringInvoiceClient({
                 <select
                   value={discountType}
                   onChange={(e) => setDiscountType(e.target.value as DiscountType)}
-                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-2.5 py-1.5 text-xs text-slate-800 dark:text-slate-200 shadow-2xs focus:border-[#0f6b4f] focus:outline-none min-h-[38px]"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-2.5 py-1.5 text-xs text-slate-800 dark:text-slate-200 shadow-2xs focus:border-[#0f6b4f] focus:outline-none min-h-[44px] sm:min-h-[38px]"
                 >
                   <option value="FIXED">{tRec("discountFixed")}</option>
                   <option value="PERCENTAGE">{tRec("discountPercent")}</option>
@@ -480,7 +480,7 @@ export function NewRecurringInvoiceClient({
                   min="0"
                   value={discountValue}
                   onChange={(e) => setDiscountValue(Math.max(0, Number(e.target.value) || 0))}
-                  className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-1.5 text-xs text-slate-900 dark:text-white shadow-2xs focus:border-[#0f6b4f] focus:outline-none min-h-[38px]"
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-1.5 text-xs text-slate-900 dark:text-white shadow-2xs focus:border-[#0f6b4f] focus:outline-none min-h-[44px] sm:min-h-[38px]"
                 />
               </div>
             </div>
@@ -497,7 +497,7 @@ export function NewRecurringInvoiceClient({
                     const v = e.target.value;
                     setSelectedTaxMode(v === "custom" ? "custom" : Number(v));
                   }}
-                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-2.5 py-1.5 text-xs text-slate-800 dark:text-slate-200 shadow-2xs focus:border-[#0f6b4f] focus:outline-none min-h-[38px]"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-2.5 py-1.5 text-xs text-slate-800 dark:text-slate-200 shadow-2xs focus:border-[#0f6b4f] focus:outline-none min-h-[44px] sm:min-h-[38px]"
                 >
                   <option value={0}>{tRec("taxNone")}</option>
                   <option value={11}>PPN 11%</option>
@@ -512,7 +512,7 @@ export function NewRecurringInvoiceClient({
                     value={customTaxRate}
                     onChange={(e) => setCustomTaxRate(Math.max(0, Number(e.target.value) || 0))}
                     placeholder="%"
-                    className="w-20 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-1.5 text-xs text-slate-900 dark:text-white text-center shadow-2xs focus:border-[#0f6b4f] focus:outline-none min-h-[38px]"
+                    className="w-20 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-1.5 text-xs text-slate-900 dark:text-white text-center shadow-2xs focus:border-[#0f6b4f] focus:outline-none min-h-[44px] sm:min-h-[38px]"
                   />
                 )}
               </div>

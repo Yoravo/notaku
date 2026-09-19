@@ -88,7 +88,7 @@ export function ClientPerformanceMetrics({
             <div className="mt-3">
               <div className="flex items-baseline gap-2">
                 <p className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white tabular-nums">
-                  {dsoDays !== null ? tPerf("dsoDays", { count: dsoDays }) : "—"}
+                  {dsoDays !== null ? tPerf("dsoDays", { count: dsoDays }) : "-"}
                 </p>
                 <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-bold border ${dsoBadgeClass}`}>
                   {dsoStatusLabel}
@@ -223,7 +223,7 @@ export function ClientPerformanceMetrics({
                             ~{client.averagePaymentDays}
                           </span>
                         ) : (
-                          <span className="text-slate-400">—</span>
+                          <span className="text-slate-400">-</span>
                         )}
                       </td>
                       <td className="py-3.5 px-4 text-right font-bold text-[#0f6b4f] tabular-nums">

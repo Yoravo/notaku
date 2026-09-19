@@ -182,7 +182,7 @@ export function SecurityForm() {
 
         {/* Revoke other sessions checkbox */}
         <div className="pt-2">
-          <label className="flex items-start gap-2.5 cursor-pointer select-none min-h-[36px]">
+          <label className="flex items-start gap-2.5 cursor-pointer select-none min-h-[44px] sm:min-h-[36px]">
             <input
               type="checkbox"
               checked={revokeOtherSessions}

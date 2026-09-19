@@ -7,7 +7,7 @@ import { NewInvoiceClient } from "./new-invoice-client";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Buat Invoice Baru — NotaKu",
+  title: "Buat Invoice Baru",
 };
 
 export const dynamic = "force-dynamic";

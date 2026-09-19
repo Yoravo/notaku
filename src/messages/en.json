@@ -811,7 +811,7 @@
     "apiDocsTitle": "Quick REST API v1 Reference",
     "apiDocsBaseUrl": "Base URL:",
     "apiDocsAuthHeader": "Authorization Header:",
-    "apiDocsInvoiceEndpoint": "POST /api/v1/invoices — Create New Invoice",
+    "apiDocsInvoiceEndpoint": "POST /api/v1/invoices · Create New Invoice",
     "createKeyFailed": "Failed to create API Key",
     "deleteKeyFailed": "Failed to delete API Key",
     "createWebhookFailed": "Failed to register webhook",

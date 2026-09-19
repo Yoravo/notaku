@@ -358,7 +358,7 @@ export function FreeDeliveryOrderGeneratorClient({ session }: { session?: any })
                 <button
                   type="button"
                   onClick={addItem}
-                  className="inline-flex items-center gap-1 text-xs font-bold text-emerald dark:text-emerald-400 hover:text-white bg-emerald/10 hover:bg-emerald px-3 py-1.5 rounded-xl transition-all cursor-pointer min-h-[36px]"
+                  className="inline-flex items-center gap-1 text-xs font-bold text-emerald dark:text-emerald-400 hover:text-white bg-emerald/10 hover:bg-emerald px-3 py-1.5 rounded-xl transition-all cursor-pointer min-h-[44px] sm:min-h-[36px]"
                 >
                   <PlusIcon className="w-3.5 h-3.5" />
                   Tambah Barang
@@ -379,7 +379,7 @@ export function FreeDeliveryOrderGeneratorClient({ session }: { session?: any })
                         <button
                           type="button"
                           onClick={() => removeItem(item.id)}
-                          className="text-rose-500 hover:text-rose-700 p-1.5 rounded-lg transition-colors cursor-pointer min-h-[32px] min-w-[32px] flex items-center justify-center"
+                          className="text-rose-500 hover:text-rose-700 p-1.5 rounded-lg transition-colors cursor-pointer min-h-[44px] min-w-[44px] sm:min-h-[32px] sm:min-w-[32px] flex items-center justify-center"
                           title="Hapus Barang"
                           aria-label="Hapus Barang"
                         >
@@ -395,7 +395,7 @@ export function FreeDeliveryOrderGeneratorClient({ session }: { session?: any })
                           type="text"
                           value={item.description}
                           onChange={(e) => updateItem(item.id, "description", e.target.value)}
-                          className="w-full text-xs bg-white dark:bg-slate-900 border border-line dark:border-slate-700 rounded-lg px-2.5 py-2 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none min-h-[38px]"
+                          className="w-full text-xs bg-white dark:bg-slate-900 border border-line dark:border-slate-700 rounded-lg px-2.5 py-2 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none min-h-[44px] sm:min-h-[38px]"
                           placeholder="Nama barang..."
                         />
                       </div>
@@ -406,7 +406,7 @@ export function FreeDeliveryOrderGeneratorClient({ session }: { session?: any })
                           min={1}
                           value={item.quantity}
                           onChange={(e) => updateItem(item.id, "quantity", Math.max(1, Number(e.target.value) || 1))}
-                          className="w-full text-xs bg-white dark:bg-slate-900 border border-line dark:border-slate-700 rounded-lg px-2.5 py-2 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none font-bold min-h-[38px]"
+                          className="w-full text-xs bg-white dark:bg-slate-900 border border-line dark:border-slate-700 rounded-lg px-2.5 py-2 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none font-bold min-h-[44px] sm:min-h-[38px]"
                         />
                       </div>
                       <div className="col-span-6 sm:col-span-3">
@@ -415,7 +415,7 @@ export function FreeDeliveryOrderGeneratorClient({ session }: { session?: any })
                           type="text"
                           value={item.unit}
                           onChange={(e) => updateItem(item.id, "unit", e.target.value)}
-                          className="w-full text-xs bg-white dark:bg-slate-900 border border-line dark:border-slate-700 rounded-lg px-2.5 py-2 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none min-h-[38px]"
+                          className="w-full text-xs bg-white dark:bg-slate-900 border border-line dark:border-slate-700 rounded-lg px-2.5 py-2 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none min-h-[44px] sm:min-h-[38px]"
                           placeholder="Pcs / Dus / Sak"
                         />
                       </div>
@@ -424,7 +424,7 @@ export function FreeDeliveryOrderGeneratorClient({ session }: { session?: any })
                           type="text"
                           value={item.notes}
                           onChange={(e) => updateItem(item.id, "notes", e.target.value)}
-                          className="w-full text-[11px] bg-white dark:bg-slate-900 border border-line dark:border-slate-700 rounded-lg px-2.5 py-1.5 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none text-ink-soft dark:text-slate-300 min-h-[36px]"
+                          className="w-full text-[11px] bg-white dark:bg-slate-900 border border-line dark:border-slate-700 rounded-lg px-2.5 py-1.5 focus:border-emerald focus:ring-1 focus:ring-emerald outline-none text-ink-soft dark:text-slate-300 min-h-[44px] sm:min-h-[36px]"
                           placeholder="Keterangan tambahan (cth: Segel utuh, fragile, warna merah)..."
                         />
                       </div>

@@ -212,7 +212,7 @@ export default async function AdminLogsPage(props: {
         </div>
 
         {logs.length === 0 ? (
-          <div className="p-12 text-center">
+          <div className="p-6 sm:p-12 text-center">
             <ClipboardDocumentListIcon className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
             <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{tLogs("emptyLogs")}</p>
             <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{tLogs("emptyLogsDesc")}</p>
@@ -294,7 +294,7 @@ export default async function AdminLogsPage(props: {
                 searchQuery ? `&q=${encodeURIComponent(searchQuery)}` : ""
               }${eventFilter ? `&event=${encodeURIComponent(eventFilter)}` : ""}`}
               prefetch={true}
-              className={`px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold transition-colors shadow-2xs min-h-[38px] flex items-center ${
+              className={`px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold transition-colors shadow-2xs min-h-[44px] sm:min-h-[38px] flex items-center ${
                 currentPage <= 1
                   ? "pointer-events-none opacity-40 bg-slate-50 dark:bg-slate-800 text-slate-400"
                   : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"
@@ -312,7 +312,7 @@ export default async function AdminLogsPage(props: {
                 searchQuery ? `&q=${encodeURIComponent(searchQuery)}` : ""
               }${eventFilter ? `&event=${encodeURIComponent(eventFilter)}` : ""}`}
               prefetch={true}
-              className={`px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold transition-colors shadow-2xs min-h-[38px] flex items-center ${
+              className={`px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold transition-colors shadow-2xs min-h-[44px] sm:min-h-[38px] flex items-center ${
                 currentPage >= totalPages
                   ? "pointer-events-none opacity-40 bg-slate-50 dark:bg-slate-800 text-slate-400"
                   : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"

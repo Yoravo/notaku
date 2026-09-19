@@ -138,7 +138,7 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-700 dark:hover:text-slate-200 transition-colors cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
+            className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-700 dark:hover:text-slate-200 transition-colors cursor-pointer min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[36px] flex items-center justify-center"
           >
             <XMarkIcon className="w-5 h-5" />
           </button>
@@ -200,13 +200,13 @@ export function UpgradeModal({ onClose }: { onClose: () => void }) {
                 value={inputCode}
                 onChange={(e) => setInputCode(e.target.value.toUpperCase())}
                 placeholder={t("voucherPlaceholder")}
-                className="flex-1 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-1.5 text-xs font-mono font-bold tracking-wider uppercase placeholder:text-gray-400 dark:placeholder:text-slate-500 text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:ring-1 focus:ring-[#0f6b4f] min-h-[38px]"
+                className="flex-1 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-1.5 text-xs font-mono font-bold tracking-wider uppercase placeholder:text-gray-400 dark:placeholder:text-slate-500 text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:ring-1 focus:ring-[#0f6b4f] min-h-[44px] sm:min-h-[38px]"
               />
               <button
                 type="button"
                 onClick={handleApplyPromo}
                 disabled={validatingPromo || !inputCode.trim()}
-                className="rounded-lg bg-slate-900 dark:bg-slate-800 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-slate-800 dark:hover:bg-slate-700 disabled:opacity-50 transition-colors cursor-pointer flex items-center gap-1 min-h-[38px]"
+                className="rounded-lg bg-slate-900 dark:bg-slate-800 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-slate-800 dark:hover:bg-slate-700 disabled:opacity-50 transition-colors cursor-pointer flex items-center gap-1 min-h-[44px] sm:min-h-[38px]"
               >
                 {validatingPromo ? (
                   <ArrowPathIcon className="w-3.5 h-3.5 animate-spin" />

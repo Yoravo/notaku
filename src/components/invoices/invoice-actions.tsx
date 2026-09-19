@@ -137,7 +137,7 @@ export function InvoiceActions({
           onClick={() => setDropdownOpen(!dropdownOpen)}
           disabled={busy}
           aria-label={tInv("moreActions")}
-          className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer shadow-2xs disabled:opacity-50 min-h-[38px] min-w-[38px] flex items-center justify-center"
+          className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer shadow-2xs disabled:opacity-50 min-h-[44px] min-w-[44px] sm:min-h-[38px] sm:min-w-[38px] flex items-center justify-center"
         >
           <EllipsisVerticalIcon className="w-4 h-4" />
         </button>

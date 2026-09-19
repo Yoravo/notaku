@@ -5,7 +5,7 @@ import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { getTranslations } from "next-intl/server";
 
 export const metadata: Metadata = {
-  title: "Reset Kata Sandi — NotaKu",
+  title: "Reset Kata Sandi",
   description: "Buat kata sandi baru untuk akun NotaKu Anda.",
   robots: {
     index: false,

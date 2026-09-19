@@ -811,7 +811,7 @@
     "apiDocsTitle": "Dokumentasi Singkat REST API v1",
     "apiDocsBaseUrl": "Base URL:",
     "apiDocsAuthHeader": "Header Otentikasi:",
-    "apiDocsInvoiceEndpoint": "POST /api/v1/invoices — Buat Invoice Baru",
+    "apiDocsInvoiceEndpoint": "POST /api/v1/invoices · Buat Invoice Baru",
     "createKeyFailed": "Gagal membuat API Key",
     "deleteKeyFailed": "Gagal menghapus API Key",
     "createWebhookFailed": "Gagal mendaftarkan webhook",

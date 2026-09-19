@@ -349,7 +349,7 @@ function RegisterForm() {
             <Link
               href="/login"
               prefetch={true}
-              className="text-[#0f6b4f] font-bold hover:underline min-h-[32px] inline-flex items-center cursor-pointer"
+              className="text-[#0f6b4f] font-bold hover:underline min-h-[44px] sm:min-h-[32px] inline-flex items-center cursor-pointer"
             >
               {tAuth("signInLink")}
             </Link>

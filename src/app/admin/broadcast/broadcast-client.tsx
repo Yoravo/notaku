@@ -162,7 +162,7 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
             </div>
 
             {/* Newsletter Opt-in checkbox */}
-            <label className="flex items-center gap-2 mt-3 text-xs text-slate-600 dark:text-slate-300 cursor-pointer min-h-[32px]">
+            <label className="flex items-center gap-2 mt-3 text-xs text-slate-600 dark:text-slate-300 cursor-pointer min-h-[44px] sm:min-h-[32px]">
               <input
                 type="checkbox"
                 checked={respectOptIn}

@@ -21,7 +21,7 @@ export async function generateMetadata({
     },
   });
 
-  if (!invoice) return { title: "Invoice Tidak Ditemukan — NotaKu" };
+  if (!invoice) return { title: "Invoice Tidak Ditemukan" };
 
   const currency = (invoice as any).currency || "IDR";
   const businessName = invoice.user.businessName || invoice.user.name;
@@ -35,8 +35,8 @@ export async function generateMetadata({
     CANCELLED: "Dibatalkan",
   };
 
-  const title = `Invoice ${invoice.number} — ${businessName}`;
-  const description = `${statusLabel[invoice.status] || invoice.status} — ${businessName} menagih ${invoice.customer.name} sebesar ${totalFormatted}.`;
+  const title = `Invoice ${invoice.number} · ${businessName}`;
+  const description = `${statusLabel[invoice.status] || invoice.status} · ${businessName} menagih ${invoice.customer.name} sebesar ${totalFormatted}.`;
 
   return {
     title,

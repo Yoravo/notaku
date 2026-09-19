@@ -150,7 +150,7 @@ export function SignaturePadModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-700 dark:hover:text-slate-200 transition-colors cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
+            className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-700 dark:hover:text-slate-200 transition-colors cursor-pointer min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[36px] flex items-center justify-center"
           >
             <XMarkIcon className="w-5 h-5" />
           </button>
@@ -195,7 +195,7 @@ export function SignaturePadModal({
                 key={st.val}
                 type="button"
                 onClick={() => setStrokeWidth(st.val)}
-                className={`px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer min-h-[32px] ${
+                className={`px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer min-h-[44px] sm:min-h-[32px] ${
                   strokeWidth === st.val
                     ? "bg-[#0f6b4f] text-white shadow-xs"
                     : "bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 border border-gray-200 dark:border-slate-700"

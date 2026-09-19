@@ -248,7 +248,7 @@ export function PortalClient({
               <button
                 type="button"
                 onClick={() => setActiveTab("ALL")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap min-h-[36px] ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap min-h-[44px] sm:min-h-[36px] ${
                   activeTab === "ALL"
                     ? "bg-white text-slate-900 shadow-2xs"
                     : "text-slate-600 hover:text-slate-900"
@@ -259,7 +259,7 @@ export function PortalClient({
               <button
                 type="button"
                 onClick={() => setActiveTab("UNPAID")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap min-h-[36px] ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap min-h-[44px] sm:min-h-[36px] ${
                   activeTab === "UNPAID"
                     ? "bg-white text-amber-900 shadow-2xs"
                     : "text-slate-600 hover:text-slate-900"
@@ -270,7 +270,7 @@ export function PortalClient({
               <button
                 type="button"
                 onClick={() => setActiveTab("PAID")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap min-h-[36px] ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap min-h-[44px] sm:min-h-[36px] ${
                   activeTab === "PAID"
                     ? "bg-white text-[#0f6b4f] shadow-2xs"
                     : "text-slate-600 hover:text-slate-900"
@@ -354,7 +354,7 @@ export function PortalClient({
                               })}
                             </span>
                           ) : (
-                            <span className="text-slate-400">—</span>
+                            <span className="text-slate-400">-</span>
                           )}
                         </td>
 

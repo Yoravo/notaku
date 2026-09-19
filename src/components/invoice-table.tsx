@@ -62,7 +62,7 @@ export function InvoiceTable({ invoices }: InvoiceTableProps) {
                     prefetch={true}
                     className="font-mono text-xs font-bold text-slate-900 dark:text-white group-hover:text-[#0f6b4f] dark:group-hover:text-emerald-400 transition-colors"
                   >
-                    {inv.number || "—"}
+                    {inv.number || "-"}
                   </Link>
                 </td>
                 <td className="px-5 py-3.5 font-medium text-slate-900 dark:text-white">

@@ -104,7 +104,7 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
               <p className="text-xs sm:text-sm font-semibold leading-relaxed">{message}</p>
             </div>
             {linkText && linkUrl && (
-              <span className="text-xs font-bold underline shrink-0 cursor-pointer self-start sm:self-auto min-h-[32px] inline-flex items-center">
+              <span className="text-xs font-bold underline shrink-0 cursor-pointer self-start sm:self-auto min-h-[44px] sm:min-h-[32px] inline-flex items-center">
                 {linkText} &rarr;
               </span>
             )}
@@ -208,7 +208,7 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
           <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
             {tAdmin("typeLabel")}
           </label>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
               {
                 id: "info",

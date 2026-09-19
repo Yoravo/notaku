@@ -6,7 +6,7 @@ import { WalletClient } from "./wallet-client";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Saldo & Penarikan Dana — NotaKu",
+  title: "Saldo & Penarikan Dana",
 };
 
 export default async function WalletPage() {

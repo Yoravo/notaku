@@ -141,7 +141,7 @@ export function WalletClient({
         <div className="flex border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-1.5 shadow-2xs">
           <button
             onClick={() => setActiveTab("transactions")}
-            className={`py-2 px-4 text-xs font-bold rounded-xl transition-all cursor-pointer min-h-[38px] ${
+            className={`py-2 px-4 text-xs font-bold rounded-xl transition-all cursor-pointer min-h-[44px] sm:min-h-[38px] ${
               activeTab === "transactions"
                 ? "bg-[#0f6b4f]/10 dark:bg-emerald-500/20 text-[#0f6b4f] dark:text-emerald-400 border border-[#0f6b4f]/20 dark:border-emerald-500/30 shadow-2xs"
                 : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
@@ -151,7 +151,7 @@ export function WalletClient({
           </button>
           <button
             onClick={() => setActiveTab("payouts")}
-            className={`py-2 px-4 text-xs font-bold rounded-xl transition-all cursor-pointer min-h-[38px] ${
+            className={`py-2 px-4 text-xs font-bold rounded-xl transition-all cursor-pointer min-h-[44px] sm:min-h-[38px] ${
               activeTab === "payouts"
                 ? "bg-[#0f6b4f]/10 dark:bg-emerald-500/20 text-[#0f6b4f] dark:text-emerald-400 border border-[#0f6b4f]/20 dark:border-emerald-500/30 shadow-2xs"
                 : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
@@ -165,7 +165,7 @@ export function WalletClient({
         {activeTab === "transactions" && (
           <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-2xs">
             {transactions.length === 0 ? (
-              <div className="p-12 text-center text-xs text-slate-500 dark:text-slate-400 font-medium">
+              <div className="p-6 sm:p-12 text-center text-xs text-slate-500 dark:text-slate-400 font-medium">
                 {tWallet("emptyTransactions")}
               </div>
             ) : (
@@ -240,7 +240,7 @@ export function WalletClient({
         {activeTab === "payouts" && (
           <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-2xs">
             {payouts.length === 0 ? (
-              <div className="p-12 text-center text-xs text-slate-500 dark:text-slate-400 font-medium">
+              <div className="p-6 sm:p-12 text-center text-xs text-slate-500 dark:text-slate-400 font-medium">
                 {tWallet("emptyPayouts")}
               </div>
             ) : (

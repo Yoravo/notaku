@@ -4,7 +4,7 @@ import { AdminInvoicesClient } from "./admin-invoices-client";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Monitoring Seluruh Invoice — Admin NotaKu",
+  title: "Monitoring Seluruh Invoice",
 };
 
 export const dynamic = "force-dynamic";

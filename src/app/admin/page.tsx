@@ -3,7 +3,7 @@ import { AdminOverviewClient, type AdminOverviewData } from "./admin-overview-cl
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Admin & Analytics Center — NotaKu",
+  title: "Admin & Analytics Center",
 };
 
 export const dynamic = "force-dynamic";

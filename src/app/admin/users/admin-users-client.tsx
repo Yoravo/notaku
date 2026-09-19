@@ -271,7 +271,7 @@ export function AdminUsersClient({
                   href={`/admin/users?q=${searchQuery}&plan=${planFilter}&role=${roleFilter}&page=${
                     currentPage - 1
                   }`}
-                  className="px-3.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 font-bold text-slate-700 dark:text-slate-200 shadow-2xs transition-colors min-h-[36px] inline-flex items-center"
+                  className="px-3.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 font-bold text-slate-700 dark:text-slate-200 shadow-2xs transition-colors min-h-[44px] sm:min-h-[36px] inline-flex items-center"
                 >
                   {tAdmin("paginationPrev")}
                 </Link>

@@ -76,7 +76,7 @@ export async function generateMetadata({
 
   if (!customer) {
     return {
-      title: "Portal Tagihan Klien — NotaKu",
+      title: "Portal Tagihan Klien",
     };
   }
 
@@ -85,8 +85,8 @@ export async function generateMetadata({
 
   const title =
     portalLocale === "en"
-      ? `Client Billing Portal for ${customer.name} — ${sellerName}`
-      : `Portal Tagihan ${customer.name} — ${sellerName}`;
+      ? `Client Billing Portal for ${customer.name} · ${sellerName}`
+      : `Portal Tagihan ${customer.name} · ${sellerName}`;
 
   const description =
     portalLocale === "en"

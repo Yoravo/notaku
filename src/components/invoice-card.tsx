@@ -33,7 +33,7 @@ export function InvoiceCard({ invoice }: InvoiceCardProps) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <span className="font-mono text-xs font-bold text-slate-900 dark:text-white group-hover:text-[#0f6b4f] dark:group-hover:text-emerald-400 transition-colors truncate">
-                {invoice.number || "—"}
+                {invoice.number || "-"}
               </span>
             </div>
             <p className="text-xs text-slate-600 dark:text-slate-300 font-medium mt-1 truncate">

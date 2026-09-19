@@ -239,7 +239,7 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
 
         <div className="flex-1 overflow-x-auto">
           {promos.length === 0 ? (
-            <div className="p-12 text-center">
+            <div className="p-6 sm:p-12 text-center">
               <TagIcon className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
               <p className="text-sm font-bold text-slate-700 dark:text-slate-300">
                 {tAdmin("emptyPromos")}
@@ -311,7 +311,7 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
                     <td className="py-3.5 px-4 text-right">
                       <button
                         onClick={() => handleToggleStatus(p)}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-colors shadow-2xs min-h-[36px] ${
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-colors shadow-2xs min-h-[44px] sm:min-h-[36px] ${
                           p.isActive
                             ? "bg-slate-100 text-slate-600 hover:bg-slate-200"
                             : "bg-emerald-50 text-[#0f6b4f] hover:bg-emerald-100 border border-emerald-200/60"

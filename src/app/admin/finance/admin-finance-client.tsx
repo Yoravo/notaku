@@ -170,7 +170,7 @@ export function AdminFinanceClient({
             <span>{tAdmin("paidInvoices")}</span>
           </h2>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="p-4 rounded-xl bg-emerald-50/40 dark:bg-emerald-950/30 border border-emerald-200/60 dark:border-emerald-800 shadow-2xs">
               <p className="text-[11px] text-[#0f6b4f] dark:text-emerald-400 font-bold uppercase tracking-wider">
                 {tAdmin("thisMonth")}

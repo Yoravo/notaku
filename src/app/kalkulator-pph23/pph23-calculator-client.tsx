@@ -165,7 +165,7 @@ Dihitung via Kalkulator Pajak NotaKu (notaku.store/kalkulator-pph23)`;
                 <button
                   type="button"
                   onClick={() => setPpnRate(11)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer min-h-[36px] ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer min-h-[44px] sm:min-h-[36px] ${
                     ppnRate === 11 ? "bg-emerald text-white" : "bg-white dark:bg-slate-900 border border-line dark:border-slate-700 text-ink-soft"
                   }`}
                 >
@@ -174,7 +174,7 @@ Dihitung via Kalkulator Pajak NotaKu (notaku.store/kalkulator-pph23)`;
                 <button
                   type="button"
                   onClick={() => setPpnRate(12)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer min-h-[36px] ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer min-h-[44px] sm:min-h-[36px] ${
                     ppnRate === 12 ? "bg-emerald text-white" : "bg-white dark:bg-slate-900 border border-line dark:border-slate-700 text-ink-soft"
                   }`}
                 >
@@ -193,7 +193,7 @@ Dihitung via Kalkulator Pajak NotaKu (notaku.store/kalkulator-pph23)`;
               <button
                 type="button"
                 onClick={handleCopySummary}
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-200 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg transition-colors cursor-pointer min-h-[36px]"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-200 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg transition-colors cursor-pointer min-h-[44px] sm:min-h-[36px]"
               >
                 {copied ? <CheckIcon className="w-3.5 h-3.5 text-emerald-400" /> : <DocumentDuplicateIcon className="w-3.5 h-3.5" />}
                 <span>{copied ? "Tersalin!" : "Salin Hasil"}</span>

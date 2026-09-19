@@ -307,7 +307,7 @@ export function ReferralsClient({
         </div>
 
         {stats.friends.length === 0 ? (
-          <div className="py-12 px-4 text-center">
+          <div className="py-8 px-4 sm:py-12 text-center">
             <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
               <UsersIcon className="w-6 h-6" />
             </div>

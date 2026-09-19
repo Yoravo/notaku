@@ -4,7 +4,7 @@ import { AdminPayoutsClient } from "./admin-payouts-client";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Kelola Penarikan Dana (Payouts) — Admin NotaKu",
+  title: "Kelola Penarikan Dana (Payouts)",
 };
 
 export const dynamic = "force-dynamic";

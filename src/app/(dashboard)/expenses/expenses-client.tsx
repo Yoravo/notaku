@@ -186,7 +186,7 @@ export function ExpensesClient({
           <button
             type="button"
             onClick={() => applyFilters("")}
-            className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-colors min-h-[36px] cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-colors min-h-[44px] sm:min-h-[36px] cursor-pointer ${
               !categoryFilter
                 ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900"
                 : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
@@ -202,7 +202,7 @@ export function ExpensesClient({
                 key={cat}
                 type="button"
                 onClick={() => applyFilters(cat)}
-                className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-colors min-h-[36px] cursor-pointer ${
+                className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-colors min-h-[44px] sm:min-h-[36px] cursor-pointer ${
                   isSelected
                     ? "bg-rose-600 text-white"
                     : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
@@ -281,7 +281,7 @@ export function ExpensesClient({
                         <div className="inline-flex items-center gap-1">
                           <button
                             onClick={() => openEditModal(ex)}
-                            className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center cursor-pointer"
+                            className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors min-h-[44px] sm:min-h-[36px] min-w-[36px] flex items-center justify-center cursor-pointer"
                             title="Edit"
                           >
                             <PencilSquareIcon className="w-4 h-4" />
@@ -289,7 +289,7 @@ export function ExpensesClient({
                           <button
                             onClick={() => handleDelete(ex.id, ex.title)}
                             disabled={isDeleting === ex.id}
-                            className="p-1.5 rounded-lg text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center cursor-pointer disabled:opacity-50"
+                            className="p-1.5 rounded-lg text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 transition-colors min-h-[44px] sm:min-h-[36px] min-w-[36px] flex items-center justify-center cursor-pointer disabled:opacity-50"
                             title="Hapus"
                           >
                             <TrashIcon className="w-4 h-4" />

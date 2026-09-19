@@ -4,7 +4,7 @@ import { AdminUsersClient } from "./admin-users-client";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Manajemen Pengguna — Admin NotaKu",
+  title: "Manajemen Pengguna",
 };
 
 export const dynamic = "force-dynamic";

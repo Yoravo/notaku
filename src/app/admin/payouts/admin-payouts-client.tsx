@@ -141,7 +141,7 @@ export function AdminPayoutsClient({
       {/* Payouts Table */}
       <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-2xs">
         {filteredPayouts.length === 0 ? (
-          <div className="p-12 text-center text-xs text-slate-500 dark:text-slate-400 font-medium">
+          <div className="p-6 sm:p-12 text-center text-xs text-slate-500 dark:text-slate-400 font-medium">
             {tAdmin("emptyPayouts")}
           </div>
         ) : (
@@ -205,7 +205,7 @@ export function AdminPayoutsClient({
                       </td>
                       <td className="px-4 py-3.5">
                         <p className="font-bold text-slate-900 dark:text-white">
-                          {p.bankName} — <span className="font-mono">{p.accountNumber}</span>
+                          {p.bankName} · <span className="font-mono">{p.accountNumber}</span>
                         </p>
                         <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                           a/n {p.accountName}
@@ -239,7 +239,7 @@ export function AdminPayoutsClient({
                               onClick={() => handleOpenConfirm(p, "COMPLETED")}
                               disabled={processingId === p.id}
                               title={tAdmin("approveBtn")}
-                              className="inline-flex items-center gap-1 rounded-xl bg-[#0f6b4f] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#0c553e] disabled:opacity-50 transition-all cursor-pointer shadow-2xs min-h-[36px]"
+                              className="inline-flex items-center gap-1 rounded-xl bg-[#0f6b4f] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#0c553e] disabled:opacity-50 transition-all cursor-pointer shadow-2xs min-h-[44px] sm:min-h-[36px]"
                             >
                               <CheckCircleIcon className="h-3.5 w-3.5" />
                               <span>{tAdmin("tabCompleted")}</span>
@@ -248,7 +248,7 @@ export function AdminPayoutsClient({
                               onClick={() => handleOpenConfirm(p, "REJECTED")}
                               disabled={processingId === p.id}
                               title={tAdmin("rejectBtn")}
-                              className="inline-flex items-center gap-1 rounded-xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200/60 dark:border-rose-900 px-3 py-1.5 text-xs font-bold text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-900/60 disabled:opacity-50 transition-all cursor-pointer shadow-2xs min-h-[36px]"
+                              className="inline-flex items-center gap-1 rounded-xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200/60 dark:border-rose-900 px-3 py-1.5 text-xs font-bold text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-900/60 disabled:opacity-50 transition-all cursor-pointer shadow-2xs min-h-[44px] sm:min-h-[36px]"
                             >
                               <XCircleIcon className="h-3.5 w-3.5" />
                               <span>{tAdmin("rejectBtn")}</span>

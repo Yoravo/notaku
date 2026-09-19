@@ -6,7 +6,8 @@ import {
   TruckIcon,
   CalculatorIcon,
   LanguageIcon,
-  SparklesIcon,
+  SwatchIcon,
+  CheckCircleIcon,
   ArrowRightIcon,
   BuildingOffice2Icon,
 } from "@heroicons/react/24/outline";
@@ -104,7 +105,7 @@ export default async function ToolsHubPage() {
       title: "Katalog Template Invoice",
       desc: "Contoh format tagihan terstruktur khusus untuk freelance, desainer grafis, web developer, katering, bengkel, kost, dan kontraktor.",
       href: "/templates",
-      icon: SparklesIcon,
+      icon: SwatchIcon,
       tag: "Inspirasi & Desain",
     },
   ];
@@ -118,7 +119,7 @@ export default async function ToolsHubPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <div className="text-center max-w-3xl mx-auto mb-14">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold mb-3">
-            <SparklesIcon className="w-4 h-4" />
+            <CheckCircleIcon className="w-4 h-4 text-emerald-600" />
             100% Gratis • Tanpa Login • Siap Pakai Kapan Saja
           </div>
           <h1 className="text-3xl sm:text-5xl font-extrabold text-ink tracking-tight mb-4">
@@ -163,7 +164,7 @@ export default async function ToolsHubPage() {
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-line dark:border-slate-800 flex items-center justify-between text-xs font-bold text-emerald dark:text-emerald-400 min-h-[36px]">
+                <div className="mt-6 pt-4 border-t border-line dark:border-slate-800 flex items-center justify-between text-xs font-bold text-emerald dark:text-emerald-400 min-h-[44px] sm:min-h-[36px]">
                   <span>Gunakan Alat Sekarang</span>
                   <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </div>

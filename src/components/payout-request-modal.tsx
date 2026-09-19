@@ -82,7 +82,7 @@ export function PayoutRequestModal({
       />
 
       {/* Modal Card */}
-      <div className="relative w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 p-6 shadow-2xl border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 z-10 space-y-4">
+      <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl bg-white dark:bg-slate-900 p-6 shadow-2xl border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 z-10 space-y-4">
         <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800 shadow-2xs">
@@ -104,7 +104,7 @@ export function PayoutRequestModal({
             type="button"
             onClick={onClose}
             disabled={isLoading}
-            className="p-1.5 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 transition-colors cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
+            className="p-1.5 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 transition-colors cursor-pointer min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[36px] flex items-center justify-center"
           >
             <XMarkIcon className="w-5 h-5" />
           </button>
@@ -153,7 +153,7 @@ export function PayoutRequestModal({
                 {tWallet("destinationAccountBox")}
               </p>
               <p className="font-bold text-slate-900 dark:text-white text-sm">
-                {bankName} — <span className="font-mono">{bankAccountNumber}</span>
+                {bankName} · <span className="font-mono">{bankAccountNumber}</span>
               </p>
               <p className="text-slate-500 dark:text-slate-400 font-medium">a/n {bankAccountName}</p>
             </div>
@@ -183,7 +183,7 @@ export function PayoutRequestModal({
                 <button
                   type="button"
                   onClick={() => setAmount(balance)}
-                  className="font-bold text-[#0f6b4f] dark:text-emerald-400 hover:underline cursor-pointer min-h-[32px] inline-flex items-center"
+                  className="font-bold text-[#0f6b4f] dark:text-emerald-400 hover:underline cursor-pointer min-h-[44px] sm:min-h-[32px] inline-flex items-center"
                 >
                   {tWallet("withdrawAll")}
                 </button>

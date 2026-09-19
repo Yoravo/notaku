@@ -6,7 +6,7 @@ import { ReferralsClient } from "./referrals-client";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Program Referral & Afiliasi — NotaKu",
+  title: "Program Referral & Afiliasi",
 };
 
 export const dynamic = "force-dynamic";

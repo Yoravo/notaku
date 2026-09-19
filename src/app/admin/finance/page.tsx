@@ -4,7 +4,7 @@ import { AdminFinanceClient } from "./admin-finance-client";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Laporan Finansial & Metrik SaaS — Admin NotaKu",
+  title: "Laporan Finansial & Metrik SaaS",
 };
 
 export const dynamic = "force-dynamic";

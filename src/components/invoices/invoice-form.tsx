@@ -338,7 +338,7 @@ export function InvoiceForm({
                   <button
                     type="button"
                     onClick={() => removeItem(index)}
-                    className="text-xs text-rose-600 hover:text-rose-700 font-semibold cursor-pointer inline-flex items-center gap-1 min-h-[36px] px-2"
+                    className="text-xs text-rose-600 hover:text-rose-700 font-semibold cursor-pointer inline-flex items-center gap-1 min-h-[44px] sm:min-h-[36px] px-2"
                   >
                     <TrashIcon className="w-3.5 h-3.5" />
                     <span>{tInv("delete")}</span>
@@ -353,7 +353,7 @@ export function InvoiceForm({
                 }
                 className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] min-h-[44px]"
               />
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div>
                   <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">
                     {tInv("quantityLabel")}
@@ -467,7 +467,7 @@ export function InvoiceForm({
                   type="button"
                   onClick={() => removeItem(index)}
                   disabled={items.length === 1}
-                  className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-xl transition-colors cursor-pointer disabled:opacity-20 disabled:cursor-not-allowed min-h-[36px] min-w-[36px] inline-flex items-center justify-center"
+                  className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-xl transition-colors cursor-pointer disabled:opacity-20 disabled:cursor-not-allowed min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[36px] inline-flex items-center justify-center"
                   title={tInv("removeItem")}
                 >
                   <TrashIcon className="h-4 w-4" />
@@ -521,7 +521,7 @@ export function InvoiceForm({
               <button
                 type="button"
                 onClick={() => setShowCatalogPicker(false)}
-                className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
+                className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[36px] flex items-center justify-center"
               >
                 <XMarkIcon className="w-5 h-5" />
               </button>
@@ -667,7 +667,7 @@ export function InvoiceForm({
                     key={pct}
                     type="button"
                     onClick={() => setDiscountValue(pct)}
-                    className={`rounded-lg px-2.5 py-1 text-xs font-semibold border transition-all cursor-pointer min-h-[32px] ${
+                    className={`rounded-lg px-2.5 py-1 text-xs font-semibold border transition-all cursor-pointer min-h-[44px] sm:min-h-[32px] ${
                       discountValue === pct
                         ? "bg-[#0f6b4f] text-white border-[#0f6b4f]"
                         : "bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700"
@@ -693,7 +693,7 @@ export function InvoiceForm({
                 key={String(preset.value)}
                 type="button"
                 onClick={() => setSelectedTaxMode(preset.value)}
-                className={`rounded-xl px-3.5 py-2 text-xs font-bold border transition-all cursor-pointer min-h-[38px] ${
+                className={`rounded-xl px-3.5 py-2 text-xs font-bold border transition-all cursor-pointer min-h-[44px] sm:min-h-[38px] ${
                   selectedTaxMode === preset.value
                     ? "bg-[#0f6b4f]/10 dark:bg-emerald-500/20 border-[#0f6b4f]/30 dark:border-emerald-500/40 text-[#0f6b4f] dark:text-emerald-400 shadow-2xs"
                     : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"

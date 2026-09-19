@@ -342,7 +342,7 @@ export function FreeInvoiceGeneratorClient({ session }: { session?: any }) {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <div>
                     <label className="block text-[11px] font-medium text-ink-soft mb-1">
                       Email
@@ -405,7 +405,7 @@ export function FreeInvoiceGeneratorClient({ session }: { session?: any }) {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <div>
                     <label className="block text-[11px] font-medium text-ink-soft mb-1">
                       Email Klien
@@ -511,7 +511,7 @@ export function FreeInvoiceGeneratorClient({ session }: { session?: any }) {
                         onClick={() => handleRemoveItem(item.id)}
                         disabled={items.length <= 1}
                         aria-label="Hapus Baris"
-                        className="p-2 text-ink-soft hover:text-rose-600 disabled:opacity-30 transition-colors cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center rounded-lg"
+                        className="p-2 text-ink-soft hover:text-rose-600 disabled:opacity-30 transition-colors cursor-pointer min-h-[44px] sm:min-h-[36px] min-w-[36px] flex items-center justify-center rounded-lg"
                       >
                         <TrashIcon className="w-4 h-4" />
                       </button>

@@ -145,7 +145,7 @@ export function ItemsClient({
                 <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                   <button
                     onClick={() => openEditModal(item)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center cursor-pointer"
+                    className="p-1.5 rounded-lg text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400 transition-colors min-h-[44px] sm:min-h-[36px] min-w-[36px] flex items-center justify-center cursor-pointer"
                     title="Edit Item"
                   >
                     <PencilSquareIcon className="w-4 h-4" />
@@ -153,7 +153,7 @@ export function ItemsClient({
                   <button
                     onClick={() => handleDelete(item.id, item.name)}
                     disabled={isDeleting === item.id}
-                    className="p-1.5 rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center cursor-pointer disabled:opacity-50"
+                    className="p-1.5 rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400 transition-colors min-h-[44px] sm:min-h-[36px] min-w-[36px] flex items-center justify-center cursor-pointer disabled:opacity-50"
                     title="Hapus Item"
                   >
                     <TrashIcon className="w-4 h-4" />

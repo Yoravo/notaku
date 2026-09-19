@@ -13,14 +13,14 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("system");
+  const [theme, setThemeState] = useState<Theme>("light");
   const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light");
   const [mounted, setMounted] = useState(false);
 
   // Inisialisasi tema dari localStorage saat mounted
   useEffect(() => {
     setMounted(true);
-    const savedTheme = (localStorage.getItem("notaku_theme") as Theme) || "system";
+    const savedTheme = (localStorage.getItem("notaku_theme") as Theme) || "light";
     setThemeState(savedTheme);
   }, []);
 

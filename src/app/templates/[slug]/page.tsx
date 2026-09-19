@@ -35,7 +35,7 @@ export async function generateMetadata({
 
   if (!template) {
     return {
-      title: "Template Invoice Tidak Ditemukan — NotaKu",
+      title: "Template Invoice Tidak Ditemukan",
     };
   }
 

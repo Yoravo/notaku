@@ -6,7 +6,7 @@ import { NewRecurringInvoiceClient } from "./new-recurring-invoice-client";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Buat Tagihan Berulang Baru — NotaKu",
+  title: "Buat Tagihan Berulang Baru",
 };
 
 export const dynamic = "force-dynamic";

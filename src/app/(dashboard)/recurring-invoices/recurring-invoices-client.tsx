@@ -276,7 +276,7 @@ export function RecurringInvoicesClient({
                         {tRec("customer")}
                       </span>
                       <span className="font-semibold text-slate-900 dark:text-white">
-                        {item.customer?.name || "—"}
+                        {item.customer?.name || "-"}
                       </span>
                     </div>
 
@@ -312,7 +312,7 @@ export function RecurringInvoicesClient({
                         {tRec("lastRun")}
                       </span>
                       <p className="font-medium text-slate-600 dark:text-slate-400">
-                        {item.lastRunDate ? formatDateWIB(new Date(item.lastRunDate)) : "—"}
+                        {item.lastRunDate ? formatDateWIB(new Date(item.lastRunDate)) : "-"}
                       </p>
                     </div>
                   </div>
@@ -324,7 +324,7 @@ export function RecurringInvoicesClient({
                     type="button"
                     onClick={() => handleRunNow(item.id, item.title)}
                     disabled={isItemLoading}
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 px-3 py-1.5 text-xs font-bold text-[#0f6b4f] dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition-colors disabled:opacity-50 cursor-pointer min-h-[36px]"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 px-3 py-1.5 text-xs font-bold text-[#0f6b4f] dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition-colors disabled:opacity-50 cursor-pointer min-h-[44px] sm:min-h-[36px]"
                   >
                     <PlayIcon className="w-3.5 h-3.5" />
                     <span>{tRec("runNow")}</span>
@@ -336,7 +336,7 @@ export function RecurringInvoicesClient({
                         type="button"
                         onClick={() => handleStatusChange(item.id, "PAUSED", item.title)}
                         disabled={isItemLoading}
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/50 transition-colors disabled:opacity-50 cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/50 transition-colors disabled:opacity-50 cursor-pointer min-h-[44px] sm:min-h-[36px] min-w-[36px] flex items-center justify-center"
                         title={tRec("pauseSchedule")}
                       >
                         <PauseIcon className="w-4 h-4" />
@@ -346,7 +346,7 @@ export function RecurringInvoicesClient({
                         type="button"
                         onClick={() => handleStatusChange(item.id, "ACTIVE", item.title)}
                         disabled={isItemLoading}
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 transition-colors disabled:opacity-50 cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 transition-colors disabled:opacity-50 cursor-pointer min-h-[44px] sm:min-h-[36px] min-w-[36px] flex items-center justify-center"
                         title={tRec("resumeSchedule")}
                       >
                         <PlayIcon className="w-4 h-4" />
@@ -357,7 +357,7 @@ export function RecurringInvoicesClient({
                       type="button"
                       onClick={() => handleStatusChange(item.id, "CANCELLED", item.title)}
                       disabled={isItemLoading}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors disabled:opacity-50 cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors disabled:opacity-50 cursor-pointer min-h-[44px] sm:min-h-[36px] min-w-[36px] flex items-center justify-center"
                       title={tRec("deleteSchedule")}
                     >
                       <TrashIcon className="w-4 h-4" />

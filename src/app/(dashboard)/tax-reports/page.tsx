@@ -7,7 +7,7 @@ import { SupportedCurrency } from "@/lib/currencies";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Rekap Laporan Pajak & Omset — NotaKu",
+  title: "Rekap Laporan Pajak & Omset",
 };
 
 export const dynamic = "force-dynamic";

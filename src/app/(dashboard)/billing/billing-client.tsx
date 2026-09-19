@@ -297,7 +297,7 @@ export function BillingClient({
                 <td className="py-3 px-3 font-medium text-slate-900">
                   {tBilling("digitalSignatureStamp")}
                 </td>
-                <td className="py-3 px-3 text-center text-slate-400">—</td>
+                <td className="py-3 px-3 text-center text-slate-400">-</td>
                 <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] bg-emerald-50/50 rounded-b-lg">
                   {tBilling("available")}
                 </td>

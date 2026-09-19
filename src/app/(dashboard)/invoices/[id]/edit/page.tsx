@@ -6,7 +6,7 @@ import { EditInvoiceClient } from "./edit-invoice-client";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Edit Invoice — NotaKu",
+  title: "Edit Invoice",
 };
 
 export const dynamic = "force-dynamic";

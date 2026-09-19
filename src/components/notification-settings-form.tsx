@@ -235,7 +235,7 @@ export function NotificationSettingsForm({
                 type="button"
                 onClick={handleTestTelegram}
                 disabled={isTestingTelegram}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 hover:bg-sky-100 dark:hover:bg-sky-900/60 text-xs font-bold border border-sky-200 dark:border-sky-800 transition-colors cursor-pointer disabled:opacity-50 min-h-[38px]"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 hover:bg-sky-100 dark:hover:bg-sky-900/60 text-xs font-bold border border-sky-200 dark:border-sky-800 transition-colors cursor-pointer disabled:opacity-50 min-h-[44px] sm:min-h-[38px]"
               >
                 {isTestingTelegram ? (
                   <ArrowPathIcon className="w-3.5 h-3.5 animate-spin" />
@@ -319,7 +319,7 @@ export function NotificationSettingsForm({
                 type="button"
                 onClick={handleTestDiscord}
                 disabled={isTestingDiscord}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-xs font-bold border border-indigo-200 dark:border-indigo-800 transition-colors cursor-pointer disabled:opacity-50 min-h-[38px]"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-xs font-bold border border-indigo-200 dark:border-indigo-800 transition-colors cursor-pointer disabled:opacity-50 min-h-[44px] sm:min-h-[38px]"
               >
                 {isTestingDiscord ? (
                   <ArrowPathIcon className="w-3.5 h-3.5 animate-spin" />
