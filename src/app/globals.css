@@ -274,3 +274,93 @@
     background-color: #ffffff !important;
   }
 
+  /* 7. Colored Tint Harmonization (Badge, Pill, Metric Chip)
+     Banyak badge status memakai tint terang (bg-*-50, text-*-700, border-*-200)
+     tanpa varian dark eksplisit, sehingga nyaru / silau di latar gelap.
+     Selektor [class~="..."] mencocokkan token kelas UTUH agar bg-emerald-50
+     TIDAK ikut match bg-emerald-500 (warna solid chart tetap utuh).
+     Opacity variant (mis. bg-emerald-50/60) selalu dipasangkan dark:* di komponen,
+     jadi tidak perlu ditangani di sini. Guard :not([class*="dark:..."]) tetap
+     menghormati varian dark lokal (CLAUDE.md #35). */
+
+  /* 7a. Emerald / Green (brand & sukses) */
+  .dark [class~="bg-emerald-50"]:not([class*="dark:bg-"]),
+  .dark [class~="bg-green-50"]:not([class*="dark:bg-"]) {
+    background-color: rgba(6, 78, 59, 0.4) !important; /* emerald-950/40 */
+  }
+  .dark [class~="text-emerald-600"]:not([class*="dark:text-"]),
+  .dark [class~="text-emerald-700"]:not([class*="dark:text-"]),
+  .dark [class~="text-emerald-800"]:not([class*="dark:text-"]),
+  .dark [class~="text-green-700"]:not([class*="dark:text-"]) {
+    color: #34d399 !important; /* emerald-400 */
+  }
+  .dark [class~="border-emerald-100"]:not([class*="dark:border-"]),
+  .dark [class~="border-emerald-200"]:not([class*="dark:border-"]),
+  .dark [class~="border-green-200"]:not([class*="dark:border-"]) {
+    border-color: #065f46 !important; /* emerald-800 */
+  }
+
+  /* 7b. Blue (informasi & pageviews) */
+  .dark [class~="bg-blue-50"]:not([class*="dark:bg-"]) {
+    background-color: rgba(30, 58, 138, 0.4) !important; /* blue-950/40 */
+  }
+  .dark [class~="text-blue-600"]:not([class*="dark:text-"]),
+  .dark [class~="text-blue-700"]:not([class*="dark:text-"]),
+  .dark [class~="text-blue-800"]:not([class*="dark:text-"]) {
+    color: #60a5fa !important; /* blue-400 */
+  }
+  .dark [class~="border-blue-100"]:not([class*="dark:border-"]),
+  .dark [class~="border-blue-200"]:not([class*="dark:border-"]) {
+    border-color: #1e40af !important; /* blue-800 */
+  }
+
+  /* 7c. Amber / Yellow (peringatan & tertunda) */
+  .dark [class~="bg-amber-50"]:not([class*="dark:bg-"]),
+  .dark [class~="bg-yellow-50"]:not([class*="dark:bg-"]) {
+    background-color: rgba(120, 53, 15, 0.4) !important; /* amber-950/40 */
+  }
+  .dark [class~="text-amber-600"]:not([class*="dark:text-"]),
+  .dark [class~="text-amber-700"]:not([class*="dark:text-"]),
+  .dark [class~="text-amber-800"]:not([class*="dark:text-"]),
+  .dark [class~="text-yellow-700"]:not([class*="dark:text-"]) {
+    color: #fbbf24 !important; /* amber-400 */
+  }
+  .dark [class~="border-amber-100"]:not([class*="dark:border-"]),
+  .dark [class~="border-amber-200"]:not([class*="dark:border-"]) {
+    border-color: #92400e !important; /* amber-800 */
+  }
+
+  /* 7d. Rose / Red (error & destruktif) */
+  .dark [class~="bg-rose-50"]:not([class*="dark:bg-"]),
+  .dark [class~="bg-red-50"]:not([class*="dark:bg-"]) {
+    background-color: rgba(136, 19, 55, 0.4) !important; /* rose-950/40 */
+  }
+  .dark [class~="text-rose-600"]:not([class*="dark:text-"]),
+  .dark [class~="text-rose-700"]:not([class*="dark:text-"]),
+  .dark [class~="text-red-600"]:not([class*="dark:text-"]),
+  .dark [class~="text-red-700"]:not([class*="dark:text-"]) {
+    color: #fb7185 !important; /* rose-400 */
+  }
+  .dark [class~="border-rose-100"]:not([class*="dark:border-"]),
+  .dark [class~="border-rose-200"]:not([class*="dark:border-"]),
+  .dark [class~="border-red-200"]:not([class*="dark:border-"]) {
+    border-color: #9f1239 !important; /* rose-800 */
+  }
+
+  /* 7e. Purple / Violet (analitik & tier Business) */
+  .dark [class~="bg-purple-50"]:not([class*="dark:bg-"]),
+  .dark [class~="bg-violet-50"]:not([class*="dark:bg-"]) {
+    background-color: rgba(59, 7, 100, 0.4) !important; /* violet-950/40 */
+  }
+  .dark [class~="text-purple-600"]:not([class*="dark:text-"]),
+  .dark [class~="text-purple-700"]:not([class*="dark:text-"]),
+  .dark [class~="text-violet-700"]:not([class*="dark:text-"]),
+  .dark [class~="text-violet-800"]:not([class*="dark:text-"]) {
+    color: #c084fc !important; /* purple-400 */
+  }
+  .dark [class~="border-purple-100"]:not([class*="dark:border-"]),
+  .dark [class~="border-purple-200"]:not([class*="dark:border-"]),
+  .dark [class~="border-violet-200"]:not([class*="dark:border-"]) {
+    border-color: #6b21a8 !important; /* purple-800 */
+  }
+

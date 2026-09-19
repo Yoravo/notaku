@@ -35,20 +35,20 @@ export function ClientPerformanceMetrics({
 
   // Evaluasi label DSO
   let dsoStatusLabel = tPerf("dsoHealthy");
-  let dsoBadgeClass = "bg-emerald-50 text-[#0f6b4f] border-emerald-200";
+  let dsoBadgeClass = "bg-emerald-50 text-[#0f6b4f] border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-400 dark:border-emerald-800";
 
   if (dsoDays === null) {
     dsoStatusLabel = tPerf("dsoNoData");
-    dsoBadgeClass = "bg-slate-100 text-slate-600 border-slate-200";
+    dsoBadgeClass = "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700";
   } else if (dsoDays <= 14) {
     dsoStatusLabel = tPerf("dsoVeryFast");
-    dsoBadgeClass = "bg-emerald-50 text-[#0f6b4f] border-emerald-200";
+    dsoBadgeClass = "bg-emerald-50 text-[#0f6b4f] border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-400 dark:border-emerald-800";
   } else if (dsoDays <= 30) {
     dsoStatusLabel = tPerf("dsoNormal");
-    dsoBadgeClass = "bg-blue-50 text-blue-700 border-blue-200";
+    dsoBadgeClass = "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/60 dark:text-blue-400 dark:border-blue-800";
   } else {
     dsoStatusLabel = tPerf("dsoAttention");
-    dsoBadgeClass = "bg-amber-50 text-amber-700 border-amber-200";
+    dsoBadgeClass = "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/60 dark:text-amber-400 dark:border-amber-800";
   }
 
   return (
@@ -213,20 +213,20 @@ export function ClientPerformanceMetrics({
                         </div>
                       </td>
                       <td className="py-3.5 px-4 text-center tabular-nums">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
                           {client.paidInvoices} / {client.totalInvoices}
                         </span>
                       </td>
                       <td className="py-3.5 px-4 text-center tabular-nums">
                         {client.averagePaymentDays !== null ? (
-                          <span className="font-semibold text-slate-700">
+                          <span className="font-semibold text-slate-700 dark:text-slate-300">
                             ~{client.averagePaymentDays}
                           </span>
                         ) : (
-                          <span className="text-slate-400">-</span>
+                          <span className="text-slate-400 dark:text-slate-500">-</span>
                         )}
                       </td>
-                      <td className="py-3.5 px-4 text-right font-bold text-[#0f6b4f] tabular-nums">
+                      <td className="py-3.5 px-4 text-right font-bold text-[#0f6b4f] dark:text-emerald-400 tabular-nums">
                         {formatCurrency(client.totalPaidAmount)}
                       </td>
                     </tr>
@@ -240,21 +240,21 @@ export function ClientPerformanceMetrics({
 
       {/* FREE User Locked Overlay Banner */}
       {!isPro && (
-        <div className="absolute inset-0 z-10 bg-white/75 backdrop-blur-[2px] rounded-2xl flex flex-col items-center justify-center p-6 text-center border border-emerald-200/80 shadow-xs">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-[#0f6b4f] mb-3 shadow-2xs">
+        <div className="absolute inset-0 z-10 bg-white/75 dark:bg-slate-950/85 backdrop-blur-[2px] rounded-2xl flex flex-col items-center justify-center p-6 text-center border border-emerald-200/80 dark:border-emerald-800/80 shadow-xs">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400 mb-3 shadow-2xs border border-emerald-200/60 dark:border-emerald-800">
             <LockClosedIcon className="h-6 w-6" />
           </div>
-          <h3 className="text-base sm:text-lg font-bold text-slate-900">
+          <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
             {tPerf("proGateTitle")}
           </h3>
-          <p className="mt-1.5 max-w-md text-xs sm:text-sm text-slate-600 leading-relaxed">
+          <p className="mt-1.5 max-w-md text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
             {tPerf("proGateDesc")}
           </p>
           <div className="mt-4 flex items-center gap-3">
             <Link
               href="/billing"
               prefetch={true}
-              className="inline-flex items-center gap-2 rounded-xl bg-[#0f6b4f] px-4 py-2.5 text-xs sm:text-sm font-bold text-white shadow-xs hover:bg-[#0c553e] transition-all"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#0f6b4f] hover:bg-[#0c553e] px-4 py-2.5 text-xs sm:text-sm font-bold text-white shadow-xs transition-all"
             >
               <SparklesIcon className="w-4 h-4" />
               <span>{tPerf("upgradeProBtn")}</span>

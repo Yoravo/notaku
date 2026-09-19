@@ -75,16 +75,16 @@ export function OnboardingChecklist({
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h2 id="onboarding-title" className="text-base font-bold tracking-tight text-slate-900">
+          <h2 id="onboarding-title" className="text-base font-bold tracking-tight text-slate-900 dark:text-white">
             {t.rich("title", {
               ku: (chunks) => <span className="text-[#0f6b4f] dark:text-emerald-400">{chunks}</span>,
             })}
           </h2>
-          <p className="mt-1 text-sm text-slate-600">{t("subtitle")}</p>
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{t("subtitle")}</p>
         </div>
         <button
           onClick={handleDismiss}
-          className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-lg text-slate-600 transition-colors hover:bg-emerald-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 motion-reduce:transition-none dark:hover:bg-emerald-900 dark:focus-visible:outline-emerald-400"
+          className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-lg text-slate-600 dark:text-slate-400 transition-colors hover:bg-emerald-100 dark:hover:bg-emerald-900/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 motion-reduce:transition-none dark:focus-visible:outline-emerald-400 cursor-pointer"
           aria-label={t("dismiss")}
           type="button"
         >
@@ -93,7 +93,7 @@ export function OnboardingChecklist({
       </div>
 
       <div className="mt-4">
-        <p id="onboarding-progress" className="mb-2 text-sm font-semibold text-slate-700">
+        <p id="onboarding-progress" className="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-200">
           {t("progressText", { percent, done: doneCount, total: steps.length })}
         </p>
         <div
@@ -116,14 +116,14 @@ export function OnboardingChecklist({
               <Link
                 href={step.href}
                 prefetch={true}
-                className="group flex h-full min-h-11 items-center gap-3 rounded-xl bg-white/80 p-3 transition-colors hover:bg-emerald-100/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 motion-reduce:transition-none dark:bg-slate-900/80 dark:hover:bg-emerald-900/50 dark:focus-visible:outline-emerald-400"
+                className="group flex h-full min-h-11 items-center gap-3 rounded-xl bg-white/80 dark:bg-slate-900/80 p-3 transition-colors hover:bg-emerald-100/70 dark:hover:bg-emerald-900/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 motion-reduce:transition-none dark:focus-visible:outline-emerald-400 border border-slate-200/50 dark:border-slate-800"
               >
                 <Icon aria-hidden="true" className="h-5 w-5 shrink-0 text-[#0f6b4f] dark:text-emerald-400" />
                 <div className="min-w-0 flex-1">
-                  <span className="text-sm font-semibold text-slate-900">{step.label}</span>
-                  <p className="mt-0.5 text-xs text-slate-600">{step.done ? t("completed") : step.desc}</p>
+                  <span className="text-sm font-semibold text-slate-900 dark:text-white">{step.label}</span>
+                  <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-400">{step.done ? t("completed") : step.desc}</p>
                 </div>
-                {!step.done && <ChevronRightIcon aria-hidden="true" className="h-4 w-4 shrink-0 text-slate-600" />}
+                {!step.done && <ChevronRightIcon aria-hidden="true" className="h-4 w-4 shrink-0 text-slate-500 dark:text-slate-400" />}
               </Link>
             </li>
           );

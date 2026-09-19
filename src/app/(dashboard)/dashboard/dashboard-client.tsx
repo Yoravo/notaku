@@ -294,11 +294,25 @@ export function DashboardClient({
           </div>
 
           {/* Laba Bersih */}
-          <div className={`rounded-xl p-4 border ${netProfit >= 0 ? "bg-slate-900 dark:bg-white border-slate-900 dark:border-white" : "bg-rose-600 border-rose-600"}`}>
-            <p className={`text-[11px] font-bold uppercase tracking-wider ${netProfit >= 0 ? "text-slate-300 dark:text-slate-600" : "text-rose-100"}`}>
+          <div
+            className={`rounded-xl p-4 border ${
+              netProfit >= 0
+                ? "bg-slate-900 dark:bg-slate-800/90 border-slate-900 dark:border-slate-700 shadow-2xs"
+                : "bg-rose-600 dark:bg-rose-950/60 border-rose-600 dark:border-rose-800"
+            }`}
+          >
+            <p
+              className={`text-[11px] font-bold uppercase tracking-wider ${
+                netProfit >= 0 ? "text-slate-300 dark:text-slate-400" : "text-rose-100 dark:text-rose-300"
+              }`}
+            >
               {tDash("plNetProfit")}
             </p>
-            <p className={`text-lg sm:text-xl font-extrabold mt-1 tabular-nums ${netProfit >= 0 ? "text-white dark:text-slate-900" : "text-white"}`}>
+            <p
+              className={`text-lg sm:text-xl font-extrabold mt-1 tabular-nums ${
+                netProfit >= 0 ? "text-white dark:text-emerald-400" : "text-white dark:text-rose-300"
+              }`}
+            >
               {formatMoney(netProfit, "IDR", locale)}
             </p>
           </div>
