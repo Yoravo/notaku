@@ -83,12 +83,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // Niche Programmatic Template Pages
-  const templateEntries: MetadataRoute.Sitemap = NICHE_TEMPLATES.map((tpl) => ({
-    url: `${baseUrl}/templates/${tpl.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.8,
-  }));
+  const templateEntries: MetadataRoute.Sitemap = NICHE_TEMPLATES
+    .filter((tpl) => Boolean(tpl?.slug && typeof tpl.slug === "string" && tpl.slug.trim().length > 0))
+    .map((tpl) => ({
+      url: `${baseUrl}/templates/${tpl.slug.trim()}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    }));
 
-  return [...staticEntries, ...templateEntries];
+  return [...staticEntries, ...templateEntries].filter((item) => Boolean(item?.url));
 }
