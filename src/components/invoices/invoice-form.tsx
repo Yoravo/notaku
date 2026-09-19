@@ -230,7 +230,7 @@ export function InvoiceForm({
   ] as const;
 
   return (
-    <div className="max-w-4xl space-y-6 pb-24 md:pb-6">
+    <div className="w-full max-w-[1440px] mx-auto space-y-6 pb-24 md:pb-6">
       {/* Customer & Due Date Card */}
       <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xs">
         <h2 className="text-sm font-bold text-slate-900 dark:text-white mb-4">

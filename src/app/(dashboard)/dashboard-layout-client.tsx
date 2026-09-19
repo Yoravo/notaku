@@ -110,7 +110,7 @@ export function DashboardLayoutClient({
             {!desktopOpen && (
               <Link
                 href="/"
-                className="hidden md:flex items-center gap-1.5 text-lg font-bold font-display tracking-tight text-slate-900 dark:text-white transition-opacity hover:opacity-80 ml-1"
+                className="hidden md:flex items-center gap-1.5 text-lg font-bold font-sans tracking-tight text-slate-900 dark:text-white transition-opacity hover:opacity-80 ml-1"
               >
                 <Image
                   src="/logo.png"
@@ -129,7 +129,7 @@ export function DashboardLayoutClient({
             {/* Mobile Brand */}
             <Link
               href="/"
-              className="md:hidden flex items-center gap-1.5 text-lg font-bold font-display tracking-tight text-slate-900 dark:text-white transition-opacity hover:opacity-80"
+              className="md:hidden flex items-center gap-1.5 text-lg font-bold font-sans tracking-tight text-slate-900 dark:text-white transition-opacity hover:opacity-80"
             >
               <Image
                 src="/logo.png"

@@ -79,7 +79,7 @@ export default async function PublicInvoicePage({
 
   return (
     <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6">
-      <div className="mx-auto max-w-2xl rounded-2xl border border-slate-200 bg-white p-6 sm:p-10 shadow-sm">
+      <div className="mx-auto max-w-3xl rounded-2xl border border-slate-200 bg-white p-6 sm:p-10 shadow-sm">
         {/* Header */}
         <div className="flex justify-between items-start gap-4">
           <div>

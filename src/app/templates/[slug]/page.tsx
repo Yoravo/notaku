@@ -122,7 +122,7 @@ export default async function NicheTemplateDetailPage({
             <span className="text-ink font-semibold">{template.category}</span>
           </div>
 
-          <h1 className="font-display text-2xl sm:text-4xl font-bold tracking-tight text-ink">
+          <h1 className="font-sans text-2xl sm:text-4xl font-extrabold tracking-tight text-ink">
             {template.title}
           </h1>
           <p className="mt-2.5 text-xs sm:text-sm text-ink-soft leading-relaxed max-w-2xl">
@@ -148,7 +148,7 @@ export default async function NicheTemplateDetailPage({
       </section>
 
       {/* Main Content Workspace */}
-      <main className="mx-auto max-w-4xl px-4 sm:px-6 py-8 sm:py-12 space-y-10">
+      <main className="mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-12 space-y-10">
         {/* Sample Interactive Preview Card */}
         <div className="rounded-2xl border border-line bg-white p-6 sm:p-8 shadow-xs space-y-6">
           <div className="flex items-center justify-between border-b border-line/60 pb-4">
@@ -156,7 +156,7 @@ export default async function NicheTemplateDetailPage({
               <span className="text-[11px] font-bold uppercase tracking-wider text-ink-soft">
                 Pratinjau Format Tagihan
               </span>
-              <h2 className="font-display text-lg font-bold text-ink mt-0.5">
+              <h2 className="font-sans text-lg font-bold text-ink mt-0.5">
                 Contoh Dokumen Invoice: {template.sampleData.invoiceNumber}
               </h2>
             </div>
@@ -232,7 +232,7 @@ export default async function NicheTemplateDetailPage({
               )}
               <div className="border-t border-line/60 pt-2 flex justify-between items-baseline">
                 <span className="text-xs font-bold uppercase tracking-wider text-ink">Total Tagihan</span>
-                <span className="font-display text-base font-bold text-ink font-mono">
+                <span className="font-sans text-base font-extrabold text-ink font-mono">
                   {formatMoney(
                     sampleSubtotal + (template.taxRate ? (sampleSubtotal * template.taxRate) / 100 : 0),
                     template.currency
@@ -265,7 +265,7 @@ export default async function NicheTemplateDetailPage({
         {/* Educational Content & Checklist */}
         <section className="space-y-8 border-t border-line pt-10">
           <div className="space-y-3">
-            <h2 className="font-display text-xl sm:text-2xl font-bold text-ink">
+            <h2 className="font-sans text-xl sm:text-2xl font-extrabold tracking-tight text-ink">
               Panduan Pembuatan {template.title}
             </h2>
             <p className="text-xs sm:text-sm text-ink-soft leading-relaxed">

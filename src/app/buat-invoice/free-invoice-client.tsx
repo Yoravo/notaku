@@ -202,7 +202,7 @@ export function FreeInvoiceGeneratorClient({ session }: { session?: any }) {
             <DocumentTextIcon className="w-4 h-4" />
             100% Gratis & Tanpa Registrasi
           </span>
-          <h1 className="font-display text-2xl sm:text-4xl font-bold tracking-tight text-ink">
+          <h1 className="font-sans text-2xl sm:text-4xl font-extrabold tracking-tight text-ink">
             Free Online Invoice Generator Indonesia
           </h1>
           <p className="mt-2.5 text-xs sm:text-sm text-ink-soft max-w-2xl mx-auto leading-relaxed">
@@ -212,7 +212,7 @@ export function FreeInvoiceGeneratorClient({ session }: { session?: any }) {
       </section>
 
       {/* Main Workspace: Form & Summary */}
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-12">
+      <main className="mx-auto max-w-[1440px] px-6 lg:px-8 py-8 sm:py-12">
         {errorMsg && (
           <div className="mb-6 rounded-xl border border-rose-200 bg-rose-50 p-4 text-xs sm:text-sm font-semibold text-rose-700">
             {errorMsg}
@@ -663,7 +663,7 @@ export function FreeInvoiceGeneratorClient({ session }: { session?: any }) {
                   <span className="text-xs font-bold uppercase tracking-wider text-ink">
                     Total Tagihan
                   </span>
-                  <span className="font-display text-xl sm:text-2xl font-bold text-ink tabular-nums">
+                  <span className="font-sans text-xl sm:text-2xl font-extrabold text-ink tabular-nums">
                     {formatMoney(totals.total, currency)}
                   </span>
                 </div>
@@ -730,7 +730,7 @@ export function FreeInvoiceGeneratorClient({ session }: { session?: any }) {
         {/* SEO Educational Content: Cara Membuat Invoice & Panduan */}
         <section className="mt-16 sm:mt-24 border-t border-line pt-12 max-w-4xl mx-auto space-y-10">
           <div className="text-center space-y-2">
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink">
+            <h2 className="font-sans text-2xl sm:text-3xl font-extrabold text-ink tracking-tight">
               Panduan Pembuatan Invoice Bisnis & UMKM
             </h2>
             <p className="text-xs sm:text-sm text-ink-soft">

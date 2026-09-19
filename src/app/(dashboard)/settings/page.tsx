@@ -40,7 +40,7 @@ export default async function SettingsPage({
   const baseDomain = process.env.NEXT_PUBLIC_APP_DOMAIN || "notaku.store";
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="w-full max-w-[1440px] mx-auto">
       <SettingsTabsClient
         key={initialTab}
         user={{

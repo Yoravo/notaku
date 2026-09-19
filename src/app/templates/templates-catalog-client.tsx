@@ -48,7 +48,7 @@ export function TemplatesCatalogClient({ session }: { session?: any }) {
             <FolderOpenIcon className="w-4 h-4" />
             Katalog Template Invoice Gratis
           </span>
-          <h1 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-ink leading-tight">
+          <h1 className="font-sans text-3xl sm:text-5xl font-extrabold tracking-tight text-ink leading-tight">
             Koleksi Format & Template Invoice Siap Pakai
           </h1>
           <p className="mt-3.5 text-xs sm:text-base text-ink-soft max-w-2xl mx-auto leading-relaxed">
@@ -70,7 +70,7 @@ export function TemplatesCatalogClient({ session }: { session?: any }) {
       </section>
 
       {/* Category Pills & Grid */}
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 py-10 sm:py-14 space-y-10">
+      <main className="mx-auto max-w-[1440px] px-6 lg:px-8 py-10 sm:py-14 space-y-10">
         {/* Filter Pills */}
         <div className="flex flex-wrap items-center justify-center gap-2">
           {categories.map((cat) => (
@@ -106,7 +106,7 @@ export function TemplatesCatalogClient({ session }: { session?: any }) {
                   </span>
                 </div>
 
-                <h3 className="font-display text-lg font-bold text-ink group-hover:text-emerald transition-colors">
+                <h3 className="font-sans text-lg font-bold text-ink group-hover:text-emerald transition-colors">
                   <Link href={`/templates/${template.slug}`} prefetch={true}>
                     {template.title}
                   </Link>

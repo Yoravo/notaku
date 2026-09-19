@@ -9,6 +9,7 @@ import {
   APP_VERSION,
   CHANGELOG_RELEASES,
   type ChangelogCategory,
+  type ReleaseSemverType,
 } from "@/lib/changelog";
 import {
   SparklesIcon,
@@ -86,12 +87,30 @@ export default async function ChangelogPage() {
     },
   };
 
+  const semverBadgeConfig: Record<ReleaseSemverType, { label: string; badge: string }> = {
+    major: {
+      label: "MAJOR",
+      badge:
+        "bg-purple-50 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800",
+    },
+    minor: {
+      label: "MINOR",
+      badge:
+        "bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800",
+    },
+    patch: {
+      label: "PATCH",
+      badge:
+        "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700",
+    },
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200 flex flex-col">
       {/* Public Navbar */}
       <LandingNavbar session={session} />
 
-      <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+      <main className="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
         {/* Breadcrumb / Back */}
         <div className="mb-6">
           <Link
@@ -151,6 +170,13 @@ export default async function ChangelogPage() {
                     <div className="flex items-center gap-2">
                       <span className="font-mono text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                         v{release.version}
+                      </span>
+                      <span
+                        className={`inline-flex items-center px-1.5 py-0.2 rounded text-[10px] font-mono font-bold uppercase border ${
+                          semverBadgeConfig[release.type].badge
+                        }`}
+                      >
+                        {semverBadgeConfig[release.type].label}
                       </span>
                       {release.isLatest && (
                         <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase bg-emerald-100 dark:bg-emerald-950 text-[#0f6b4f] dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">

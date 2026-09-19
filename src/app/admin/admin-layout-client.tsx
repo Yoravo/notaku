@@ -102,7 +102,7 @@ export function AdminLayoutClient({
               height={28}
               className="w-7 h-7 object-contain shrink-0"
             />
-            <span className="font-display text-2xl font-bold tracking-tight text-white flex items-center whitespace-nowrap">
+            <span className="font-sans text-2xl font-extrabold tracking-tight text-white flex items-center whitespace-nowrap">
               <span>Nota</span>
               <span className="text-emerald-400">Ku</span>
               <span className="ml-2 rounded-md bg-rose-500/20 text-rose-400 text-xs font-semibold px-2 py-0.5 border border-rose-500/30 font-sans flex items-center gap-1">
@@ -205,7 +205,7 @@ export function AdminLayoutClient({
             {!desktopOpen && (
               <Link
                 href="/"
-                className="hidden md:flex items-center gap-1.5 font-display text-xl font-bold tracking-tight text-slate-900 dark:text-white transition-opacity hover:opacity-80 ml-1"
+                className="hidden md:flex items-center gap-1.5 font-sans text-xl font-bold tracking-tight text-slate-900 dark:text-white transition-opacity hover:opacity-80 ml-1"
               >
                 <Image
                   src="/logo.png"
@@ -227,7 +227,7 @@ export function AdminLayoutClient({
             {/* Mobile Brand */}
             <Link
               href="/"
-              className="md:hidden font-display text-lg font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5"
+              className="md:hidden font-sans text-lg font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5"
             >
               <Image
                 src="/logo.png"
@@ -275,7 +275,7 @@ export function AdminLayoutClient({
 
         {/* Scrollable Main Content */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-          <div className="max-w-7xl mx-auto">{children}</div>
+          <div className="w-full max-w-[1440px] mx-auto">{children}</div>
         </main>
       </div>
     </div>

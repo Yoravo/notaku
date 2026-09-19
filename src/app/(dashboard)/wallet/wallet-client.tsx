@@ -59,7 +59,7 @@ export function WalletClient({
   const [activeTab, setActiveTab] = useState<"transactions" | "payouts">("transactions");
 
   return (
-    <div className="space-y-6">
+    <div className="w-full max-w-[1440px] mx-auto space-y-6">
       {/* Page Header (Reactive Translation) */}
       <div>
         <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">

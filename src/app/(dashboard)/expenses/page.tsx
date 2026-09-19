@@ -93,7 +93,7 @@ export default async function ExpensesPage({
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="w-full max-w-[1440px] mx-auto">
       <ExpensesClient
         expenses={serializedExpenses}
         totalPages={totalPages}

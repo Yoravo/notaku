@@ -21,12 +21,12 @@ export function LandingFAQ() {
 
   return (
     <section id="faq" className="py-20 sm:py-28">
-      <div className="mx-auto max-w-5xl px-6">
+      <div className="mx-auto max-w-[1440px] px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <span className="text-xs font-bold uppercase tracking-wider text-emerald">
             {t("tag")}
           </span>
-          <h2 className="mt-2 font-display text-3xl font-bold tracking-tight sm:text-4xl text-ink">
+          <h2 className="mt-2 font-sans text-3xl font-extrabold tracking-tight sm:text-4xl text-ink">
             {t("title")}
           </h2>
           <p className="mt-3 text-base text-ink-soft">

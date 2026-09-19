@@ -4,7 +4,7 @@ export default function ChangelogLoading() {
       {/* Skeleton Navbar placeholder */}
       <div className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60" />
 
-      <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+      <main className="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
         {/* Skeleton Back button */}
         <div className="h-5 w-32 bg-slate-200 dark:bg-slate-800 rounded-md mb-8" />
 

@@ -11,6 +11,7 @@ export const APP_RELEASE_DATE = {
 };
 
 export type ChangelogCategory = "feat" | "perf" | "fix" | "security";
+export type ReleaseSemverType = "major" | "minor" | "patch";
 
 export interface ChangelogItem {
   category: ChangelogCategory;
@@ -22,6 +23,7 @@ export interface ChangelogItem {
 
 export interface ChangelogRelease {
   version: string;
+  type: ReleaseSemverType;
   date: {
     id: string;
     en: string;
@@ -41,6 +43,7 @@ export interface ChangelogRelease {
 export const CHANGELOG_RELEASES: ChangelogRelease[] = [
   {
     version: "0.6.0",
+    type: "minor",
     date: {
       id: "19 September 2026",
       en: "September 19, 2026",
@@ -94,6 +97,7 @@ export const CHANGELOG_RELEASES: ChangelogRelease[] = [
   },
   {
     version: "0.5.0",
+    type: "minor",
     date: {
       id: "18 September 2026",
       en: "September 18, 2026",
@@ -146,6 +150,7 @@ export const CHANGELOG_RELEASES: ChangelogRelease[] = [
   },
   {
     version: "0.4.0",
+    type: "minor",
     date: {
       id: "13 September 2026",
       en: "September 13, 2026",
@@ -191,6 +196,7 @@ export const CHANGELOG_RELEASES: ChangelogRelease[] = [
   },
   {
     version: "0.3.0",
+    type: "minor",
     date: {
       id: "1 September 2026",
       en: "September 1, 2026",
@@ -250,6 +256,7 @@ export const CHANGELOG_RELEASES: ChangelogRelease[] = [
   },
   {
     version: "0.2.0",
+    type: "minor",
     date: {
       id: "29 Agustus 2026",
       en: "August 29, 2026",
@@ -309,6 +316,7 @@ export const CHANGELOG_RELEASES: ChangelogRelease[] = [
   },
   {
     version: "0.1.0",
+    type: "major",
     date: {
       id: "24 Mei 2026",
       en: "May 24, 2026",

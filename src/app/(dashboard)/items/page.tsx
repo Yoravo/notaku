@@ -55,7 +55,7 @@ export default async function ItemsPage({
   }));
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="w-full max-w-[1440px] mx-auto">
       <ItemsClient
         items={serializedItems}
         totalPages={totalPages}

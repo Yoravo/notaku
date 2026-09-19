@@ -26,14 +26,14 @@ export function LandingFooter() {
 
   return (
     <footer className="border-t border-line bg-paper py-14 sm:py-16 text-ink">
-      <div className="mx-auto max-w-6xl px-6">
+      <div className="mx-auto max-w-[1440px] px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-12">
           {/* Brand & Description Column */}
           <div className="md:col-span-4 space-y-3">
             <Link
               href="/"
               prefetch={true}
-              className="font-display text-2xl font-bold tracking-tight text-ink inline-flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald rounded-lg"
+              className="font-sans text-2xl font-bold tracking-tight text-ink inline-flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald rounded-lg"
             >
               <Image
                 src="/logo.png"

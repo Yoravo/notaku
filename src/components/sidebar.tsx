@@ -124,7 +124,7 @@ export function Sidebar({
       <div className="flex h-14 items-center justify-between border-b border-slate-200 dark:border-slate-800 px-5 shrink-0">
         <Link
           href="/"
-          className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white transition-opacity hover:opacity-80 flex items-center gap-1.5 whitespace-nowrap"
+          className="font-sans text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white transition-opacity hover:opacity-80 flex items-center gap-1.5 whitespace-nowrap"
         >
           <Image
             src="/logo.png"

@@ -70,7 +70,7 @@ export function PpnCalculatorClient({ session }: { session?: any }) {
             <CalculatorIcon className="w-4 h-4" />
             Kalkulator Pajak Online Indonesia
           </span>
-          <h1 className="font-display text-2xl sm:text-4xl font-bold tracking-tight text-ink">
+          <h1 className="font-sans text-2xl sm:text-4xl font-extrabold tracking-tight text-ink">
             Kalkulator PPN 11% & 12% dan DPP Online
           </h1>
           <p className="mt-2.5 text-xs sm:text-sm text-ink-soft max-w-2xl mx-auto leading-relaxed">
@@ -80,7 +80,7 @@ export function PpnCalculatorClient({ session }: { session?: any }) {
       </section>
 
       {/* Calculator Workspace */}
-      <main className="mx-auto max-w-4xl px-4 sm:px-6 py-8 sm:py-12 space-y-10">
+      <main className="mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-12 space-y-10">
         <div className="rounded-2xl border border-line bg-white p-6 sm:p-8 shadow-xs space-y-6">
           {/* Mode Selection */}
           <div>
@@ -230,7 +230,7 @@ export function PpnCalculatorClient({ session }: { session?: any }) {
                 <span className="text-[11px] font-bold text-ink-soft uppercase tracking-wider">
                   Dasar Pengenaan Pajak (DPP)
                 </span>
-                <p className="font-display text-lg sm:text-xl font-bold text-ink mt-1 tabular-nums">
+                <p className="font-sans text-lg sm:text-xl font-extrabold text-ink mt-1 tabular-nums">
                   {formatRupiah(dpp)}
                 </p>
               </div>
@@ -239,7 +239,7 @@ export function PpnCalculatorClient({ session }: { session?: any }) {
                 <span className="text-[11px] font-bold text-ink-soft uppercase tracking-wider">
                   Nominal PPN ({activeRate}%)
                 </span>
-                <p className="font-display text-lg sm:text-xl font-bold text-emerald mt-1 tabular-nums">
+                <p className="font-sans text-lg sm:text-xl font-extrabold text-emerald mt-1 tabular-nums">
                   {formatRupiah(ppn)}
                 </p>
               </div>
@@ -248,7 +248,7 @@ export function PpnCalculatorClient({ session }: { session?: any }) {
                 <span className="text-[11px] font-bold text-white/80 uppercase tracking-wider">
                   Total Tagihan Akhir
                 </span>
-                <p className="font-display text-lg sm:text-xl font-bold mt-1 tabular-nums">
+                <p className="font-sans text-lg sm:text-xl font-extrabold mt-1 tabular-nums">
                   {formatRupiah(total)}
                 </p>
               </div>
@@ -273,7 +273,7 @@ export function PpnCalculatorClient({ session }: { session?: any }) {
         {/* SEO Educational Guide: Rumus & Ketentuan PPN */}
         <section className="border-t border-line pt-10 space-y-6">
           <div className="space-y-2">
-            <h2 className="font-display text-xl sm:text-2xl font-bold text-ink">
+            <h2 className="font-sans text-xl sm:text-2xl font-extrabold tracking-tight text-ink">
               Panduan & Rumus Menghitung PPN di Indonesia
             </h2>
             <p className="text-xs sm:text-sm text-ink-soft">

@@ -152,7 +152,7 @@ export function FreeDeliveryOrderGeneratorClient({ session }: { session?: any })
       <LandingNavbar session={session} />
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-[1440px] mx-auto px-6 lg:px-8 py-8">
         <div className="text-center max-w-3xl mx-auto mb-8">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold mb-3">
             <TruckIcon className="w-4 h-4" />

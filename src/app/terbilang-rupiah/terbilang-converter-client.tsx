@@ -59,7 +59,7 @@ export function TerbilangConverterClient({ session }: { session?: any }) {
             <DocumentCheckIcon className="w-4 h-4" />
             Generator Angka Terbilang Indonesia
           </span>
-          <h1 className="font-display text-2xl sm:text-4xl font-bold tracking-tight text-ink">
+          <h1 className="font-sans text-2xl sm:text-4xl font-extrabold tracking-tight text-ink">
             Konverter Angka ke Huruf Terbilang Rupiah
           </h1>
           <p className="mt-2.5 text-xs sm:text-sm text-ink-soft max-w-2xl mx-auto leading-relaxed">
@@ -69,7 +69,7 @@ export function TerbilangConverterClient({ session }: { session?: any }) {
       </section>
 
       {/* Converter Workspace */}
-      <main className="mx-auto max-w-4xl px-4 sm:px-6 py-8 sm:py-12 space-y-10">
+      <main className="mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-12 space-y-10">
         <div className="rounded-2xl border border-line bg-white p-6 sm:p-8 shadow-xs space-y-6">
           {/* Input Nominal */}
           <div>
@@ -200,7 +200,7 @@ export function TerbilangConverterClient({ session }: { session?: any }) {
         {/* SEO Educational Content */}
         <section className="border-t border-line pt-10 space-y-6">
           <div className="space-y-2">
-            <h2 className="font-display text-xl sm:text-2xl font-bold text-ink">
+            <h2 className="font-sans text-xl sm:text-2xl font-extrabold tracking-tight text-ink">
               Pentingnya Kalimat Terbilang pada Dokumen Keuangan
             </h2>
             <p className="text-xs sm:text-sm text-ink-soft">
