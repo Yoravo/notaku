@@ -13,12 +13,12 @@ const PER_PAGE = 20;
 export default async function ExpensesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; q?: string; category?: string; month?: string }>;
+  searchParams: Promise<{ page?: string; q?: string; category?: string; month?: string; new?: string }>;
 }) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/login");
 
-  const { page, q, category, month } = await searchParams;
+  const { page, q, category, month, new: newParam } = await searchParams;
   const currentPage = Math.max(1, parseInt(page || "1", 10));
   const skip = (currentPage - 1) * PER_PAGE;
 
@@ -103,6 +103,7 @@ export default async function ExpensesPage({
         currentMonth={currentMonth}
         monthOptions={monthOptions}
         totalAmount={totalAmount}
+        autoOpen={newParam === "1"}
       />
     </div>
   );

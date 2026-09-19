@@ -10,6 +10,7 @@ import {
   TrashIcon,
   CalendarIcon,
   TagIcon,
+  ArrowDownTrayIcon,
 } from "@heroicons/react/24/outline";
 import { formatMoney } from "@/lib/currencies";
 import { ExpenseModal } from "@/components/expenses/expense-modal";
@@ -44,6 +45,7 @@ export function ExpensesClient({
   currentMonth,
   monthOptions,
   totalAmount,
+  autoOpen = false,
 }: {
   expenses: ExpenseData[];
   totalPages: number;
@@ -53,10 +55,11 @@ export function ExpensesClient({
   currentMonth: string;
   monthOptions: { value: string; label: string }[];
   totalAmount: number;
+  autoOpen?: boolean;
 }) {
   const router = useRouter();
   const [search, setSearch] = useState(searchQuery);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(autoOpen);
   const [editExpense, setEditExpense] = useState<ExpenseData | undefined>(undefined);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
@@ -117,14 +120,24 @@ export function ExpensesClient({
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={openAddModal}
-          className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 active:scale-[0.98] px-4 py-2.5 text-xs sm:text-sm font-bold text-white transition-all shadow-xs w-full sm:w-auto min-h-[44px] cursor-pointer"
-        >
-          <PlusIcon className="w-4 h-4" />
-          <span>Catat Pengeluaran</span>
-        </button>
+        <div className="flex flex-col sm:flex-row gap-2.5 w-full sm:w-auto">
+          <a
+            href={`/api/reports/profit-loss/export?month=${encodeURIComponent(currentMonth)}`}
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-[0.98] px-4 py-2.5 text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200 transition-all shadow-2xs w-full sm:w-auto min-h-[44px]"
+          >
+            <ArrowDownTrayIcon className="w-4 h-4" />
+            <span>Ekspor Laba Rugi</span>
+          </a>
+
+          <button
+            type="button"
+            onClick={openAddModal}
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 active:scale-[0.98] px-4 py-2.5 text-xs sm:text-sm font-bold text-white transition-all shadow-xs w-full sm:w-auto min-h-[44px] cursor-pointer"
+          >
+            <PlusIcon className="w-4 h-4" />
+            <span>Catat Pengeluaran</span>
+          </button>
+        </div>
       </div>
 
       {/* Summary Stat Banner */}
