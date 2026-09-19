@@ -28,6 +28,7 @@
     "pricing": "Harga",
     "faq": "FAQ",
     "tools": "Tools Pajak",
+    "changelog": "Changelog",
     "login": "Masuk",
     "register": "Coba Gratis",
     "dashboard": "Dashboard",
@@ -1554,5 +1555,19 @@
     "title": "Halaman tidak ditemukan",
     "desc": "Halaman yang Anda cari tidak ada atau telah dipindahkan.",
     "backToDashboard": "Kembali ke Dashboard"
+  },
+  "changelog": {
+    "badgeActive": "Versi Aktif",
+    "backHome": "Kembali ke Beranda",
+    "title": "Catatan Rilis & Changelog",
+    "desc": "Transparansi pengembangan platform NotaKu. Seluruh milestone, penambahan fitur penting, dan peningkatan performa dirangkum di sini.",
+    "latestRelease": "Rilis Terbaru",
+    "featureSuggestionTitle": "Punya Usulan Fitur Baru?",
+    "featureSuggestionDesc": "Kami terus memperbarui NotaKu agar semakin memudahkan operasional UMKM Indonesia.",
+    "openApp": "Buka Aplikasi",
+    "categoryFeat": "Fitur Baru",
+    "categoryPerf": "Peningkatan",
+    "categoryFix": "Perbaikan",
+    "categorySecurity": "Keamanan"
   }
 }

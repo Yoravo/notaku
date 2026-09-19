@@ -28,6 +28,7 @@
     "pricing": "Pricing",
     "faq": "FAQ",
     "tools": "Tax Tools",
+    "changelog": "Changelog",
     "login": "Login",
     "register": "Try Free",
     "dashboard": "Dashboard",
@@ -1554,5 +1555,19 @@
     "title": "Page not found",
     "desc": "The page you are looking for does not exist or has been moved.",
     "backToDashboard": "Back to Dashboard"
+  },
+  "changelog": {
+    "badgeActive": "Active Version",
+    "backHome": "Back to Home",
+    "title": "Release Notes & Changelog",
+    "desc": "Development transparency of NotaKu platform. All milestones, major features, and performance enhancements are documented here.",
+    "latestRelease": "Latest Release",
+    "featureSuggestionTitle": "Have a Feature Suggestion?",
+    "featureSuggestionDesc": "We continuously update NotaKu to make everyday billing and business operations seamless for you.",
+    "openApp": "Open Dashboard",
+    "categoryFeat": "New Feature",
+    "categoryPerf": "Improvement",
+    "categoryFix": "Bug Fix",
+    "categorySecurity": "Security"
   }
 }

@@ -63,6 +63,7 @@ const BASE_ITEMS: CommandItem[] = [
   { id: "referrals", label: "Program Referral", href: "/referrals", group: "page", icon: GiftIcon, keywords: "referral afiliasi komisi bonus undang" },
   { id: "billing", label: "Langganan & Upgrade", href: "/billing", group: "page", icon: SparklesIcon, keywords: "billing langganan upgrade pro paket bayar" },
   { id: "settings", label: "Pengaturan", href: "/settings", group: "page", icon: Cog6ToothIcon, keywords: "settings pengaturan profil rekening domain api" },
+  { id: "changelog", label: "Changelog & Riwayat Versi", href: "/changelog", group: "page", icon: SparklesIcon, keywords: "changelog versi riwayat rilis update pembaruan release notes version" },
 ];
 
 const ADMIN_ITEMS: CommandItem[] = [

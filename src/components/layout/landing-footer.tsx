@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { APP_VERSION } from "@/lib/changelog";
 
 export function LandingFooter() {
   const pathname = usePathname();
@@ -141,6 +142,13 @@ export function LandingFooter() {
                 {tNav("pricing")}
               </a>
               <Link
+                href="/changelog"
+                prefetch={true}
+                className="inline-flex items-center min-h-[44px] py-2 text-xs sm:text-sm font-medium text-ink-soft hover:text-emerald transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald rounded-lg"
+              >
+                {tNav("changelog")}
+              </Link>
+              <Link
                 href="/login"
                 prefetch={true}
                 className="inline-flex items-center min-h-[44px] py-2 text-xs sm:text-sm font-bold text-ink hover:text-emerald transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald rounded-lg"
@@ -153,7 +161,17 @@ export function LandingFooter() {
 
         <div className="mt-12 border-t border-line/60 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-ink-soft font-medium">
           <span>{tFooter("copyright")}</span>
-          <span className="text-slate-400">Jakarta, Indonesia</span>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/changelog"
+              prefetch={true}
+              className="font-mono text-slate-400 hover:text-emerald transition-colors"
+              title="Catatan rilis"
+            >
+              v{APP_VERSION}
+            </Link>
+            <span className="text-slate-400">Jakarta, Indonesia</span>
+          </div>
         </div>
       </div>
     </footer>

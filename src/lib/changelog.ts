@@ -1,0 +1,355 @@
+/**
+ * Single Source of Truth untuk Versi Aplikasi dan Catatan Rilis (Changelog) NotaKu.
+ * Seluruh milestone dan perubahan besar (BIG CHANGES) dicatat di sini secara kronologis
+ * berdasarkan riwayat commit git riil dan mendukung dwibahasa (ID & EN).
+ */
+
+export const APP_VERSION = "0.6.0";
+export const APP_RELEASE_DATE = {
+  id: "19 September 2026",
+  en: "September 19, 2026",
+};
+
+export type ChangelogCategory = "feat" | "perf" | "fix" | "security";
+
+export interface ChangelogItem {
+  category: ChangelogCategory;
+  text: {
+    id: string;
+    en: string;
+  };
+}
+
+export interface ChangelogRelease {
+  version: string;
+  date: {
+    id: string;
+    en: string;
+  };
+  title: {
+    id: string;
+    en: string;
+  };
+  summary: {
+    id: string;
+    en: string;
+  };
+  highlights: ChangelogItem[];
+  isLatest?: boolean;
+}
+
+export const CHANGELOG_RELEASES: ChangelogRelease[] = [
+  {
+    version: "0.6.0",
+    date: {
+      id: "19 September 2026",
+      en: "September 19, 2026",
+    },
+    title: {
+      id: "PWA App Shortcuts, Global Command Palette (Ctrl+K) & Ekspor Laba Rugi",
+      en: "PWA App Shortcuts, Global Command Palette (Ctrl+K) & Profit/Loss Export",
+    },
+    summary: {
+      id: "Peningkatan aksesibilitas mobile dan produktivitas: dukungan PWA modern dengan aksi cepat long-press icon aplikasi, command palette global keyboard-driven, ekspor laporan laba rugi CSV, serta penguatan dark mode.",
+      en: "Mobile accessibility and productivity enhancements: modern PWA support with long-press quick actions, global keyboard-driven command palette, CSV profit and loss financial export, and dark-mode style hardening.",
+    },
+    isLatest: true,
+    highlights: [
+      {
+        category: "feat",
+        text: {
+          id: "PWA Modern & App Shortcuts: Aksi cepat langsung dari icon homescreen Android/iOS untuk Buat Invoice, Buat Kuitansi, dan Catat Pengeluaran.",
+          en: "Modern PWA & App Shortcuts: Quick launch actions directly from Android/iOS homescreen icon for New Invoice, New Receipt, and Record Expense.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "Service Worker Caching & Offline Fallback: Dukungan halaman offline otomatis ketika koneksi internet pengguna terputus.",
+          en: "Service Worker Caching & Offline Fallback: Automatic offline fallback page when internet connectivity is interrupted.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "Global Command Palette (Ctrl+K / Cmd+K): Modal pencarian cepat lintas halaman, aksi pembuatan invoice/pelanggan/beban usaha secara keyboard-driven.",
+          en: "Global Command Palette (Ctrl+K / Cmd+K): Fast modal search across all pages and quick actions for invoices, customers, and expenses.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "Ekspor Rekap Laba Rugi (P&L CSV): Unduh laporan perbandingan pendapatan invoice lunas vs beban usaha bulanan/tahunan siap audit.",
+          en: "Profit & Loss CSV Export: Download monthly/annual revenue vs expense balance reports ready for financial audits.",
+        },
+      },
+      {
+        category: "fix",
+        text: {
+          id: "Harmonisasi Dark Mode: Perbaikan guard CSS :not() untuk mencegah style global menimpa kartu finansial dan border validasi form.",
+          en: "Dark Mode Harmonization: CSS :not() attribute guards to prevent global overrides from conflicting with financial cards and validation borders.",
+        },
+      },
+    ],
+  },
+  {
+    version: "0.5.0",
+    date: {
+      id: "18 September 2026",
+      en: "September 18, 2026",
+    },
+    title: {
+      id: "Katalog Produk & Jasa, Pencatatan Pengeluaran (Expenses), dan Ringkasan Laba Bersih",
+      en: "Product & Service Catalog, Expense Tracking, and Net Profit Summary",
+    },
+    summary: {
+      id: "Ekspansi manajemen operasional usaha: simpan daftar harga barang/jasa untuk autofill invoice, catat beban operasional, dan pantau laba bersih secara real-time di dashboard utama.",
+      en: "Business operations expansion: save product/service price catalogs for 1-click invoice autofill, track operational expenses, and monitor net profit directly on the main dashboard.",
+    },
+    highlights: [
+      {
+        category: "feat",
+        text: {
+          id: "Katalog Produk & Jasa (/items): Manajemen daftar harga barang dan layanan lengkap dengan satuan unit dan deskripsi standar.",
+          en: "Product & Service Catalog (/items): Comprehensive item and rate management with custom measurement units and descriptions.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "Autofill 1-Klik dari Katalog: Masukkan rincian barang ke form pembuatan invoice secara instan tanpa mengetik ulang.",
+          en: "1-Click Catalog Autofill: Insert pre-saved item details into invoice line items without manual retyping.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "Pencatatan Beban Usaha (/expenses): Catat pengeluaran operasional, gaji, sewa, pemasaran, dan alat dengan filter bulan.",
+          en: "Operational Expense Tracking (/expenses): Log business overhead, salaries, rent, marketing, and tools with monthly filtering.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "Kartu Laba Bersih di Dashboard: Kalkulasi otomatis Pendapatan Lunas dikurangi Total Beban Usaha untuk mengukur kesehatan finansial.",
+          en: "Net Profit Dashboard Card: Automatic calculation of Paid Invoices minus Total Expenses for instant business financial health insights.",
+        },
+      },
+      {
+        category: "fix",
+        text: {
+          id: "Perketat sanitasi query filter dan validasi format regex bulan pada Server Component.",
+          en: "Hardened query parameter sanitization and strict regex month validation on Server Components.",
+        },
+      },
+    ],
+  },
+  {
+    version: "0.4.0",
+    date: {
+      id: "13 September 2026",
+      en: "September 13, 2026",
+    },
+    title: {
+      id: "Migrasi Internasionalisasi (next-intl), Kustomisasi PDF & Newsletter Digest",
+      en: "Internationalization (next-intl) Migration, PDF Customization & Digest Newsletter",
+    },
+    summary: {
+      id: "Pembaruan arsitektur antarmuka: dukungan dwibahasa penuh (Indonesia & English) berbasis next-intl di seluruh dashboard/admin/portal, kustomisasi font & warna aksen template invoice, serta buletin performa mingguan.",
+      en: "UI architecture milestone: complete bilingual support (Indonesian & English) via next-intl across all modules, customizable PDF accent colors and fonts, plus weekly performance digest newsletters.",
+    },
+    highlights: [
+      {
+        category: "feat",
+        text: {
+          id: "Fondasi Bilingual next-intl: Translasi menyeluruh komponen dashboard, sidebar, autentikasi, manajemen invoice, dan panel admin.",
+          en: "Full next-intl Bilingual Engine: End-to-end translation covering dashboard, sidebar, auth, invoice management, and admin panels.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "Kustomisasi Desain PDF (PRO): Pilihan 5 warna aksen dokumen dan 3 tipografi standar (Helvetica, Times, Courier) dengan sinkronisasi live preview.",
+          en: "PDF Design Customization (PRO): 5 accent document colors and 3 typography options with live preview synchronization.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "Weekly Product Digest Automation: Cron job pengiriman email rekap performa tagihan 7 hari terakhir dan tips bisnis otomatis berbasis WIB.",
+          en: "Weekly Performance Digest: Automated cron email reporting 7-day billing performance and business tips tailored for Asia/Jakarta time.",
+        },
+      },
+      {
+        category: "security",
+        text: {
+          id: "Atribusi GA4 Measurement Protocol server-side dengan first-touch UTM persistence dan idempotency guard.",
+          en: "Server-side GA4 Measurement Protocol tracking with first-touch UTM persistence and webhook idempotency guards.",
+        },
+      },
+    ],
+  },
+  {
+    version: "0.3.0",
+    date: {
+      id: "1 September 2026",
+      en: "September 1, 2026",
+    },
+    title: {
+      id: "Theme Switcher (Dark Mode), Developer REST API & Webhooks, dan Custom Domain",
+      en: "Theme Switcher (Dark Mode), Developer REST API & Webhooks, and Custom Domains",
+    },
+    summary: {
+      id: "Kapabilitas PRO tingkat lanjut untuk integrasi sistem dan branding bisnis: REST API berotentikasi Bearer token, webhook pengiriman bertanda tangan HMAC, white-label domain kustom, alur 1-click clone invoice, dan theme switcher 3 mode.",
+      en: "Advanced PRO capabilities for system integration and business branding: Bearer token REST API, HMAC-signed webhooks, white-label custom domains, 1-click invoice clone, and 3-mode theme switcher.",
+    },
+    highlights: [
+      {
+        category: "feat",
+        text: {
+          id: "Theme Switcher 3 Mode: Pilihan Terang (Light), Gelap (Dark), dan Sistem (Otomatis) dengan script inline anti-FOUC.",
+          en: "3-Mode Theme Switcher: Light, Dark, and System modes with inline anti-FOUC protection script in root layout.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "Developer REST API Keys (PRO): Endpoint /api/v1/invoices untuk integrasi pembuatan faktur dengan hashing token SHA-256 dan rate limit Redis.",
+          en: "Developer REST API Keys (PRO): Secure /api/v1/invoices endpoints with SHA-256 key hashing and Redis rate limits.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "HMAC-Signed Webhooks: Notifikasi real-time untuk event invoice.created dan invoice.paid dengan signature header anti-tampering.",
+          en: "HMAC-Signed Webhooks: Real-time event notifications for invoice creation and payment with anti-tampering signature headers.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "White-Label Subdomain & Custom Domain: Hubungkan subdomain kustom atau nama domain bisnis sendiri dengan verifikasi DNS CNAME & TXT.",
+          en: "White-Label Subdomain & Custom Domain: Connect personalized business domains with automatic DNS CNAME & TXT verification.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "Customer Billing Portal (/portal/[id]): Halaman riwayat tagihan mandiri bagi klien untuk mengunduh PDF dan melunasi pembayaran online.",
+          en: "Customer Billing Portal (/portal/[id]): Self-service billing portal for clients to review invoices, download receipts, and pay online.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "1-Click Clone Invoice: Gandakan tagihan yang sudah ada secara atomik ke draft baru tanpa mengisi ulang rincian barang dan pelanggan.",
+          en: "1-Click Invoice Clone: Duplicate existing invoices atomically into fresh drafts without manual re-entry.",
+        },
+      },
+    ],
+  },
+  {
+    version: "0.2.0",
+    date: {
+      id: "29 Agustus 2026",
+      en: "August 29, 2026",
+    },
+    title: {
+      id: "Migrasi Mayar.id, Pusat Alat Bisnis (/tools), Invoice Berulang & Program Referral",
+      en: "Mayar.id Gateway, Business Tools Hub (/tools), Recurring Billing & Referral Program",
+    },
+    summary: {
+      id: "Strategi akuisisi organik dan otomatisasi billing: integrasi tunggal Mayar.id untuk settlement QRIS, generator invoice & kuitansi gratis, kalkulator pajak PPh 23, program bagi hasil referral pengguna, dan jadwal invoice berkala.",
+      en: "Organic acquisition and billing automation: unified Mayar.id gateway for QRIS settlement, free receipt & delivery order tools, income tax 23 calculator, user referral affiliate rewards, and recurring invoices.",
+    },
+    highlights: [
+      {
+        category: "feat",
+        text: {
+          id: "Integrasi Payment Gateway Mayar.id: Pembayaran digital via QRIS dan Virtual Account dengan pemotongan MDR 0.7% dan auto-settlement saldo.",
+          en: "Mayar.id Payment Gateway: Digital payments via QRIS & Virtual Accounts with automatic settlement to seller balance.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "Pusat Alat Bisnis (/tools): Generator Invoice, Kuitansi Resmi Terbilang Rupiah, Surat Jalan Logistik, dan Kalkulator Pajak PPh 23 Jasa.",
+          en: "Business Tools Hub (/tools): Free Invoice Generator, Worded Number Official Receipts, Delivery Orders, and PPh 23 Tax Calculator.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "Invoice Berulang Otomatis (Recurring Invoices): Penjadwalan mingguan, bulanan, kuartalan dengan auto-dispatch tagihan via cron harian.",
+          en: "Automated Recurring Invoices: Weekly, monthly, and quarterly billing schedules with automated daily cron dispatching.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "Program Afiliasi & Referral: Tautan referral unik tiap pengguna dengan bonus saldo dompet otomatis saat rekan upgrade ke paket PRO.",
+          en: "Referral & Affiliate Program: Unique referral invite links with automatic wallet cash rewards upon PRO upgrades.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "Rekap Laporan Pajak PPN & Omset Bulanan: Rekapitulasi 12 masa pajak (DPP, PPN 11%/12%, Omset) lengkap dengan ekspor CSV siap lapor SPT.",
+          en: "Monthly VAT & Turnover Tax Reports: 12-tax-period summary (tax base, VAT, turnover) with CSV exports for tax reporting.",
+        },
+      },
+      {
+        category: "security",
+        text: {
+          id: "Verifikasi Rekening Bank via OTP Email: Proteksi rekening bank terkunci (read-only) untuk mencegah manipulasi penipuan pencairan.",
+          en: "Bank Account OTP Email Verification: Locked read-only payout bank accounts protected by OTP verification against fraud.",
+        },
+      },
+    ],
+  },
+  {
+    version: "0.1.0",
+    date: {
+      id: "24 Mei 2026",
+      en: "May 24, 2026",
+    },
+    title: {
+      id: "Peluncuran Perdana NotaKu (MVP)",
+      en: "Initial Launch of NotaKu (MVP)",
+    },
+    summary: {
+      id: "Fondasi aplikasi invoice generator dan billing modern untuk UMKM Indonesia dengan dukungan kalkulasi pajak, pengiriman via WhatsApp, ekspor PDF resmi, dan sistem akun terproteksi.",
+      en: "Foundation of modern invoice generator and billing SaaS for Indonesian businesses with automatic tax calculations, WhatsApp sharing, official PDF exports, and secured authentication.",
+    },
+    highlights: [
+      {
+        category: "feat",
+        text: {
+          id: "Pembuatan Invoice Kilat: Daftar item dinamis, kalkulasi otomatis subtotal, diskon, PPN, dan nomor faktur otomatis.",
+          en: "Fast Invoice Creation: Dynamic line items, automatic calculations for subtotal, discount, tax, and automated sequential numbering.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "Render PDF & Kuitansi Resmi: Download dan cetak faktur invoice serta kuitansi tanda terima digital berkualitas tinggi.",
+          en: "Official PDF & Receipt Rendering: High-quality downloadable and printable digital invoices and receipts.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "Bagi ke WhatsApp 1-Klik: Draf pesan rapi berisi rincian tagihan beserta tautan invoice publik interaktif untuk klien.",
+          en: "1-Click WhatsApp Share: Formatted message templates with client invoice details and shareable public links.",
+        },
+      },
+      {
+        category: "security",
+        text: {
+          id: "Autentikasi Aman & Rate Limiting: Better-Auth dengan verifikasi email, Google OAuth, proteksi IDOR, dan rate limiting ketat Upstash Redis.",
+          en: "Secure Auth & Rate Limiting: Better-Auth with email verification, Google OAuth, IDOR protection, and Upstash Redis rate limiting.",
+        },
+      },
+    ],
+  },
+];

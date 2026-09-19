@@ -8,6 +8,7 @@ import { LandingFAQ } from "@/components/landing-faq";
 import { LandingFooter } from "@/components/layout/landing-footer";
 import { useTranslations } from "next-intl";
 import { formatMoney } from "@/lib/currencies";
+import { APP_VERSION } from "@/lib/changelog";
 import {
   CheckIcon,
   ChatBubbleLeftRightIcon,
@@ -38,6 +39,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
   const tWorkflow = useTranslations("workflow");
   const tPricing = useTranslations("pricing");
   const tBottomCta = useTranslations("bottomCta");
+  const tNav = useTranslations("nav");
   const tTools = useTranslations("tools");
 
   // 3D Card Interactive Tilt & Physics State
@@ -345,9 +347,24 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
           <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-10">
             {/* Left Content */}
             <div className="lg:col-span-7 space-y-6">
-              <div className="rise inline-flex items-center gap-2 rounded-xl border border-emerald/25 bg-emerald/10 px-3.5 py-1.5 text-xs font-bold text-emerald">
-                <span className="h-2 w-2 rounded-full bg-emerald" />
-                <span>{tHero("badge")}</span>
+              <div className="rise flex flex-wrap items-center gap-2.5">
+                <div className="inline-flex items-center gap-2 rounded-xl border border-emerald/25 bg-emerald/10 px-3.5 py-1.5 text-xs font-bold text-emerald">
+                  <span className="h-2 w-2 rounded-full bg-emerald" />
+                  <span>{tHero("badge")}</span>
+                </div>
+
+                <Link
+                  href="/changelog"
+                  prefetch={true}
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-line bg-paper-deep/70 dark:bg-slate-900/60 hover:bg-paper-deep dark:hover:bg-slate-800 px-3 py-1 text-xs font-semibold text-ink-soft hover:text-emerald dark:hover:text-emerald-400 transition-all group"
+                  title="Lihat catatan rilis versi terbaru"
+                >
+                  <span className="px-1.5 py-0.2 rounded font-mono font-bold text-[10px] bg-emerald/15 text-emerald dark:text-emerald-300">
+                    v{APP_VERSION}
+                  </span>
+                  <span>{tNav("changelog")}</span>
+                  <ArrowRightIcon className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
               </div>
 
               <h1

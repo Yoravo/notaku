@@ -27,6 +27,7 @@ export function LandingNavbar({ session }: NavbarProps) {
     { name: tNav("faq"), href: "/#faq", hash: "faq", isRoute: false },
     { name: tTools("allTools"), href: "/tools", hash: "", isRoute: true, matchPattern: "/tools" },
     { name: tTools("templates"), href: "/templates", hash: "", isRoute: true, matchPattern: "/templates" },
+    { name: tNav("changelog"), href: "/changelog", hash: "", isRoute: true, matchPattern: "/changelog" },
   ];
 
   // Scroll spy & hash change observer for in-page anchors on home page
