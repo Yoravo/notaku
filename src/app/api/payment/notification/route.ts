@@ -20,19 +20,25 @@ export async function POST(request: Request) {
 
     const expectedToken = process.env.MAYAR_WEBHOOK_TOKEN;
 
-    // Verifikasi Webhook Token: WAJIB ada dan valid jika MAYAR_WEBHOOK_TOKEN dikonfigurasi di env
-    if (expectedToken) {
-      if (!tokenHeader) {
-        auditLog("payment.webhook_unauthorized", { reason: "Missing token header" });
-        return NextResponse.json({ error: "Missing authorization token" }, { status: 401 });
-      }
+    // Fail-closed: tolak semua request jika secret token belum dikonfigurasi di server
+    // agar endpoint tidak pernah memproses payload tanpa verifikasi (mencegah settlement palsu).
+    if (!expectedToken) {
+      console.error("[SECURITY] MAYAR_WEBHOOK_TOKEN belum dikonfigurasi. Webhook ditolak demi keamanan.");
+      auditLog("payment.webhook_unauthorized", { reason: "Server webhook secret not configured" });
+      return NextResponse.json({ error: "Webhook verification unavailable" }, { status: 503 });
+    }
 
-      const a = Buffer.from(tokenHeader);
-      const b = Buffer.from(expectedToken);
-      if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
-        auditLog("payment.webhook_unauthorized", { reason: "Invalid token value", tokenReceived: tokenHeader });
-        return NextResponse.json({ error: "Unauthorized token" }, { status: 401 });
-      }
+    // Verifikasi Webhook Token: WAJIB ada dan valid (timing-safe)
+    if (!tokenHeader) {
+      auditLog("payment.webhook_unauthorized", { reason: "Missing token header" });
+      return NextResponse.json({ error: "Missing authorization token" }, { status: 401 });
+    }
+
+    const a = Buffer.from(tokenHeader);
+    const b = Buffer.from(expectedToken);
+    if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
+      auditLog("payment.webhook_unauthorized", { reason: "Invalid token value" });
+      return NextResponse.json({ error: "Unauthorized token" }, { status: 401 });
     }
 
     let payload: any = {};
@@ -74,9 +80,6 @@ export async function POST(request: Request) {
             OR: [
               ...(paymentId ? [{ mayarPaymentId: String(paymentId) }] : []),
               ...(orderId ? [{ mayarPaymentId: String(orderId) }] : []),
-              ...(orderId && String(orderId).startsWith("INV-")
-                ? [{ id: { startsWith: String(orderId).split("-")[1] } }]
-                : []),
             ],
           },
           include: { user: true, customer: true },

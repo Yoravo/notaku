@@ -15,11 +15,14 @@ const PROTECTED_PREFIXES = [
   "/invoices",
   "/recurring-invoices",
   "/customers",
+  "/items",
+  "/expenses",
   "/settings",
   "/wallet",
   "/tax-reports",
   "/referrals",
   "/billing",
+  "/admin",
 ];
 
 export function proxy(request: NextRequest) {

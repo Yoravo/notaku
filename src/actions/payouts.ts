@@ -63,15 +63,22 @@ export async function requestPayout(data: unknown) {
     const netAmount = amount - feeAmount;
 
     const payout = await prisma.$transaction(async (tx) => {
-      // 1. Kurangi saldo pengguna secara atomic
-      await tx.user.update({
-        where: { id: user.id },
+      // 1. Kurangi saldo pengguna secara atomic dengan validasi batas bawah saldo (anti-race condition)
+      const decrementResult = await tx.user.updateMany({
+        where: {
+          id: user.id,
+          balance: { gte: amount },
+        },
         data: {
           balance: {
             decrement: amount,
           },
         },
       });
+
+      if (decrementResult.count === 0) {
+        throw new Error("Saldo tidak mencukupi atau transaksi penarikan lain sedang diproses.");
+      }
 
       // 2. Buat record Payout
       const newPayout = await tx.payout.create({

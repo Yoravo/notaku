@@ -231,6 +231,15 @@ export async function updateInvoiceStatus(id: string, status: string) {
   });
   if (!invoice) throw new Error("Invoice tidak ditemukan");
 
+  // Kunci invoice yang sudah lunas via NotaKu Digital Payment (QRIS/VA): saldo penjual
+  // sudah dikreditkan otomatis oleh webhook Mayar. Ubah status manual dapat memicu
+  // kredit ganda saat webhook retry (idempotency guard `status === "PAID"` terlewati).
+  if (invoice.status === "PAID" && invoice.paymentMethod === "NOTAKU_DIGITAL") {
+    throw new Error(
+      "Invoice yang telah lunas melalui NotaKu Digital Payment (QRIS/VA) tidak dapat diubah statusnya.",
+    );
+  }
+
   if (!VALID_TRANSITIONS[invoice.status]?.has(status)) {
     throw new Error(
       `Status tidak bisa diubah dari ${invoice.status} ke ${status}`,
@@ -293,6 +302,13 @@ export async function deleteInvoice(id: string) {
   });
 
   if (!invoice) throw new Error("Invoice tidak ditemukan");
+
+  // Cegah penghapusan invoice yang telah lunas via Digital Payment (QRIS/VA) demi integritas ledger keuangan
+  if (invoice.status === "PAID" && invoice.paymentMethod === "NOTAKU_DIGITAL") {
+    throw new Error(
+      "Invoice yang telah lunas via NotaKu Digital Payment (QRIS/VA) tidak dapat dihapus karena tercatat dalam mutasi ledger dompet.",
+    );
+  }
 
   // Free users can only delete DRAFT invoices
   if (invoice.user.plan === "FREE" && invoice.status !== "DRAFT") {

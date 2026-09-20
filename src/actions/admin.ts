@@ -316,7 +316,24 @@ export async function updatePayoutStatus(data: {
     }
 
     await prisma.$transaction(async (tx) => {
-      // Jika admin menolak penarikan, kembalikan saldo ke user secara otomatis (Refund atomic)
+      // 1. Update status payout secara atomic dan kondisional (anti-race condition dobel refund)
+      const payoutUpdate = await tx.payout.updateMany({
+        where: {
+          id: payout.id,
+          status: { notIn: ["COMPLETED", "REJECTED"] },
+        },
+        data: {
+          status: data.status,
+          adminNotes: data.adminNotes || null,
+          processedAt: data.status === "COMPLETED" ? new Date() : payout.processedAt,
+        },
+      });
+
+      if (payoutUpdate.count === 0) {
+        throw new Error("Status penarikan sudah berubah atau telah diproses oleh admin lain.");
+      }
+
+      // 2. Jika admin menolak penarikan, kembalikan saldo ke user secara otomatis (Refund atomic)
       if (data.status === "REJECTED") {
         await tx.user.update({
           where: { id: payout.userId },
@@ -341,16 +358,6 @@ export async function updatePayoutStatus(data: {
           },
         });
       }
-
-      // Update status payout
-      await tx.payout.update({
-        where: { id: payout.id },
-        data: {
-          status: data.status,
-          adminNotes: data.adminNotes || null,
-          processedAt: data.status === "COMPLETED" ? new Date() : payout.processedAt,
-        },
-      });
     });
 
     await auditLog(
