@@ -57,7 +57,12 @@ test-dashboard-mobile.py
 .graphify*
 graphify-out/
 
+# Temporary test & audit scripts
 scripts/audit-output*
 scripts/capture-landing-baseline.cjs
 scripts/capture-redesign-verification.cjs
 scripts/smoke-settings-render.cjs
+scripts/check-*
+scripts/temp-*
+scripts/test-*
+scripts/*.test.*

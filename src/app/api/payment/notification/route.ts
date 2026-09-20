@@ -3,6 +3,7 @@ import { after, NextResponse } from "next/server";
 import { auditLog } from "@/lib/audit-log";
 import { dispatchWebhook } from "@/lib/webhook-dispatcher";
 import { notifySellerInvoicePaid } from "@/lib/bot-notifications";
+import { notifyAdminNewSubscription } from "@/lib/admin-notifications";
 import crypto from "crypto";
 
 export async function GET() {
@@ -325,6 +326,17 @@ export async function POST(request: Request) {
         amount,
         periodEnd: newPeriodEnd.toISOString(),
       });
+
+      // Kirim alert langganan baru ke Discord Webhook admin (non-blocking)
+      notifyAdminNewSubscription({
+        userId: user.id,
+        userEmail: user.email,
+        userName: user.name,
+        plan: targetPlan,
+        amount: Number(amount) || (targetPlan === "BUSINESS" ? 99000 : 49000),
+        intervalDays: daysToAdd,
+        paymentId: String(paymentId || orderId || "-"),
+      }).catch((err) => console.error("[SUB_ADMIN_NOTIF_ERROR]", err));
 
       // GA4 Measurement Protocol: fire event upgrade_to_paid dari server
       const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-52C2DD26LB";

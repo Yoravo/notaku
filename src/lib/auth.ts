@@ -5,6 +5,7 @@ import { prisma } from "./prisma";
 import { sendEmail } from "./email";
 import { escapeHtml } from "./html";
 import { ensureUserReferralCode } from "./referral";
+import { notifyAdminVerifiedUser } from "./admin-notifications";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -31,6 +32,16 @@ export const auth = betterAuth({
             await ensureUserReferralCode(user.id);
           } catch (e) {
             console.error("Gagal auto-generate referralCode:", e);
+          }
+
+          // Jika user mendaftar via Google OAuth, emailVerified sudah true sejak create
+          if (user.emailVerified) {
+            notifyAdminVerifiedUser({
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              provider: "Google OAuth",
+            }).catch((err) => console.error("[AUTH_ADMIN_NOTIF_ERROR]", err));
           }
         },
       },
@@ -83,6 +94,17 @@ export const auth = betterAuth({
   emailVerification: {
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
+    afterEmailVerification: async (user) => {
+      // Trigger alert admin saat email berhasil diverifikasi pengguna
+      if (user) {
+        notifyAdminVerifiedUser({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          provider: "Email Verifikasi",
+        }).catch((err) => console.error("[AUTH_ADMIN_NOTIF_ERROR]", err));
+      }
+    },
     sendVerificationEmail: async ({
       user,
       url,
