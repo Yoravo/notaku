@@ -19,7 +19,6 @@ export default function robots(): MetadataRoute.Robots {
           "/tools",
           "/templates",
           "/templates/",
-          "/changelog",
         ],
         disallow: [
           "/dashboard",
@@ -67,7 +66,6 @@ export default function robots(): MetadataRoute.Robots {
           "/tools",
           "/templates",
           "/templates/",
-          "/changelog",
         ],
         disallow: [
           "/dashboard",

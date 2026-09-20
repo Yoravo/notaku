@@ -6,6 +6,7 @@ import Image from "next/image";
 import { LandingNavbar } from "@/components/landing-navbar";
 import { LandingFAQ } from "@/components/landing-faq";
 import { LandingFooter } from "@/components/layout/landing-footer";
+import { openChangelogModal } from "@/components/changelog-modal";
 import { useTranslations } from "next-intl";
 import { formatMoney } from "@/lib/currencies";
 import { APP_VERSION } from "@/lib/changelog";
@@ -312,10 +313,10 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
             {/* Left Content */}
             <div className="lg:col-span-7 space-y-6">
               <div className="rise flex flex-wrap items-center gap-2.5">
-                <Link
-                  href="/changelog"
-                  prefetch={true}
-                  className="inline-flex items-center gap-2 rounded-full border border-emerald-200 dark:border-emerald-800/80 bg-emerald-50/80 dark:bg-emerald-950/50 hover:bg-emerald-100/70 dark:hover:bg-emerald-900/60 px-3.5 py-1.5 text-xs font-semibold text-[#0f6b4f] dark:text-emerald-400 transition-all group shadow-2xs"
+                <button
+                  type="button"
+                  onClick={() => openChangelogModal()}
+                  className="inline-flex items-center gap-2 rounded-full border border-emerald-200 dark:border-emerald-800/80 bg-emerald-50/80 dark:bg-emerald-950/50 hover:bg-emerald-100/70 dark:hover:bg-emerald-900/60 px-3.5 py-1.5 text-xs font-semibold text-[#0f6b4f] dark:text-emerald-400 transition-all group shadow-2xs cursor-pointer"
                   title="Lihat catatan rilis versi terbaru"
                 >
                   <span className="px-1.5 py-0.5 rounded-full font-mono font-bold text-[10px] bg-emerald-600 dark:bg-emerald-500 text-white">
@@ -323,7 +324,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                   </span>
                   <span>{tHero("badge")} · {tNav("changelog")}</span>
                   <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-                </Link>
+                </button>
               </div>
 
               <h1

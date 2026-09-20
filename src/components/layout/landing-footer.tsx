@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { APP_VERSION } from "@/lib/changelog";
+import { openChangelogModal } from "@/components/changelog-modal";
 
 export function LandingFooter() {
   const pathname = usePathname();
@@ -141,13 +142,13 @@ export function LandingFooter() {
               >
                 {tNav("pricing")}
               </a>
-              <Link
-                href="/changelog"
-                prefetch={true}
-                className="inline-flex items-center min-h-[44px] py-2 text-xs sm:text-sm font-medium text-ink-soft hover:text-emerald transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald rounded-lg"
+              <button
+                type="button"
+                onClick={() => openChangelogModal()}
+                className="inline-flex items-center min-h-[44px] py-2 text-xs sm:text-sm font-medium text-ink-soft hover:text-emerald transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald rounded-lg text-left cursor-pointer"
               >
                 {tNav("changelog")}
-              </Link>
+              </button>
               <Link
                 href="/login"
                 prefetch={true}
@@ -162,14 +163,14 @@ export function LandingFooter() {
         <div className="mt-12 border-t border-line/60 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-ink-soft font-medium">
           <span>{tFooter("copyright")}</span>
           <div className="flex items-center gap-3">
-            <Link
-              href="/changelog"
-              prefetch={true}
-              className="font-mono text-slate-400 hover:text-emerald transition-colors"
+            <button
+              type="button"
+              onClick={() => openChangelogModal()}
+              className="font-mono text-slate-400 hover:text-emerald transition-colors cursor-pointer"
               title="Catatan rilis"
             >
               v{APP_VERSION}
-            </Link>
+            </button>
             <span className="text-slate-400">Jakarta, Indonesia</span>
           </div>
         </div>

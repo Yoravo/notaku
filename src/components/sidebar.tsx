@@ -23,6 +23,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
 import { APP_VERSION } from "@/lib/changelog";
+import { openChangelogModal } from "@/components/changelog-modal";
 
 type User = {
   name: string;
@@ -249,17 +250,19 @@ export function Sidebar({
 
       {/* User Profile & Plan Badge Section */}
       <div className="border-t border-slate-200 dark:border-slate-800 p-3 shrink-0 space-y-2">
-        {/* App Version → Changelog */}
-        <Link
-          href="/changelog"
-          prefetch={true}
-          onClick={onClose}
-          className="flex items-center justify-center gap-1.5 rounded-lg py-1 text-[10px] font-semibold text-slate-400 dark:text-slate-500 hover:text-[#0f6b4f] dark:hover:text-emerald-400 transition-colors whitespace-nowrap"
+        {/* App Version → Changelog Modal */}
+        <button
+          type="button"
+          onClick={() => {
+            onClose?.();
+            openChangelogModal();
+          }}
+          className="w-full flex items-center justify-center gap-1.5 rounded-lg py-1 text-[10px] font-semibold text-slate-400 dark:text-slate-500 hover:text-[#0f6b4f] dark:hover:text-emerald-400 transition-colors whitespace-nowrap cursor-pointer"
           title="Lihat catatan rilis"
         >
           <SparklesIcon className="w-3 h-3" />
           <span>NotaKu v{APP_VERSION} · Changelog</span>
-        </Link>
+        </button>
 
         <div className="flex items-center justify-between rounded-xl bg-slate-50 dark:bg-slate-800/80 p-2 border border-slate-200/60 dark:border-slate-700">
           <div className="min-w-0 flex-1 flex items-center gap-2">

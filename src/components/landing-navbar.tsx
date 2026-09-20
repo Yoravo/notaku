@@ -1,12 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  Bars3Icon,
+  XMarkIcon,
+  ChevronDownIcon,
+  Squares2X2Icon,
+  DocumentDuplicateIcon,
+  SparklesIcon,
+} from "@heroicons/react/24/outline";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { openChangelogModal } from "@/components/changelog-modal";
 import { useTranslations } from "next-intl";
 
 interface NavbarProps {
@@ -15,20 +23,53 @@ interface NavbarProps {
 
 export function LandingNavbar({ session }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const [activeHash, setActiveHash] = useState("");
   const pathname = usePathname();
   const tNav = useTranslations("nav");
   const tTools = useTranslations("tools");
+  const moreRef = useRef<HTMLDivElement>(null);
 
-  const navLinks = [
-    { name: tNav("features"), href: "/#fitur", hash: "fitur", isRoute: false },
-    { name: tNav("howItWorks"), href: "/#cara-kerja", hash: "cara-kerja", isRoute: false },
-    { name: tNav("pricing"), href: "/#pricing", hash: "pricing", isRoute: false },
-    { name: tNav("faq"), href: "/#faq", hash: "faq", isRoute: false },
-    { name: tTools("allTools"), href: "/tools", hash: "", isRoute: true, matchPattern: "/tools" },
-    { name: tTools("templates"), href: "/templates", hash: "", isRoute: true, matchPattern: "/templates" },
-    { name: tNav("changelog"), href: "/changelog", hash: "", isRoute: true, matchPattern: "/changelog" },
+  // Primary in-page anchors (homepage sections only)
+  const anchorLinks = [
+    { name: tNav("features"), href: "/#fitur", hash: "fitur" },
+    { name: tNav("howItWorks"), href: "/#cara-kerja", hash: "cara-kerja" },
+    { name: tNav("pricing"), href: "/#pricing", hash: "pricing" },
+    { name: tNav("faq"), href: "/#faq", hash: "faq" },
   ];
+
+  // Secondary items grouped under the "More" dropdown.
+  // Routes navigate; changelog opens a modal (action: "changelog").
+  const moreItems = [
+    {
+      name: tTools("allTools"),
+      desc: tTools("allToolsNavDesc"),
+      href: "/tools",
+      matchPattern: "/tools",
+      icon: Squares2X2Icon,
+      action: "route" as const,
+    },
+    {
+      name: tTools("templates"),
+      desc: tTools("templatesNavDesc"),
+      href: "/templates",
+      matchPattern: "/templates",
+      icon: DocumentDuplicateIcon,
+      action: "route" as const,
+    },
+    {
+      name: tNav("changelog"),
+      desc: tNav("changelogNavDesc"),
+      href: "#changelog",
+      matchPattern: "",
+      icon: SparklesIcon,
+      action: "changelog" as const,
+    },
+  ];
+
+  const isMoreActive = moreItems.some(
+    (item) => item.matchPattern && pathname.startsWith(item.matchPattern)
+  );
 
   // Scroll spy & hash change observer for in-page anchors on home page
   useEffect(() => {
@@ -39,7 +80,7 @@ export function LandingNavbar({ session }: NavbarProps) {
 
     const updateActiveHashFromScroll = () => {
       const sectionIds = ["fitur", "cara-kerja", "pricing", "faq"];
-      const scrollPos = window.scrollY + 120; // 120px offset for top header
+      const scrollPos = window.scrollY + 120;
 
       for (const id of sectionIds) {
         const el = document.getElementById(id);
@@ -53,7 +94,6 @@ export function LandingNavbar({ session }: NavbarProps) {
         }
       }
 
-      // If scrolled near the top
       if (window.scrollY < 200) {
         setActiveHash("");
       }
@@ -61,7 +101,7 @@ export function LandingNavbar({ session }: NavbarProps) {
 
     const handleLocationChange = () => {
       const rawHash = window.location.hash;
-      // Sanitize any stacked hashes (e.g. #faq#pricing -> pricing)
+      if (rawHash === "#changelog") return; // handled by ChangelogModal
       if (rawHash.includes("#")) {
         const parts = rawHash.split("#").filter(Boolean);
         const latestHash = parts[parts.length - 1];
@@ -78,7 +118,6 @@ export function LandingNavbar({ session }: NavbarProps) {
     window.addEventListener("hashchange", handleLocationChange);
     window.addEventListener("popstate", handleLocationChange);
 
-    // Initial check
     handleLocationChange();
 
     return () => {
@@ -88,43 +127,57 @@ export function LandingNavbar({ session }: NavbarProps) {
     };
   }, [pathname]);
 
-  const handleNavClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    item: (typeof navLinks)[0]
-  ) => {
-    if (mobileMenuOpen) {
-      setMobileMenuOpen(false);
-    }
+  // Close the "More" dropdown on outside click / Escape
+  useEffect(() => {
+    if (!moreOpen) return;
+    const onClick = (e: MouseEvent) => {
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) {
+        setMoreOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMoreOpen(false);
+    };
+    window.addEventListener("mousedown", onClick);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("mousedown", onClick);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [moreOpen]);
 
-    // Intercept in-page hash links on the homepage to avoid Next.js router stacking hashes
-    if (!item.isRoute && item.hash && pathname === "/") {
+  const handleAnchorClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    hash: string
+  ) => {
+    if (mobileMenuOpen) setMobileMenuOpen(false);
+    if (hash && pathname === "/") {
       e.preventDefault();
-      const el = document.getElementById(item.hash);
+      const el = document.getElementById(hash);
       if (el) {
-        const yOffset = -80; // top header sticky offset
+        const yOffset = -80;
         const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
         window.scrollTo({ top: y, behavior: "smooth" });
       }
-      window.history.pushState(null, "", `/#${item.hash}`);
-      setActiveHash(item.hash);
+      window.history.pushState(null, "", `/#${hash}`);
+      setActiveHash(hash);
     }
   };
 
-  const isLinkActive = (item: (typeof navLinks)[0]) => {
-    if (item.isRoute) {
-      if (item.matchPattern) {
-        return pathname.startsWith(item.matchPattern);
-      }
-      return pathname === item.href;
+  const handleMoreItemClick = (
+    e: React.MouseEvent,
+    item: (typeof moreItems)[0]
+  ) => {
+    setMoreOpen(false);
+    setMobileMenuOpen(false);
+    if (item.action === "changelog") {
+      e.preventDefault();
+      openChangelogModal();
     }
-
-    // Hash link on homepage
-    if (pathname === "/" && item.hash) {
-      return activeHash === item.hash;
-    }
-
-    return false;
   };
+
+  const isAnchorActive = (hash: string) =>
+    pathname === "/" && !!hash && activeHash === hash;
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-line/60 bg-paper/85 backdrop-blur-md transition-all">
@@ -159,20 +212,18 @@ export function LandingNavbar({ session }: NavbarProps) {
           </Link>
         </div>
 
-        {/* Center: Desktop Navigation (Mathematically centered) */}
+        {/* Center: Desktop Navigation */}
         <nav className="hidden items-center justify-center gap-5 lg:gap-7 md:flex shrink-0">
-          {navLinks.map((item) => {
-            const active = isLinkActive(item);
+          {anchorLinks.map((item) => {
+            const active = isAnchorActive(item.hash);
             return (
               <Link
                 key={item.name}
                 href={item.href}
                 prefetch={true}
-                onClick={(e) => handleNavClick(e, item)}
+                onClick={(e) => handleAnchorClick(e, item.hash)}
                 className={`text-sm font-medium transition-all relative py-1 whitespace-nowrap ${
-                  active
-                    ? "text-emerald font-bold"
-                    : "text-ink-soft hover:text-emerald"
+                  active ? "text-emerald font-bold" : "text-ink-soft hover:text-emerald"
                 }`}
               >
                 {item.name}
@@ -182,11 +233,69 @@ export function LandingNavbar({ session }: NavbarProps) {
               </Link>
             );
           })}
+
+          {/* "More" Dropdown */}
+          <div className="relative" ref={moreRef}>
+            <button
+              type="button"
+              onClick={() => setMoreOpen((v) => !v)}
+              aria-expanded={moreOpen}
+              aria-haspopup="true"
+              className={`flex items-center gap-1 text-sm font-medium transition-all py-1 cursor-pointer ${
+                moreOpen || isMoreActive
+                  ? "text-emerald font-bold"
+                  : "text-ink-soft hover:text-emerald"
+              }`}
+            >
+              {tNav("more")}
+              <ChevronDownIcon
+                className={`w-4 h-4 transition-transform ${moreOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+
+            {moreOpen && (
+              <div className="absolute right-0 top-full mt-2 w-72 rounded-2xl border border-line bg-paper p-2 shadow-xl animate-in fade-in slide-in-from-top-1 duration-150">
+                {moreItems.map((item) => {
+                  const active = item.matchPattern && pathname.startsWith(item.matchPattern);
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      prefetch={item.action === "route"}
+                      onClick={(e) => handleMoreItemClick(e, item)}
+                      className={`flex items-start gap-3 rounded-xl px-3 py-2.5 transition-colors ${
+                        active
+                          ? "bg-emerald/10 text-emerald"
+                          : "text-ink hover:bg-line/60"
+                      }`}
+                    >
+                      <span
+                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
+                          active
+                            ? "bg-emerald/15 text-emerald"
+                            : "bg-line/60 text-ink-soft"
+                        }`}
+                      >
+                        <item.icon className="h-5 w-5" />
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block text-sm font-semibold leading-tight">
+                          {item.name}
+                        </span>
+                        <span className="block text-xs text-ink-soft leading-snug mt-0.5">
+                          {item.desc}
+                        </span>
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </nav>
 
-        {/* Right: Desktop Auth / Theme / Language + Mobile Hamburger */}
+        {/* Right: Auth / Theme / Language + Mobile Hamburger */}
         <div className="flex items-center justify-end md:flex-1 gap-2.5">
-          {/* Desktop Auth Buttons & Language Switcher & Theme */}
           <div className="hidden items-center gap-2 lg:gap-2.5 md:flex">
             <ThemeToggle />
             <LanguageSwitcher />
@@ -219,7 +328,7 @@ export function LandingNavbar({ session }: NavbarProps) {
             )}
           </div>
 
-          {/* Mobile Controls (Theme + Language + Hamburger) */}
+          {/* Mobile Controls */}
           <div className="flex items-center gap-2 md:hidden">
             <ThemeToggle />
             <LanguageSwitcher />
@@ -243,27 +352,47 @@ export function LandingNavbar({ session }: NavbarProps) {
       {mobileMenuOpen && (
         <div className="border-b border-line bg-paper px-6 py-5 shadow-lg animate-in slide-in-from-top-2 md:hidden">
           <div className="flex flex-col gap-2">
-            {navLinks.map((item) => {
-              const active = isLinkActive(item);
+            {/* Primary anchors */}
+            {anchorLinks.map((item) => {
+              const active = isAnchorActive(item.hash);
               return (
                 <Link
                   key={item.name}
                   href={item.href}
                   prefetch={true}
-                  onClick={(e) => handleNavClick(e, item)}
+                  onClick={(e) => handleAnchorClick(e, item.hash)}
                   className={`text-base font-medium transition-colors min-h-[44px] flex items-center justify-between py-2 px-1 ${
-                    active
-                      ? "text-emerald font-bold"
-                      : "text-ink-soft hover:text-emerald"
+                    active ? "text-emerald font-bold" : "text-ink-soft hover:text-emerald"
                   }`}
                 >
                   <span>{item.name}</span>
-                  {active && (
-                    <span className="w-2 h-2 rounded-full bg-emerald" />
-                  )}
+                  {active && <span className="w-2 h-2 rounded-full bg-emerald" />}
                 </Link>
               );
             })}
+
+            {/* Secondary group */}
+            <p className="text-[11px] font-bold uppercase tracking-wider text-ink-soft/70 mt-3 mb-1 px-1">
+              {tNav("more")}
+            </p>
+            {moreItems.map((item) => {
+              const active = item.matchPattern && pathname.startsWith(item.matchPattern);
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  prefetch={item.action === "route"}
+                  onClick={(e) => handleMoreItemClick(e, item)}
+                  className={`flex items-center gap-3 min-h-[44px] py-2 px-1 transition-colors ${
+                    active ? "text-emerald font-bold" : "text-ink-soft hover:text-emerald"
+                  }`}
+                >
+                  <item.icon className="h-5 w-5 shrink-0" />
+                  <span className="text-base font-medium">{item.name}</span>
+                </Link>
+              );
+            })}
+
             <hr className="border-line my-2" />
             {session ? (
               <Link

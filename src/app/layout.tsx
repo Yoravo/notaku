@@ -4,6 +4,7 @@ import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { TrafficTracker } from "@/components/traffic-tracker";
 import { PWARegister } from "@/components/pwa-register";
+import { ChangelogModal } from "@/components/changelog-modal";
 import { ThemeProvider } from "@/lib/theme/context";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
@@ -170,6 +171,7 @@ export default async function RootLayout({
         <ThemeProvider>
           <NextIntlClientProvider locale={locale} messages={messages}>
             <PWARegister />
+            <ChangelogModal />
             {children}
           </NextIntlClientProvider>
         </ThemeProvider>

@@ -4,7 +4,7 @@
  * berdasarkan riwayat commit git riil dan mendukung dwibahasa (ID & EN).
  */
 
-export const APP_VERSION = "0.7.5";
+export const APP_VERSION = "0.7.6";
 export const APP_RELEASE_DATE = {
   id: "21 September 2026",
   en: "September 21, 2026",
@@ -42,6 +42,53 @@ export interface ChangelogRelease {
 
 export const CHANGELOG_RELEASES: ChangelogRelease[] = [
   {
+    version: "0.7.6",
+    type: "patch",
+    date: {
+      id: "21 September 2026",
+      en: "September 21, 2026",
+    },
+    title: {
+      id: "Penyederhanaan Navigasi Beranda & Popup Modal Changelog",
+      en: "Simplified Landing Navigation & Interactive Changelog Popup Modal",
+    },
+    summary: {
+      id: "Menu navbar beranda disederhanakan dengan dropdown 'Lainnya' untuk tools dan template, serta catatan rilis changelog kini hadir sebagai popup modal interaktif instan.",
+      en: "Homepage navbar is simplified with a 'More' dropdown for tools and templates, and release notes now open as an instant interactive popup modal.",
+    },
+    isLatest: true,
+    highlights: [
+      {
+        category: "feat",
+        text: {
+          id: "Penyederhanaan Navigasi Navbar: Menu utama berfokus pada navigasi section beranda (Fitur, Cara Kerja, Harga, FAQ).",
+          en: "Simplified Navbar Navigation: Main menu focuses on primary section navigation (Features, How it Works, Pricing, FAQ).",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "Dropdown Menu 'Lainnya': Mengelompokkan Semua Tools, Template Faktur, dan Changelog dalam dropdown terorganisir.",
+          en: "'More' Dropdown Menu: Consolidates All Tools, Templates, and Changelog in an organized dropdown menu.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "Changelog Popup Modal Interaktif: Membuka riwayat pembaruan versi secara instan tanpa perlu berpindah ke halaman khusus.",
+          en: "Interactive Changelog Popup Modal: Opens version release history instantly without navigating away to a dedicated page.",
+        },
+      },
+      {
+        category: "perf",
+        text: {
+          id: "Akses Modal Terintegrasi: Trigger changelog terhubung mulus dari navbar, hero badge, footer, sidebar dashboard, dan command palette.",
+          en: "Unified Modal Triggers: Changelog triggers seamlessly from navbar, hero badge, footer, dashboard sidebar, and command palette.",
+        },
+      },
+    ],
+  },
+  {
     version: "0.7.5",
     type: "patch",
     date: {
@@ -56,7 +103,6 @@ export const CHANGELOG_RELEASES: ChangelogRelease[] = [
       id: "Penyelarasan antarmuka pengaturan akun untuk fitur eksklusif paket Business (Custom Domain, REST API Keys, Webhooks, dan Bot Alerts) dengan penandaan visual ungu dan modal checkout terarah.",
       en: "Aligned account settings interfaces for exclusive Business plan capabilities (Custom Domains, REST API Keys, Webhooks, and Bot Alerts) with branded visual accents and contextual checkout routing.",
     },
-    isLatest: true,
     highlights: [
       {
         category: "feat",
