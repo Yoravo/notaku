@@ -353,6 +353,19 @@
       "step4": "Terbitkan Invoice Pertama",
       "step4Desc": "Buat dan kirim tagihan resmi ke klien",
       "completed": "Selesai"
+    },
+    "pwaInstall": {
+      "title": "Pasang Aplikasi Nota<ku>Ku</ku>",
+      "descAndroid": "Akses dasbor lebih cepat, buka tagihan langsung, dan kelola invoice dari layar utama perangkat Anda.",
+      "descIOS": "Pasang Nota<ku>Ku</ku> di iPhone/iPad Anda untuk akses instan langsung dari layar utama.",
+      "installButton": "Pasang Sekarang",
+      "installing": "Memasang...",
+      "howToInstallIOS": "Petunjuk Pemasangan iOS",
+      "iosStep1": "Ketuk tombol Bagikan (Share) pada bilah navigasi Safari di bagian bawah.",
+      "iosStep2": "Gulir ke bawah menu dan pilih 'Tambahkan ke Layar Utama' (Add to Home Screen).",
+      "iosStep3": "Ketuk 'Tambah' di sudut kanan atas untuk menyelesaikan.",
+      "dismiss": "Nanti saja",
+      "close": "Tutup banner"
     }
   },
   "cashflow": {

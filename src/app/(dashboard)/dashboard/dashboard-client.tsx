@@ -21,6 +21,7 @@ import { CashflowChart } from "@/components/dashboard/cashflow-chart";
 import { ClientPerformanceMetrics } from "@/components/dashboard/client-performance-metrics";
 import { formatMoney } from "@/lib/currencies";
 import { OnboardingChecklist } from "@/components/dashboard/onboarding-checklist";
+import { PWAInstallBanner } from "@/components/pwa-install-banner";
 
 interface DashboardClientProps {
   userName: string;
@@ -81,6 +82,9 @@ export function DashboardClient({
     <div className="w-full max-w-7xl mx-auto space-y-6 sm:space-y-8">
       {/* Global Broadcast Announcement */}
       {announcement && <AnnouncementBanner announcement={announcement} />}
+
+      {/* PWA Install Prompt Banner */}
+      <PWAInstallBanner userId={userId} />
 
       {/* Onboarding Checklist */}
       <OnboardingChecklist

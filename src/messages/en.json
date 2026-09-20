@@ -353,6 +353,19 @@
       "step4": "Issue First Invoice",
       "step4Desc": "Create and send your first official invoice",
       "completed": "Done"
+    },
+    "pwaInstall": {
+      "title": "Install Nota<ku>Ku</ku> App",
+      "descAndroid": "Faster access to your dashboard, open invoices instantly, and manage billing directly from your home screen.",
+      "descIOS": "Install Nota<ku>Ku</ku> on your iPhone/iPad for instant access right from your home screen.",
+      "installButton": "Install Now",
+      "installing": "Installing...",
+      "howToInstallIOS": "iOS Installation Guide",
+      "iosStep1": "Tap the Share icon on the Safari navigation bar at the bottom.",
+      "iosStep2": "Scroll down the menu and select 'Add to Home Screen'.",
+      "iosStep3": "Tap 'Add' in the top right corner to complete installation.",
+      "dismiss": "Not now",
+      "close": "Close banner"
     }
   },
   "cashflow": {

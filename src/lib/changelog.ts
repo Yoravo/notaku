@@ -4,7 +4,7 @@
  * berdasarkan riwayat commit git riil dan mendukung dwibahasa (ID & EN).
  */
 
-export const APP_VERSION = "0.7.1";
+export const APP_VERSION = "0.7.2";
 export const APP_RELEASE_DATE = {
   id: "20 September 2026",
   en: "September 20, 2026",
@@ -42,6 +42,39 @@ export interface ChangelogRelease {
 
 export const CHANGELOG_RELEASES: ChangelogRelease[] = [
   {
+    version: "0.7.2",
+    type: "patch",
+    date: {
+      id: "20 September 2026",
+      en: "September 20, 2026",
+    },
+    title: {
+      id: "Banner Pemasangan PWA Kustom (A2HS) untuk Android & iOS",
+      en: "Custom PWA Install Prompt Banner (A2HS) for Android & iOS",
+    },
+    summary: {
+      id: "Kemudahan memasang aplikasi NotaKu langsung ke layar utama (Add to Home Screen) di Android dan iOS Safari dengan deteksi otomatis, panduan interaktif, dan status dismiss tersimpan per pengguna.",
+      en: "Seamlessly install NotaKu to your home screen (Add to Home Screen) on Android and iOS Safari with automatic prompt detection, interactive step guides, and user-scoped dismissal persistence.",
+    },
+    isLatest: true,
+    highlights: [
+      {
+        category: "feat",
+        text: {
+          id: "Banner PWA Kustom di Dasbor: Pemasangan 1-klik native untuk browser Chromium (Android/Desktop) dan panduan langkah resmi untuk iOS Safari.",
+          en: "Custom PWA Dashboard Banner: 1-click native installation for Chromium browsers (Android/Desktop) and official step-by-step guidance for iOS Safari.",
+        },
+      },
+      {
+        category: "perf",
+        text: {
+          id: "State Dismiss Per Pengguna & Anti-Duplikasi: Banner tidak akan muncul kembali jika aplikasi sudah terpasang (standalone) atau telah ditutup oleh pengguna.",
+          en: "User-Scoped Dismissal & Duplicate Prevention: Banner is hidden if already running in standalone mode or dismissed by the user.",
+        },
+      },
+    ],
+  },
+  {
     version: "0.7.1",
     type: "patch",
     date: {
@@ -56,7 +89,7 @@ export const CHANGELOG_RELEASES: ChangelogRelease[] = [
       id: "Pencegahan kehilangan data formulir invoice dengan auto-save lokal di browser dan banner pemulihan otomatis, ditambah peningkatan kontras visual chart (Cashflow & Trafik) dan harmonisasi token dark mode di seluruh antarmuka.",
       en: "Prevention of form data loss with browser-local auto-save and seamless recovery banners, alongside visual contrast enhancements across charts (Cashflow & Traffic) and full dark mode color token harmonization.",
     },
-    isLatest: true,
+    isLatest: false,
     highlights: [
       {
         category: "feat",
