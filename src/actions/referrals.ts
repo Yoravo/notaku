@@ -134,14 +134,33 @@ export async function linkUserReferral(userId: string, rawCode: string) {
       return { success: false, error: "Tidak dapat menggunakan kode referral sendiri" };
     }
 
-    // Pastikan user belum terikat ke referrer lain
+    // Pastikan user ada dan belum terikat ke referrer lain
     const currentUser = await prisma.user.findUnique({
       where: { id: userId },
-      select: { referredById: true },
+      select: { referredById: true, createdAt: true },
     });
 
-    if (currentUser?.referredById) {
+    if (!currentUser) {
+      return { success: false, error: "Pengguna tidak ditemukan" };
+    }
+
+    if (currentUser.referredById) {
       return { success: false, error: "Akun sudah terhubung ke referral lain" };
+    }
+
+    // Otorisasi ketat:
+    // - Jika ada session: caller HANYA boleh menautkan akunnya sendiri (cegah logged-in attacker menargetkan akun lain).
+    // - Jika tidak ada session (alur registrasi email/password yang belum terverifikasi): hanya untuk akun yang baru dibuat (< 15 menit).
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (session) {
+      if (session.user.id !== userId) {
+        return { success: false, error: "Tidak memiliki izin untuk menautkan kode referral pada akun ini" };
+      }
+    } else {
+      const isRecentlyCreated = Date.now() - new Date(currentUser.createdAt).getTime() < 15 * 60 * 1000;
+      if (!isRecentlyCreated) {
+        return { success: false, error: "Tidak memiliki izin untuk menautkan kode referral pada akun ini" };
+      }
     }
 
     await prisma.user.update({

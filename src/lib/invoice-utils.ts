@@ -110,3 +110,20 @@ export function formatDateTimeWIB(
     ...options,
   });
 }
+
+/**
+ * Ekstraksi tahun dan bulan (1-12) berdasarkan zona waktu Asia/Jakarta (WIB)
+ * Menghindari bug pergeseran tanggal/bulan jika server berjalan di zona waktu UTC
+ */
+export function getYearMonthWIB(date: Date | string | number): { year: number; month: number } {
+  const d = typeof date === "string" || typeof date === "number" ? new Date(date) : date;
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: JAKARTA_TZ,
+    year: "numeric",
+    month: "numeric",
+  }).formatToParts(d);
+
+  const year = parseInt(parts.find((p) => p.type === "year")?.value || "0", 10);
+  const month = parseInt(parts.find((p) => p.type === "month")?.value || "0", 10);
+  return { year, month };
+}

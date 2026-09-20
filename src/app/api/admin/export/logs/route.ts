@@ -1,6 +1,7 @@
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { sanitizeCsvCell } from "@/lib/csv";
 
 export async function GET() {
   try {
@@ -13,12 +14,12 @@ export async function GET() {
 
     const headers = ["ID", "Waktu (ISO)", "Event", "User ID", "IP Address", "Detail Payload"];
     const rows = logs.map((log) => [
-      `"${log.id}"`,
-      `"${log.createdAt.toISOString()}"`,
-      `"${log.event.replace(/"/g, '""')}"`,
-      `"${log.userId || ""}"`,
-      `"${log.ipAddress || ""}"`,
-      `"${JSON.stringify(log.detail || {}).replace(/"/g, '""')}"`,
+      sanitizeCsvCell(log.id),
+      sanitizeCsvCell(log.createdAt.toISOString()),
+      sanitizeCsvCell(log.event),
+      sanitizeCsvCell(log.userId || ""),
+      sanitizeCsvCell(log.ipAddress || ""),
+      sanitizeCsvCell(JSON.stringify(log.detail || {})),
     ]);
 
     const csvContent = [headers.join(","), ...rows.map((r) => r.join(","))].join("\r\n");

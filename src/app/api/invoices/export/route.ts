@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { InvoiceStatus } from "@/generated/prisma/client";
+import { sanitizeCsvCell } from "@/lib/csv";
 
 export async function GET(request: Request) {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -80,12 +81,8 @@ export async function GET(request: Request) {
     "Catatan",
   ];
 
-  // Helper escape CSV cell
-  const escapeCsv = (str: string | number | null | undefined) => {
-    if (str === null || str === undefined) return '""';
-    const stringVal = String(str);
-    return `"${stringVal.replace(/"/g, '""')}"`;
-  };
+  // Helper escape + sanitasi CSV cell (anti CSV Formula Injection)
+  const escapeCsv = (str: string | number | null | undefined) => sanitizeCsvCell(str);
 
   const rows = invoices.map((inv) => {
     const createdDate = inv.createdAt.toISOString().split("T")[0];

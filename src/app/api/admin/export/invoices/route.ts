@@ -1,6 +1,7 @@
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { sanitizeCsvCell } from "@/lib/csv";
 
 export async function GET() {
   try {
@@ -39,22 +40,22 @@ export async function GET() {
     ];
 
     const rows = invoices.map((inv) => [
-      `"${inv.id}"`,
-      `"${inv.number}"`,
-      `"${inv.status}"`,
-      `"${(inv.subtotal || inv.total).toString()}"`,
-      `"${inv.discountType === "PERCENTAGE" ? "Persentase (%)" : "Nominal (Rp)"}"`,
-      `"${(inv.discountValue || 0).toString()}"`,
-      `"${(inv.discountAmount || 0).toString()}"`,
-      `"${(inv.taxRate || 0).toString()}"`,
-      `"${(inv.taxAmount || 0).toString()}"`,
-      `"${inv.total.toString()}"`,
-      `"${(inv.user?.name || "").replace(/"/g, '""')}"`,
-      `"${(inv.user?.email || "").replace(/"/g, '""')}"`,
-      `"${(inv.user?.businessName || "").replace(/"/g, '""')}"`,
-      `"${(inv.customer?.name || "").replace(/"/g, '""')}"`,
-      `"${inv.createdAt.toISOString()}"`,
-      `"${inv.dueDate ? inv.dueDate.toISOString() : ""}"`,
+      sanitizeCsvCell(inv.id),
+      sanitizeCsvCell(inv.number),
+      sanitizeCsvCell(inv.status),
+      sanitizeCsvCell((inv.subtotal || inv.total).toString()),
+      sanitizeCsvCell(inv.discountType === "PERCENTAGE" ? "Persentase (%)" : "Nominal (Rp)"),
+      sanitizeCsvCell((inv.discountValue || 0).toString()),
+      sanitizeCsvCell((inv.discountAmount || 0).toString()),
+      sanitizeCsvCell((inv.taxRate || 0).toString()),
+      sanitizeCsvCell((inv.taxAmount || 0).toString()),
+      sanitizeCsvCell(inv.total.toString()),
+      sanitizeCsvCell(inv.user?.name || ""),
+      sanitizeCsvCell(inv.user?.email || ""),
+      sanitizeCsvCell(inv.user?.businessName || ""),
+      sanitizeCsvCell(inv.customer?.name || ""),
+      sanitizeCsvCell(inv.createdAt.toISOString()),
+      sanitizeCsvCell(inv.dueDate ? inv.dueDate.toISOString() : ""),
     ]);
 
     const csvContent = [headers.join(","), ...rows.map((r) => r.join(","))].join("\r\n");

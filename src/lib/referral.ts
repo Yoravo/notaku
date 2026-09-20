@@ -1,15 +1,16 @@
 import { prisma } from "./prisma";
+import crypto from "crypto";
 
 export const REFERRAL_BONUS_AMOUNT = 10000; // Rp 10.000 saldo per referral yang upgrade PRO
 
 /**
- * Generate kode referral alfanumerik unik (contoh: NOTA-7X9K)
+ * Generate kode referral alfanumerik unik (contoh: NK-7X9K2P) menggunakan cryptographic randomness
  */
 export function generateRandomReferralCode(length: number = 6): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // Hindari karakter membingungkan (0, O, 1, I)
   let result = "NK-";
   for (let i = 0; i < length; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
+    result += chars.charAt(crypto.randomInt(0, chars.length));
   }
   return result;
 }

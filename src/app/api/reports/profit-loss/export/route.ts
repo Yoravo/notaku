@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { formatDateWIB } from "@/lib/invoice-utils";
+import { sanitizeCsvCell } from "@/lib/csv";
 
 export const dynamic = "force-dynamic";
 
@@ -110,7 +111,7 @@ export async function GET(request: Request) {
   } else {
     for (const k of catKeys) {
       const count = expenses.filter((e) => e.category === k).length;
-      lines.push(`"${k}",${count},${categoryTotals[k]}`);
+      lines.push(`${sanitizeCsvCell(k)},${count},${categoryTotals[k]}`);
     }
   }
   lines.push("");
@@ -124,7 +125,7 @@ export async function GET(request: Request) {
     for (const inv of paidInvoices) {
       const d = formatDateWIB(inv.createdAt);
       lines.push(
-        `"${inv.number || "DRAFT"}","${d}","${(inv.customer.name || "").replace(/"/g, '""')}","IDR",${Number(inv.total || 0)}`
+        `${sanitizeCsvCell(inv.number || "DRAFT")},${sanitizeCsvCell(d)},${sanitizeCsvCell(inv.customer.name || "")},"IDR",${Number(inv.total || 0)}`
       );
     }
   }
@@ -139,7 +140,7 @@ export async function GET(request: Request) {
     for (const ex of expenses) {
       const d = formatDateWIB(ex.date);
       lines.push(
-        `"${d}","${ex.title.replace(/"/g, '""')}","${ex.category}","${(ex.notes || "").replace(/"/g, '""')}",${Number(ex.amount)}`
+        `${sanitizeCsvCell(d)},${sanitizeCsvCell(ex.title)},${sanitizeCsvCell(ex.category)},${sanitizeCsvCell(ex.notes || "")},${Number(ex.amount)}`
       );
     }
   }

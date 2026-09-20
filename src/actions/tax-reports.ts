@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { SupportedCurrency } from "@/lib/currencies";
+import { getYearMonthWIB } from "@/lib/invoice-utils";
 
 export interface MonthlyTaxSummary {
   periodKey: string; // e.g. "2026-08"
@@ -108,10 +109,10 @@ export async function getTaxReportsData(
     orderBy: { createdAt: "desc" },
   });
 
-  // Ekstrak tahun-tahun unik
+  // Ekstrak tahun-tahun unik berbasis zona waktu WIB
   const yearSet = new Set<number>([currentYear]);
   userInvoices.forEach((inv) => {
-    const invYear = new Date(inv.createdAt).getFullYear();
+    const { year: invYear } = getYearMonthWIB(inv.createdAt);
     yearSet.add(invYear);
   });
   const availableYears = Array.from(yearSet).sort((a, b) => b - a);
@@ -148,17 +149,15 @@ export async function getTaxReportsData(
     nonTaxableTurnover: 0,
   };
 
-  // Filter invoice sesuai tahun & mata uang yang dipilih
+  // Filter invoice sesuai tahun & mata uang yang dipilih (WIB standardized)
   userInvoices.forEach((inv) => {
-    const invDate = new Date(inv.createdAt);
-    const invYear = invDate.getFullYear();
+    const { year: invYear, month } = getYearMonthWIB(inv.createdAt);
     const invCurrency = ((inv as any).currency || "IDR") as SupportedCurrency;
 
     if (invYear !== year || invCurrency !== currency) {
       return;
     }
 
-    const month = invDate.getMonth() + 1; // 1-12
     const summary = monthlyMap.get(month);
     if (!summary) return;
 

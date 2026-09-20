@@ -1,4 +1,5 @@
 import { promises as dns } from "dns";
+import crypto from "crypto";
 
 export const CNAME_TARGET = process.env.NEXT_PUBLIC_CNAME_TARGET || "cname.notaku.store";
 
@@ -17,10 +18,10 @@ export function sanitizeDomain(raw: string): string {
 }
 
 /**
- * Generate token TXT verifikasi unik
+ * Generate token TXT verifikasi unik (cryptographically secure)
  */
 export function generateDomainVerificationToken(userId: string): string {
-  const hash = Math.random().toString(36).substring(2, 10);
+  const hash = crypto.randomBytes(6).toString("hex");
   return `notaku-verify-${userId.slice(-6)}-${hash}`;
 }
 

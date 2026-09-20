@@ -7,14 +7,28 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { checkServerActionRateLimit } from "@/lib/rate-limit";
 
+// Hanya izinkan data URI gambar (png/jpeg/jpg/webp/gif) atau URL https demi keamanan (cegah javascript:/data:text/html)
+const safeImageSrc = z
+  .string()
+  .max(3000000)
+  .refine(
+    (val) =>
+      val === "" ||
+      /^data:image\/(png|jpe?g|webp|gif);base64,/i.test(val) ||
+      /^https:\/\//i.test(val),
+    "Format gambar tidak valid. Gunakan file gambar (PNG/JPG/WebP) atau tautan HTTPS."
+  )
+  .nullable()
+  .optional();
+
 const profileSchema = z.object({
   name: z.string().min(1, "Nama tidak boleh kosong").max(100),
   businessName: z.string().max(100).nullable(),
   phone: z.string().max(20).nullable(),
   address: z.string().max(300).nullable(),
-  logoUrl: z.string().max(3000000).nullable().optional(),
-  signatureUrl: z.string().max(3000000).nullable().optional(),
-  stampUrl: z.string().max(3000000).nullable().optional(),
+  logoUrl: safeImageSrc,
+  signatureUrl: safeImageSrc,
+  stampUrl: safeImageSrc,
 });
 
 export async function updateProfile(data: {

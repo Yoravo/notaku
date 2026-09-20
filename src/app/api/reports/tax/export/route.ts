@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { formatDateWIB } from "@/lib/invoice-utils";
 import { SupportedCurrency } from "@/lib/currencies";
+import { sanitizeCsvCell } from "@/lib/csv";
 
 export const dynamic = "force-dynamic";
 
@@ -82,17 +83,17 @@ export async function GET(request: Request) {
     };
 
     return [
-      `"${inv.number || "DRAFT"}"`,
-      `"${dateStr}"`,
-      `"${(inv.customer.name || "").replace(/"/g, '""')}"`,
-      `"${statusMap[inv.status] || inv.status}"`,
-      `"${currency}"`,
-      subtotal,
-      discountAmount,
-      dpp,
-      `${taxRate}%`,
-      taxAmount,
-      total,
+      sanitizeCsvCell(inv.number || "DRAFT"),
+      sanitizeCsvCell(dateStr),
+      sanitizeCsvCell(inv.customer.name || ""),
+      sanitizeCsvCell(statusMap[inv.status] || inv.status),
+      sanitizeCsvCell(currency),
+      sanitizeCsvCell(subtotal),
+      sanitizeCsvCell(discountAmount),
+      sanitizeCsvCell(dpp),
+      sanitizeCsvCell(`${taxRate}%`),
+      sanitizeCsvCell(taxAmount),
+      sanitizeCsvCell(total),
     ].join(",");
   });
 
