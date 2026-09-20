@@ -19,6 +19,7 @@ export default async function CustomerPage(props: {
 
   return (
     <CustomersClient
+      userId={session.user.id}
       customers={customers}
       errorMessage={searchParams?.error}
       autoOpen={searchParams?.new === "1"}

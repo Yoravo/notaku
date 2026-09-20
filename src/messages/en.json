@@ -1633,5 +1633,20 @@
     "reload": "Reload",
     "reloading": "Reloading...",
     "dismiss": "Not now"
+  },
+  "offline": {
+    "title": "No Internet Connection",
+    "subtitle": "You are currently offline. Viewing cached historical records saved on this device.",
+    "badgeOffline": "Offline Mode · Read Only",
+    "tabInvoices": "Recent Invoices",
+    "tabCustomers": "Client Directory",
+    "noInvoices": "No invoices cached locally yet.",
+    "noCustomers": "No customer contacts cached yet.",
+    "noDataHelp": "Visit invoices or customers pages while online to automatically sync records to this device.",
+    "tryAgain": "Try Again",
+    "toDashboard": "To Dashboard",
+    "cachedNotice": "This data is stored locally from your last visit (read-only mode). To create or edit records, connect back to the internet.",
+    "call": "Call",
+    "whatsapp": "WhatsApp"
   }
 }

@@ -1633,5 +1633,20 @@
     "reload": "Muat Ulang",
     "reloading": "Memuat...",
     "dismiss": "Nanti saja"
+  },
+  "offline": {
+    "title": "Koneksi Internet Terputus",
+    "subtitle": "Anda sedang offline. Menampilkan salinan data riwayat yang tersimpan di perangkat Anda.",
+    "badgeOffline": "Mode Offline · Baca Saja",
+    "tabInvoices": "Invoice Terakhir",
+    "tabCustomers": "Kontak Pelanggan",
+    "noInvoices": "Belum ada invoice yang tersimpan secara lokal.",
+    "noCustomers": "Belum ada kontak pelanggan yang tersimpan.",
+    "noDataHelp": "Buka halaman invoice atau pelanggan saat online untuk menyinkronkan data ke perangkat ini.",
+    "tryAgain": "Coba Lagi",
+    "toDashboard": "Ke Dashboard",
+    "cachedNotice": "Data ini disimpan secara lokal dari kunjungan terakhir Anda (mode hanya baca). Untuk membuat atau mengedit data baru, pastikan perangkat terhubung kembali ke internet.",
+    "call": "Telepon",
+    "whatsapp": "WhatsApp"
   }
 }

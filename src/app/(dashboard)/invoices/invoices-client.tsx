@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import {
   PlusIcon,
@@ -12,6 +13,7 @@ import { statusConfig, formatDateWIB } from "@/lib/invoice-utils";
 import { formatMoney } from "@/lib/currencies";
 import type { InvoiceStatus } from "@/generated/prisma/client";
 import { useLocale, useTranslations } from "next-intl";
+import { saveOfflineInvoices } from "@/lib/offline-cache";
 
 interface CustomerData {
   id: string;
@@ -31,6 +33,7 @@ interface InvoiceItemData {
 }
 
 interface InvoicesClientProps {
+  userId?: string;
   invoices: InvoiceItemData[];
   total: number;
   totalAll: number;
@@ -43,6 +46,7 @@ interface InvoicesClientProps {
 }
 
 export function InvoicesClient({
+  userId,
   invoices,
   total,
   totalAll,
@@ -56,6 +60,25 @@ export function InvoicesClient({
   const locale = useLocale() as "id" | "en";
   const tInv = useTranslations("invoices");
   const tStatus = useTranslations("common.status");
+
+  // Keep offline read-only snapshot in sync
+  useEffect(() => {
+    if (userId && Array.isArray(invoices) && invoices.length > 0) {
+      saveOfflineInvoices(
+        userId,
+        invoices.map((inv) => ({
+          id: inv.id,
+          number: inv.number,
+          customerName: inv.customer?.name || "Pelanggan",
+          customerPhone: inv.customer?.phone,
+          status: inv.status,
+          total: inv.total,
+          currency: inv.currency || "IDR",
+          createdAt: inv.createdAt,
+        })),
+      );
+    }
+  }, [userId, invoices]);
 
   // Explicit status label mapping (seller perspective)
   const sellerStatusLabelMap: Record<InvoiceStatus, string> = {

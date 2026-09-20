@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import {
   PlusIcon,
@@ -22,6 +23,7 @@ import { ClientPerformanceMetrics } from "@/components/dashboard/client-performa
 import { formatMoney } from "@/lib/currencies";
 import { OnboardingChecklist } from "@/components/dashboard/onboarding-checklist";
 import { PWAInstallBanner } from "@/components/pwa-install-banner";
+import { saveOfflineInvoices, saveOfflineCustomers } from "@/lib/offline-cache";
 
 interface DashboardClientProps {
   userName: string;
@@ -77,6 +79,38 @@ export function DashboardClient({
   };
 
   const periodLabel = rangeLabels[selectedRange] || tDash("rangeMonth");
+
+  // Keep offline read-only snapshot in sync with latest dashboard data
+  useEffect(() => {
+    if (userId && Array.isArray(recentInvoices) && recentInvoices.length > 0) {
+      saveOfflineInvoices(
+        userId,
+        recentInvoices.map((inv) => ({
+          id: inv.id,
+          number: inv.number,
+          customerName: inv.customer?.name || "Pelanggan",
+          customerPhone: inv.customer?.phone,
+          status: inv.status,
+          total: inv.total,
+          currency: inv.currency || "IDR",
+          createdAt: inv.createdAt,
+        })),
+      );
+
+      saveOfflineCustomers(
+        userId,
+        recentInvoices
+          .filter((inv) => inv.customer?.id)
+          .map((inv) => ({
+            id: inv.customer.id,
+            name: inv.customer.name,
+            email: inv.customer.email,
+            phone: inv.customer.phone,
+            address: inv.customer.address,
+          })),
+      );
+    }
+  }, [userId, recentInvoices]);
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-6 sm:space-y-8">

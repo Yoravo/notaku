@@ -4,7 +4,7 @@
  * berdasarkan riwayat commit git riil dan mendukung dwibahasa (ID & EN).
  */
 
-export const APP_VERSION = "0.7.3";
+export const APP_VERSION = "0.7.4";
 export const APP_RELEASE_DATE = {
   id: "21 September 2026",
   en: "September 21, 2026",
@@ -42,6 +42,46 @@ export interface ChangelogRelease {
 
 export const CHANGELOG_RELEASES: ChangelogRelease[] = [
   {
+    version: "0.7.4",
+    type: "patch",
+    date: {
+      id: "21 September 2026",
+      en: "September 21, 2026",
+    },
+    title: {
+      id: "PWA Offline Read-Only Data Caching & Workspace Offline",
+      en: "PWA Offline Read-Only Data Caching & Offline Workspace",
+    },
+    summary: {
+      id: "Dukungan akses riwayat invoice dan kontak pelanggan secara offline (read-only) saat koneksi internet terputus, dilengkapi navigasi tab interaktif serta tombol aksi cepat WhatsApp dan telepon langsung.",
+      en: "Offline read-only access to recent invoices and customer contact records when connection drops, featuring an interactive tabbed workspace with direct WhatsApp and phone call actions.",
+    },
+    isLatest: true,
+    highlights: [
+      {
+        category: "feat",
+        text: {
+          id: "Workspace Data Offline: Halaman /offline kini menampilkan salinan riwayat invoice terakhir dan buku pelanggan tersimpan dengan status badge dan total rupiah.",
+          en: "Offline Data Workspace: The /offline page now renders cached recent invoices and client records complete with status badges and currency totals.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "Aksi Kontak Klien Offline: Tombol cepat WhatsApp dan Telepon pada kartu pelanggan offline untuk komunikasi darurat tanpa sinyal data.",
+          en: "Offline Client Actions: Instant WhatsApp and Phone call shortcuts on offline customer cards for emergency client communication.",
+        },
+      },
+      {
+        category: "perf",
+        text: {
+          id: "Cache Navigasi Service Worker: SW kini menyimpan halaman navigasi yang pernah dibuka sehingga dapat dimuat kembali saat offline sebelum fallback.",
+          en: "Service Worker Navigation Caching: SW caches visited navigation routes to render previously viewed pages offline before fallback.",
+        },
+      },
+    ],
+  },
+  {
     version: "0.7.3",
     type: "patch",
     date: {
@@ -56,7 +96,7 @@ export const CHANGELOG_RELEASES: ChangelogRelease[] = [
       id: "Pemberitahuan pembaruan versi baru secara real-time saat aplikasi PWA NotaKu diperbarui di server, lengkap dengan tombol muat ulang interaktif agar pengguna selalu mendapatkan versi terkini tanpa lag cache.",
       en: "Real-time new version notification when NotaKu PWA updates are deployed, featuring an interactive one-tap reload action to ensure users stay on the latest version without cache lag.",
     },
-    isLatest: true,
+    isLatest: false,
     highlights: [
       {
         category: "feat",

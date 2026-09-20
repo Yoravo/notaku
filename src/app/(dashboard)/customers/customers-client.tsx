@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect } from "react";
 import { CustomerList } from "@/components/customers/customer-list";
 import { useTranslations, useLocale } from "next-intl";
+import { saveOfflineCustomers } from "@/lib/offline-cache";
 
 interface Customer {
   id: string;
@@ -12,16 +14,34 @@ interface Customer {
 }
 
 export function CustomersClient({
+  userId,
   customers,
   errorMessage,
   autoOpen = false,
 }: {
+  userId?: string;
   customers: Customer[];
   errorMessage?: string;
   autoOpen?: boolean;
 }) {
   const tCust = useTranslations("customers");
   const locale = useLocale();
+
+  // Keep offline customer contacts in sync
+  useEffect(() => {
+    if (userId && Array.isArray(customers) && customers.length > 0) {
+      saveOfflineCustomers(
+        userId,
+        customers.map((c) => ({
+          id: c.id,
+          name: c.name,
+          email: c.email,
+          phone: c.phone,
+          address: c.address,
+        })),
+      );
+    }
+  }, [userId, customers]);
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-6">

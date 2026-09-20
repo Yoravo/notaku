@@ -1,4 +1,4 @@
-const CACHE_NAME = "notaku-pwa-v2";
+const CACHE_NAME = "notaku-pwa-v3";
 const OFFLINE_URL = "/offline";
 
 const PRECACHE_ASSETS = [
@@ -8,9 +8,6 @@ const PRECACHE_ASSETS = [
 ];
 
 // Install: precache offline fallback and essential assets.
-// NOTE: we intentionally do NOT call skipWaiting() here — the new worker
-// stays in "waiting" so the client can show an update toast and let the
-// user reload on demand (triggered via the SKIP_WAITING message below).
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -40,7 +37,7 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Fetch: network-first for navigations with offline fallback
+// Fetch: network-first for navigations with cached page + offline fallback
 self.addEventListener("fetch", (event) => {
   const { request } = event;
 
@@ -57,11 +54,31 @@ self.addEventListener("fetch", (event) => {
   // Handle page navigation requests
   if (request.mode === "navigate") {
     event.respondWith(
-      fetch(request).catch(async () => {
-        const cache = await caches.open(CACHE_NAME);
-        const cachedResponse = await cache.match(OFFLINE_URL);
-        return cachedResponse || Response.error();
-      })
+      fetch(request)
+        .then((networkResponse) => {
+          if (
+            networkResponse &&
+            networkResponse.status === 200 &&
+            !request.url.includes("/api/")
+          ) {
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, responseClone);
+            });
+          }
+          return networkResponse;
+        })
+        .catch(async () => {
+          const cache = await caches.open(CACHE_NAME);
+          // Try to serve the previously cached version of this exact page
+          const cachedPage = await cache.match(request);
+          if (cachedPage) {
+            return cachedPage;
+          }
+          // Fallback to the dedicated offline workstation
+          const offlineFallback = await cache.match(OFFLINE_URL);
+          return offlineFallback || Response.error();
+        })
     );
     return;
   }

@@ -82,6 +82,7 @@ export default async function InvoicesPage({
 
   return (
     <InvoicesClient
+      userId={session.user.id}
       invoices={serializedInvoices}
       total={total}
       totalAll={totalAll}
