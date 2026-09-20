@@ -1,4 +1,4 @@
-const CACHE_NAME = "notaku-pwa-v1";
+const CACHE_NAME = "notaku-pwa-v2";
 const OFFLINE_URL = "/offline";
 
 const PRECACHE_ASSETS = [
@@ -7,14 +7,23 @@ const PRECACHE_ASSETS = [
   "/favicon.ico",
 ];
 
-// Install: precache offline fallback and essential assets
+// Install: precache offline fallback and essential assets.
+// NOTE: we intentionally do NOT call skipWaiting() here — the new worker
+// stays in "waiting" so the client can show an update toast and let the
+// user reload on demand (triggered via the SKIP_WAITING message below).
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(PRECACHE_ASSETS);
     })
   );
-  self.skipWaiting();
+});
+
+// Allow the page to activate the waiting worker on user action ("Reload").
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
 });
 
 // Activate: clean up old caches and claim clients immediately

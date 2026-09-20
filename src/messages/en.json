@@ -1626,5 +1626,12 @@
     "categoryPerf": "Improvement",
     "categoryFix": "Bug Fix",
     "categorySecurity": "Security"
+  },
+  "pwaUpdate": {
+    "title": "New Version Available",
+    "desc": "An application update is ready. Reload to apply the latest version.",
+    "reload": "Reload",
+    "reloading": "Reloading...",
+    "dismiss": "Not now"
   }
 }

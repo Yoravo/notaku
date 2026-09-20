@@ -4,10 +4,10 @@
  * berdasarkan riwayat commit git riil dan mendukung dwibahasa (ID & EN).
  */
 
-export const APP_VERSION = "0.7.2";
+export const APP_VERSION = "0.7.3";
 export const APP_RELEASE_DATE = {
-  id: "20 September 2026",
-  en: "September 20, 2026",
+  id: "21 September 2026",
+  en: "September 21, 2026",
 };
 
 export type ChangelogCategory = "feat" | "perf" | "fix" | "security";
@@ -42,6 +42,39 @@ export interface ChangelogRelease {
 
 export const CHANGELOG_RELEASES: ChangelogRelease[] = [
   {
+    version: "0.7.3",
+    type: "patch",
+    date: {
+      id: "21 September 2026",
+      en: "September 21, 2026",
+    },
+    title: {
+      id: "Toast Notifikasi Pembaruan Aplikasi PWA Otomatis",
+      en: "Automated PWA Service Worker Update Notification Toast",
+    },
+    summary: {
+      id: "Pemberitahuan pembaruan versi baru secara real-time saat aplikasi PWA NotaKu diperbarui di server, lengkap dengan tombol muat ulang interaktif agar pengguna selalu mendapatkan versi terkini tanpa lag cache.",
+      en: "Real-time new version notification when NotaKu PWA updates are deployed, featuring an interactive one-tap reload action to ensure users stay on the latest version without cache lag.",
+    },
+    isLatest: true,
+    highlights: [
+      {
+        category: "feat",
+        text: {
+          id: "Toast Update PWA Interaktif: Deteksi service worker baru yang sedang menunggu (waiting) dan tampilkan toast mengambang 'Versi Baru Tersedia · Muat Ulang'.",
+          en: "Interactive PWA Update Toast: Detects waiting service workers and presents an elegant floating notification with a one-tap reload action.",
+        },
+      },
+      {
+        category: "perf",
+        text: {
+          id: "Pemeriksaan Update Proaktif: Pengecekan otomatis saat tab browser atau jendela aplikasi PWA kembali difokuskan (window focus).",
+          en: "Proactive Update Checks: Automatically re-checks for newer service workers when the browser tab or PWA window regains focus.",
+        },
+      },
+    ],
+  },
+  {
     version: "0.7.2",
     type: "patch",
     date: {
@@ -56,7 +89,7 @@ export const CHANGELOG_RELEASES: ChangelogRelease[] = [
       id: "Kemudahan memasang aplikasi NotaKu langsung ke layar utama (Add to Home Screen) di Android dan iOS Safari dengan deteksi otomatis, panduan interaktif, dan status dismiss tersimpan per pengguna.",
       en: "Seamlessly install NotaKu to your home screen (Add to Home Screen) on Android and iOS Safari with automatic prompt detection, interactive step guides, and user-scoped dismissal persistence.",
     },
-    isLatest: true,
+    isLatest: false,
     highlights: [
       {
         category: "feat",

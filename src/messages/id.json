@@ -1626,5 +1626,12 @@
     "categoryPerf": "Peningkatan",
     "categoryFix": "Perbaikan",
     "categorySecurity": "Keamanan"
+  },
+  "pwaUpdate": {
+    "title": "Versi Baru Tersedia",
+    "desc": "Pembaruan aplikasi telah siap. Muat ulang untuk menerapkan versi terbaru.",
+    "reload": "Muat Ulang",
+    "reloading": "Memuat...",
+    "dismiss": "Nanti saja"
   }
 }

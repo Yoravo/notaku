@@ -167,9 +167,9 @@ export default async function RootLayout({
           }}
         />
         <TrafficTracker />
-        <PWARegister />
         <ThemeProvider>
           <NextIntlClientProvider locale={locale} messages={messages}>
+            <PWARegister />
             {children}
           </NextIntlClientProvider>
         </ThemeProvider>
