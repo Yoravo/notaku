@@ -4,7 +4,7 @@
  * berdasarkan riwayat commit git riil dan mendukung dwibahasa (ID & EN).
  */
 
-export const APP_VERSION = "0.7.4";
+export const APP_VERSION = "0.7.5";
 export const APP_RELEASE_DATE = {
   id: "21 September 2026",
   en: "September 21, 2026",
@@ -42,6 +42,39 @@ export interface ChangelogRelease {
 
 export const CHANGELOG_RELEASES: ChangelogRelease[] = [
   {
+    version: "0.7.5",
+    type: "patch",
+    date: {
+      id: "21 September 2026",
+      en: "September 21, 2026",
+    },
+    title: {
+      id: "Penyelarasan UI Fitur Eksklusif Paket Business & Modal Upgrade",
+      en: "Business Tier UI Feature Alignment & Smart Upgrade Modals",
+    },
+    summary: {
+      id: "Penyelarasan antarmuka pengaturan akun untuk fitur eksklusif paket Business (Custom Domain, REST API Keys, Webhooks, dan Bot Alerts) dengan penandaan visual ungu dan modal checkout terarah.",
+      en: "Aligned account settings interfaces for exclusive Business plan capabilities (Custom Domains, REST API Keys, Webhooks, and Bot Alerts) with branded visual accents and contextual checkout routing.",
+    },
+    isLatest: true,
+    highlights: [
+      {
+        category: "feat",
+        text: {
+          id: "Penyelarasan Copy & Akses Tier Business: Tab Domain, Developer, dan Notifikasi kini secara eksplisit mencerminkan eksklusivitas paket Business.",
+          en: "Business Tier Copy & Access Alignment: Domain, Developer, and Notifications tabs now explicitly reflect Business tier exclusivity.",
+        },
+      },
+      {
+        category: "perf",
+        text: {
+          id: "Upgrade Modal Cerdas Terarah: Tombol upgrade pada fitur-fitur tingkat lanjut kini otomatis mengarahkan modal ke checkout paket Business.",
+          en: "Contextual Upgrade Modal Routing: Upgrade action buttons on advanced features automatically pre-select the Business plan checkout.",
+        },
+      },
+    ],
+  },
+  {
     version: "0.7.4",
     type: "patch",
     date: {
@@ -56,7 +89,7 @@ export const CHANGELOG_RELEASES: ChangelogRelease[] = [
       id: "Dukungan akses riwayat invoice dan kontak pelanggan secara offline (read-only) saat koneksi internet terputus, dilengkapi navigasi tab interaktif serta tombol aksi cepat WhatsApp dan telepon langsung.",
       en: "Offline read-only access to recent invoices and customer contact records when connection drops, featuring an interactive tabbed workspace with direct WhatsApp and phone call actions.",
     },
-    isLatest: true,
+    isLatest: false,
     highlights: [
       {
         category: "feat",

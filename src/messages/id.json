@@ -791,7 +791,7 @@
     "saving": "Menyimpan...",
     "statusVerified": "Terverifikasi & Aktif",
     "statusPending": "Menunggu DNS",
-    "proNoticeTitle": "Fitur Eksklusif NotaKu PRO",
+    "proNoticeTitle": "Fitur Eksklusif NotaKu Business",
     "proNoticeSubtitle": "Custom Domain & Subdomain White-Label",
     "proNoticeDesc": "Sajikan invoice bisnis Anda dengan alamat domain kustom sendiri (contoh: invoice.tokosaya.com). Tingkatkan profesionalitas dan kepercayaan klien Anda.",
     "saveSuccess": "Pengaturan domain berhasil disimpan!",
@@ -805,7 +805,7 @@
   "developer": {
     "title": "Developer & API Keys",
     "subtitle": "Kelola API Key dan Webhook untuk mengintegrasikan NotaKu dengan sistem kasir, website, atau aplikasi backend Anda.",
-    "proNoticeTitle": "Fitur Eksklusif NotaKu PRO",
+    "proNoticeTitle": "Fitur Eksklusif NotaKu Business",
     "proNoticeSubtitle": "Developer REST API & Webhooks",
     "proNoticeDesc": "Buat invoice otomatis dari backend, terima notifikasi webhook real-time saat invoice dibayar, dan integrasikan dengan sistem POS/ERP Anda.",
     "apiKeysTitle": "API Keys",
@@ -854,8 +854,8 @@
   "notifications": {
     "title": "Notifikasi Bot Telegram & Discord",
     "subtitle": "Dapatkan notifikasi instan langsung ke grup Telegram atau channel Discord Anda saat invoice dibayar atau jatuh tempo.",
-    "proNoticeTitle": "Fitur Eksklusif NotaKu PRO",
-    "proNoticeDesc": "Integrasi notifikasi bot Telegram dan webhook Discord hanya tersedia untuk pengguna paket PRO. Tingkatkan akun untuk memantau arus kas bisnis Anda secara real-time.",
+    "proNoticeTitle": "Fitur Eksklusif NotaKu Business",
+    "proNoticeDesc": "Integrasi notifikasi bot Telegram dan webhook Discord hanya tersedia untuk pengguna paket Business. Tingkatkan akun untuk memantau arus kas bisnis Anda secara real-time.",
     "telegramTitle": "Integrasi Bot Telegram",
     "telegramSubtitle": "Kirim pesan ke chat pribadi atau grup kerja Anda",
     "enabled": "Aktif",

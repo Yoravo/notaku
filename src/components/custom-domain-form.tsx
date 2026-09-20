@@ -32,7 +32,7 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
   const [copiedTarget, setCopiedTarget] = useState(false);
   const [copiedTxt, setCopiedTxt] = useState(false);
 
-  const isPro = data.plan === "BUSINESS";
+  const isBusiness = data.plan === "BUSINESS";
 
   const handleCopyTarget = () => {
     navigator.clipboard.writeText(data.cnameTarget);
@@ -132,8 +132,8 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
     });
   };
 
-  // Banner jika bukan pengguna PRO
-  if (!isPro) {
+  // Banner jika bukan pengguna Business
+  if (!isBusiness) {
     return (
       <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 shadow-2xs">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-br from-purple-900 via-indigo-900 to-slate-900 text-white">
@@ -149,7 +149,7 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
               {tDom("proNoticeDesc")}
             </p>
           </div>
-          <UpgradeButton className="shrink-0" />
+          <UpgradeButton initialPlan="BUSINESS" className="shrink-0" />
         </div>
       </div>
     );

@@ -3,13 +3,16 @@
 import { useState } from "react";
 import { UpgradeModal } from "./upgrade-modal";
 import { useTranslations } from "next-intl";
+import type { PlanType } from "@/lib/plan-constants";
 
 export function UpgradeButton({
   className,
   label,
+  initialPlan = "PRO",
 }: {
   className?: string;
   label?: string;
+  initialPlan?: PlanType;
 }) {
   const tDash = useTranslations("dashboard");
   const [showModal, setShowModal] = useState(false);
@@ -25,7 +28,12 @@ export function UpgradeButton({
       >
         {label || tDash("upgradeToPro")}
       </button>
-      {showModal && <UpgradeModal onClose={() => setShowModal(false)} />}
+      {showModal && (
+        <UpgradeModal
+          initialPlan={initialPlan}
+          onClose={() => setShowModal(false)}
+        />
+      )}
     </>
   );
 }

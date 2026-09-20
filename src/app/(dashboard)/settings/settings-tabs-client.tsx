@@ -174,25 +174,25 @@ export function SettingsTabsClient({
           </div>
         )}
 
-        {/* Tab 4: Custom Domain (White-Label - PRO) */}
+        {/* Tab 4: Custom Domain (White-Label - BUSINESS) */}
         {activeTab === "domain" && (
           <div className="space-y-4">
             <CustomDomainForm initialData={domainData} />
           </div>
         )}
 
-        {/* Tab 5: Developer API Keys & Webhooks (PRO) */}
+        {/* Tab 5: Developer API Keys & Webhooks (BUSINESS) */}
         {activeTab === "developer" && (
           <div className="space-y-4">
             <DeveloperSettingsForm
-              isPro={developerData.isPro}
+              isBusiness={developerData.isPro}
               initialApiKeys={developerData.apiKeys}
               initialWebhooks={developerData.webhooks}
             />
           </div>
         )}
 
-        {/* Tab 6: Telegram & Discord Notification Bots (PRO) */}
+        {/* Tab 6: Telegram & Discord Notification Bots (BUSINESS) */}
         {activeTab === "notifications" && (
           <div className="space-y-4">
             <NotificationSettingsForm initialData={botNotificationData} />

@@ -113,16 +113,19 @@ export function NotificationSettingsForm({
       </div>
 
       {!isPro && (
-        <div className="rounded-2xl border border-amber-200 dark:border-amber-800 bg-amber-50/70 dark:bg-amber-950/40 p-5 space-y-3 shadow-2xs">
-          <div className="flex items-center gap-2 text-amber-900 dark:text-amber-200 font-bold text-sm">
-            <SparklesIcon className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0" />
+        <div className="rounded-2xl border border-purple-200 dark:border-purple-800/80 bg-purple-50/60 dark:bg-purple-950/30 p-5 space-y-3 shadow-2xs">
+          <div className="flex items-center gap-2 text-purple-900 dark:text-purple-200 font-bold text-sm">
+            <SparklesIcon className="w-5 h-5 text-purple-600 dark:text-purple-400 shrink-0" />
             <span>{tNotif("proNoticeTitle")}</span>
           </div>
-          <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
+          <p className="text-xs text-purple-800 dark:text-purple-300 leading-relaxed">
             {tNotif("proNoticeDesc")}
           </p>
           <div className="pt-2">
-            <UpgradeButton className="inline-flex items-center gap-2 rounded-xl bg-[#0f6b4f] px-4 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-[#0c5740] transition-colors cursor-pointer min-h-[44px]" />
+            <UpgradeButton
+              initialPlan="BUSINESS"
+              className="inline-flex items-center gap-2 rounded-xl bg-purple-700 hover:bg-purple-800 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition-colors cursor-pointer min-h-[44px]"
+            />
           </div>
         </div>
       )}

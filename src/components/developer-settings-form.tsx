@@ -27,15 +27,18 @@ import {
 } from "@/actions/developer";
 
 export function DeveloperSettingsForm({
+  isBusiness,
   isPro,
   initialApiKeys,
   initialWebhooks,
 }: {
-  isPro: boolean;
+  isBusiness?: boolean;
+  isPro?: boolean;
   initialApiKeys: ApiKeyData[];
   initialWebhooks: WebhookEndpointData[];
 }) {
   const tDev = useTranslations("developer");
+  const hasAccess = isBusiness ?? isPro ?? false;
   const [apiKeys, setApiKeys] = useState<ApiKeyData[]>(initialApiKeys);
   const [webhooks, setWebhooks] = useState<WebhookEndpointData[]>(initialWebhooks);
 
@@ -190,7 +193,7 @@ export function DeveloperSettingsForm({
     },
   ];
 
-  if (!isPro) {
+  if (!hasAccess) {
     return (
       <div className="space-y-6 max-w-3xl">
         <div>
@@ -203,17 +206,20 @@ export function DeveloperSettingsForm({
           </p>
         </div>
 
-        <div className="rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50/60 dark:bg-emerald-950/40 p-6 sm:p-7 space-y-4 shadow-2xs">
-          <div className="flex items-center gap-2.5 text-emerald-950 dark:text-emerald-200 font-bold text-sm sm:text-base">
-            <SparklesIcon className="w-5 h-5 text-[#0f6b4f] dark:text-emerald-400 shrink-0" />
+        <div className="rounded-2xl border border-purple-200 dark:border-purple-800/80 bg-purple-50/60 dark:bg-purple-950/30 p-6 sm:p-7 space-y-4 shadow-2xs">
+          <div className="flex items-center gap-2.5 text-purple-950 dark:text-purple-200 font-bold text-sm sm:text-base">
+            <SparklesIcon className="w-5 h-5 text-purple-600 dark:text-purple-400 shrink-0" />
             <span>{tDev("proNoticeTitle")}</span>
           </div>
-          <p className="text-xs sm:text-sm text-emerald-900/90 dark:text-emerald-300 leading-relaxed">
+          <p className="text-xs sm:text-sm text-purple-900/90 dark:text-purple-300 leading-relaxed">
             {tDev("proNoticeDesc")}
           </p>
 
           <div className="pt-2">
-            <UpgradeButton className="inline-flex items-center gap-2 rounded-xl bg-[#0f6b4f] px-4 py-2.5 text-xs sm:text-sm font-bold text-white shadow-xs hover:bg-[#0c5740] transition-colors cursor-pointer min-h-[44px]" />
+            <UpgradeButton
+              initialPlan="BUSINESS"
+              className="inline-flex items-center gap-2 rounded-xl bg-purple-700 hover:bg-purple-800 px-4 py-2.5 text-xs sm:text-sm font-bold text-white shadow-xs transition-colors cursor-pointer min-h-[44px]"
+            />
           </div>
         </div>
       </div>

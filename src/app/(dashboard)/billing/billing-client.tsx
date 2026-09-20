@@ -115,7 +115,10 @@ export function BillingClient({
           </div>
 
           {!isBusiness && (
-            <UpgradeButton className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0f6b4f] px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-xs hover:bg-[#0c5740] transition-colors cursor-pointer min-h-[44px]" />
+            <UpgradeButton
+              initialPlan={isPro ? "BUSINESS" : "PRO"}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0f6b4f] px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-xs hover:bg-[#0c5740] transition-colors cursor-pointer min-h-[44px]"
+            />
           )}
         </div>
 

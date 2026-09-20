@@ -791,7 +791,7 @@
     "saving": "Saving...",
     "statusVerified": "Verified & Active",
     "statusPending": "Pending DNS",
-    "proNoticeTitle": "NotaKu PRO Exclusive Feature",
+    "proNoticeTitle": "NotaKu Business Exclusive Feature",
     "proNoticeSubtitle": "Custom Domain & White-Label",
     "proNoticeDesc": "Brand your invoices with your own custom domain (e.g. invoice.mybrand.com). Boost credibility and client trust.",
     "saveSuccess": "Domain settings saved successfully!",
@@ -805,7 +805,7 @@
   "developer": {
     "title": "Developer & API Keys",
     "subtitle": "Manage API Keys and Webhooks to integrate NotaKu with your POS, website, or backend applications.",
-    "proNoticeTitle": "NotaKu PRO Exclusive Feature",
+    "proNoticeTitle": "NotaKu Business Exclusive Feature",
     "proNoticeSubtitle": "Developer REST API & Webhooks",
     "proNoticeDesc": "Generate invoices automatically from your backend, receive real-time webhook notifications upon payment, and connect to your POS/ERP systems.",
     "apiKeysTitle": "API Keys",
@@ -854,8 +854,8 @@
   "notifications": {
     "title": "Telegram & Discord Bot Notifications",
     "subtitle": "Receive instant push alerts in your Telegram or Discord channels when invoices are paid or due today.",
-    "proNoticeTitle": "NotaKu PRO Exclusive Feature",
-    "proNoticeDesc": "Telegram bot integration and Discord webhooks are exclusively available for PRO members. Upgrade now to monitor cash flow in real time.",
+    "proNoticeTitle": "NotaKu Business Exclusive Feature",
+    "proNoticeDesc": "Telegram bot integration and Discord webhooks are exclusively available for Business members. Upgrade now to monitor cash flow in real time.",
     "telegramTitle": "Telegram Bot Integration",
     "telegramSubtitle": "Dispatch alerts to personal chat or team group",
     "enabled": "Enabled",
