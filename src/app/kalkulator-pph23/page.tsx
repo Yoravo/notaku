@@ -37,6 +37,12 @@ export const metadata: Metadata = {
       },
     ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Kalkulator PPh 23 Jasa Online Indonesia · NotaKu",
+    description: "Hitung otomatis potongan pajak PPh 23 dan PPN untuk invoice jasa bisnis Anda.",
+    images: ["/opengraph-image"],
+  },
 };
 
 export default async function Pph23CalculatorPage() {
@@ -89,6 +95,31 @@ export default async function Pph23CalculatorPage() {
     ],
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Beranda",
+        item: baseUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Pusat Alat Bisnis",
+        item: `${baseUrl}/tools`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Kalkulator PPh 23",
+        item: `${baseUrl}/kalkulator-pph23`,
+      },
+    ],
+  };
+
   return (
     <>
       <script
@@ -98,6 +129,10 @@ export default async function Pph23CalculatorPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <Pph23CalculatorClient session={session} />
     </>

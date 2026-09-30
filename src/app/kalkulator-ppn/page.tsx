@@ -38,6 +38,12 @@ export const metadata: Metadata = {
       },
     ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Kalkulator PPN 11% & 12% dan DPP Online Indonesia · NotaKu",
+    description: "Kalkulator akurat menghitung PPN dan DPP (include/exclude) online.",
+    images: ["/opengraph-image"],
+  },
 };
 
 export default async function PpnCalculatorPage() {
@@ -90,6 +96,31 @@ export default async function PpnCalculatorPage() {
     ],
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Beranda",
+        item: baseUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Pusat Alat Bisnis",
+        item: `${baseUrl}/tools`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Kalkulator PPN",
+        item: `${baseUrl}/kalkulator-ppn`,
+      },
+    ],
+  };
+
   return (
     <>
       <script
@@ -99,6 +130,10 @@ export default async function PpnCalculatorPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <PpnCalculatorClient session={session} />
     </>

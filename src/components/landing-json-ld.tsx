@@ -56,13 +56,6 @@ export const LandingJsonLd: FC = () => {
           "Invoice tanpa batas, bebas watermark, tanda tangan digital, stempel lunas, custom domain, dan recurring invoice",
       },
     ],
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.9",
-      ratingCount: "1280",
-      bestRating: "5",
-      worstRating: "1",
-    },
     featureList: [
       "Pembuatan Invoice Cepat (30 Detik)",
       "Ekspor PDF Format Standar Indonesia (Classic, Modern, Minimal, Receipt)",

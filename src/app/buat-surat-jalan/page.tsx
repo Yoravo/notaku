@@ -39,6 +39,12 @@ export const metadata: Metadata = {
       },
     ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Buat Surat Jalan Pengiriman Barang Online Gratis · NotaKu",
+    description: "Generator surat jalan delivery order online gratis dengan download PDF instan.",
+    images: ["/opengraph-image"],
+  },
 };
 
 export default async function FreeDeliveryOrderPage() {
@@ -60,11 +66,40 @@ export default async function FreeDeliveryOrderPage() {
       "Aplikasi generator surat jalan delivery order online gratis untuk logistik, supplier, toko grosir, dan UMKM Indonesia.",
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Beranda",
+        item: baseUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Pusat Alat Bisnis",
+        item: `${baseUrl}/tools`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Surat Jalan Generator",
+        item: `${baseUrl}/buat-surat-jalan`,
+      },
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <Suspense
         fallback={

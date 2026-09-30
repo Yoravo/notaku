@@ -49,6 +49,12 @@ export const metadata: Metadata = {
       },
     ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Pusat Alat & Kalkulator Bisnis Online Gratis · NotaKu",
+    description: "Kumpulan generator dokumen dan kalkulator pajak gratis untuk UMKM Indonesia.",
+    images: ["/opengraph-image"],
+  },
 };
 
 export default async function ToolsHubPage() {
@@ -129,11 +135,34 @@ export default async function ToolsHubPage() {
     },
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Beranda",
+        item: baseUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Pusat Alat Bisnis",
+        item: `${baseUrl}/tools`,
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-paper text-ink font-sans">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       {/* Top Navbar */}
       <LandingNavbar session={session} />

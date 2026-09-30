@@ -39,6 +39,12 @@ export const metadata: Metadata = {
       },
     ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Buat Kuitansi Pembayaran Online Gratis · NotaKu",
+    description: "Buat kuitansi tanda terima sah dengan ejaan terbilang rupiah dan download PDF instan.",
+    images: ["/opengraph-image"],
+  },
 };
 
 export default async function FreeReceiptPage() {
@@ -60,11 +66,40 @@ export default async function FreeReceiptPage() {
       "Aplikasi pembuat kuitansi tanda terima pembayaran online resmi gratis dengan ejaan angka terbilang rupiah dan download PDF instan.",
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Beranda",
+        item: baseUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Pusat Alat Bisnis",
+        item: `${baseUrl}/tools`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Kuitansi Generator",
+        item: `${baseUrl}/buat-kuitansi`,
+      },
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <Suspense
         fallback={

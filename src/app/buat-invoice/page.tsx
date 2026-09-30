@@ -40,6 +40,12 @@ export const metadata: Metadata = {
       },
     ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Free Invoice Generator Online Indonesia · NotaKu",
+    description: "Buat invoice tagihan bisnis online gratis dalam 30 detik tanpa registrasi.",
+    images: ["/opengraph-image"],
+  },
 };
 
 export default async function FreeInvoicePage() {
@@ -61,11 +67,40 @@ export default async function FreeInvoicePage() {
       "Aplikasi pembuat invoice online gratis untuk UMKM dan freelancer Indonesia. Hitung otomatis diskon, DPP, PPN, dan langsung download PDF.",
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Beranda",
+        item: baseUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Pusat Alat Bisnis",
+        item: `${baseUrl}/tools`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Invoice Generator",
+        item: `${baseUrl}/buat-invoice`,
+      },
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <Suspense
         fallback={

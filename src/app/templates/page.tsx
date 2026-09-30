@@ -37,6 +37,12 @@ export const metadata: Metadata = {
       },
     ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Katalog Template Invoice Gratis Indonesia · NotaKu",
+    description: "Koleksi contoh template invoice gratis untuk freelance, desainer, dan UMKM.",
+    images: ["/opengraph-image"],
+  },
 };
 
 export default async function TemplatesPage() {
@@ -51,11 +57,34 @@ export default async function TemplatesPage() {
       "Direktori kumpulan contoh template invoice resmi siap pakai untuk berbagai industri dan profesi di Indonesia.",
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Beranda",
+        item: baseUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Katalog Template",
+        item: `${baseUrl}/templates`,
+      },
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <TemplatesCatalogClient session={session} />
     </>
