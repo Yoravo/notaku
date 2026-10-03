@@ -253,11 +253,14 @@ export function BillingClient({
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs min-w-[500px]">
+          <table className="w-full text-left text-xs min-w-[600px]">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-semibold">
                 <th className="py-3 px-3">{tBilling("tableFeature")}</th>
                 <th className="py-3 px-3 text-center">{tBilling("tableFree")}</th>
+                <th className="py-3 px-3 text-center text-cyan-700 dark:text-cyan-400 bg-cyan-50/40 dark:bg-cyan-950/20">
+                  LITE
+                </th>
                 <th className="py-3 px-3 text-center text-[#0f6b4f] bg-emerald-50/40 dark:bg-emerald-950/20">
                   {tBilling("tablePro")}
                 </th>
@@ -274,6 +277,9 @@ export function BillingClient({
                 <td className="py-3 px-3 text-center text-slate-600 dark:text-slate-400">
                   {tBilling("fiveInvoices")}
                 </td>
+                <td className="py-3 px-3 text-center font-bold text-cyan-700 dark:text-cyan-400 bg-cyan-50/40 dark:bg-cyan-950/20">
+                  {tBilling("unlimited")}
+                </td>
                 <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] dark:text-emerald-400 bg-emerald-50/40 dark:bg-emerald-950/20">
                   {tBilling("unlimited")}
                 </td>
@@ -288,6 +294,9 @@ export function BillingClient({
                 <td className="py-3 px-3 text-center text-slate-600 dark:text-slate-400">
                   {tBilling("withWatermark")}
                 </td>
+                <td className="py-3 px-3 text-center font-bold text-cyan-700 dark:text-cyan-400 bg-cyan-50/40 dark:bg-cyan-950/20">
+                  {tBilling("noWatermark")}
+                </td>
                 <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] dark:text-emerald-400 bg-emerald-50/40 dark:bg-emerald-950/20">
                   {tBilling("noWatermark")}
                 </td>
@@ -300,6 +309,9 @@ export function BillingClient({
                   {tBilling("pdfTemplates")}
                 </td>
                 <td className="py-3 px-3 text-center text-slate-600 dark:text-slate-400">
+                  {tBilling("classicOnly")}
+                </td>
+                <td className="py-3 px-3 text-center text-slate-600 dark:text-slate-400 bg-cyan-50/40 dark:bg-cyan-950/20">
                   {tBilling("classicOnly")}
                 </td>
                 <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] dark:text-emerald-400 bg-emerald-50/40 dark:bg-emerald-950/20">
@@ -316,6 +328,9 @@ export function BillingClient({
                 <td className="py-3 px-3 text-center text-emerald-600 dark:text-emerald-400 font-bold">
                   {tBilling("available")}
                 </td>
+                <td className="py-3 px-3 text-center font-bold text-cyan-700 dark:text-cyan-400 bg-cyan-50/40 dark:bg-cyan-950/20">
+                  {tBilling("available")}
+                </td>
                 <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] dark:text-emerald-400 bg-emerald-50/40 dark:bg-emerald-950/20">
                   {tBilling("available")}
                 </td>
@@ -330,6 +345,9 @@ export function BillingClient({
                 <td className="py-3 px-3 text-center text-slate-600 dark:text-slate-400">
                   {tBilling("twentyClients")}
                 </td>
+                <td className="py-3 px-3 text-center font-bold text-cyan-700 dark:text-cyan-400 bg-cyan-50/40 dark:bg-cyan-950/20">
+                  {tBilling("unlimited")}
+                </td>
                 <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] dark:text-emerald-400 bg-emerald-50/40 dark:bg-emerald-950/20">
                   {tBilling("unlimited")}
                 </td>
@@ -342,6 +360,7 @@ export function BillingClient({
                   {tBilling("digitalSignatureStamp")}
                 </td>
                 <td className="py-3 px-3 text-center text-slate-400">-</td>
+                <td className="py-3 px-3 text-center text-slate-400 bg-cyan-50/40 dark:bg-cyan-950/20">-</td>
                 <td className="py-3 px-3 text-center font-bold text-[#0f6b4f] dark:text-emerald-400 bg-emerald-50/40 dark:bg-emerald-950/20">
                   {tBilling("included")}
                 </td>
@@ -354,6 +373,7 @@ export function BillingClient({
                   {tBilling("customDomainFeature")}
                 </td>
                 <td className="py-3 px-3 text-center text-slate-400">-</td>
+                <td className="py-3 px-3 text-center text-slate-400 bg-cyan-50/40 dark:bg-cyan-950/20">-</td>
                 <td className="py-3 px-3 text-center text-slate-400 bg-emerald-50/40 dark:bg-emerald-950/20">-</td>
                 <td className="py-3 px-3 text-center font-bold text-violet-700 dark:text-violet-400 bg-violet-50/40 dark:bg-violet-950/20">
                   {tBilling("included")}
@@ -364,6 +384,7 @@ export function BillingClient({
                   {tBilling("apiWebhooksFeature")}
                 </td>
                 <td className="py-3 px-3 text-center text-slate-400">-</td>
+                <td className="py-3 px-3 text-center text-slate-400 bg-cyan-50/40 dark:bg-cyan-950/20">-</td>
                 <td className="py-3 px-3 text-center text-slate-400 bg-emerald-50/40 dark:bg-emerald-950/20">-</td>
                 <td className="py-3 px-3 text-center font-bold text-violet-700 dark:text-violet-400 bg-violet-50/40 dark:bg-violet-950/20">
                   {tBilling("included")}
@@ -374,6 +395,7 @@ export function BillingClient({
                   {tBilling("botAlertsFeature")}
                 </td>
                 <td className="py-3 px-3 text-center text-slate-400">-</td>
+                <td className="py-3 px-3 text-center text-slate-400 bg-cyan-50/40 dark:bg-cyan-950/20">-</td>
                 <td className="py-3 px-3 text-center text-slate-400 bg-emerald-50/40 dark:bg-emerald-950/20">-</td>
                 <td className="py-3 px-3 text-center font-bold text-violet-700 dark:text-violet-400 bg-violet-50/40 dark:bg-violet-950/20">
                   {tBilling("included")}

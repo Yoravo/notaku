@@ -191,13 +191,13 @@ export function ProfileForm({
       )}
 
       {/* Business Logo Section */}
-      <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 sm:p-5">
-        <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2.5">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 p-4 sm:p-5">
+        <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2.5">
           {tProf("logoLabel")}
         </label>
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <div className="w-20 h-20 rounded-xl border-2 border-dashed border-slate-300 bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
+          <div className="w-20 h-20 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
             {form.logoUrl ? (
               <img
                 src={form.logoUrl}
@@ -211,7 +211,7 @@ export function ProfileForm({
 
           <div className="space-y-2 flex-1 w-full">
             <div className="flex flex-wrap items-center gap-2">
-              <label className="cursor-pointer inline-flex items-center justify-center px-3.5 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all shadow-2xs min-h-[44px] sm:min-h-[38px]">
+              <label className="cursor-pointer inline-flex items-center justify-center px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-2xs min-h-[44px] sm:min-h-[38px]">
                 <span>
                   {form.logoUrl ? tProf("logoChange") : tProf("logoSelect")}
                 </span>
@@ -234,7 +234,7 @@ export function ProfileForm({
                       setOffsetX(0);
                       setOffsetY(0);
                     }}
-                    className="px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 rounded-xl transition-all border border-slate-200 bg-white cursor-pointer inline-flex items-center gap-1.5 shadow-2xs min-h-[44px] sm:min-h-[38px]"
+                    className="px-3.5 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition-all border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 cursor-pointer inline-flex items-center gap-1.5 shadow-2xs min-h-[44px] sm:min-h-[38px]"
                   >
                     <ArrowsPointingOutIcon className="w-3.5 h-3.5 text-slate-500" />
                     <span>{tProf("adjustSize")}</span>
@@ -243,7 +243,7 @@ export function ProfileForm({
                   <button
                     type="button"
                     onClick={() => setForm((prev) => ({ ...prev, logoUrl: "" }))}
-                    className="px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer min-h-[44px] sm:min-h-[38px]"
+                    className="px-3 py-2 text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-xl transition-colors cursor-pointer min-h-[44px] sm:min-h-[38px]"
                   >
                     {tProf("removeLogo")}
                   </button>
@@ -251,7 +251,7 @@ export function ProfileForm({
               )}
             </div>
 
-            <p className="text-[11px] text-slate-500 font-medium">
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
               {tProf("logoHint")}
             </p>
           </div>
@@ -261,12 +261,12 @@ export function ProfileForm({
       {/* Digital Signature & Stamp Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Digital Signature */}
-        <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 sm:p-5 space-y-3">
-          <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 p-4 sm:p-5 space-y-3">
+          <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
             {tProf("signatureLabel")}
           </label>
           <div className="flex items-center gap-3">
-            <div className="w-24 h-16 rounded-xl border-2 border-dashed border-slate-300 bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
+            <div className="w-24 h-16 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
               {form.signatureUrl ? (
                 <img
                   src={form.signatureUrl}
