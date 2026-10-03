@@ -4,7 +4,7 @@
  * berdasarkan riwayat commit git riil dan mendukung dwibahasa (ID & EN).
  */
 
-export const APP_VERSION = "0.7.8";
+export const APP_VERSION = "0.8.0";
 export const APP_RELEASE_DATE = {
   id: "4 Oktober 2026",
   en: "October 4, 2026",
@@ -42,6 +42,46 @@ export interface ChangelogRelease {
 
 export const CHANGELOG_RELEASES: ChangelogRelease[] = [
   {
+    version: "0.8.0",
+    type: "minor",
+    date: {
+      id: "4 Oktober 2026",
+      en: "October 4, 2026",
+    },
+    title: {
+      id: "Paket LITE: Pilihan Paling Hemat untuk UMKM Pemula",
+      en: "LITE Plan: The Most Affordable Choice for Small Businesses",
+    },
+    summary: {
+      id: "Kini hadir Paket LITE (Rp 19.000/bulan) bagi UMKM yang membutuhkan pembuatan invoice dan kontak pelanggan tanpa batas, serta ekspor PDF bebas watermark, dengan harga yang sangat terjangkau.",
+      en: "Introducing the LITE Plan (Rp 19,000/month) for small businesses needing unlimited invoice and customer creation, plus watermark-free PDF exports at an extremely affordable price.",
+    },
+    isLatest: true,
+    highlights: [
+      {
+        category: "feat",
+        text: {
+          id: "Paket LITE Baru: Solusi Rp 19.000/bln untuk pembuatan invoice tanpa batas dan bebas watermark NotaKu.",
+          en: "New LITE Plan: A Rp 19,000/mo solution for unlimited invoices and watermark-free PDF exports.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "Restrukturisasi Harga: Peralihan ke skema harga 4 tingkat (FREE, LITE, PRO, BUSINESS) yang lebih mengakomodasi pertumbuhan bisnis dari tahap awal hingga menengah.",
+          en: "Pricing Restructuring: Shift to a 4-tier pricing model (FREE, LITE, PRO, BUSINESS) to better accommodate business growth from early to medium stage.",
+        },
+      },
+      {
+        category: "perf",
+        text: {
+          id: "Penyempurnaan Kalkulasi Pendapatan Admin: Dasbor analitik sekarang melacak tingkat konversi dan MRR secara lebih akurat dengan rincian pendapatan dari paket LITE, PRO, dan BUSINESS.",
+          en: "Admin Revenue Calculation Overhaul: The analytics dashboard now tracks conversion rates and MRR more accurately with revenue broken down by LITE, PRO, and BUSINESS plans.",
+        },
+      },
+    ],
+  },
+  {
     version: "0.7.8",
     type: "patch",
     date: {
@@ -56,7 +96,6 @@ export const CHANGELOG_RELEASES: ChangelogRelease[] = [
       id: "Daftar invoice dan pelanggan yang tersimpan offline kini digabungkan antar-halaman secara cerdas, dan data lokal otomatis dibersihkan saat keluar akun demi keamanan perangkat bersama.",
       en: "Offline-cached invoices and customer lists now merge across pages intelligently, and local data is automatically purged on sign-out to safeguard shared devices.",
     },
-    isLatest: true,
     highlights: [
       {
         category: "feat",
