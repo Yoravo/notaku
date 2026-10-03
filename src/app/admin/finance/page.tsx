@@ -22,7 +22,7 @@ export default async function AdminFinancePage() {
 
   const [
     totalUsers,
-    totalProUsers,
+    planCounts,
     paidInvoicesAgg,
     allInvoicesAgg,
     paidThisMonthAgg,
@@ -32,7 +32,7 @@ export default async function AdminFinancePage() {
     recentPaidInvoices,
   ] = await Promise.all([
     prisma.user.count(),
-    prisma.user.count({ where: { plan: "PRO" } }),
+    prisma.user.groupBy({ by: ["plan"], _count: { id: true } }),
     prisma.invoice.aggregate({
       where: { status: "PAID" },
       _sum: { total: true },
@@ -70,7 +70,20 @@ export default async function AdminFinancePage() {
   ]);
 
   // Financial Estimates
-  const estimatedMRR = totalProUsers * PRO_PRICE;
+  let estimatedMRR = 0;
+  let totalProUsers = 0;
+  planCounts.forEach((p) => {
+    if (p.plan === "LITE") estimatedMRR += p._count.id * 19000;
+    else if (p.plan === "PRO") {
+      estimatedMRR += p._count.id * 49000;
+      totalProUsers += p._count.id;
+    }
+    else if (p.plan === "BUSINESS") {
+      estimatedMRR += p._count.id * 99000;
+      totalProUsers += p._count.id; // Count as paid
+    }
+  });
+
   const estimatedARR = estimatedMRR * 12;
   const conversionRate = totalUsers > 0 ? ((totalProUsers / totalUsers) * 100).toFixed(1) : "0";
   const platformGMV = Number(paidInvoicesAgg._sum.total || 0);

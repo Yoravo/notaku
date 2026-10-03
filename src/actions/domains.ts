@@ -22,7 +22,7 @@ async function getUser() {
 }
 
 export interface CustomDomainData {
-  plan: "FREE" | "PRO" | "BUSINESS";
+  plan: "FREE" | "LITE" | "PRO" | "BUSINESS";
   customDomain: string | null;
   customDomainVerified: boolean;
   customDomainTxt: string | null;
@@ -52,7 +52,7 @@ export async function getCustomDomainSettings(): Promise<CustomDomainData> {
   const baseDomain = process.env.NEXT_PUBLIC_APP_DOMAIN || "notaku.store";
 
   return {
-    plan: (user?.plan as "FREE" | "PRO" | "BUSINESS") || "FREE",
+    plan: (user?.plan as "FREE" | "LITE" | "PRO" | "BUSINESS") || "FREE",
     customDomain: user?.customDomain || null,
     customDomainVerified: Boolean(user?.customDomainVerified),
     customDomainTxt: user?.customDomainTxt || null,

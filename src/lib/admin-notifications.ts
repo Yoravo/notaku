@@ -41,7 +41,7 @@ export async function notifyAdminNewSubscription(data: {
   userId: string;
   userEmail: string;
   userName?: string | null;
-  plan: "PRO" | "BUSINESS";
+  plan: "LITE" | "PRO" | "BUSINESS";
   amount: number;
   intervalDays: number;
   paymentId?: string | null;

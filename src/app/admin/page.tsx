@@ -20,7 +20,7 @@ export default async function AdminDashboardPage() {
   // Fetch all business & traffic metrics in parallel
   const [
     totalUsers,
-    proUsers,
+    planCounts,
     newUsers30d,
     totalInvoices,
     paidInvoicesAgg,
@@ -46,7 +46,7 @@ export default async function AdminDashboardPage() {
     recentLogs,
   ] = await Promise.all([
     prisma.user.count(),
-    prisma.user.count({ where: { plan: "PRO" } }),
+    prisma.user.groupBy({ by: ["plan"], _count: { id: true } }),
     prisma.user.count({ where: { createdAt: { gte: thirtyDaysAgo } } }),
     prisma.invoice.count(),
     prisma.invoice.aggregate({
@@ -126,11 +126,20 @@ export default async function AdminDashboardPage() {
     }),
   ]);
 
-  // Income calculations (Rp 49.000 per Pro Subscription)
-  const PRO_PRICE = 49000;
-  const currentMRR = proUsers * PRO_PRICE;
-  const totalEstimatedIncome =
-    Math.max(settlementLogsCount, proUsers) * PRO_PRICE;
+  // Income calculations
+  let proUsers = 0;
+  let currentMRR = 0;
+
+  planCounts.forEach((p) => {
+    if (p.plan === "LITE") currentMRR += p._count.id * 19000;
+    else if (p.plan === "PRO") {
+      currentMRR += p._count.id * 49000;
+      proUsers += p._count.id;
+    }
+    else if (p.plan === "BUSINESS") currentMRR += p._count.id * 99000;
+  });
+
+  const totalEstimatedIncome = currentMRR;
 
   const totalInvoiceVolume = Number(allInvoicesAgg._sum.total || 0);
   const paidInvoiceVolume = Number(paidInvoicesAgg._sum.total || 0);

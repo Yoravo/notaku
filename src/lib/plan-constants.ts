@@ -1,7 +1,11 @@
-export type PlanType = "PRO" | "BUSINESS";
+export type PlanType = "LITE" | "PRO" | "BUSINESS";
 export type PlanInterval = "MONTHLY" | "ANNUALLY";
 
 export const PLAN_PRICES = {
+  LITE: {
+    MONTHLY: 19000,
+    ANNUALLY: 190000,
+  },
   PRO: {
     MONTHLY: 49000,
     ANNUALLY: 390000,

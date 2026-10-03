@@ -42,7 +42,8 @@ export function BillingClient({
   const tBilling = useTranslations("billing");
   const isBusiness = user.plan === "BUSINESS";
   const isPro = user.plan === "PRO";
-  const isPaid = isPro || isBusiness;
+  const isLite = user.plan === "LITE";
+  const isPaid = isLite || isPro || isBusiness;
 
   const invoicePercent = isPaid
     ? 0
@@ -74,10 +75,12 @@ export function BillingClient({
                   ? "bg-violet-100 dark:bg-violet-950/60 text-violet-700 dark:text-violet-400"
                   : isPro
                   ? "bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400"
+                  : isLite
+                  ? "bg-cyan-100 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-400"
                   : "bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400"
               }`}
             >
-              {isBusiness || isPro ? (
+              {isPaid ? (
                 <SparklesIcon className="h-6 w-6" />
               ) : (
                 <BoltIcon className="h-6 w-6" />
@@ -90,6 +93,8 @@ export function BillingClient({
                     ? tBilling("bizMember")
                     : isPro
                     ? tBilling("proMember")
+                    : isLite
+                    ? "Member LITE"
                     : tBilling("freeMember")}
                 </h2>
                 <span
@@ -98,6 +103,8 @@ export function BillingClient({
                       ? "bg-violet-50 dark:bg-violet-950/60 text-violet-800 dark:text-violet-300 border border-violet-300 dark:border-violet-700"
                       : isPro
                       ? "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-700"
+                      : isLite
+                      ? "bg-cyan-50 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 border border-cyan-300 dark:border-cyan-700"
                       : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
                   }`}
                 >
@@ -109,6 +116,8 @@ export function BillingClient({
                   ? tBilling("bizDesc")
                   : isPro
                   ? tBilling("proDesc")
+                  : isLite
+                  ? "Akses pembuatan invoice tak terbatas dan bebas watermark."
                   : tBilling("freeDesc")}
               </p>
             </div>

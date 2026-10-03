@@ -209,9 +209,16 @@ export async function POST(request: Request) {
       });
 
       // OWASP A04: Tentukan target tier dan durasi dari data tersimpan / prefix orderId
-      const targetPlan: "PRO" | "BUSINESS" =
-        existingSub?.plan === "BUSINESS" || String(orderId).startsWith("BUSINESS")
+      const strOrderId = String(orderId);
+      const targetPlan: "LITE" | "PRO" | "BUSINESS" =
+        strOrderId.startsWith("BUSINESS")
           ? "BUSINESS"
+          : strOrderId.startsWith("LITE")
+          ? "LITE"
+          : existingSub?.plan === "BUSINESS"
+          ? "BUSINESS"
+          : existingSub?.plan === "LITE"
+          ? "LITE"
           : "PRO";
 
       const daysToAdd =
@@ -336,7 +343,7 @@ export async function POST(request: Request) {
         userEmail: user.email,
         userName: user.name,
         plan: targetPlan,
-        amount: Number(amount) || (targetPlan === "BUSINESS" ? 99000 : 49000),
+        amount: Number(amount) || (targetPlan === "BUSINESS" ? 99000 : targetPlan === "LITE" ? 19000 : 49000),
         intervalDays: daysToAdd,
         paymentId: String(paymentId || orderId || "-"),
       }).catch((err) => console.error("[SUB_ADMIN_NOTIF_ERROR]", err));
@@ -354,15 +361,15 @@ export async function POST(request: Request) {
           after(async () => {
             try {
               const params: Record<string, unknown> = {
-                transaction_id: String(paymentId || orderId || `PRO-${user.id.slice(0, 8)}`),
-                value: amount > 0 ? amount : 49000,
+                transaction_id: String(paymentId || orderId || `${targetPlan}-${user.id.slice(0, 8)}`),
+                value: amount > 0 ? amount : targetPlan === "BUSINESS" ? 99000 : targetPlan === "LITE" ? 19000 : 49000,
                 currency: "IDR",
                 debug_mode: 1,
                 items: [
                   {
-                    item_id: "notaku_pro_monthly",
-                    item_name: "NotaKu PRO - 1 Bulan",
-                    price: amount > 0 ? amount : 49000,
+                    item_id: `notaku_${targetPlan.toLowerCase()}_${daysToAdd === 365 ? "annual" : "monthly"}`,
+                    item_name: `NotaKu ${targetPlan} - ${daysToAdd === 365 ? "1 Tahun" : "1 Bulan"}`,
+                    price: amount > 0 ? amount : targetPlan === "BUSINESS" ? 99000 : targetPlan === "LITE" ? 19000 : 49000,
                     quantity: 1,
                   },
                 ],

@@ -49,11 +49,26 @@ export const LandingJsonLd: FC = () => {
       },
       {
         "@type": "Offer",
+        price: "19000",
+        priceCurrency: "IDR",
+        name: "Paket LITE (30 Hari)",
+        description: "Buat invoice & pelanggan unlimited tanpa watermark",
+      },
+      {
+        "@type": "Offer",
         price: "49000",
         priceCurrency: "IDR",
         name: "Paket PRO (30 Hari)",
         description:
-          "Invoice tanpa batas, bebas watermark, tanda tangan digital, stempel lunas, custom domain, dan recurring invoice",
+          "Semua fitur LITE ditambah tanda tangan digital, stempel lunas, 4 template PDF, multi-currency, recurring invoice, dan laporan pajak",
+      },
+      {
+        "@type": "Offer",
+        price: "99000",
+        priceCurrency: "IDR",
+        name: "Paket BUSINESS (30 Hari)",
+        description:
+          "Semua fitur PRO ditambah custom domain white-label, REST API keys, webhook, dan bot notifikasi",
       },
     ],
     featureList: [

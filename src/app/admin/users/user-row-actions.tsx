@@ -15,7 +15,7 @@ type UserActionsProps = {
   userId: string;
   userName: string;
   userEmail: string;
-  currentPlan: "FREE" | "PRO" | "BUSINESS";
+  currentPlan: "FREE" | "LITE" | "PRO" | "BUSINESS";
   currentRole: "USER" | "ADMIN";
   isCurrentAdmin: boolean;
 };
@@ -27,7 +27,7 @@ type DialogState = {
   description: string;
   confirmLabel: string;
   variant: ConfirmVariant;
-  newPlan?: "FREE" | "PRO" | "BUSINESS";
+  newPlan?: "FREE" | "LITE" | "PRO" | "BUSINESS";
   newRole?: "USER" | "ADMIN";
   itemDetails: { label: string; value: string }[];
 };
@@ -57,8 +57,8 @@ export function UserRowActions({
   const [selfAdminAlertOpen, setSelfAdminAlertOpen] = useState(false);
 
   const handleOpenPlanDialog = () => {
-    const nextPlan: "FREE" | "PRO" | "BUSINESS" =
-      currentPlan === "FREE" ? "PRO" : currentPlan === "PRO" ? "BUSINESS" : "FREE";
+    const nextPlan: "FREE" | "LITE" | "PRO" | "BUSINESS" =
+      currentPlan === "FREE" ? "LITE" : currentPlan === "LITE" ? "PRO" : currentPlan === "PRO" ? "BUSINESS" : "FREE";
     const isUpgrading = nextPlan !== "FREE";
 
     setDialogState({
@@ -166,6 +166,8 @@ export function UserRowActions({
                 ? "bg-violet-50 dark:bg-violet-950/60 text-violet-800 dark:text-violet-300 hover:bg-violet-100 dark:hover:bg-violet-900/60 border border-violet-200/60 dark:border-violet-800"
                 : currentPlan === "PRO"
                 ? "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/60 border border-amber-200/60 dark:border-amber-800"
+                : currentPlan === "LITE"
+                ? "bg-cyan-50 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 hover:bg-cyan-100 dark:hover:bg-cyan-900/60 border border-cyan-200/60 dark:border-cyan-800"
                 : "bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200/60 dark:border-emerald-800"
             }`}
             title={tAdmin("confirmPlanChangeTitle")}
@@ -177,10 +179,12 @@ export function UserRowActions({
             )}
             <span>
               {currentPlan === "FREE"
-                ? tAdmin("setPro")
+                ? "Set LITE"
+                : currentPlan === "LITE"
+                ? "Set PRO"
                 : currentPlan === "PRO"
-                ? tAdmin("setBusiness")
-                : tAdmin("setFree")}
+                ? "Set BUSINESS"
+                : "Set FREE"}
             </span>
           </button>
 

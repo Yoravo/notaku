@@ -249,7 +249,7 @@ export function AdminUsersClient({
                           userId={u.id}
                           userName={u.name || ""}
                           userEmail={u.email}
-                          currentPlan={u.plan as "FREE" | "PRO" | "BUSINESS"}
+                          currentPlan={u.plan as "FREE" | "LITE" | "PRO" | "BUSINESS"}
                           currentRole={u.role as "USER" | "ADMIN"}
                           isCurrentAdmin={isCurrentAdmin}
                         />

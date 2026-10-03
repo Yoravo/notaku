@@ -11,7 +11,7 @@ export interface ReferralFriend {
   id: string;
   name: string;
   email: string;
-  plan: "FREE" | "PRO" | "BUSINESS";
+  plan: "FREE" | "LITE" | "PRO" | "BUSINESS";
   createdAt: string;
   rewardEarned: number;
 }
@@ -95,7 +95,7 @@ export async function getReferralStats(): Promise<ReferralStats | null> {
       id: f.id,
       name: f.name,
       email: maskedEmail,
-      plan: f.plan as "FREE" | "PRO" | "BUSINESS",
+      plan: f.plan as "FREE" | "LITE" | "PRO" | "BUSINESS",
       createdAt: f.createdAt.toISOString(),
       rewardEarned: rewardMap.get(f.id) || 0,
     };

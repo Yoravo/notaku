@@ -186,30 +186,41 @@ export function UpgradeModal({
           </button>
         </div>
 
-        {/* Tier Selector (PRO vs BUSINESS) */}
-        <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl">
+        {/* Tier Selector (LITE vs PRO vs BUSINESS) */}
+        <div className="grid grid-cols-3 gap-1 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl">
+          <button
+            type="button"
+            onClick={() => handlePlanChange("LITE")}
+            className={`py-2 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer min-h-[40px] flex items-center justify-center gap-1.5 ${
+              selectedPlan === "LITE"
+                ? "bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 shadow-xs"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+            }`}
+          >
+            <span>NotaKu LITE</span>
+          </button>
           <button
             type="button"
             onClick={() => handlePlanChange("PRO")}
-            className={`py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer min-h-[40px] flex items-center justify-center gap-1.5 ${
+            className={`py-2 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer min-h-[40px] flex items-center justify-center gap-1.5 ${
               selectedPlan === "PRO"
                 ? "bg-white dark:bg-slate-900 text-[#0f6b4f] dark:text-emerald-400 shadow-xs"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
-            <SparklesIcon className="w-3.5 h-3.5" />
+            <SparklesIcon className="w-3.5 h-3.5 hidden sm:block" />
             <span>NotaKu {t("planPro")}</span>
           </button>
           <button
             type="button"
             onClick={() => handlePlanChange("BUSINESS")}
-            className={`py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer min-h-[40px] flex items-center justify-center gap-1.5 ${
+            className={`py-2 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer min-h-[40px] flex items-center justify-center gap-1.5 ${
               selectedPlan === "BUSINESS"
                 ? "bg-white dark:bg-slate-900 text-violet-700 dark:text-violet-400 shadow-xs"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
-            <BriefcaseIcon className="w-3.5 h-3.5" />
+            <BriefcaseIcon className="w-3.5 h-3.5 hidden sm:block" />
             <span>NotaKu {t("planBusiness")}</span>
           </button>
         </div>
@@ -253,6 +264,8 @@ export function UpgradeModal({
           className={`rounded-xl p-4 border transition-all ${
             selectedPlan === "BUSINESS"
               ? "bg-linear-to-br from-violet-500/10 to-indigo-500/5 dark:from-violet-950/40 dark:to-indigo-950/20 border-violet-200/80 dark:border-violet-800/80"
+              : selectedPlan === "LITE"
+              ? "bg-linear-to-br from-cyan-500/10 to-blue-500/5 dark:from-cyan-950/40 dark:to-blue-950/20 border-cyan-200/80 dark:border-cyan-800/80"
               : "bg-linear-to-br from-emerald-500/10 to-teal-500/5 dark:from-emerald-950/40 dark:to-teal-950/20 border-emerald-200/80 dark:border-emerald-800/80"
           }`}
         >
@@ -262,6 +275,8 @@ export function UpgradeModal({
                 className={`text-[11px] font-bold uppercase tracking-wider ${
                   selectedPlan === "BUSINESS"
                     ? "text-violet-800 dark:text-violet-300"
+                    : selectedPlan === "LITE"
+                    ? "text-cyan-800 dark:text-cyan-300"
                     : "text-emerald-800 dark:text-emerald-300"
                 }`}
               >
@@ -285,6 +300,8 @@ export function UpgradeModal({
               className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold border ${
                 selectedPlan === "BUSINESS"
                   ? "bg-violet-100 dark:bg-violet-900/60 text-violet-800 dark:text-violet-300 border-violet-200 dark:border-violet-700"
+                  : selectedPlan === "LITE"
+                  ? "bg-cyan-100 dark:bg-cyan-900/60 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-700"
                   : "bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700"
               }`}
             >
@@ -376,6 +393,12 @@ export function UpgradeModal({
                 t("bizFeature4"),
                 t("bizFeature5"),
               ]
+            : selectedPlan === "LITE"
+            ? [
+                t("liteFeature1"),
+                t("liteFeature2"),
+                t("liteFeature3"),
+              ]
             : [
                 t("feature1"),
                 t("feature2"),
@@ -390,6 +413,8 @@ export function UpgradeModal({
                 className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 border ${
                   selectedPlan === "BUSINESS"
                     ? "bg-violet-100 dark:bg-violet-950/80 text-violet-700 dark:text-violet-300 border-violet-200/60 dark:border-violet-800"
+                    : selectedPlan === "LITE"
+                    ? "bg-cyan-100 dark:bg-cyan-950/80 text-cyan-700 dark:text-cyan-300 border-cyan-200/60 dark:border-cyan-800"
                     : "bg-emerald-100 dark:bg-emerald-950/80 text-[#0f6b4f] dark:text-emerald-400 border-emerald-200/60 dark:border-emerald-800"
                 }`}
               >
@@ -423,6 +448,8 @@ export function UpgradeModal({
             className={`flex-1 rounded-xl px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50 transition-colors cursor-pointer shadow-xs min-h-[44px] ${
               selectedPlan === "BUSINESS"
                 ? "bg-violet-700 hover:bg-violet-800"
+                : selectedPlan === "LITE"
+                ? "bg-cyan-600 hover:bg-cyan-700"
                 : "bg-[#0f6b4f] hover:bg-[#0c5740]"
             }`}
           >

@@ -134,7 +134,7 @@ export default async function AdminUserDetailPage(props: {
             userId={targetUser.id}
             userName={targetUser.name}
             userEmail={targetUser.email}
-            currentPlan={targetUser.plan as "FREE" | "PRO" | "BUSINESS"}
+            currentPlan={targetUser.plan as "FREE" | "LITE" | "PRO" | "BUSINESS"}
             currentRole={targetUser.role as "USER" | "ADMIN"}
             isCurrentAdmin={isCurrentAdmin}
           />

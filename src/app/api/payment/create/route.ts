@@ -13,6 +13,7 @@ import {
 
 // Label paket & durasi aktif untuk deskripsi checkout dan periode langganan.
 const PLAN_LABELS: Record<PlanType, string> = {
+  LITE: "NotaKu LITE",
   PRO: "NotaKu PRO",
   BUSINESS: "NotaKu BUSINESS",
 };
@@ -46,7 +47,7 @@ export async function POST(request: Request) {
     if (body.promoCode && typeof body.promoCode === "string") {
       promoCode = body.promoCode.trim().toUpperCase();
     }
-    if (body.plan === "BUSINESS" || body.plan === "PRO") {
+    if (body.plan === "BUSINESS" || body.plan === "PRO" || body.plan === "LITE") {
       plan = body.plan;
     }
     if (body.interval === "ANNUALLY" || body.interval === "MONTHLY") {

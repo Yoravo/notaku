@@ -806,7 +806,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
             </p>
           </div>
 
-          <div className="mt-14 max-w-7xl mx-auto grid grid-cols-1 gap-6 lg:grid-cols-3 items-stretch">
+          <div className="mt-14 max-w-[90rem] mx-auto grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4 items-stretch">
             {/* 1. Starter Plan */}
             <div className="flex flex-col justify-between rounded-2xl border border-line bg-white dark:bg-slate-900 p-6 sm:p-8 shadow-xs">
               <div>
@@ -870,7 +870,70 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
               </div>
             </div>
 
-            {/* 2. Pro Plan (Highlighted) */}
+            {/* 2. LITE Plan */}
+            <div className="flex flex-col justify-between rounded-2xl border border-line bg-white dark:bg-slate-900 p-6 sm:p-8 shadow-xs">
+              <div>
+                <div className="flex items-center justify-between">
+                  <h3 className="font-sans text-2xl font-bold text-ink">Nota<span className="text-cyan-600 dark:text-cyan-400">Ku</span> LITE</h3>
+                  <span className="rounded-lg bg-cyan-100 dark:bg-cyan-950/80 px-2.5 py-1 text-xs font-semibold text-cyan-800 dark:text-cyan-300">
+                    Pemula
+                  </span>
+                </div>
+                <p className="mt-2 text-sm text-ink-soft min-h-[40px]">
+                  Bebas buat invoice sepuasnya tanpa watermark NotaKu.
+                </p>
+                <div className="mt-6 border-b border-line dark:border-slate-800 pb-6">
+                  <p className="tnum font-sans text-4xl font-black text-ink tracking-tight">
+                    {formatMoney(19000, "IDR")}
+                    <span className="text-sm font-normal text-ink-soft ml-1">
+                      {tPricing("freePeriod")}
+                    </span>
+                  </p>
+                  <p className="text-[11px] text-cyan-700 dark:text-cyan-400 font-medium mt-1">
+                    Atau Rp190.000 / tahun (Hemat 2 bulan)
+                  </p>
+                </div>
+
+                <ul className="mt-6 space-y-3.5 text-sm text-ink-soft">
+                  <li className="flex items-center gap-3">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-100 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-400 shrink-0">
+                      <CheckIcon className="h-3.5 w-3.5 stroke-[3]" />
+                    </div>
+                    <span className="font-semibold text-ink">Pembuatan Invoice & Pelanggan Unlimited</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-100 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-400 shrink-0">
+                      <CheckIcon className="h-3.5 w-3.5 stroke-[3]" />
+                    </div>
+                    <span>Ekspor PDF bebas watermark NotaKu</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-100 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-400 shrink-0">
+                      <CheckIcon className="h-3.5 w-3.5 stroke-[3]" />
+                    </div>
+                    <span>Berbagi tagihan lewat WhatsApp</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-100 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-400 shrink-0">
+                      <CheckIcon className="h-3.5 w-3.5 stroke-[3]" />
+                    </div>
+                    <span>Format Template Standar (Classic) dengan identitas toko</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="mt-8 pt-4">
+                <Link
+                  href={session ? "/dashboard" : "/register"}
+                  prefetch={true}
+                  className="flex items-center justify-center w-full rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white py-3.5 text-sm font-bold transition-all cursor-pointer min-h-[48px] shadow-sm hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
+                >
+                  {session ? "Upgrade ke LITE" : "Daftar Gratis"}
+                </Link>
+              </div>
+            </div>
+
+            {/* 3. Pro Plan (Highlighted) */}
             <div className="relative flex flex-col justify-between rounded-2xl bg-[#09110E] dark:bg-slate-900 border-2 border-emerald p-6 sm:p-8 text-slate-100 shadow-xl shadow-emerald-950/20">
               <div>
                 <div className="flex items-center justify-between">
