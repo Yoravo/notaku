@@ -55,6 +55,7 @@ interface InvoiceDetailClientProps {
     items: InvoiceItem[];
     customer: CustomerData;
     businessName: string;
+    showWatermark: boolean;
   };
 }
 
@@ -213,6 +214,7 @@ export function InvoiceDetailClient({ invoice }: InvoiceDetailClientProps) {
             customPublicUrl={invoice.customPublicUrl}
             businessName={invoice.businessName}
             status={invoice.status}
+            showWatermark={invoice.showWatermark}
           />
 
           {/* Status Lifecycle & Delete Dropdown */}

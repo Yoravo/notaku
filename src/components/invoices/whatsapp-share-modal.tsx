@@ -22,6 +22,7 @@ type Props = {
   customPublicUrl?: string | null;
   businessName?: string | null;
   status: string;
+  showWatermark?: boolean;
 };
 
 export function WhatsAppShareModal({
@@ -35,6 +36,7 @@ export function WhatsAppShareModal({
   customPublicUrl,
   businessName,
   status,
+  showWatermark = false,
 }: Props) {
   const locale = useLocale() as "id" | "en";
   const tInv = useTranslations("invoices");
@@ -55,6 +57,12 @@ export function WhatsAppShareModal({
   const totalFormatted = formatMoney(Number(total), currency || "IDR", locale);
   const sender = businessName ? `*${businessName}*` : "*NotaKu*";
 
+  const watermark = showWatermark
+    ? locale === "id"
+      ? `\n\n---\n_Dibuat praktis dengan NotaKu. Buat invoice usahamu gratis di notaku.store_`
+      : `\n\n---\n_Created with NotaKu. Generate free invoices for your business at notaku.store_`
+    : "";
+
   // Template opsi
   const templates = [
     {
@@ -63,8 +71,8 @@ export function WhatsAppShareModal({
       desc: tInv("waNewDesc"),
       text:
         locale === "id"
-          ? `Halo Kak ${customerName},\n\nTerima kasih atas kerja samanya. Berikut rincian invoice ${invoiceNumber} dari ${sender}:\n\n💰 *Total Tagihan:* ${totalFormatted}${dueDate ? `\n📅 *Jatuh Tempo:* ${dueDate}` : ""}\n\nSilakan cek rincian dan pembayaran melalui link resmi berikut:\n👉 ${invoiceUrl}\n\nTerima kasih!`
-          : `Hello ${customerName},\n\nThank you for working with us. Here are the invoice details for ${invoiceNumber} from ${sender}:\n\n💰 *Total Due:* ${totalFormatted}${dueDate ? `\n📅 *Due Date:* ${dueDate}` : ""}\n\nPlease review and settle payment via this secure link:\n👉 ${invoiceUrl}\n\nThank you!`,
+          ? `Halo Kak ${customerName},\n\nTerima kasih atas kerja samanya. Berikut rincian invoice ${invoiceNumber} dari ${sender}:\n\n💰 *Total Tagihan:* ${totalFormatted}${dueDate ? `\n📅 *Jatuh Tempo:* ${dueDate}` : ""}\n\nSilakan cek rincian dan pembayaran melalui link resmi berikut:\n👉 ${invoiceUrl}\n\nTerima kasih!${watermark}`
+          : `Hello ${customerName},\n\nThank you for working with us. Here are the invoice details for ${invoiceNumber} from ${sender}:\n\n💰 *Total Due:* ${totalFormatted}${dueDate ? `\n📅 *Due Date:* ${dueDate}` : ""}\n\nPlease review and settle payment via this secure link:\n👉 ${invoiceUrl}\n\nThank you!${watermark}`,
     },
     {
       id: "reminder_h3",
@@ -72,8 +80,8 @@ export function WhatsAppShareModal({
       desc: tInv("waReminderH3Desc"),
       text:
         locale === "id"
-          ? `Halo Kak ${customerName},\n\nSemoga hari Anda menyenangkan. Sekadar pengingat ramah bahwa tagihan invoice ${invoiceNumber} dari ${sender} sebesar ${totalFormatted} akan jatuh tempo dalam *3 hari lagi* (${dueDate || tInv("dateSoon")}).\n\nUntuk rincian dan pembayaran dapat diakses melalui link berikut:\n👉 ${invoiceUrl}\n\nTerima kasih banyak!`
-          : `Hello ${customerName},\n\nHope you have a great day. This is a friendly reminder that invoice ${invoiceNumber} from ${sender} for ${totalFormatted} is due in *3 days* (${dueDate || tInv("dateSoon")}).\n\nView details & pay online:\n👉 ${invoiceUrl}\n\nThank you!`,
+          ? `Halo Kak ${customerName},\n\nSemoga hari Anda menyenangkan. Sekadar pengingat ramah bahwa tagihan invoice ${invoiceNumber} dari ${sender} sebesar ${totalFormatted} akan jatuh tempo dalam *3 hari lagi* (${dueDate || tInv("dateSoon")}).\n\nUntuk rincian dan pembayaran dapat diakses melalui link berikut:\n👉 ${invoiceUrl}\n\nTerima kasih banyak!${watermark}`
+          : `Hello ${customerName},\n\nHope you have a great day. This is a friendly reminder that invoice ${invoiceNumber} from ${sender} for ${totalFormatted} is due in *3 days* (${dueDate || tInv("dateSoon")}).\n\nView details & pay online:\n👉 ${invoiceUrl}\n\nThank you!${watermark}`,
     },
     {
       id: "reminder_today",
@@ -81,8 +89,8 @@ export function WhatsAppShareModal({
       desc: tInv("waReminderTodayDesc"),
       text:
         locale === "id"
-          ? `Halo Kak ${customerName},\n\nKami ingin menginformasikan bahwa tagihan invoice ${invoiceNumber} dari ${sender} sebesar ${totalFormatted} jatuh tempo *HARI INI* (${dueDate || tInv("dateToday")}).\n\nMohon bantuannya untuk dapat menyelesaikan pembayaran melalui tautan berikut:\n👉 ${invoiceUrl}\n\nJika sudah melakukan pembayaran, silakan abaikan pesan ini. Terima kasih!`
-          : `Hello ${customerName},\n\nFriendly reminder that invoice ${invoiceNumber} from ${sender} for ${totalFormatted} is due *TODAY* (${dueDate || tInv("dateToday")}).\n\nPlease complete payment via:\n👉 ${invoiceUrl}\n\nIf already paid, please disregard. Thank you!`,
+          ? `Halo Kak ${customerName},\n\nKami ingin menginformasikan bahwa tagihan invoice ${invoiceNumber} dari ${sender} sebesar ${totalFormatted} jatuh tempo *HARI INI* (${dueDate || tInv("dateToday")}).\n\nMohon bantuannya untuk dapat menyelesaikan pembayaran melalui tautan berikut:\n👉 ${invoiceUrl}\n\nJika sudah melakukan pembayaran, silakan abaikan pesan ini. Terima kasih!${watermark}`
+          : `Hello ${customerName},\n\nFriendly reminder that invoice ${invoiceNumber} from ${sender} for ${totalFormatted} is due *TODAY* (${dueDate || tInv("dateToday")}).\n\nPlease complete payment via:\n👉 ${invoiceUrl}\n\nIf already paid, please disregard. Thank you!${watermark}`,
     },
     {
       id: "reminder_overdue",
@@ -90,8 +98,8 @@ export function WhatsAppShareModal({
       desc: tInv("waOverdueDesc"),
       text:
         locale === "id"
-          ? `Halo Kak ${customerName},\n\nKami menginformasikan bahwa tagihan invoice ${invoiceNumber} dari ${sender} sebesar ${totalFormatted} saat ini telah *MELEWATI JATUH TEMPO* (${dueDate || tInv("datePastDue")}).\n\nMohon kesediaannya untuk segera melakukan konfirmasi dan pembayaran melalui link resmi berikut:\n👉 ${invoiceUrl}\n\nTerima kasih atas perhatian dan kerja samanya.`
-          : `Hello ${customerName},\n\nWe would like to notify you that invoice ${invoiceNumber} from ${sender} for ${totalFormatted} is now *OVERDUE* (${dueDate || tInv("datePastDue")}).\n\nPlease settle payment via:\n👉 ${invoiceUrl}\n\nThank you for your cooperation.`,
+          ? `Halo Kak ${customerName},\n\nKami menginformasikan bahwa tagihan invoice ${invoiceNumber} dari ${sender} sebesar ${totalFormatted} saat ini telah *MELEWATI JATUH TEMPO* (${dueDate || tInv("datePastDue")}).\n\nMohon kesediaannya untuk segera melakukan konfirmasi dan pembayaran melalui link resmi berikut:\n👉 ${invoiceUrl}\n\nTerima kasih atas perhatian dan kerja samanya.${watermark}`
+          : `Hello ${customerName},\n\nWe would like to notify you that invoice ${invoiceNumber} from ${sender} for ${totalFormatted} is now *OVERDUE* (${dueDate || tInv("datePastDue")}).\n\nPlease settle payment via:\n👉 ${invoiceUrl}\n\nThank you for your cooperation.${watermark}`,
     },
     {
       id: "paid",
@@ -99,8 +107,8 @@ export function WhatsAppShareModal({
       desc: tInv("waPaidDesc"),
       text:
         locale === "id"
-          ? `Halo Kak ${customerName},\n\nPembayaran untuk invoice ${invoiceNumber} sebesar ${totalFormatted} telah kami terima dan berstatus *LUNAS* ✅.\n\nTerima kasih banyak atas kepercayaannya bersama ${sender}.\n\nBukti transaksi digital dapat dilihat di:\n👉 ${invoiceUrl}`
-          : `Hello ${customerName},\n\nPayment for invoice ${invoiceNumber} of ${totalFormatted} has been received and confirmed *PAID* ✅.\n\nThank you for your trust in ${sender}.\n\nReceipt:\n👉 ${invoiceUrl}`,
+          ? `Halo Kak ${customerName},\n\nPembayaran untuk invoice ${invoiceNumber} sebesar ${totalFormatted} telah kami terima dan berstatus *LUNAS* ✅.\n\nTerima kasih banyak atas kepercayaannya bersama ${sender}.\n\nBukti transaksi digital dapat dilihat di:\n👉 ${invoiceUrl}${watermark}`
+          : `Hello ${customerName},\n\nPayment for invoice ${invoiceNumber} of ${totalFormatted} has been received and confirmed *PAID* ✅.\n\nThank you for your trust in ${sender}.\n\nReceipt:\n👉 ${invoiceUrl}${watermark}`,
     },
   ];
 

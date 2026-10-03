@@ -583,4 +583,116 @@ export const NICHE_TEMPLATES: NicheTemplate[] = [
       },
     ],
   },
+  {
+    slug: "invoice-laundry-kiloan-satuan",
+    title: "Template Invoice Laundry Kiloan & Satuan Dry Clean",
+    category: "Bisnis & UKM",
+    shortDesc:
+      "Format nota tagihan cuci pakaian, bed cover, sepatu, dan dry clean dengan rincian per-kilo atau per-piece.",
+    keywords: [
+      "template invoice laundry",
+      "contoh nota laundry kiloan",
+      "format tagihan dry clean cuci sepatu",
+      "invoice laundry hotel",
+    ],
+    pdfTemplate: "minimal",
+    currency: "IDR",
+    sampleData: {
+      businessName: "Klin Laundry & Dry Cleaning",
+      customerName: "Vila Asri Guest House",
+      invoiceNumber: "INV/LDR/26/10",
+      items: [
+        {
+          description: "Cuci Setrika Reguler - Kiloan",
+          quantity: 25,
+          price: 8000,
+          amount: 200000,
+        },
+        {
+          description: "Dry Clean Jas & Gaun Pesta",
+          quantity: 3,
+          price: 45000,
+          amount: 135000,
+        },
+        {
+          description: "Cuci Deep Clean Sepatu Sneakers",
+          quantity: 2,
+          price: 50000,
+          amount: 100000,
+        },
+      ],
+      notes: "Barang rusak luntur tidak ditanggung bila tanpa pemberitahuan bahan sensitif di awal.",
+    },
+    overview:
+      "Struk atau nota laundry seringkali rentan hilang jika dicetak di kertas tipis. Membuat invoice laundry berformat digital membantu rekap pembayaran bulanan klien B2B (hotel/kost) maupun B2C.",
+    whyNeedGuide:
+      "Invoice digital mencegah perselisihan dengan klien mengenai rincian jenis barang yang dicuci.",
+    checklist: [
+      "Cantumkan berat timbangan (kg) atau kuantiti satuan yang akurat",
+      "Rincikan layanan (Cuci Setrika, Dry Clean, Express)",
+      "Tambahkan catatan syarat dan ketentuan ganti rugi cucian",
+    ],
+    faq: [
+      {
+        q: "Apakah nota laundry bisa berbentuk Kuitansi?",
+        a: "Tentu. Setelah pembayaran selesai, sistem NotaKu bisa mencetak kuitansi lunas otomatis.",
+      },
+    ],
+  },
+  {
+    slug: "invoice-jasa-titip-jastip",
+    title: "Template Invoice Jasa Titip (Jastip) / Personal Shopper",
+    category: "Bisnis & UKM",
+    shortDesc:
+      "Contoh rincian tagihan pembelian barang jasa titip (Jastip) luar negeri, kosmetik, event, hingga makanan.",
+    keywords: [
+      "template invoice jastip",
+      "contoh invoice jasa titip",
+      "format tagihan personal shopper",
+      "nota jastip korea jepang",
+    ],
+    pdfTemplate: "classic",
+    currency: "IDR",
+    sampleData: {
+      businessName: "Hanna Jastip Bangkok",
+      customerName: "Sari Dewi (Dropshipper)",
+      invoiceNumber: "INV/JTP/BKK/128",
+      items: [
+        {
+          description: "Gentle Woman Canvas Tote Bag (Black)",
+          quantity: 2,
+          price: 250000,
+          amount: 500000,
+        },
+        {
+          description: "Fee Jasa Titip Per Barang",
+          quantity: 2,
+          price: 25000,
+          amount: 50000,
+        },
+        {
+          description: "Ongkos Kirim Domestik (JNE Reguler)",
+          quantity: 1,
+          price: 28000,
+          amount: 28000,
+        },
+      ],
+      notes: "Mohon segera transfer 1x24 jam. Resi pengiriman akan diberikan setelah checkout selesai.",
+    },
+    overview:
+      "Bisnis Jastip mengandalkan kecepatan dan kepercayaan. Bukti rincian total belanja, biaya titip (fee), dan ongkos kirim dalam satu faktur membuat pelanggan lebih yakin untuk transfer dalam jumlah besar.",
+    whyNeedGuide:
+      "Membedakan harga dasar barang dan biaya fee jasa titip membuat pembukuan bisnis Anda lebih transparan dan mudah diaudit.",
+    checklist: [
+      "Pisahkan baris harga barang dan baris fee Jastip",
+      "Sertakan nominal ongkos kirim kurir lokal di baris terpisah",
+      "Beri catatan batas waktu transfer untuk mengamankan stok barang",
+    ],
+    faq: [
+      {
+        q: "Apakah nota jastip ini bisa langsung dikirim via WhatsApp?",
+        a: "Sangat bisa. Anda bisa copy link PDF-nya atau langsung bagikan dengan format teks rapi dari NotaKu.",
+      },
+    ],
+  },
 ];

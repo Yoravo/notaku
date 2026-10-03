@@ -22,6 +22,7 @@ export default async function InvoiceDetailPage({
         select: {
           businessName: true,
           name: true,
+          plan: true,
           customDomain: true,
           customDomainVerified: true,
           subdomainSlug: true,
@@ -72,6 +73,7 @@ export default async function InvoiceDetailPage({
       address: invoice.customer.address,
     },
     businessName: invoice.user.businessName || invoice.user.name,
+    showWatermark: invoice.user.plan === "FREE",
   };
 
   return <InvoiceDetailClient invoice={serializedInvoice} />;
