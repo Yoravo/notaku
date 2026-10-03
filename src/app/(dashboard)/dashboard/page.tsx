@@ -128,6 +128,7 @@ export default async function DashboardPage({
     <DashboardClient
       userName={session.user.name}
       isPro={isPro}
+      userPlan={user?.plan || "FREE"}
       selectedRange={selectedRange}
       paidRevenue={paidRevenue}
       pendingRevenue={pendingRevenue}
