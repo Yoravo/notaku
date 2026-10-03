@@ -46,12 +46,12 @@ export async function POST(request: Request) {
       if (!dateStr) return "Hari ini";
       try {
         const d = new Date(dateStr);
-        const day = d.getDate().toString().padStart(2, "0");
-        const months = [
-          "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-          "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-        ];
-        return `${day} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        return d.toLocaleDateString("id-ID", {
+          timeZone: "Asia/Jakarta",
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        });
       } catch {
         return dateStr;
       }

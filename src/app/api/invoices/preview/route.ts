@@ -43,12 +43,13 @@ export async function GET(request: Request) {
   });
 
   const now = new Date();
-  const formatDate = (d: Date) => {
-    const day = d.getDate().toString().padStart(2, "0");
-    const month = d.toLocaleString("id-ID", { month: "long" });
-    const year = d.getFullYear();
-    return `${day} ${month} ${year}`;
-  };
+  const formatDate = (d: Date) =>
+    d.toLocaleDateString("id-ID", {
+      timeZone: "Asia/Jakarta",
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
 
   const sampleData: InvoiceData = {
     number: "INV-PREVIEW-001",

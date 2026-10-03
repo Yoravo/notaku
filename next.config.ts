@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "4mb",
     },
   },
+  async redirects() {
+    return [{ source: "/changelog", destination: "/#changelog", permanent: true }];
+  },
   async headers() {
     return [
       {

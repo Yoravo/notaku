@@ -4,6 +4,7 @@ import crypto from "crypto";
 import { renderInvoiceEmailHtml } from "@/lib/email-templates";
 import { sendEmail } from "@/lib/email";
 import { formatDateWIB } from "@/lib/invoice-utils";
+import { formatMoney } from "@/lib/currencies";
 import { auditLog } from "@/lib/audit-log";
 import { notifySellerDueToday } from "@/lib/bot-notifications";
 
@@ -225,10 +226,12 @@ export async function GET(request: Request) {
       reminder_overdue: `[Pemberitahuan] Tagihan ${invoice.number} dari ${businessName} telah melewati jatuh tempo`,
     };
 
+    const formattedTotal = formatMoney(Number(invoice.total), invoice.currency || "IDR", "id");
+
     const customMessageMap = {
-      reminder_h3: `Pengingat ramah: Pembayaran invoice sebesar Rp${Number(invoice.total).toLocaleString("id-ID")} akan jatuh tempo pada ${formattedDueDate}.`,
-      reminder_today: `Pemberitahuan: Pembayaran invoice sebesar Rp${Number(invoice.total).toLocaleString("id-ID")} jatuh tempo HARI INI (${formattedDueDate}).`,
-      reminder_overdue: `Pemberitahuan: Pembayaran invoice sebesar Rp${Number(invoice.total).toLocaleString("id-ID")} telah melewati jatuh tempo (${formattedDueDate}). Mohon kesediaannya untuk segera menyelesaikan pembayaran.`,
+      reminder_h3: `Pengingat ramah: Pembayaran invoice sebesar ${formattedTotal} akan jatuh tempo pada ${formattedDueDate}.`,
+      reminder_today: `Pemberitahuan: Pembayaran invoice sebesar ${formattedTotal} jatuh tempo HARI INI (${formattedDueDate}).`,
+      reminder_overdue: `Pemberitahuan: Pembayaran invoice sebesar ${formattedTotal} telah melewati jatuh tempo (${formattedDueDate}). Mohon kesediaannya untuk segera menyelesaikan pembayaran.`,
     };
 
     try {

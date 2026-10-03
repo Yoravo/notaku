@@ -26,12 +26,14 @@ export async function GET(
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  const formatDate = (date: Date) => {
-    const d = date.getDate().toString().padStart(2, "0");
-    const m = date.toLocaleString("en-US", { month: "long" });
-    const y = date.getFullYear();
-    return `${d} ${m} ${y}`;
-  };
+  // "05 August 2026" in WIB; en-GB keeps day-month-year order
+  const formatDate = (date: Date) =>
+    date.toLocaleDateString("en-GB", {
+      timeZone: "Asia/Jakarta",
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
 
   const data = {
     number: invoice.number,

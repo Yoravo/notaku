@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import { formatDateWIB } from "@/lib/invoice-utils";
+import { formatDateWIB, getYearMonthWIB } from "@/lib/invoice-utils";
 import { sanitizeCsvCell } from "@/lib/csv";
 
 export const dynamic = "force-dynamic";
@@ -43,13 +43,12 @@ export async function GET(request: Request) {
     periodLabel = `Tahun ${yearParam}`;
     filePrefix = `Rekap-Laba-Rugi-Tahun-${yearParam}`;
   } else {
-    const y = now.getFullYear();
-    const m = now.getMonth();
-    startDate = new Date(Date.UTC(y, m, 1, 0, 0, 0));
-    endDate = new Date(Date.UTC(y, m + 1, 0, 23, 59, 59, 999));
+    const { year: y, month: m } = getYearMonthWIB(now);
+    startDate = new Date(Date.UTC(y, m - 1, 1, 0, 0, 0));
+    endDate = new Date(Date.UTC(y, m, 0, 23, 59, 59, 999));
     startDate.setHours(startDate.getHours() - 7);
     endDate.setHours(endDate.getHours() - 7);
-    const mm = String(m + 1).padStart(2, "0");
+    const mm = String(m).padStart(2, "0");
     periodLabel = `Bulan ${y}-${mm}`;
     filePrefix = `Rekap-Laba-Rugi-${y}-${mm}`;
   }

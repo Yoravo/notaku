@@ -6,11 +6,18 @@ import { headers } from "next/headers";
 import { payoutRequestSchema } from "@/lib/validations";
 import { auditLog } from "@/lib/audit-log";
 import { revalidatePath } from "next/cache";
+import { checkServerActionRateLimit } from "@/lib/rate-limit";
 
 export async function requestPayout(data: unknown) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) {
     return { success: false, error: "Sesi telah berakhir. Silakan login kembali." };
+  }
+
+  try {
+    await checkServerActionRateLimit(session.user.id, "destructive");
+  } catch {
+    return { success: false, error: "Terlalu banyak permintaan. Coba lagi nanti." };
   }
 
   const parsed = payoutRequestSchema.safeParse(data);

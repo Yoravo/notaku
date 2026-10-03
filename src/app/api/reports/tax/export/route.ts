@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import { formatDateWIB } from "@/lib/invoice-utils";
+import { formatDateWIB, getYearMonthWIB } from "@/lib/invoice-utils";
 import { SupportedCurrency } from "@/lib/currencies";
 import { sanitizeCsvCell } from "@/lib/csv";
 
@@ -19,7 +19,7 @@ export async function GET(request: Request) {
   const monthParam = searchParams.get("month"); // optional 1-12
   const currencyParam = (searchParams.get("currency") || "IDR") as SupportedCurrency;
 
-  const currentYear = new Date().getFullYear();
+  const currentYear = getYearMonthWIB(new Date()).year;
   const year = yearParam ? parseInt(yearParam, 10) || currentYear : currentYear;
   const month = monthParam ? parseInt(monthParam, 10) : null;
 
@@ -35,9 +35,7 @@ export async function GET(request: Request) {
   });
 
   const filteredInvoices = invoices.filter((inv) => {
-    const d = new Date(inv.createdAt);
-    const invYear = d.getFullYear();
-    const invMonth = d.getMonth() + 1;
+    const { year: invYear, month: invMonth } = getYearMonthWIB(inv.createdAt);
     const invCurrency = ((inv as any).currency || "IDR") as SupportedCurrency;
 
     if (invYear !== year) return false;

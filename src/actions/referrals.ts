@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { ensureUserReferralCode, REFERRAL_BONUS_AMOUNT } from "@/lib/referral";
 import { revalidatePath } from "next/cache";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export interface ReferralFriend {
   id: string;
@@ -117,6 +118,11 @@ export async function getReferralStats(): Promise<ReferralStats | null> {
  */
 export async function linkUserReferral(userId: string, rawCode: string) {
   if (!rawCode || !rawCode.trim()) return { success: false, error: "Kode referral kosong" };
+
+  const rateLimitOk = await checkRateLimit(`referral:link:${userId}`, 5, 60);
+  if (!rateLimitOk) {
+    return { success: false, error: "Terlalu banyak percobaan. Coba lagi nanti." };
+  }
 
   const code = rawCode.trim().toUpperCase();
 
