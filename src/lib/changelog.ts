@@ -4,10 +4,10 @@
  * berdasarkan riwayat commit git riil dan mendukung dwibahasa (ID & EN).
  */
 
-export const APP_VERSION = "0.7.6";
+export const APP_VERSION = "0.7.7";
 export const APP_RELEASE_DATE = {
-  id: "21 September 2026",
-  en: "September 21, 2026",
+  id: "3 Oktober 2026",
+  en: "October 3, 2026",
 };
 
 export type ChangelogCategory = "feat" | "perf" | "fix" | "security";
@@ -42,6 +42,60 @@ export interface ChangelogRelease {
 
 export const CHANGELOG_RELEASES: ChangelogRelease[] = [
   {
+    version: "0.7.7",
+    type: "patch",
+    date: {
+      id: "3 Oktober 2026",
+      en: "October 3, 2026",
+    },
+    title: {
+      id: "Simpan Draf Otomatis di Generator Gratis & 2 Template Baru",
+      en: "Auto-Saved Drafts in Free Generators & 2 New Templates",
+    },
+    summary: {
+      id: "Isian generator invoice, kuitansi, dan surat jalan kini tersimpan otomatis sehingga tidak hilang saat halaman ter-refresh atau koneksi putus. Ditambah template laundry dan jastip, serta tanggal di PDF & laporan pajak kini akurat zona WIB.",
+      en: "Free invoice, receipt, and delivery order generators now auto-save your input so nothing is lost on refresh or connection drops. Plus new laundry and personal shopper templates, and PDF & tax report dates now follow WIB accurately.",
+    },
+    isLatest: true,
+    highlights: [
+      {
+        category: "feat",
+        text: {
+          id: "Pemulihan Draf Otomatis: Generator Invoice, Kuitansi, dan Surat Jalan gratis menyimpan isian Anda dan menawarkan pemulihan saat dibuka kembali.",
+          en: "Automatic Draft Recovery: Free Invoice, Receipt, and Delivery Order generators save your input and offer to restore it when you return.",
+        },
+      },
+      {
+        category: "feat",
+        text: {
+          id: "Template Baru: Invoice Laundry Kiloan & Dry Clean serta Invoice Jasa Titip (Jastip) / Personal Shopper.",
+          en: "New Templates: Laundry & Dry Clean invoice and Personal Shopper (Jastip) invoice.",
+        },
+      },
+      {
+        category: "fix",
+        text: {
+          id: "Tanggal WIB Akurat: Tanggal pada PDF invoice, kuitansi, surat jalan, serta rekap pajak & laba rugi CSV kini mengikuti zona Asia/Jakarta, termasuk transaksi dini hari di awal bulan.",
+          en: "Accurate WIB Dates: Dates on invoice, receipt, and delivery order PDFs plus tax and profit-loss CSV reports now follow Asia/Jakarta, including early-morning transactions at month start.",
+        },
+      },
+      {
+        category: "fix",
+        text: {
+          id: "Nominal Multi-Currency di Email Pengingat: Email pengingat jatuh tempo kini menampilkan mata uang invoice (USD, SGD, EUR) dengan benar, bukan selalu Rupiah.",
+          en: "Multi-Currency in Reminder Emails: Due-date reminder emails now show the invoice currency (USD, SGD, EUR) correctly instead of always Rupiah.",
+        },
+      },
+      {
+        category: "security",
+        text: {
+          id: "Pembatasan Permintaan Penarikan Saldo & Kode Referral: Melindungi akun dari percobaan berulang yang mencurigakan.",
+          en: "Rate-Limited Payout Requests & Referral Codes: Protects accounts against suspicious repeated attempts.",
+        },
+      },
+    ],
+  },
+  {
     version: "0.7.6",
     type: "patch",
     date: {
@@ -56,7 +110,6 @@ export const CHANGELOG_RELEASES: ChangelogRelease[] = [
       id: "Menu navbar beranda disederhanakan dengan dropdown 'Lainnya' untuk tools dan template, serta catatan rilis changelog kini hadir sebagai popup modal interaktif instan.",
       en: "Homepage navbar is simplified with a 'More' dropdown for tools and templates, and release notes now open as an instant interactive popup modal.",
     },
-    isLatest: true,
     highlights: [
       {
         category: "feat",
