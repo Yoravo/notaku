@@ -1,5 +1,8 @@
 "use client";
 
+import { useFormDraft } from "@/lib/use-form-draft";
+import { DraftRecoveryBanner } from "@/components/draft-recovery-banner";
+
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -20,6 +23,7 @@ import {
 import { FreeToolsNav } from "@/components/free-tools-nav";
 import { LandingNavbar } from "@/components/landing-navbar";
 import { LandingFooter } from "@/components/layout/landing-footer";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 interface DeliveryItem {
   id: string;
@@ -60,6 +64,40 @@ export function FreeDeliveryOrderGeneratorClient({ session }: { session?: any })
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+
+  const draft = useFormDraft(
+    "notaku_free_delivery_draft",
+    {
+      orderNumber, date, poNumber, vehicleNumber, driverName,
+      senderName, senderBusinessName, senderPhone, senderAddress,
+      recipientName, recipientCompany, recipientPhone, recipientAddress,
+      items, notes,
+    }
+  );
+
+  const restoreDraft = () => {
+    const d = draft.pending;
+    if (!d) return;
+    setOrderNumber(d.orderNumber ?? "");
+    setDate(d.date ?? new Date().toISOString().split("T")[0]);
+    setPoNumber(d.poNumber ?? "");
+    setVehicleNumber(d.vehicleNumber ?? "");
+    setDriverName(d.driverName ?? "");
+    setSenderName(d.senderName ?? "");
+    setSenderBusinessName(d.senderBusinessName ?? "");
+    setSenderPhone(d.senderPhone ?? "");
+    setSenderAddress(d.senderAddress ?? "");
+    setRecipientName(d.recipientName ?? "");
+    setRecipientCompany(d.recipientCompany ?? "");
+    setRecipientPhone(d.recipientPhone ?? "");
+    setRecipientAddress(d.recipientAddress ?? "");
+    if (Array.isArray(d.items) && d.items.length > 0) setItems(d.items);
+    setNotes(d.notes ?? "");
+    draft.dismiss();
+  };
+
+
 
   const addItem = () => {
     setItems([
@@ -166,11 +204,27 @@ export function FreeDeliveryOrderGeneratorClient({ session }: { session?: any })
           </p>
         </div>
 
+        {/* Draft Recovery Banner */}
+        {draft.pending && (
+          <DraftRecoveryBanner
+            savedAt={draft.pending.savedAt}
+            onRestore={restoreDraft}
+            onDiscard={draft.discard}
+          />
+        )}
+
         {/* Error Alert */}
         {errorMessage && (
           <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center justify-between">
             <span>{errorMessage}</span>
-            <button onClick={() => setErrorMessage("")} className="text-rose-500 hover:text-rose-700">✕</button>
+            <button
+              type="button"
+              onClick={() => setErrorMessage("")}
+              aria-label="Tutup pesan error"
+              className="text-rose-500 hover:text-rose-700 p-1 rounded-md min-h-[44px] min-w-[44px] inline-flex items-center justify-center cursor-pointer"
+            >
+              <XMarkIcon className="w-4 h-4" />
+            </button>
           </div>
         )}
 

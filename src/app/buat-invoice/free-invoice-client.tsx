@@ -26,6 +26,8 @@ import { NICHE_TEMPLATES } from "@/lib/templates-data";
 import { FreeToolsNav } from "@/components/free-tools-nav";
 import { LandingNavbar } from "@/components/landing-navbar";
 import { LandingFooter } from "@/components/layout/landing-footer";
+import { DraftRecoveryBanner } from "@/components/draft-recovery-banner";
+import { useFormDraft } from "@/lib/use-form-draft";
 
 interface InvoiceItem {
   id: string;
@@ -103,6 +105,48 @@ export function FreeInvoiceGeneratorClient({ session }: { session?: any }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  // Auto-Save Draft Offline
+  // Auto-save draf offline (template slug = isian contoh, bukan draf user)
+  const draft = useFormDraft(
+    "notaku_free_invoice_draft",
+    {
+      currency, template, number, status, createdAt, dueDate, notes,
+      businessName, userName, userEmail, userPhone, userAddress,
+      bankName, bankAccountNumber, bankAccountName,
+      customerName, customerEmail, customerPhone, customerAddress,
+      items, discountType, discountValue, taxRate,
+    },
+    !templateSlug,
+  );
+
+  const restoreDraft = () => {
+    const d = draft.pending;
+    if (!d) return;
+    if (SUPPORTED_CURRENCIES.includes(d.currency)) setCurrency(d.currency as any);
+    setTemplate(d.template ?? "classic");
+    setNumber(d.number ?? "INV-001");
+    setStatus(d.status ?? "SENT");
+    setCreatedAt(d.createdAt ?? new Date().toISOString().split("T")[0]);
+    setDueDate(d.dueDate ?? "");
+    setNotes(d.notes ?? "");
+    setBusinessName(d.businessName ?? "");
+    setUserName(d.userName ?? "");
+    setUserEmail(d.userEmail ?? "");
+    setUserPhone(d.userPhone ?? "");
+    setUserAddress(d.userAddress ?? "");
+    setBankName(d.bankName ?? "");
+    setBankAccountNumber(d.bankAccountNumber ?? "");
+    setBankAccountName(d.bankAccountName ?? "");
+    setCustomerName(d.customerName ?? "");
+    setCustomerEmail(d.customerEmail ?? "");
+    setCustomerPhone(d.customerPhone ?? "");
+    setCustomerAddress(d.customerAddress ?? "");
+    if (Array.isArray(d.items) && d.items.length > 0) setItems(d.items);
+    setDiscountType(d.discountType ?? "FIXED");
+    setDiscountValue(Number(d.discountValue) || 0);
+    setTaxRate(Number(d.taxRate) || 0);
+    draft.dismiss();
+  };
   // Kalkulasi Realtime
   const totals = calculateInvoiceTotals({
     items: items.map((it) => ({ quantity: it.quantity, price: it.price })),
@@ -213,6 +257,13 @@ export function FreeInvoiceGeneratorClient({ session }: { session?: any }) {
 
       {/* Main Workspace: Form & Summary */}
       <main className="mx-auto max-w-7xl px-6 lg:px-8 py-8 sm:py-12">
+        {draft.pending && (
+          <DraftRecoveryBanner
+            savedAt={draft.pending.savedAt}
+            onRestore={restoreDraft}
+            onDiscard={draft.discard}
+          />
+        )}
         {errorMsg && (
           <div className="mb-6 rounded-xl border border-rose-200 bg-rose-50 p-4 text-xs sm:text-sm font-semibold text-rose-700">
             {errorMsg}

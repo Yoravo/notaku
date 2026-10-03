@@ -1,5 +1,8 @@
 "use client";
 
+import { useFormDraft } from "@/lib/use-form-draft";
+import { DraftRecoveryBanner } from "@/components/draft-recovery-banner";
+
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -16,6 +19,7 @@ import {
   CheckCircleIcon,
   ArrowPathIcon,
   CurrencyDollarIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { numberToWordsRupiah } from "@/lib/terbilang";
 import { formatMoney, SUPPORTED_CURRENCIES, type SupportedCurrency } from "@/lib/currencies";
@@ -48,6 +52,38 @@ export function FreeReceiptGeneratorClient({ session }: { session?: any }) {
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+
+  const draft = useFormDraft(
+    "notaku_free_receipt_draft",
+    {
+      currency, receiptNumber, invoiceNumber, paidAt, paymentMethod,
+      customerName, customerAddress, businessName, userName, userPhone, userAddress,
+      total, itemsSummary, notes,
+    }
+  );
+
+  const restoreDraft = () => {
+    const d = draft.pending;
+    if (!d) return;
+    if (SUPPORTED_CURRENCIES.includes(d.currency)) setCurrency(d.currency as any);
+    setReceiptNumber(d.receiptNumber ?? "");
+    setInvoiceNumber(d.invoiceNumber ?? "");
+    setPaidAt(d.paidAt ?? new Date().toISOString().split("T")[0]);
+    setPaymentMethod(d.paymentMethod ?? "");
+    setCustomerName(d.customerName ?? "");
+    setCustomerAddress(d.customerAddress ?? "");
+    setBusinessName(d.businessName ?? "");
+    setUserName(d.userName ?? "");
+    setUserPhone(d.userPhone ?? "");
+    setUserAddress(d.userAddress ?? "");
+    setTotal(Number(d.total) || 0);
+    setItemsSummary(d.itemsSummary ?? "");
+    setNotes(d.notes ?? "");
+    draft.dismiss();
+  };
+
+
 
   const words = currency === "IDR"
     ? numberToWordsRupiah(total)
@@ -135,11 +171,27 @@ export function FreeReceiptGeneratorClient({ session }: { session?: any }) {
           </p>
         </div>
 
+        {/* Draft Recovery Banner */}
+        {draft.pending && (
+          <DraftRecoveryBanner
+            savedAt={draft.pending.savedAt}
+            onRestore={restoreDraft}
+            onDiscard={draft.discard}
+          />
+        )}
+
         {/* Error Alert */}
         {errorMessage && (
           <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center justify-between">
             <span>{errorMessage}</span>
-            <button onClick={() => setErrorMessage("")} className="text-rose-500 hover:text-rose-700">✕</button>
+            <button
+              type="button"
+              onClick={() => setErrorMessage("")}
+              aria-label="Tutup pesan error"
+              className="text-rose-500 hover:text-rose-700 p-1 rounded-md min-h-[44px] min-w-[44px] inline-flex items-center justify-center cursor-pointer"
+            >
+              <XMarkIcon className="w-4 h-4" />
+            </button>
           </div>
         )}
 
