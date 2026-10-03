@@ -1,6 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useFormDraft } from "@/lib/use-form-draft";
+import { DraftRecoveryBanner } from "@/components/draft-recovery-banner";
+
+import { useEffect, useState } from "react";
 import { createInvoice, updateInvoice } from "@/actions/invoices";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -10,19 +13,11 @@ import {
   TrashIcon,
   ArchiveBoxIcon,
   XMarkIcon,
-  ArrowUturnLeftIcon,
-  ClockIcon,
 } from "@heroicons/react/24/outline";
 import {
   calculateInvoiceTotals,
   DiscountType,
 } from "@/lib/invoice-calculations";
-import {
-  type InvoiceDraft,
-  readDraft,
-  writeDraft,
-  clearDraft as clearStoredDraft,
-} from "@/lib/invoice-draft";
 import { useLocale, useTranslations } from "next-intl";
 import {
   CURRENCY_MAP,
@@ -139,92 +134,42 @@ export function InvoiceForm({
   const [catalogSearch, setCatalogSearch] = useState("");
 
   // Offline Draft State (hanya aktif pada mode buat invoice baru)
-  const isDraftEligible = !isEdit && !isCloneMode && !invoice && Boolean(currentUserId);
-  const [pendingDraft, setPendingDraft] = useState<InvoiceDraft | null>(null);
   const [restoredToast, setRestoredToast] = useState(false);
-  const hasInitializedDraft = useRef(false);
-
-  // 1. Deteksi draf offline saat mount
-  useEffect(() => {
-    if (!isDraftEligible || !currentUserId || hasInitializedDraft.current) return;
-    hasInitializedDraft.current = true;
-    const existing = readDraft(currentUserId);
-    if (existing) {
-      setPendingDraft(existing);
-    }
-  }, [isDraftEligible, currentUserId]);
-
-  // 2. Debounced auto-save draf saat field berubah
-  useEffect(() => {
-    if (!isDraftEligible || !currentUserId) return;
-
-    const timer = setTimeout(() => {
-      const draftPayload: InvoiceDraft = {
-        customerId,
-        dueDate,
-        currency,
-        notes,
-        enableDirectTransfer,
-        enableDigitalPayment,
-        enableReminder,
-        items,
-        discountType,
-        discountValue,
-        selectedTaxMode,
-        customTaxRate,
-        savedAt: Date.now(),
-      };
-      writeDraft(currentUserId, draftPayload);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [
-    isDraftEligible,
-    currentUserId,
-    customerId,
-    dueDate,
-    currency,
-    notes,
-    enableDirectTransfer,
-    enableDigitalPayment,
-    enableReminder,
-    items,
-    discountType,
-    discountValue,
-    selectedTaxMode,
-    customTaxRate,
-  ]);
+  const isDraftEligible = !isEdit && !isCloneMode && !invoice && Boolean(currentUserId);
+  const draftKey = `notaku_invoice_draft_${currentUserId || "anon"}`;
+  const draft = useFormDraft(
+    draftKey,
+    {
+      customerId, dueDate, currency, notes,
+      enableDirectTransfer, enableDigitalPayment, enableReminder,
+      items, discountType, discountValue, selectedTaxMode, customTaxRate
+    },
+    isDraftEligible
+  );
 
   const handleRestoreDraft = () => {
-    if (!pendingDraft) return;
-    if (pendingDraft.customerId) setCustomerId(pendingDraft.customerId);
-    setDueDate(pendingDraft.dueDate || "");
-    if (pendingDraft.currency && SUPPORTED_CURRENCIES.includes(pendingDraft.currency as SupportedCurrency)) {
-      setCurrency(pendingDraft.currency as SupportedCurrency);
+    const d = draft.pending;
+    if (!d) return;
+    if (d.customerId) setCustomerId(d.customerId);
+    setDueDate(d.dueDate || "");
+    if (d.currency && SUPPORTED_CURRENCIES.includes(d.currency as SupportedCurrency)) {
+      setCurrency(d.currency as SupportedCurrency);
     }
-    setNotes(pendingDraft.notes || "");
-    setEnableDirectTransfer(pendingDraft.enableDirectTransfer ?? true);
-    setEnableDigitalPayment(pendingDraft.enableDigitalPayment ?? false);
-    setEnableReminder(pendingDraft.enableReminder ?? true);
-    if (Array.isArray(pendingDraft.items) && pendingDraft.items.length > 0) {
-      setItems(pendingDraft.items);
-    }
-    setDiscountType(pendingDraft.discountType || "PERCENTAGE");
-    setDiscountValue(Number(pendingDraft.discountValue) || 0);
-    setSelectedTaxMode(pendingDraft.selectedTaxMode ?? 0);
-    setCustomTaxRate(Number(pendingDraft.customTaxRate) || 0);
-
-    setPendingDraft(null);
+    setNotes(d.notes || "");
+    setEnableDirectTransfer(d.enableDirectTransfer ?? true);
+    setEnableDigitalPayment(d.enableDigitalPayment ?? false);
+    setEnableReminder(d.enableReminder ?? true);
+    if (Array.isArray(d.items) && d.items.length > 0) setItems(d.items);
+    setDiscountType(d.discountType || "PERCENTAGE");
+    setDiscountValue(Number(d.discountValue) || 0);
+    setSelectedTaxMode(d.selectedTaxMode ?? 0);
+    setCustomTaxRate(Number(d.customTaxRate) || 0);
+    draft.dismiss();
     setRestoredToast(true);
     setTimeout(() => setRestoredToast(false), 3500);
   };
 
-  const handleDiscardDraft = () => {
-    if (currentUserId) {
-      clearStoredDraft(currentUserId);
-    }
-    setPendingDraft(null);
-  };
+
 
   const router = useRouter();
 
@@ -308,7 +253,7 @@ export function InvoiceForm({
         await updateInvoice(invoice.id, payload);
       } else {
         if (currentUserId) {
-          clearStoredDraft(currentUserId);
+          draft.discard();
         }
         await createInvoice(payload);
       }
@@ -335,63 +280,15 @@ export function InvoiceForm({
     { label: tInv("taxPresetCustom"), value: "custom" },
   ] as const;
 
-  const formatDraftTime = (ts: number) => {
-    const diffMs = Date.now() - ts;
-    const diffMin = Math.floor(diffMs / 60000);
-    if (diffMin < 1) return tInv("draftJustNow");
-    if (diffMin < 60) return `${diffMin} menit lalu`;
-    const d = new Date(ts);
-    return `${d.toLocaleDateString(locale === "en" ? "en-US" : "id-ID", {
-      day: "numeric",
-      month: "short",
-    })} ${d.toLocaleTimeString(locale === "en" ? "en-US" : "id-ID", {
-      hour: "2-digit",
-      minute: "2-digit",
-    })}`;
-  };
-
   return (
     <div className="w-full max-w-7xl mx-auto space-y-6 pb-24 md:pb-6">
-      {/* Recovery Banner: jika ada draf tersimpan di localStorage */}
-      {pendingDraft && (
-        <div
-          role="region"
-          aria-label={tInv("draftFoundTitle")}
-          className="rounded-2xl border border-emerald-300 dark:border-emerald-800 bg-emerald-50/70 dark:bg-emerald-950/40 p-4 sm:p-5 shadow-2xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3.5 transition-all animate-in fade-in slide-in-from-top-2"
-        >
-          <div className="flex items-start gap-3">
-            <div className="p-2 rounded-xl bg-emerald-100 dark:bg-emerald-900/60 text-[#0f6b4f] dark:text-emerald-400 shrink-0 mt-0.5">
-              <ClockIcon className="w-5 h-5" />
-            </div>
-            <div className="min-w-0">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                {tInv("draftFoundTitle")}
-              </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5 leading-relaxed">
-                {tInv("draftFoundDesc", { time: formatDraftTime(pendingDraft.savedAt) })}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 self-end sm:self-center shrink-0 w-full sm:w-auto">
-            <button
-              type="button"
-              onClick={handleDiscardDraft}
-              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-200/60 dark:hover:bg-slate-800/80 transition-colors min-h-[44px] sm:min-h-[38px] cursor-pointer"
-            >
-              <XMarkIcon className="w-4 h-4" />
-              <span>{tInv("draftDiscard")}</span>
-            </button>
-            <button
-              type="button"
-              onClick={handleRestoreDraft}
-              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#0f6b4f] hover:bg-[#0c5740] active:scale-[0.98] transition-all shadow-xs min-h-[44px] sm:min-h-[38px] cursor-pointer"
-            >
-              <ArrowUturnLeftIcon className="w-3.5 h-3.5" />
-              <span>{tInv("draftRestore")}</span>
-            </button>
-          </div>
-        </div>
+      {draft.pending && (
+        <DraftRecoveryBanner
+          savedAt={draft.pending.savedAt}
+          onRestore={handleRestoreDraft}
+          onDiscard={draft.discard}
+          title={tInv("draftFoundTitle")}
+        />
       )}
 
       {/* Restored Toast Notice */}
