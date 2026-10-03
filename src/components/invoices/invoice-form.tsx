@@ -252,9 +252,6 @@ export function InvoiceForm({
       if (isEdit) {
         await updateInvoice(invoice.id, payload);
       } else {
-        if (currentUserId) {
-          draft.discard();
-        }
         await createInvoice(payload);
       }
     } catch (err: any) {
@@ -262,6 +259,8 @@ export function InvoiceForm({
         err?.message?.includes("NEXT_REDIRECT") ||
         err?.digest?.includes("NEXT_REDIRECT")
       ) {
+        // createInvoice sukses -> redirect; baru aman hapus draf
+        if (!isEdit) draft.discard();
         throw err;
       }
       const message =
