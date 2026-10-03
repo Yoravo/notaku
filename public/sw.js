@@ -1,4 +1,4 @@
-const CACHE_NAME = "notaku-pwa-v3";
+const CACHE_NAME = "notaku-pwa-v4";
 const OFFLINE_URL = "/offline";
 
 const PRECACHE_ASSETS = [
@@ -6,6 +6,30 @@ const PRECACHE_ASSETS = [
   "/logo.png",
   "/favicon.ico",
 ];
+
+// Halaman berisi data akun (PII/finansial) TIDAK boleh disimpan ke Cache Storage:
+// cache ini dipakai bersama semua akun di perangkat yang sama dan tidak ikut terhapus saat logout.
+// Saat offline, rute ini diarahkan ke /offline yang membaca snapshot localStorage per-user.
+const PRIVATE_PREFIXES = [
+  "/dashboard",
+  "/invoices",
+  "/recurring-invoices",
+  "/customers",
+  "/items",
+  "/expenses",
+  "/settings",
+  "/wallet",
+  "/tax-reports",
+  "/referrals",
+  "/billing",
+  "/admin",
+  "/i/",
+  "/portal/",
+];
+
+function isPrivatePath(pathname) {
+  return PRIVATE_PREFIXES.some((p) => pathname === p || pathname.startsWith(p.endsWith("/") ? p : `${p}/`));
+}
 
 // Install: precache offline fallback and essential assets.
 self.addEventListener("install", (event) => {
@@ -23,7 +47,7 @@ self.addEventListener("message", (event) => {
   }
 });
 
-// Activate: clean up old caches and claim clients immediately
+// Activate: clean up old caches (termasuk v3 yang mungkin berisi HTML privat) and claim clients
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -37,11 +61,10 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Fetch: network-first for navigations with cached page + offline fallback
 self.addEventListener("fetch", (event) => {
   const { request } = event;
 
-  // Ignore non-GET, chrome-extension, and API requests
+  // Ignore non-GET, non-http, cross-origin, API, and HMR requests
   if (
     request.method !== "GET" ||
     !request.url.startsWith("http") ||
@@ -51,35 +74,43 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Handle page navigation requests
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return;
+
+  // Page navigations: network-first
   if (request.mode === "navigate") {
+    const privatePage = isPrivatePath(url.pathname);
+
     event.respondWith(
       fetch(request)
         .then((networkResponse) => {
+          // Hanya halaman publik non-redirect yang boleh di-cache
           if (
+            !privatePage &&
             networkResponse &&
             networkResponse.status === 200 &&
-            !request.url.includes("/api/")
+            networkResponse.type === "basic"
           ) {
             const responseClone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, responseClone);
-            });
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
           }
           return networkResponse;
         })
         .catch(async () => {
           const cache = await caches.open(CACHE_NAME);
-          // Try to serve the previously cached version of this exact page
-          const cachedPage = await cache.match(request);
-          if (cachedPage) {
-            return cachedPage;
+          if (!privatePage) {
+            const cachedPage = await cache.match(request);
+            if (cachedPage) return cachedPage;
           }
-          // Fallback to the dedicated offline workstation
           const offlineFallback = await cache.match(OFFLINE_URL);
           return offlineFallback || Response.error();
         })
     );
+    return;
+  }
+
+  // RSC payload (client-side navigation) & data: jangan di-cache (bisa berisi data akun)
+  if (request.headers.get("RSC") === "1" || url.searchParams.has("_rsc")) {
     return;
   }
 
@@ -96,9 +127,7 @@ self.addEventListener("fetch", (event) => {
           .then((networkResponse) => {
             if (networkResponse && networkResponse.status === 200) {
               const responseClone = networkResponse.clone();
-              caches.open(CACHE_NAME).then((cache) => {
-                cache.put(request, responseClone);
-              });
+              caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
             }
             return networkResponse;
           })

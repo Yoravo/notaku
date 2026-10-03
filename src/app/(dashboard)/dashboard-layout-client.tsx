@@ -10,6 +10,7 @@ import {
   ArrowLeftOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import { authClient } from "@/lib/auth-client";
+import { clearOfflineData } from "@/lib/offline-cache";
 import { useRouter } from "next/navigation";
 import { LanguageDropdown } from "@/components/language-dropdown";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -40,6 +41,7 @@ export function DashboardLayoutClient({
   const tDash = useTranslations("dashboard");
 
   const handleSignOut = async () => {
+    clearOfflineData();
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => router.push("/login"),

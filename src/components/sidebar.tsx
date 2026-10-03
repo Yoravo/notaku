@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { clearOfflineData } from "@/lib/offline-cache";
 import { useRouter } from "next/navigation";
 import {
   RectangleGroupIcon,
@@ -48,6 +49,7 @@ export function Sidebar({
   const tDash = useTranslations("dashboard");
 
   const handleSignOut = async () => {
+    clearOfflineData();
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => router.push("/login"),
