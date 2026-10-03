@@ -4,10 +4,10 @@
  * berdasarkan riwayat commit git riil dan mendukung dwibahasa (ID & EN).
  */
 
-export const APP_VERSION = "0.7.7";
+export const APP_VERSION = "0.7.8";
 export const APP_RELEASE_DATE = {
-  id: "3 Oktober 2026",
-  en: "October 3, 2026",
+  id: "4 Oktober 2026",
+  en: "October 4, 2026",
 };
 
 export type ChangelogCategory = "feat" | "perf" | "fix" | "security";
@@ -42,6 +42,46 @@ export interface ChangelogRelease {
 
 export const CHANGELOG_RELEASES: ChangelogRelease[] = [
   {
+    version: "0.7.8",
+    type: "patch",
+    date: {
+      id: "4 Oktober 2026",
+      en: "October 4, 2026",
+    },
+    title: {
+      id: "Peningkatan Cache Data Offline PWA & Proteksi Privasi",
+      en: "Enhanced PWA Offline Data Caching & Privacy Protection",
+    },
+    summary: {
+      id: "Daftar invoice dan pelanggan yang tersimpan offline kini digabungkan antar-halaman secara cerdas, dan data lokal otomatis dibersihkan saat keluar akun demi keamanan perangkat bersama.",
+      en: "Offline-cached invoices and customer lists now merge across pages intelligently, and local data is automatically purged on sign-out to safeguard shared devices.",
+    },
+    isLatest: true,
+    highlights: [
+      {
+        category: "feat",
+        text: {
+          id: "Penggabungan Data Lintas Halaman: Riwayat invoice dan pelanggan dari beberapa halaman kini tetap tersimpan lengkap di cache lokal (hingga 50 invoice & 100 kontak).",
+          en: "Cross-Page Data Merging: Invoices and customer records across pagination are now preserved together locally (up to 50 invoices & 100 contacts).",
+        },
+      },
+      {
+        category: "security",
+        text: {
+          id: "Pembersihan Cache Otomatis saat Logout: Menghapus data sensitif di perangkat saat keluar agar tidak terlihat oleh pengguna lain di perangkat yang sama.",
+          en: "Automatic Cache Purge on Sign-Out: Wipes sensitive local records on sign-out to prevent data leakage on shared computers.",
+        },
+      },
+      {
+        category: "perf",
+        text: {
+          id: "Service Worker v4 Terisolasi: Memastikan halaman beranda dan aset statis ter-cache cepat tanpa menyimpan HTML privat dashboard ke penyimpanan publik.",
+          en: "Isolated Service Worker v4: Ensures fast offline fallback without leaking private dashboard HTML into public Cache Storage.",
+        },
+      },
+    ],
+  },
+  {
     version: "0.7.7",
     type: "patch",
     date: {
@@ -56,7 +96,6 @@ export const CHANGELOG_RELEASES: ChangelogRelease[] = [
       id: "Isian generator invoice, kuitansi, dan surat jalan kini tersimpan otomatis sehingga tidak hilang saat halaman ter-refresh atau koneksi putus. Ditambah template laundry dan jastip, serta tanggal di PDF & laporan pajak kini akurat zona WIB.",
       en: "Free invoice, receipt, and delivery order generators now auto-save your input so nothing is lost on refresh or connection drops. Plus new laundry and personal shopper templates, and PDF & tax report dates now follow WIB accurately.",
     },
-    isLatest: true,
     highlights: [
       {
         category: "feat",
