@@ -338,6 +338,7 @@
     "monthlyLimit": "Monthly Quota Limit",
     "freePlanLimitText": "You are using the FREE plan (max 5 invoices/month).",
     "upgradeToPro": "Upgrade to PRO",
+    "upgradeToBusiness": "Upgrade to Business",
     "unpaidAmountSubtitle": "Awaiting settlement",
     "paidRevenueSubtitle": "Successfully collected",
     "exportReport": "Export Report",

@@ -20,13 +20,14 @@ export function UpgradeButton({
   return (
     <>
       <button
+        type="button"
         onClick={() => setShowModal(true)}
         className={
           className ||
           "rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white cursor-pointer hover:bg-blue-700 transition-colors"
         }
       >
-        {label || tDash("upgradeToPro")}
+        {label || (initialPlan === "BUSINESS" ? tDash("upgradeToBusiness") : tDash("upgradeToPro"))}
       </button>
       {showModal && (
         <UpgradeModal
