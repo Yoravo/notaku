@@ -94,7 +94,7 @@ export function BillingClient({
                     : isPro
                     ? tBilling("proMember")
                     : isLite
-                    ? "Member LITE"
+                    ? tBilling("liteMember")
                     : tBilling("freeMember")}
                 </h2>
                 <span
@@ -117,7 +117,7 @@ export function BillingClient({
                   : isPro
                   ? tBilling("proDesc")
                   : isLite
-                  ? "Akses pembuatan invoice tak terbatas dan bebas watermark."
+                  ? tBilling("liteDesc")
                   : tBilling("freeDesc")}
               </p>
             </div>

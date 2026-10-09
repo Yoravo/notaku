@@ -9,6 +9,7 @@ import { LandingFooter } from "@/components/layout/landing-footer";
 import { openChangelogModal } from "@/components/changelog-modal";
 import { useTranslations } from "next-intl";
 import { formatMoney } from "@/lib/currencies";
+import { PLAN_PRICES } from "@/lib/plan-constants";
 import { APP_VERSION } from "@/lib/changelog";
 import {
   CheckIcon,
@@ -810,9 +811,9 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
             {/* 1. Starter Plan */}
             <div className="flex flex-col justify-between rounded-2xl border border-line bg-white dark:bg-slate-900 p-6 sm:p-8 shadow-xs">
               <div>
-                <div className="flex items-center justify-between">
-                  <h3 className="font-sans text-2xl font-bold text-ink">{tPricing("freeTitle")}</h3>
-                  <span className="rounded-lg bg-paper-deep dark:bg-slate-800 px-2.5 py-1 text-xs font-semibold text-ink-soft">
+                <div className="flex items-start justify-between gap-3 xl:min-h-[64px]">
+                  <h3 className="font-sans text-2xl font-bold leading-tight text-ink">{tPricing("freeTitle")}</h3>
+                  <span className="mt-0.5 shrink-0 whitespace-nowrap rounded-lg bg-paper-deep dark:bg-slate-800 px-2.5 py-1 text-xs font-semibold text-ink-soft">
                     {tPricing("freeBadge")}
                   </span>
                 </div>
@@ -827,7 +828,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                     </span>
                   </p>
                   <p className="text-[11px] text-ink-soft mt-1">
-                    Cocok untuk memulai tanpa risiko biaya
+                    {tPricing("freeNote")}
                   </p>
                 </div>
 
@@ -873,24 +874,24 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
             {/* 2. LITE Plan */}
             <div className="flex flex-col justify-between rounded-2xl border border-line bg-white dark:bg-slate-900 p-6 sm:p-8 shadow-xs">
               <div>
-                <div className="flex items-center justify-between">
-                  <h3 className="font-sans text-2xl font-bold text-ink">Nota<span className="text-cyan-600 dark:text-cyan-400">Ku</span> LITE</h3>
-                  <span className="rounded-lg bg-cyan-100 dark:bg-cyan-950/80 px-2.5 py-1 text-xs font-semibold text-cyan-800 dark:text-cyan-300">
-                    Pemula
+                <div className="flex items-start justify-between gap-3 xl:min-h-[64px]">
+                  <h3 className="font-sans text-2xl font-bold leading-tight text-ink">Nota<span className="text-emerald">Ku</span> LITE</h3>
+                  <span className="mt-0.5 shrink-0 whitespace-nowrap rounded-lg bg-cyan-100 dark:bg-cyan-950/80 px-2.5 py-1 text-xs font-semibold text-cyan-800 dark:text-cyan-300">
+                    {tPricing("liteBadge")}
                   </span>
                 </div>
                 <p className="mt-2 text-sm text-ink-soft min-h-[40px]">
-                  Bebas buat invoice sepuasnya tanpa watermark NotaKu.
+                  {tPricing("liteDesc")}
                 </p>
                 <div className="mt-6 border-b border-line dark:border-slate-800 pb-6">
                   <p className="tnum font-sans text-4xl font-black text-ink tracking-tight">
-                    {formatMoney(19000, "IDR")}
+                    {formatMoney(PLAN_PRICES.LITE.MONTHLY, "IDR")}
                     <span className="text-sm font-normal text-ink-soft ml-1">
-                      {tPricing("freePeriod")}
+                      {tPricing("proPeriod")}
                     </span>
                   </p>
                   <p className="text-[11px] text-cyan-700 dark:text-cyan-400 font-medium mt-1">
-                    Atau Rp190.000 / tahun (Hemat 2 bulan)
+                    {tPricing("liteAnnualPrice")}
                   </p>
                 </div>
 
@@ -899,25 +900,25 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                     <div className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-100 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-400 shrink-0">
                       <CheckIcon className="h-3.5 w-3.5 stroke-[3]" />
                     </div>
-                    <span className="font-semibold text-ink">Pembuatan Invoice & Pelanggan Unlimited</span>
+                    <span className="font-semibold text-ink">{tPricing("liteItem1")}</span>
                   </li>
                   <li className="flex items-center gap-3">
                     <div className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-100 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-400 shrink-0">
                       <CheckIcon className="h-3.5 w-3.5 stroke-[3]" />
                     </div>
-                    <span>Ekspor PDF bebas watermark NotaKu</span>
+                    <span>{tPricing("liteItem2")}</span>
                   </li>
                   <li className="flex items-center gap-3">
                     <div className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-100 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-400 shrink-0">
                       <CheckIcon className="h-3.5 w-3.5 stroke-[3]" />
                     </div>
-                    <span>Berbagi tagihan lewat WhatsApp</span>
+                    <span>{tPricing("liteItem3")}</span>
                   </li>
                   <li className="flex items-center gap-3">
                     <div className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-100 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-400 shrink-0">
                       <CheckIcon className="h-3.5 w-3.5 stroke-[3]" />
                     </div>
-                    <span>Format Template Standar (Classic) dengan identitas toko</span>
+                    <span>{tPricing("liteItem4")}</span>
                   </li>
                 </ul>
               </div>
@@ -928,7 +929,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                   prefetch={true}
                   className="flex items-center justify-center w-full rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white py-3.5 text-sm font-bold transition-all cursor-pointer min-h-[48px] shadow-sm hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
                 >
-                  {session ? "Upgrade ke LITE" : "Daftar Gratis"}
+                  {session ? tPricing("liteBtnUser") : tPricing("liteBtnGuest")}
                 </Link>
               </div>
             </div>
@@ -936,11 +937,11 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
             {/* 3. Pro Plan (Highlighted) */}
             <div className="relative flex flex-col justify-between rounded-2xl bg-[#09110E] dark:bg-slate-900 border-2 border-emerald p-6 sm:p-8 text-slate-100 shadow-xl shadow-emerald-950/20">
               <div>
-                <div className="flex items-center justify-between">
-                  <h3 className="font-sans text-2xl font-bold text-white">
+                <div className="flex items-start justify-between gap-3 xl:min-h-[64px]">
+                  <h3 className="font-sans text-2xl font-bold leading-tight text-white">
                     Nota<span className="text-emerald-400">Ku</span> PRO
                   </h3>
-                  <span className="rounded-lg bg-emerald px-2.5 py-1 text-xs font-bold text-white shadow-2xs">
+                  <span className="mt-0.5 shrink-0 whitespace-nowrap rounded-lg bg-emerald px-2.5 py-1 text-xs font-bold text-white shadow-2xs">
                     {tPricing("proBadge")}
                   </span>
                 </div>
@@ -949,7 +950,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                 </p>
                 <div className="mt-6 border-b border-white/15 pb-6">
                   <p className="tnum font-sans text-4xl font-black text-white tracking-tight">
-                    {formatMoney(49000, "IDR")}
+                    {formatMoney(PLAN_PRICES.PRO.MONTHLY, "IDR")}
                     <span className="text-sm font-normal opacity-70 ml-1">
                       {tPricing("proPeriod")}
                     </span>
@@ -1007,11 +1008,11 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
             {/* 3. Business Plan */}
             <div className="flex flex-col justify-between rounded-2xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-8 shadow-xs">
               <div>
-                <div className="flex items-center justify-between">
-                  <h3 className="font-sans text-2xl font-bold text-ink">
+                <div className="flex items-start justify-between gap-3 xl:min-h-[64px]">
+                  <h3 className="font-sans text-2xl font-bold leading-tight text-ink">
                     Nota<span className="text-[#0f6b4f] dark:text-emerald-400">Ku</span> Business
                   </h3>
-                  <span className="rounded-lg bg-violet-100 dark:bg-violet-950/80 text-violet-800 dark:text-violet-300 px-2.5 py-1 text-xs font-bold border border-violet-200 dark:border-violet-800">
+                  <span className="mt-0.5 shrink-0 whitespace-nowrap rounded-lg bg-violet-100 dark:bg-violet-950/80 text-violet-800 dark:text-violet-300 px-2.5 py-1 text-xs font-bold border border-violet-200 dark:border-violet-800">
                     {tPricing("bizBadge")}
                   </span>
                 </div>
@@ -1020,7 +1021,7 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                 </p>
                 <div className="mt-6 border-b border-line dark:border-slate-800 pb-6">
                   <p className="tnum font-sans text-4xl font-black text-ink tracking-tight">
-                    {formatMoney(99000, "IDR")}
+                    {formatMoney(PLAN_PRICES.BUSINESS.MONTHLY, "IDR")}
                     <span className="text-sm font-normal text-ink-soft ml-1">
                       {tPricing("bizPeriod")}
                     </span>

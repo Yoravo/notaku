@@ -153,11 +153,11 @@ export function DashboardClient({
                 <SparklesIcon className="w-3.5 h-3.5" />
               )}
               {userPlan === "BUSINESS"
-                ? "Member Business"
+                ? tDash("planBadgeBiz")
                 : userPlan === "PRO"
                 ? tDash("planBadgePro")
                 : userPlan === "LITE"
-                ? "Member LITE"
+                ? tDash("planBadgeLite")
                 : tDash("planBadgeFree")}
             </span>
           </div>
