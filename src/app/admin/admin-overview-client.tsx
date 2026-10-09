@@ -406,36 +406,36 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
       </div>
 
       {/* SECTION 4: DATABASE & STORAGE HEALTH CHECK */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs">
-        <h3 className="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2">
-          <ServerStackIcon className="w-4 h-4 text-purple-600" />
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-2xs">
+        <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+          <ServerStackIcon className="w-4 h-4 text-purple-600 dark:text-purple-400" />
           <span>{tAdmin("dbHealthTitle")}</span>
         </h3>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-          <div className="bg-slate-50/80 rounded-xl p-3.5 border border-slate-200/60 shadow-2xs">
-            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{tAdmin("tableUsersLabel")}</p>
-            <p className="text-lg font-extrabold text-slate-900 mt-1 font-mono">{data.totalUsers.toLocaleString("id-ID")}</p>
+          <div className="bg-slate-50/80 dark:bg-slate-800/60 rounded-xl p-3.5 border border-slate-200/60 dark:border-slate-700 shadow-2xs">
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">{tAdmin("tableUsersLabel")}</p>
+            <p className="text-lg font-extrabold text-slate-900 dark:text-white mt-1 font-mono">{data.totalUsers.toLocaleString("id-ID")}</p>
           </div>
-          <div className="bg-slate-50/80 rounded-xl p-3.5 border border-slate-200/60 shadow-2xs">
-            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{tAdmin("tableInvoicesLabel")}</p>
-            <p className="text-lg font-extrabold text-slate-900 mt-1 font-mono">{data.totalInvoices.toLocaleString("id-ID")}</p>
+          <div className="bg-slate-50/80 dark:bg-slate-800/60 rounded-xl p-3.5 border border-slate-200/60 dark:border-slate-700 shadow-2xs">
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">{tAdmin("tableInvoicesLabel")}</p>
+            <p className="text-lg font-extrabold text-slate-900 dark:text-white mt-1 font-mono">{data.totalInvoices.toLocaleString("id-ID")}</p>
           </div>
-          <div className="bg-slate-50/80 rounded-xl p-3.5 border border-slate-200/60 shadow-2xs">
-            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{tAdmin("tableInvoiceItemsLabel")}</p>
-            <p className="text-lg font-extrabold text-slate-900 mt-1 font-mono">{data.totalInvoiceItems.toLocaleString("id-ID")}</p>
+          <div className="bg-slate-50/80 dark:bg-slate-800/60 rounded-xl p-3.5 border border-slate-200/60 dark:border-slate-700 shadow-2xs">
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">{tAdmin("tableInvoiceItemsLabel")}</p>
+            <p className="text-lg font-extrabold text-slate-900 dark:text-white mt-1 font-mono">{data.totalInvoiceItems.toLocaleString("id-ID")}</p>
           </div>
-          <div className="bg-slate-50/80 rounded-xl p-3.5 border border-slate-200/60 shadow-2xs">
-            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{tAdmin("tableCustomersLabel")}</p>
-            <p className="text-lg font-extrabold text-slate-900 mt-1 font-mono">{data.totalCustomers.toLocaleString("id-ID")}</p>
+          <div className="bg-slate-50/80 dark:bg-slate-800/60 rounded-xl p-3.5 border border-slate-200/60 dark:border-slate-700 shadow-2xs">
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">{tAdmin("tableCustomersLabel")}</p>
+            <p className="text-lg font-extrabold text-slate-900 dark:text-white mt-1 font-mono">{data.totalCustomers.toLocaleString("id-ID")}</p>
           </div>
-          <div className="bg-slate-50/80 rounded-xl p-3.5 border border-slate-200/60 shadow-2xs">
-            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{tAdmin("tableAuditLogsLabel")}</p>
-            <p className="text-lg font-extrabold text-slate-900 mt-1 font-mono">{data.totalAuditLogs.toLocaleString("id-ID")}</p>
+          <div className="bg-slate-50/80 dark:bg-slate-800/60 rounded-xl p-3.5 border border-slate-200/60 dark:border-slate-700 shadow-2xs">
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">{tAdmin("tableAuditLogsLabel")}</p>
+            <p className="text-lg font-extrabold text-slate-900 dark:text-white mt-1 font-mono">{data.totalAuditLogs.toLocaleString("id-ID")}</p>
           </div>
-          <div className="bg-slate-50/80 rounded-xl p-3.5 border border-slate-200/60 shadow-2xs">
-            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{tAdmin("tableTrafficRecordsLabel")}</p>
-            <p className="text-lg font-extrabold text-slate-900 mt-1 font-mono">{data.totalViews.toLocaleString("id-ID")}</p>
+          <div className="bg-slate-50/80 dark:bg-slate-800/60 rounded-xl p-3.5 border border-slate-200/60 dark:border-slate-700 shadow-2xs">
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">{tAdmin("tableTrafficRecordsLabel")}</p>
+            <p className="text-lg font-extrabold text-slate-900 dark:text-white mt-1 font-mono">{data.totalViews.toLocaleString("id-ID")}</p>
           </div>
         </div>
       </div>

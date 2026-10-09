@@ -294,7 +294,7 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
         {initialData?.updatedBy ? (
           <p className="text-xs text-slate-400 font-medium">
             {tAdmin("lastUpdatedBy")}{" "}
-            <strong className="text-slate-700 font-mono">{initialData.updatedBy}</strong>
+            <strong className="text-slate-700 dark:text-slate-300 font-mono">{initialData.updatedBy}</strong>
           </p>
         ) : (
           <div />

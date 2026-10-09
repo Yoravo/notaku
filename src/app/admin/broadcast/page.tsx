@@ -21,11 +21,11 @@ export default async function AdminBroadcastPage() {
     <div className="max-w-5xl space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
-          <EnvelopeIcon className="w-6 h-6 sm:w-7 sm:h-7 text-[#0f6b4f]" />
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
+          <EnvelopeIcon className="w-6 h-6 sm:w-7 sm:h-7 text-[#0f6b4f] dark:text-emerald-400" />
           <span>{t("title")}</span>
         </h1>
-        <p className="text-xs sm:text-sm text-slate-500 mt-1">
+        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
           {t("subtitle")}
         </p>
       </div>

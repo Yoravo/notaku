@@ -313,8 +313,8 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
                         onClick={() => handleToggleStatus(p)}
                         className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-colors shadow-2xs min-h-[44px] sm:min-h-[36px] ${
                           p.isActive
-                            ? "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                            : "bg-emerald-50 text-[#0f6b4f] hover:bg-emerald-100 border border-emerald-200/60"
+                            ? "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                            : "bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200/60 dark:border-emerald-800"
                         }`}
                       >
                         {p.isActive

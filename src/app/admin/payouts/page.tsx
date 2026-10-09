@@ -28,10 +28,10 @@ export default async function AdminPayoutsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
           Persetujuan & Pencairan Dana (Payouts)
         </h1>
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
           Daftar permintaan penarikan saldo pendapatan dari pengguna hasil pembayaran invoice digital.
         </p>
       </div>

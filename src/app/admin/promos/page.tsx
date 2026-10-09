@@ -17,14 +17,14 @@ export default async function AdminPromosPage() {
     <div className="space-y-6">
       {/* Page Header */}
       <div className="flex items-center gap-2.5">
-        <div className="p-2.5 rounded-2xl bg-slate-900 text-white shadow-2xs">
+        <div className="p-2.5 rounded-2xl bg-slate-900 dark:bg-slate-800 text-white shadow-2xs border border-slate-800 dark:border-slate-700">
           <TagIcon className="w-6 h-6 text-emerald-400" />
         </div>
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
             {tAdmin("promoTitle")}
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
             {tAdmin("promoSubtitle")}
           </p>
         </div>
