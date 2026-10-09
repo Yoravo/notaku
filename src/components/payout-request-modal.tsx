@@ -168,12 +168,12 @@ export function PayoutRequestModal({
                 </span>
                 <input
                   type="number"
-                  min="10000"
+                  min="50000"
                   max={balance}
                   step="1000"
                   value={amount || ""}
                   onChange={(e) => setAmount(Number(e.target.value))}
-                  placeholder="100000"
+                  placeholder="50000"
                   required
                   className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 pl-10 pr-4 py-2.5 text-sm font-bold text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:outline-none focus:ring-1 focus:ring-[#0f6b4f] shadow-2xs tabular-nums min-h-[44px]"
                 />
@@ -214,7 +214,7 @@ export function PayoutRequestModal({
               </button>
               <button
                 type="submit"
-                disabled={isLoading || amount < 10000 || amount > balance}
+                disabled={isLoading || amount < 50000 || amount > balance}
                 className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-[#0f6b4f] py-2.5 text-xs font-bold text-white shadow-xs hover:bg-[#0c553e] disabled:opacity-50 active:scale-[0.98] transition-all cursor-pointer min-h-[44px]"
               >
                 {isLoading ? (

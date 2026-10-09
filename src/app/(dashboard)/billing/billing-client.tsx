@@ -406,6 +406,7 @@ export function BillingClient({
                   {tBilling("payoutPriorityFeature")}
                 </td>
                 <td className="py-3 px-3 text-center text-slate-600 dark:text-slate-400">{tBilling("standard")}</td>
+                <td className="py-3 px-3 text-center text-slate-600 dark:text-slate-400 bg-cyan-50/40 dark:bg-cyan-950/20">{tBilling("standard")}</td>
                 <td className="py-3 px-3 text-center text-slate-600 dark:text-slate-400 bg-emerald-50/40 dark:bg-emerald-950/20">{tBilling("standard")}</td>
                 <td className="py-3 px-3 text-center font-bold text-violet-700 dark:text-violet-400 bg-violet-50/40 dark:bg-violet-950/20">
                   {tBilling("priorityFast")}

@@ -1,7 +1,7 @@
 import { prisma } from "./prisma";
 import crypto from "crypto";
 
-export const REFERRAL_BONUS_AMOUNT = 10000; // Rp 10.000 saldo per referral yang upgrade PRO
+export const REFERRAL_BONUS_AMOUNT = 10000; // Rp 10.000 saldo per referral yang upgrade PRO/BUSINESS (bukan LITE)
 
 /**
  * Generate kode referral alfanumerik unik (contoh: NK-7X9K2P) menggunakan cryptographic randomness

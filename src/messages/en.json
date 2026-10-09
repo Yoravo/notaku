@@ -57,7 +57,8 @@
   "footer": {
     "desc": "Modern invoice generator & billing SaaS application for MSMEs, freelancers, and businesses in Indonesia.",
     "copyright": "© 2026 NotaKu. All rights reserved.",
-    "paymentSupport": "Powered by Mayar.id & QRIS National"
+    "paymentSupport": "Powered by Mayar.id & QRIS National",
+    "feedback": "Feedback & suggestions"
   },
   "email": {
     "reminder": {
@@ -1087,7 +1088,7 @@
     "setUpBankBtn": "Set Up Bank Account Now",
     "destinationAccountBox": "Payout Destination Account",
     "amountLabel": "Withdrawal Amount (IDR)",
-    "minAmount": "Min IDR 10,000",
+    "minAmount": "Min IDR 50,000",
     "withdrawAll": "Withdraw All",
     "notesLabel": "Notes (Optional)",
     "notesPlaceholder": "e.g. Weekly revenue withdrawal",
@@ -1149,11 +1150,11 @@
   },
   "referrals": {
     "title": "Referral & Affiliate Program",
-    "subtitle": "Invite fellow entrepreneurs and freelancers to NotaKu. Earn IDR 10,000 cash balance reward for every friend who upgrades to PRO!",
+    "subtitle": "Invite fellow entrepreneurs and freelancers to NotaKu. Earn IDR 10,000 cash balance reward for every friend who upgrades to PRO or BUSINESS!",
     "withdrawNow": "Withdraw Funds",
-    "commissionBadge": "IDR 10,000 Cash Commission / PRO Upgrade",
+    "commissionBadge": "IDR 10,000 Cash Commission / Paid Upgrade",
     "heroTitle": "Share Your Link, Earn Real Cash Rewards",
-    "heroSubtitle": "The more friends you invite to upgrade to NotaKu PRO, the more wallet balance you can withdraw directly to your bank account.",
+    "heroSubtitle": "The more friends you invite to upgrade to PRO or BUSINESS, the more wallet balance you can withdraw directly to your bank account.",
     "yourCode": "Your Referral Code",
     "copiedCode": "Code Copied!",
     "copyCode": "Copy Code",
@@ -1162,8 +1163,8 @@
     "copyLink": "Copy Link",
     "statsTotalFriends": "Total Friends Invited",
     "totalRegisteredUsers": "Total registered users",
-    "statsProFriends": "Active PRO Friends",
-    "successfulUpgrades": "Successful PRO upgrades",
+    "statsProFriends": "Subscribed Friends",
+    "successfulUpgrades": "Successful upgrades",
     "statsTotalEarnings": "Total Rewards Earned",
     "earnedCommissions": "Total earned commissions",
     "statsAvailableBalance": "Your Wallet Balance",
@@ -1174,7 +1175,7 @@
     "step2Title": "2. Friends Sign Up",
     "step2Desc": "Your friend creates a NotaKu account and starts generating professional invoices.",
     "step3Title": "3. Earn Cash Bonus",
-    "step3Desc": "When your friend upgrades to PRO, IDR 10,000 cash bonus is credited directly to your wallet.",
+    "step3Desc": "When your friend upgrades to PRO or BUSINESS, IDR 10,000 cash bonus is credited directly to your wallet.",
     "tableTitle": "Invited Friends & Reward History",
     "tableSubtitle": "Track signups and commission earnings in real-time.",
     "friendsCount": "{count} Friends",
@@ -1185,9 +1186,9 @@
     "colJoinDate": "Joined Date",
     "colStatus": "Plan Status",
     "colReward": "Reward Status",
-    "statusPro": "PRO Member",
-    "statusFree": "Free Member",
-    "rewardWaiting": "Waiting for PRO Upgrade",
+    "statusPro": "Subscribed Member",
+    "statusFree": "Free/LITE Member",
+    "rewardWaiting": "Waiting for Upgrade",
     "whatsappShareMessage": "Hi! I use NotaKu to create and manage professional invoices effortlessly. Sign up for free using my link: {url}"
   },
   "admin": {

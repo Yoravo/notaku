@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { EnvelopeIcon } from "@heroicons/react/24/outline";
 import { APP_VERSION } from "@/lib/changelog";
 import { openChangelogModal } from "@/components/changelog-modal";
 
@@ -55,6 +56,15 @@ export function LandingFooter() {
               <span className="w-2 h-2 rounded-full bg-emerald" />
               <span>{tFooter("paymentSupport")}</span>
             </div>
+            <a
+              href="mailto:founder@notaku.store?subject=Kritik%20%26%20Saran%20NotaKu"
+              className="flex w-fit items-center gap-2 min-h-[44px] text-xs sm:text-sm text-ink-soft hover:text-emerald transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald rounded-lg"
+            >
+              <EnvelopeIcon className="w-4 h-4 shrink-0" />
+              <span>
+                {tFooter("feedback")}: <span className="font-semibold">founder@notaku.store</span>
+              </span>
+            </a>
           </div>
 
           {/* Tools Hub Column */}

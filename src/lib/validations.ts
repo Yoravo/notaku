@@ -62,7 +62,7 @@ export const bankAccountSchema = z.object({
 });
 
 export const payoutRequestSchema = z.object({
-  amount: z.number().min(10000, "Minimal penarikan saldo adalah Rp 10.000"),
+  amount: z.number().min(50000, "Minimal penarikan saldo adalah Rp 50.000"),
   notes: z.string().max(300).optional(),
 });
 

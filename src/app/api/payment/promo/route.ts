@@ -14,7 +14,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const code = String(body.code || "").trim();
-    const plan: PlanType = body.plan === "BUSINESS" ? "BUSINESS" : "PRO";
+    const plan: PlanType = body.plan === "BUSINESS" ? "BUSINESS" : body.plan === "LITE" ? "LITE" : "PRO";
     const interval: PlanInterval = body.interval === "ANNUALLY" ? "ANNUALLY" : "MONTHLY";
 
     if (!code) {

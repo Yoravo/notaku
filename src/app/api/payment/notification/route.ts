@@ -4,6 +4,8 @@ import { auditLog } from "@/lib/audit-log";
 import { dispatchWebhook } from "@/lib/webhook-dispatcher";
 import { notifySellerInvoicePaid } from "@/lib/bot-notifications";
 import { notifyAdminNewSubscription } from "@/lib/admin-notifications";
+import { hasProFeatures } from "@/lib/plan-limits";
+import { REFERRAL_BONUS_AMOUNT } from "@/lib/referral";
 import crypto from "crypto";
 
 export async function GET() {
@@ -184,7 +186,9 @@ export async function POST(request: Request) {
       // Cari user berdasarkan subscription payment ID atau email
       if (paymentId) {
         const sub = await prisma.subscription.findFirst({
-          where: { midtransOrderId: String(paymentId) },
+          where: {
+            midtransOrderId: { in: [String(paymentId), `SETTLED:${paymentId}`] },
+          },
           include: { user: true },
         });
         if (sub?.user) {
@@ -207,6 +211,14 @@ export async function POST(request: Request) {
       const existingSub = await prisma.subscription.findUnique({
         where: { userId: user.id },
       });
+
+      // Idempotency: pembayaran yang sudah diproses ditandai "SETTLED:<id>" di midtransOrderId,
+      // sehingga event ganda/retry Mayar (payment.success lalu payment.settled) tidak memperpanjang 2x.
+      const paymentRef = paymentId || orderId;
+      const settledMarker = paymentRef ? `SETTLED:${paymentRef}` : null;
+      if (settledMarker && existingSub?.midtransOrderId === settledMarker) {
+        return NextResponse.json({ message: "Subscription payment already settled" });
+      }
 
       // OWASP A04: Tentukan target tier dan durasi dari data tersimpan / prefix orderId
       const strOrderId = String(orderId);
@@ -237,35 +249,53 @@ export async function POST(request: Request) {
       const isFirstUpgrade = !existingSub?.upgradeEventAt;
       const now = new Date();
 
-      await prisma.$transaction([
-        prisma.subscription.upsert({
-          where: { userId: user.id },
-          create: {
-            userId: user.id,
-            midtransOrderId: String(paymentId || `MAYAR-${Date.now()}`),
-            status: "ACTIVE",
-            plan: targetPlan,
-            intervalDays: daysToAdd,
-            currentPeriodEnd: newPeriodEnd,
-            upgradeEventAt: now,
-          },
-          update: {
-            status: "ACTIVE",
-            plan: targetPlan,
-            intervalDays: daysToAdd,
-            currentPeriodEnd: newPeriodEnd,
-            midtransOrderId: String(paymentId || existingSub?.midtransOrderId),
-            ...(isFirstUpgrade ? { upgradeEventAt: now } : {}),
-          },
-        }),
-        prisma.user.update({
+      const settlementData = {
+        status: "ACTIVE" as const,
+        plan: targetPlan,
+        intervalDays: daysToAdd,
+        currentPeriodEnd: newPeriodEnd,
+        ...(isFirstUpgrade ? { upgradeEventAt: now } : {}),
+      };
+
+      // Klaim atomik (Rule 42): updateMany dengan guard marker. Request konkuren kedua mendapat
+      // count 0 dan berhenti, sehingga masa aktif tidak bertambah dua kali.
+      const applied = await prisma.$transaction(async (tx) => {
+        if (existingSub) {
+          const claim = await tx.subscription.updateMany({
+            where: {
+              userId: user.id,
+              ...(settledMarker ? { NOT: { midtransOrderId: settledMarker } } : {}),
+            },
+            data: {
+              ...settlementData,
+              midtransOrderId: settledMarker || existingSub.midtransOrderId,
+            },
+          });
+          if (claim.count === 0) return false;
+        } else {
+          await tx.subscription.create({
+            data: {
+              userId: user.id,
+              midtransOrderId: settledMarker || `MAYAR-${Date.now()}`,
+              ...settlementData,
+              upgradeEventAt: now,
+            },
+          });
+        }
+        await tx.user.update({
           where: { id: user.id },
           data: { plan: targetPlan },
-        }),
-      ]);
+        });
+        return true;
+      });
 
-      // Cek apakah user ini terdaftar dari referral dan beri bonus ke referrer
-      if (user.referredById) {
+      if (!applied) {
+        return NextResponse.json({ message: "Subscription payment already settled" });
+      }
+
+      // Bonus referral hanya untuk upgrade PRO/BUSINESS dari akun email terverifikasi
+      // (LITE Rp19rb tidak menanggung komisi Rp10rb; akun belum verifikasi rawan akun kloning).
+      if (user.referredById && hasProFeatures(targetPlan) && user.emailVerified) {
         try {
           const existingReward = await prisma.referralReward.findFirst({
             where: {
@@ -276,7 +306,7 @@ export async function POST(request: Request) {
           });
 
           if (!existingReward) {
-            const rewardAmount = 10000; // Rp 10.000 komisi saldo per upgrade PRO
+            const rewardAmount = REFERRAL_BONUS_AMOUNT;
             const referrer = await prisma.user.findUnique({
               where: { id: user.referredById },
               select: { id: true, name: true, email: true },
@@ -300,7 +330,7 @@ export async function POST(request: Request) {
                     amount: rewardAmount,
                     grossAmount: rewardAmount,
                     feeAmount: 0,
-                    description: `Bonus Komisi Referral: ${user.name || "Teman Anda"} upgrade ke Paket PRO`,
+                    description: `Bonus Komisi Referral: ${user.name || "Teman Anda"} upgrade ke Paket ${targetPlan}`,
                     referenceId: `REF-${user.id.slice(0, 8)}`,
                   },
                 });
@@ -312,7 +342,7 @@ export async function POST(request: Request) {
                     referredUserId: user.id,
                     amount: rewardAmount,
                     status: "COMPLETED",
-                    notes: `Upgrade PRO oleh ${user.name} (${user.email})`,
+                    notes: `Upgrade ${targetPlan} oleh ${user.name} (${user.email})`,
                   },
                 });
               });

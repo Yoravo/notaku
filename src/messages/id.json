@@ -57,7 +57,8 @@
   "footer": {
     "desc": "Aplikasi invoice generator & billing SaaS modern untuk UMKM, freelancer, dan bisnis Indonesia.",
     "copyright": "© 2026 NotaKu. Hak cipta dilindungi undang-undang.",
-    "paymentSupport": "Didukung oleh Mayar.id & QRIS Nasional"
+    "paymentSupport": "Didukung oleh Mayar.id & QRIS Nasional",
+    "feedback": "Kritik & saran"
   },
   "email": {
     "reminder": {
@@ -1087,7 +1088,7 @@
     "setUpBankBtn": "Atur Rekening Bank Sekarang",
     "destinationAccountBox": "Rekening Tujuan Pencairan",
     "amountLabel": "Nominal Penarikan (Rp)",
-    "minAmount": "Minimal Rp10.000",
+    "minAmount": "Minimal Rp50.000",
     "withdrawAll": "Tarik Semua Saldo",
     "notesLabel": "Catatan Pengajuan (Opsional)",
     "notesPlaceholder": "Contoh: Pencairan omzet mingguan",
@@ -1149,11 +1150,11 @@
   },
   "referrals": {
     "title": "Program Referral & Afiliasi",
-    "subtitle": "Ajak rekan bisnis dan freelancer menggunakan NotaKu. Dapatkan komisi saldo tunai Rp 10.000 untuk setiap teman yang upgrade ke paket PRO!",
+    "subtitle": "Ajak rekan bisnis dan freelancer menggunakan NotaKu. Dapatkan komisi saldo tunai Rp 10.000 untuk setiap teman yang upgrade ke paket PRO atau BUSINESS!",
     "withdrawNow": "Tarik Saldo",
-    "commissionBadge": "Bonus Komisi Rp 10.000 / Upgrade PRO",
+    "commissionBadge": "Bonus Komisi Rp 10.000 / Upgrade Berbayar",
     "heroTitle": "Bagikan Tautan Anda, Dapatkan Cuan Saldo Tunai",
-    "heroSubtitle": "Semakin banyak teman yang Anda undang untuk upgrade ke NotaKu PRO, semakin besar saldo dompet yang bisa Anda cairkan langsung ke rekening bank.",
+    "heroSubtitle": "Semakin banyak teman yang Anda undang untuk upgrade ke langganan PRO atau BUSINESS, semakin besar saldo dompet yang bisa Anda cairkan langsung ke rekening bank.",
     "yourCode": "Kode Referral",
     "copiedCode": "Disalin!",
     "copyCode": "Salin",
@@ -1162,7 +1163,7 @@
     "copyLink": "Salin Link",
     "statsTotalFriends": "Total Teman Diajak",
     "totalRegisteredUsers": "Pengguna mendaftar",
-    "statsProFriends": "Teman Aktif PRO",
+    "statsProFriends": "Teman Berlangganan",
     "successfulUpgrades": "Konversi upgrade sukses",
     "statsTotalEarnings": "Total Komisi Didapat",
     "earnedCommissions": "Akumulasi bonus reward",
@@ -1174,7 +1175,7 @@
     "step2Title": "2. Teman Mendaftar",
     "step2Desc": "Teman Anda mendaftar akun NotaKu dan langsung menikmati kemudahan membuat invoice.",
     "step3Title": "3. Dapatkan Komisi Tunai",
-    "step3Desc": "Saat teman Anda upgrade ke paket PRO, komisi saldo Rp 10.000 otomatis masuk ke dompet Anda dan bisa langsung ditarik.",
+    "step3Desc": "Saat teman Anda upgrade ke langganan PRO atau BUSINESS, komisi saldo Rp 10.000 otomatis masuk ke dompet Anda dan bisa langsung ditarik.",
     "tableTitle": "Daftar Teman & Riwayat Komisi",
     "tableSubtitle": "Pantau status pendaftaran dan pencapaian komisi referral Anda.",
     "friendsCount": "{count} Teman",
@@ -1185,9 +1186,9 @@
     "colJoinDate": "Tanggal Bergabung",
     "colStatus": "Status Paket",
     "colReward": "Komisi",
-    "statusPro": "Member PRO",
-    "statusFree": "Member Free",
-    "rewardWaiting": "Menunggu PRO",
+    "statusPro": "Member Berlangganan",
+    "statusFree": "Member Gratis/LITE",
+    "rewardWaiting": "Menunggu Upgrade",
     "whatsappShareMessage": "Halo! Saya pakai NotaKu untuk buat invoice dan tagihan bisnis secara otomatis. Yuk coba gratis dengan daftar lewat tautan ini: {url}"
   },
   "admin": {

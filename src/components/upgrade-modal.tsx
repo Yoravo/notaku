@@ -9,6 +9,7 @@ import {
   ArrowPathIcon,
   CheckCircleIcon,
   BriefcaseIcon,
+  BoltIcon,
 } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
 import { PLAN_PRICES, type PlanType, type PlanInterval } from "@/lib/plan-constants";
@@ -159,11 +160,15 @@ export function UpgradeModal({
               className={`w-9 h-9 rounded-xl flex items-center justify-center border shrink-0 ${
                 selectedPlan === "BUSINESS"
                   ? "bg-violet-50 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300 border-violet-200 dark:border-violet-800"
+                  : selectedPlan === "LITE"
+                  ? "bg-cyan-50 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-300 border-cyan-200 dark:border-cyan-800"
                   : "bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"
               }`}
             >
               {selectedPlan === "BUSINESS" ? (
                 <BriefcaseIcon className="w-5 h-5" />
+              ) : selectedPlan === "LITE" ? (
+                <BoltIcon className="w-5 h-5" />
               ) : (
                 <SparklesIcon className="w-5 h-5" />
               )}
@@ -171,7 +176,7 @@ export function UpgradeModal({
             <div>
               <h2 className="text-lg font-bold text-gray-900 dark:text-white">
                 {t("titlePrefix")} Nota<span className="text-[#0f6b4f] dark:text-emerald-400">Ku</span>{" "}
-                {selectedPlan === "BUSINESS" ? "Business" : "PRO"}
+                {selectedPlan === "BUSINESS" ? "Business" : selectedPlan === "LITE" ? "LITE" : "PRO"}
               </h2>
               <p className="text-xs text-gray-500 dark:text-slate-400">
                 {t("subtitle")}

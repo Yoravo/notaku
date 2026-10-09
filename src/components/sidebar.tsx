@@ -21,6 +21,7 @@ import {
   GiftIcon,
   ArchiveBoxIcon,
   WalletIcon,
+  EnvelopeIcon,
 } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
 import { APP_VERSION } from "@/lib/changelog";
@@ -47,6 +48,7 @@ export function Sidebar({
   const pathname = usePathname();
   const router = useRouter();
   const tDash = useTranslations("dashboard");
+  const tFooter = useTranslations("footer");
 
   const handleSignOut = async () => {
     clearOfflineData();
@@ -252,19 +254,34 @@ export function Sidebar({
 
       {/* User Profile & Plan Badge Section */}
       <div className="border-t border-slate-200 dark:border-slate-800 p-3 shrink-0 space-y-2">
-        {/* App Version → Changelog Modal */}
-        <button
-          type="button"
-          onClick={() => {
-            onClose?.();
-            openChangelogModal();
-          }}
-          className="w-full flex items-center justify-center gap-1.5 rounded-lg py-1 text-[10px] font-semibold text-slate-400 dark:text-slate-500 hover:text-[#0f6b4f] dark:hover:text-emerald-400 transition-colors whitespace-nowrap cursor-pointer"
-          title="Lihat catatan rilis"
-        >
-          <SparklesIcon className="w-3 h-3" />
-          <span>NotaKu v{APP_VERSION} · Changelog</span>
-        </button>
+        <div className="flex items-center justify-between px-1 gap-2">
+          {/* App Version → Changelog Modal */}
+          <button
+            type="button"
+            onClick={() => {
+              onClose?.();
+              openChangelogModal();
+            }}
+            className="flex-1 flex items-center justify-center gap-1.5 rounded-lg py-1.5 text-[10px] font-semibold text-slate-400 dark:text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors whitespace-nowrap cursor-pointer"
+            title="Lihat catatan rilis"
+          >
+            <SparklesIcon className="w-3 h-3" />
+            <span>v{APP_VERSION}</span>
+          </button>
+
+          <div className="w-px h-3 bg-slate-200 dark:bg-slate-700" />
+
+          {/* Feedback Mailto */}
+          <a
+            href="mailto:founder@notaku.store?subject=Kritik%20%26%20Saran%20NotaKu"
+            onClick={() => onClose?.()}
+            className="flex-1 flex items-center justify-center gap-1.5 rounded-lg py-1.5 text-[10px] font-semibold text-slate-400 dark:text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors whitespace-nowrap cursor-pointer"
+            title={tFooter("feedback")}
+          >
+            <EnvelopeIcon className="w-3 h-3" />
+            <span>{tFooter("feedback")}</span>
+          </a>
+        </div>
 
         <div className="flex items-center justify-between rounded-xl bg-slate-50 dark:bg-slate-800/80 p-2 border border-slate-200/60 dark:border-slate-700">
           <div className="min-w-0 flex-1 flex items-center gap-2">
