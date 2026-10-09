@@ -83,20 +83,38 @@ export async function validatePromoCode(
       }
     }
 
-    // Cek batas kuota klaim jika disetel
+    // Cek batas kuota klaim jika disetel (Best Practice: Atomic Inventory Reservation)
     if (matchedPromo.maxUses && matchedPromo.maxUses > 0) {
-      const usageCount = await prisma.auditLog.count({
-        where: {
-          event: "payment.mayar_settlement",
-          detail: {
-            path: ["promoCode"],
-            equals: code,
-          },
-        },
-      });
+      const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
 
-      if (usageCount >= matchedPromo.maxUses) {
-        return { valid: false, error: "Kuota penggunaan kode voucher ini telah habis" };
+      // Hitung kombinasi transaksi lunas + link aktif yang dibuat 30 menit terakhir
+      const [settledCount, reservedActiveCount] = await Promise.all([
+        prisma.auditLog.count({
+          where: {
+            event: "payment.mayar_settlement",
+            detail: {
+              path: ["promoCode"],
+              equals: code,
+            },
+          },
+        }),
+        prisma.auditLog.count({
+          where: {
+            event: "payment.promo_reserved",
+            createdAt: { gte: thirtyMinutesAgo },
+            detail: {
+              path: ["promoCode"],
+              equals: code,
+            },
+          },
+        }),
+      ]);
+
+      // Gabungan pemakaian (termasuk reservasi sementara yang akan hangus dalam 30 menit)
+      const effectiveUsage = settledCount + reservedActiveCount;
+
+      if (effectiveUsage >= matchedPromo.maxUses) {
+        return { valid: false, error: "Kuota penggunaan kode voucher ini telah habis atau sedang dalam proses pembayaran oleh pengguna lain" };
       }
     }
 

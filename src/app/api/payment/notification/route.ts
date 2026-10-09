@@ -359,11 +359,32 @@ export async function POST(request: Request) {
         }
       }
 
+      // Cari apakah transaksi ini menggunakan voucher promo dari log reservasi saat checkout
+      let usedPromoCode: string | null = null;
+      try {
+        const promoLog = await prisma.auditLog.findFirst({
+          where: {
+            event: "payment.promo_reserved",
+            detail: {
+              path: ["paymentId"],
+              equals: paymentId || orderId,
+            },
+          },
+          orderBy: { createdAt: "desc" },
+        });
+        if (promoLog?.detail && typeof promoLog.detail === "object") {
+          usedPromoCode = (promoLog.detail as any).promoCode || null;
+        }
+      } catch (e) {
+        console.error("Gagal mendeteksi promoCode dari reservasi:", e);
+      }
+
       auditLog("payment.mayar_settlement", {
         userId: user.id,
         email: user.email,
         paymentId,
         amount,
+        promoCode: usedPromoCode,
         periodEnd: newPeriodEnd.toISOString(),
       });
 

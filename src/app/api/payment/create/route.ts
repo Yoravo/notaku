@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { createMayarPayment } from "@/lib/mayar";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { auditLog } from "@/lib/audit-log";
 import {
   validatePromoCode,
   getPlanPrice,
@@ -90,6 +91,7 @@ export async function POST(request: Request) {
     const { paymentUrl, paymentId } = await createMayarPayment({
       name: `${PLAN_LABELS[plan]} - ${INTERVAL_META[interval].label}${appliedPromoDescription}`,
       amount: finalPrice,
+      description: `Pembelian Paket Langganan ${PLAN_LABELS[plan]} (${INTERVAL_META[interval].label})`,
       customerName: user.name || "Pelanggan NotaKu",
       customerEmail: user.email,
       orderId,
@@ -115,6 +117,15 @@ export async function POST(request: Request) {
         gaSessionId,
       },
     });
+
+    if (promoCode) {
+      await auditLog("payment.promo_reserved", {
+        userId: user.id,
+        promoCode,
+        orderId,
+        paymentId: paymentId || orderId,
+      });
+    }
 
     return NextResponse.json({
       paymentUrl,

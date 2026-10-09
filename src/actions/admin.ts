@@ -263,19 +263,32 @@ export async function getPromoCodes(): Promise<PromoData[]> {
 
     const promos = Array.from(promoMap.values());
 
-    // Hitung real-time usage count untuk setiap promo
+    // Hitung real-time usage count untuk setiap promo (Settlement + Active Reservations)
     for (const promo of promos) {
       try {
-        const count = await prisma.auditLog.count({
-          where: {
-            event: "payment.mayar_settlement",
-            detail: {
-              path: ["promoCode"],
-              equals: promo.code,
+        const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
+        const [settledCount, reservedCount] = await Promise.all([
+          prisma.auditLog.count({
+            where: {
+              event: "payment.mayar_settlement",
+              detail: {
+                path: ["promoCode"],
+                equals: promo.code,
+              },
             },
-          },
-        });
-        promo.usedCount = count;
+          }),
+          prisma.auditLog.count({
+            where: {
+              event: "payment.promo_reserved",
+              createdAt: { gte: thirtyMinutesAgo },
+              detail: {
+                path: ["promoCode"],
+                equals: promo.code,
+              },
+            },
+          }),
+        ]);
+        promo.usedCount = settledCount + reservedCount;
       } catch {
         promo.usedCount = 0;
       }
