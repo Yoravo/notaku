@@ -3,34 +3,43 @@
 import { useState, useTransition } from "react";
 import { updateUserPlan, updateUserRole } from "@/actions/admin";
 import {
-  SparklesIcon,
   ShieldCheckIcon,
   ShieldExclamationIcon,
   ArrowPathIcon,
   ArrowRightIcon,
+  AdjustmentsHorizontalIcon,
 } from "@heroicons/react/24/outline";
 import { ConfirmDialog, ConfirmVariant } from "@/components/ui/confirm-dialog";
+import { PlanConfigModal } from "@/components/admin/plan-config-modal";
+import type { AdminPlan, AdminPlanDuration } from "@/lib/admin-plan";
 import { useTranslations } from "next-intl";
 
 type UserActionsProps = {
   userId: string;
   userName: string;
   userEmail: string;
-  currentPlan: "FREE" | "LITE" | "PRO" | "BUSINESS";
+  currentPlan: AdminPlan;
   currentRole: "USER" | "ADMIN";
   isCurrentAdmin: boolean;
+  currentExpiresAt?: string | null;
 };
 
-type DialogState = {
+type RoleDialogState = {
   isOpen: boolean;
-  type: "PLAN" | "ROLE";
   title: string;
   description: string;
   confirmLabel: string;
   variant: ConfirmVariant;
-  newPlan?: "FREE" | "LITE" | "PRO" | "BUSINESS";
   newRole?: "USER" | "ADMIN";
   itemDetails: { label: string; value: React.ReactNode }[];
+};
+
+const PLAN_BUTTON_CLASS: Record<AdminPlan, string> = {
+  BUSINESS:
+    "bg-violet-50 dark:bg-violet-950/60 text-violet-800 dark:text-violet-300 hover:bg-violet-100 dark:hover:bg-violet-900/60 border border-violet-200/60 dark:border-violet-800",
+  PRO: "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/60 border border-amber-200/60 dark:border-amber-800",
+  LITE: "bg-cyan-50 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 hover:bg-cyan-100 dark:hover:bg-cyan-900/60 border border-cyan-200/60 dark:border-cyan-800",
+  FREE: "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700",
 };
 
 export function UserRowActions({
@@ -40,54 +49,34 @@ export function UserRowActions({
   currentPlan,
   currentRole,
   isCurrentAdmin,
+  currentExpiresAt,
 }: UserActionsProps) {
   const tAdmin = useTranslations("admin");
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
-
-  const [dialogState, setDialogState] = useState<DialogState>({
+  const [planModalOpen, setPlanModalOpen] = useState(false);
+  const [roleDialog, setRoleDialog] = useState<RoleDialogState>({
     isOpen: false,
-    type: "PLAN",
     title: "",
     description: "",
     confirmLabel: tAdmin("confirm"),
     variant: "primary",
     itemDetails: [],
   });
-
   const [selfAdminAlertOpen, setSelfAdminAlertOpen] = useState(false);
 
-  const handleOpenPlanDialog = () => {
-    const nextPlan: "FREE" | "LITE" | "PRO" | "BUSINESS" =
-      currentPlan === "FREE" ? "LITE" : currentPlan === "LITE" ? "PRO" : currentPlan === "PRO" ? "BUSINESS" : "FREE";
-    const isUpgrading = nextPlan !== "FREE";
+  const handleConfirmPlan = (plan: AdminPlan, duration: AdminPlanDuration) => {
+    startTransition(async () => {
+      setMessage(null);
+      const res = await updateUserPlan(userId, plan, duration);
+      setPlanModalOpen(false);
 
-    setDialogState({
-      isOpen: true,
-      type: "PLAN",
-      title: tAdmin("confirmPlanChangeTitle"),
-      description: tAdmin("confirmPlanChangeDesc", {
-        name: userName || "User",
-        email: userEmail,
-        plan: nextPlan,
-      }),
-      confirmLabel: isUpgrading ? `Ganti ke ${nextPlan}` : tAdmin("actionDowngradeFree"),
-      variant: isUpgrading ? "upgrade" : "warning",
-      newPlan: nextPlan,
-      itemDetails: [
-        { label: "User", value: userName || "-" },
-        { label: "Email", value: userEmail },
-        {
-          label: "Plan",
-          value: (
-            <span className="inline-flex items-center gap-1">
-              {currentPlan}
-              <ArrowRightIcon aria-label="ke" className="h-3 w-3 text-slate-400" />
-              {nextPlan}
-            </span>
-          ),
-        },
-      ],
+      if (res.success) {
+        setMessage({ type: "success", text: tAdmin("planChangeSuccess", { plan }) });
+        setTimeout(() => setMessage(null), 3000);
+      } else {
+        setMessage({ type: "error", text: res.error || tAdmin("planChangeFailed") });
+      }
     });
   };
 
@@ -100,9 +89,8 @@ export function UserRowActions({
     const isPromoting = currentRole !== "ADMIN";
     const nextRole: "USER" | "ADMIN" = isPromoting ? "ADMIN" : "USER";
 
-    setDialogState({
+    setRoleDialog({
       isOpen: true,
-      type: "ROLE",
       title: tAdmin("confirmRoleChangeTitle"),
       description: tAdmin("confirmRoleChangeDesc", {
         name: userName || "User",
@@ -129,44 +117,20 @@ export function UserRowActions({
     });
   };
 
-  const handleConfirmAction = () => {
+  const handleConfirmRole = () => {
+    const targetRole = roleDialog.newRole;
+    if (!targetRole) return;
+
     startTransition(async () => {
       setMessage(null);
+      const res = await updateUserRole(userId, targetRole);
+      setRoleDialog((prev) => ({ ...prev, isOpen: false }));
 
-      if (dialogState.type === "PLAN" && dialogState.newPlan) {
-        const targetPlan = dialogState.newPlan;
-        const res = await updateUserPlan(userId, targetPlan);
-        setDialogState((prev) => ({ ...prev, isOpen: false }));
-
-        if (res.success) {
-          setMessage({
-            type: "success",
-            text: tAdmin("planChangeSuccess", { plan: targetPlan }),
-          });
-          setTimeout(() => setMessage(null), 3000);
-        } else {
-          setMessage({
-            type: "error",
-            text: res.error || tAdmin("planChangeFailed"),
-          });
-        }
-      } else if (dialogState.type === "ROLE" && dialogState.newRole) {
-        const targetRole = dialogState.newRole;
-        const res = await updateUserRole(userId, targetRole);
-        setDialogState((prev) => ({ ...prev, isOpen: false }));
-
-        if (res.success) {
-          setMessage({
-            type: "success",
-            text: tAdmin("roleChangeSuccess", { role: targetRole }),
-          });
-          setTimeout(() => setMessage(null), 3000);
-        } else {
-          setMessage({
-            type: "error",
-            text: res.error || tAdmin("roleChangeFailed"),
-          });
-        }
+      if (res.success) {
+        setMessage({ type: "success", text: tAdmin("roleChangeSuccess", { role: targetRole }) });
+        setTimeout(() => setMessage(null), 3000);
+      } else {
+        setMessage({ type: "error", text: res.error || tAdmin("roleChangeFailed") });
       }
     });
   };
@@ -175,44 +139,26 @@ export function UserRowActions({
     <>
       <div className="flex flex-col items-end gap-1">
         <div className="flex items-center gap-1.5">
-          {/* Cycle Plan Button: FREE → PRO → BUSINESS → FREE */}
           <button
             type="button"
-            onClick={handleOpenPlanDialog}
+            onClick={() => setPlanModalOpen(true)}
             disabled={isPending}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer disabled:opacity-50 shadow-2xs active:scale-[0.98] min-h-[44px] sm:min-h-[38px] ${
-              currentPlan === "BUSINESS"
-                ? "bg-violet-50 dark:bg-violet-950/60 text-violet-800 dark:text-violet-300 hover:bg-violet-100 dark:hover:bg-violet-900/60 border border-violet-200/60 dark:border-violet-800"
-                : currentPlan === "PRO"
-                ? "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/60 border border-amber-200/60 dark:border-amber-800"
-                : currentPlan === "LITE"
-                ? "bg-cyan-50 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 hover:bg-cyan-100 dark:hover:bg-cyan-900/60 border border-cyan-200/60 dark:border-cyan-800"
-                : "bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200/60 dark:border-emerald-800"
-            }`}
-            title={tAdmin("confirmPlanChangeTitle")}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer disabled:opacity-50 shadow-2xs min-h-[44px] sm:min-h-[38px] ${PLAN_BUTTON_CLASS[currentPlan]}`}
+            title={tAdmin("managePlan")}
           >
             {isPending ? (
-              <ArrowPathIcon className="w-3.5 h-3.5 animate-spin" />
+              <ArrowPathIcon aria-hidden="true" className="w-3.5 h-3.5 animate-spin" />
             ) : (
-              <SparklesIcon className="w-3.5 h-3.5" />
+              <AdjustmentsHorizontalIcon aria-hidden="true" className="w-3.5 h-3.5" />
             )}
-            <span>
-              {currentPlan === "FREE"
-                ? "Set LITE"
-                : currentPlan === "LITE"
-                ? "Set PRO"
-                : currentPlan === "PRO"
-                ? "Set BUSINESS"
-                : "Set FREE"}
-            </span>
+            <span>{tAdmin("managePlan")}</span>
           </button>
 
-          {/* Toggle Role Button */}
           <button
             type="button"
             onClick={handleOpenRoleDialog}
             disabled={isPending}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer disabled:opacity-50 shadow-2xs active:scale-[0.98] min-h-[44px] sm:min-h-[38px] ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer disabled:opacity-50 shadow-2xs min-h-[44px] sm:min-h-[38px] ${
               currentRole === "ADMIN"
                 ? "bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-900/60 border border-rose-200/60 dark:border-rose-800"
                 : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700"
@@ -226,9 +172,9 @@ export function UserRowActions({
             }
           >
             {currentRole === "ADMIN" ? (
-              <ShieldExclamationIcon className="w-3.5 h-3.5 text-rose-600" />
+              <ShieldExclamationIcon aria-hidden="true" className="w-3.5 h-3.5 text-rose-600" />
             ) : (
-              <ShieldCheckIcon className="w-3.5 h-3.5 text-slate-500" />
+              <ShieldCheckIcon aria-hidden="true" className="w-3.5 h-3.5 text-slate-500" />
             )}
             <span>{currentRole === "ADMIN" ? tAdmin("actionRemoveAdmin") : tAdmin("actionMakeAdmin")}</span>
           </button>
@@ -236,8 +182,9 @@ export function UserRowActions({
 
         {message && (
           <span
-            className={`text-[10px] font-bold animate-in fade-in ${
-              message.type === "success" ? "text-[#0f6b4f]" : "text-rose-600"
+            role="status"
+            className={`text-[11px] font-bold ${
+              message.type === "success" ? "text-emerald-700 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"
             }`}
           >
             {message.text}
@@ -245,21 +192,30 @@ export function UserRowActions({
         )}
       </div>
 
-      {/* Confirmation Dialog */}
-      <ConfirmDialog
-        isOpen={dialogState.isOpen}
-        onClose={() => !isPending && setDialogState((prev) => ({ ...prev, isOpen: false }))}
-        onConfirm={handleConfirmAction}
-        title={dialogState.title}
-        description={dialogState.description}
-        confirmLabel={dialogState.confirmLabel}
-        cancelLabel={tAdmin("cancel")}
-        variant={dialogState.variant}
+      <PlanConfigModal
+        isOpen={planModalOpen}
+        onClose={() => !isPending && setPlanModalOpen(false)}
+        onConfirm={handleConfirmPlan}
+        userName={userName}
+        userEmail={userEmail}
+        currentPlan={currentPlan}
+        currentExpiresAt={currentExpiresAt}
         isLoading={isPending}
-        itemDetails={dialogState.itemDetails}
       />
 
-      {/* Alert when trying to revoke self admin */}
+      <ConfirmDialog
+        isOpen={roleDialog.isOpen}
+        onClose={() => !isPending && setRoleDialog((prev) => ({ ...prev, isOpen: false }))}
+        onConfirm={handleConfirmRole}
+        title={roleDialog.title}
+        description={roleDialog.description}
+        confirmLabel={roleDialog.confirmLabel}
+        cancelLabel={tAdmin("cancel")}
+        variant={roleDialog.variant}
+        isLoading={isPending}
+        itemDetails={roleDialog.itemDetails}
+      />
+
       <ConfirmDialog
         isOpen={selfAdminAlertOpen}
         onClose={() => setSelfAdminAlertOpen(false)}
@@ -269,9 +225,7 @@ export function UserRowActions({
         confirmLabel={tAdmin("understand")}
         cancelLabel={tAdmin("cancel")}
         variant="warning"
-        itemDetails={[
-          { label: "User", value: userEmail },
-        ]}
+        itemDetails={[{ label: "User", value: userEmail }]}
       />
     </>
   );

@@ -4,31 +4,81 @@ import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { auditLog } from "@/lib/audit-log";
+import {
+  ADMIN_PLANS,
+  ADMIN_PLAN_DURATIONS,
+  computeAdminPeriodEnd,
+  isAdminPlanDuration,
+  type AdminPlan,
+  type AdminPlanDuration,
+} from "@/lib/admin-plan";
 
-export async function updateUserPlan(userId: string, plan: "FREE" | "LITE" | "PRO" | "BUSINESS") {
+export async function updateUserPlan(
+  userId: string,
+  plan: AdminPlan,
+  duration: AdminPlanDuration = "30_DAYS",
+) {
   const admin = await requireAdmin();
 
-  if (!userId || !["FREE", "LITE", "PRO", "BUSINESS"].includes(plan)) {
+  if (!userId || !ADMIN_PLANS.includes(plan) || !isAdminPlanDuration(duration)) {
     return { success: false, error: "Data input tidak valid" };
   }
 
   try {
     const targetUser = await prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, email: true, plan: true },
+      select: {
+        id: true,
+        email: true,
+        plan: true,
+        subscription: { select: { status: true, plan: true, currentPeriodEnd: true } },
+      },
     });
 
     if (!targetUser) {
       return { success: false, error: "Pengguna tidak ditemukan" };
     }
 
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: { plan },
-      select: { id: true, email: true, plan: true },
+    const days = plan === "FREE" ? null : ADMIN_PLAN_DURATIONS[duration];
+    const currentPeriodEnd = computeAdminPeriodEnd(plan, duration);
+    const effectiveDuration = plan === "FREE" ? null : duration;
+
+    // User.plan dan Subscription harus berubah bersama: cron hanya men-downgrade
+    // subscription ACTIVE yang currentPeriodEnd-nya lewat, jadi keduanya wajib sinkron.
+    const updatedUser = await prisma.$transaction(async (tx) => {
+      if (plan === "FREE") {
+        if (targetUser.subscription) {
+          await tx.subscription.update({
+            where: { userId },
+            data: { status: "INACTIVE", currentPeriodEnd: null },
+          });
+        }
+      } else {
+        await tx.subscription.upsert({
+          where: { userId },
+          create: {
+            userId,
+            status: "ACTIVE",
+            plan,
+            intervalDays: days ?? 0,
+            currentPeriodEnd,
+          },
+          update: {
+            status: "ACTIVE",
+            plan,
+            intervalDays: days ?? 0,
+            currentPeriodEnd,
+          },
+        });
+      }
+
+      return tx.user.update({
+        where: { id: userId },
+        data: { plan },
+        select: { id: true, email: true, plan: true },
+      });
     });
 
-    // Catat ke Audit Log
     await auditLog(
       "admin.user_plan_updated",
       {
@@ -36,15 +86,19 @@ export async function updateUserPlan(userId: string, plan: "FREE" | "LITE" | "PR
         targetEmail: targetUser.email,
         oldPlan: targetUser.plan,
         newPlan: plan,
+        oldPeriodEnd: targetUser.subscription?.currentPeriodEnd?.toISOString() ?? null,
+        newPeriodEnd: currentPeriodEnd?.toISOString() ?? null,
+        duration: effectiveDuration,
         performedBy: admin.email,
       },
       { userId: admin.id }
     );
 
     revalidatePath("/admin/users");
+    revalidatePath(`/admin/users/${userId}`);
     revalidatePath("/admin");
 
-    return { success: true, user: updatedUser };
+    return { success: true, user: updatedUser, currentPeriodEnd: currentPeriodEnd?.toISOString() ?? null };
   } catch (error) {
     console.error("[ADMIN_UPDATE_PLAN_ERROR]", error);
     return { success: false, error: "Gagal memperbarui paket pengguna" };
@@ -198,21 +252,40 @@ export type PromoData = {
 export async function savePromoCode(data: PromoData) {
   const admin = await requireAdmin();
 
-  if (!data.code || data.discountValue <= 0) {
-    return { success: false, error: "Kode promo dan nilai diskon wajib diisi" };
-  }
+  const cleanCode = (data.code || "").trim().toUpperCase();
+  const discountValue = Number(data.discountValue);
+  const maxUses = data.maxUses === null || data.maxUses === undefined ? null : Number(data.maxUses);
+  const expiresAt = data.expiresAt ? new Date(data.expiresAt) : null;
 
-  const cleanCode = data.code.trim().toUpperCase();
+  // Server-side guard: nilai promo masuk ke harga checkout Mayar (CLAUDE.md #15).
+  if (!/^[A-Z0-9_-]{3,30}$/.test(cleanCode)) {
+    return { success: false, error: "Kode promo 3-30 karakter: huruf, angka, - atau _" };
+  }
+  if (data.discountType !== "PERCENTAGE" && data.discountType !== "FIXED") {
+    return { success: false, error: "Tipe diskon tidak valid" };
+  }
+  if (!Number.isFinite(discountValue) || discountValue <= 0) {
+    return { success: false, error: "Nilai diskon wajib lebih dari 0" };
+  }
+  if (data.discountType === "PERCENTAGE" && discountValue > 100) {
+    return { success: false, error: "Diskon persentase maksimal 100%" };
+  }
+  if (maxUses !== null && (!Number.isInteger(maxUses) || maxUses < 1)) {
+    return { success: false, error: "Batas pemakaian minimal 1" };
+  }
+  if (expiresAt && Number.isNaN(expiresAt.getTime())) {
+    return { success: false, error: "Tanggal kedaluwarsa tidak valid" };
+  }
 
   try {
     const promoEntry = {
       id: data.id || `promo_${Date.now()}`,
       code: cleanCode,
-      description: data.description?.trim() || "",
+      description: (data.description?.trim() || "").slice(0, 200),
       discountType: data.discountType,
-      discountValue: data.discountValue,
-      maxUses: data.maxUses ? Number(data.maxUses) : null,
-      expiresAt: data.expiresAt ? new Date(data.expiresAt).toISOString() : null,
+      discountValue,
+      maxUses,
+      expiresAt: expiresAt ? expiresAt.toISOString() : null,
       isActive: data.isActive,
       updatedBy: admin.email,
       updatedAt: new Date().toISOString(),

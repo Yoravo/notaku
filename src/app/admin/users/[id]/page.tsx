@@ -138,6 +138,11 @@ export default async function AdminUserDetailPage(props: {
             currentPlan={targetUser.plan as "FREE" | "LITE" | "PRO" | "BUSINESS"}
             currentRole={targetUser.role as "USER" | "ADMIN"}
             isCurrentAdmin={isCurrentAdmin}
+            currentExpiresAt={
+              targetUser.subscription?.status === "ACTIVE"
+                ? targetUser.subscription.currentPeriodEnd?.toISOString() ?? null
+                : null
+            }
           />
         </div>
       </div>

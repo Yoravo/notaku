@@ -39,7 +39,7 @@ export default async function AdminUsersPage(props: {
     ];
   }
 
-  if (planFilter === "FREE" || planFilter === "PRO" || planFilter === "BUSINESS") {
+  if (planFilter === "FREE" || planFilter === "LITE" || planFilter === "PRO" || planFilter === "BUSINESS") {
     where.plan = planFilter;
   }
 
@@ -64,6 +64,7 @@ export default async function AdminUsersPage(props: {
           role: true,
           createdAt: true,
           emailVerified: true,
+          subscription: { select: { status: true, currentPeriodEnd: true } },
           _count: {
             select: {
               invoices: true,
@@ -73,7 +74,8 @@ export default async function AdminUsersPage(props: {
         },
       }),
       prisma.user.count(),
-      prisma.user.count({ where: { plan: "PRO" } }),
+      // Rule #50: pengguna berbayar = LITE, PRO, BUSINESS
+      prisma.user.count({ where: { plan: { in: ["LITE", "PRO", "BUSINESS"] } } }),
     ]);
 
   const totalPages = Math.ceil(totalFilteredUsers / PAGE_SIZE) || 1;
@@ -89,6 +91,10 @@ export default async function AdminUsersPage(props: {
     emailVerified: u.emailVerified,
     invoiceCount: u._count.invoices,
     customerCount: u._count.customers,
+    currentPeriodEnd:
+      u.subscription?.status === "ACTIVE"
+        ? u.subscription.currentPeriodEnd?.toISOString() ?? null
+        : null,
   }));
 
   return (

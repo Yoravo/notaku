@@ -5,7 +5,6 @@ import { formatDateWIB } from "@/lib/invoice-utils";
 import {
   UsersIcon,
   MagnifyingGlassIcon,
-  SparklesIcon,
   ShieldCheckIcon,
 } from "@heroicons/react/24/outline";
 import { UserRowActions } from "./user-row-actions";
@@ -22,6 +21,7 @@ export type AdminUserData = {
   emailVerified: boolean | null;
   invoiceCount: number;
   customerCount: number;
+  currentPeriodEnd?: string | null;
 };
 
 export type AdminUsersProps = {
@@ -109,6 +109,7 @@ export function AdminUsersClient({
             >
               <option value="">{tAdmin("filterAllPlans")}</option>
               <option value="FREE">FREE</option>
+              <option value="LITE">LITE</option>
               <option value="PRO">PRO</option>
               <option value="BUSINESS">BUSINESS</option>
             </select>
@@ -207,16 +208,22 @@ export function AdminUsersClient({
                                 ? "bg-violet-50 dark:bg-violet-950/60 text-violet-800 dark:text-violet-300 border border-violet-200/60 dark:border-violet-800 shadow-2xs"
                                 : u.plan === "PRO"
                                 ? "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800 shadow-2xs"
+                                : u.plan === "LITE"
+                                ? "bg-cyan-50 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 border border-cyan-200/60 dark:border-cyan-800 shadow-2xs"
                                 : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
                             }`}
                           >
-                            {(u.plan === "PRO" || u.plan === "BUSINESS") && (
-                              <SparklesIcon className={`w-3 h-3 ${u.plan === "BUSINESS" ? "text-violet-600" : "text-amber-600"}`} />
-                            )}
                             {u.plan}
                           </span>
+                          {u.plan !== "FREE" && (
+                            <span className="text-[9px] font-medium text-slate-400 dark:text-slate-500 mt-0.5 whitespace-nowrap">
+                              {u.currentPeriodEnd 
+                                ? `s/d ${formatDateWIB(u.currentPeriodEnd, { day: "numeric", month: "short", year: "numeric" })}` 
+                                : "Permanen"}
+                            </span>
+                          )}
                           {u.role === "ADMIN" && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200/60 dark:border-rose-800 shadow-2xs">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200/60 dark:border-rose-800 shadow-2xs mt-1">
                               <ShieldCheckIcon className="w-3 h-3 text-rose-600" />
                               ADMIN
                             </span>
@@ -252,6 +259,7 @@ export function AdminUsersClient({
                           currentPlan={u.plan as "FREE" | "LITE" | "PRO" | "BUSINESS"}
                           currentRole={u.role as "USER" | "ADMIN"}
                           isCurrentAdmin={isCurrentAdmin}
+                          currentExpiresAt={u.currentPeriodEnd}
                         />
                       </td>
                     </tr>

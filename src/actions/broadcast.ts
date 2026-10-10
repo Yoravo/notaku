@@ -49,7 +49,8 @@ export async function getBroadcastAudienceEstimate(
   const whereClause: any = {};
 
   if (audience === "PRO_ONLY") {
-    whereClause.plan = "PRO";
+    // 4-Tier rule #50: seluruh tier berbayar (LITE, PRO, BUSINESS)
+    whereClause.plan = { in: ["LITE", "PRO", "BUSINESS"] };
   } else if (audience === "FREE_ONLY") {
     whereClause.plan = "FREE";
   }
@@ -109,10 +110,21 @@ export async function sendBroadcastEmail(input: SendBroadcastInput) {
     throw new Error("Isi konten email pengumuman wajib diisi.");
   }
 
+  // Audiens tak dikenal akan jatuh ke whereClause kosong = kirim ke SEMUA user. Tolak.
+  if (!["ALL", "PRO_ONLY", "FREE_ONLY"].includes(input.audience)) {
+    throw new Error("Target audiens tidak valid.");
+  }
+
+  const ctaUrl = input.ctaUrl?.trim();
+  if (ctaUrl && !/^https:\/\//i.test(ctaUrl)) {
+    throw new Error("Tautan CTA wajib diawali https://");
+  }
+
   const whereClause: any = {};
 
   if (input.audience === "PRO_ONLY") {
-    whereClause.plan = "PRO";
+    // 4-Tier rule #50: seluruh tier berbayar (LITE, PRO, BUSINESS)
+    whereClause.plan = { in: ["LITE", "PRO", "BUSINESS"] };
   } else if (input.audience === "FREE_ONLY") {
     whereClause.plan = "FREE";
   }

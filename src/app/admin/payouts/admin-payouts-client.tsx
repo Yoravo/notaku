@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { updatePayoutStatus } from "@/actions/admin";
 import { formatDateWIB } from "@/lib/invoice-utils";
 import {
@@ -37,6 +38,7 @@ export function AdminPayoutsClient({
 }) {
   const locale = useLocale() as "id" | "en";
   const tAdmin = useTranslations("admin");
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<"ALL" | "PENDING" | "COMPLETED" | "REJECTED">("ALL");
   const [processingId, setProcessingId] = useState<string | null>(null);
 
@@ -57,6 +59,8 @@ export function AdminPayoutsClient({
 
   const filteredPayouts = payouts.filter((p) => {
     if (activeTab === "ALL") return true;
+    // Tab Pending mencakup PROCESSING agar jumlah di label sama dengan isi list.
+    if (activeTab === "PENDING") return p.status === "PENDING" || p.status === "PROCESSING";
     return p.status === activeTab;
   });
 
@@ -92,7 +96,7 @@ export function AdminPayoutsClient({
         }));
       } else {
         setDialogState((prev) => ({ ...prev, isOpen: false }));
-        window.location.reload();
+        router.refresh();
       }
     } catch {
       setDialogState((prev) => ({
