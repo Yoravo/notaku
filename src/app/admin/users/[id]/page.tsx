@@ -7,7 +7,6 @@ import { formatDateWIB, formatTimeWIB } from "@/lib/invoice-utils";
 import {
   ArrowLeftIcon,
   UserIcon,
-  SparklesIcon,
   ShieldCheckIcon,
   EnvelopeIcon,
   PhoneIcon,
@@ -108,12 +107,11 @@ export default async function AdminUserDetailPage(props: {
                     ? "bg-violet-50 dark:bg-violet-950/60 text-violet-800 dark:text-violet-300 border border-violet-200/60 dark:border-violet-800 shadow-2xs"
                     : targetUser.plan === "PRO"
                     ? "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800 shadow-2xs"
+                    : targetUser.plan === "LITE"
+                    ? "bg-cyan-50 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 border border-cyan-200/60 dark:border-cyan-800 shadow-2xs"
                     : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
                 }`}
               >
-                {(targetUser.plan === "PRO" || targetUser.plan === "BUSINESS") && (
-                  <SparklesIcon className={`w-3 h-3 ${targetUser.plan === "BUSINESS" ? "text-violet-600 dark:text-violet-400" : "text-amber-600 dark:text-amber-400"}`} />
-                )}
                 {targetUser.plan}
               </span>
               {targetUser.role === "ADMIN" && (

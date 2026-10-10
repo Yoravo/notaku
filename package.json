@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "verify:i18n": "node scripts/verify-i18n-keys.cjs",
     "audit:jsx": "node scripts/audit-jsx-literals.cjs",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "test:e2e": "e2e run"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -29,11 +30,15 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@ai-sdk/openai-compatible": "^3.0.0",
+    "@e2e-dev/web": "^0.14.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/pg": "^8.20.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "ai": "^7.0.0",
+    "e2e": "^0.19.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "overrides": "^1.2.0",

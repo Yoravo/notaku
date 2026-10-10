@@ -131,12 +131,16 @@ export default async function AdminDashboardPage() {
   let currentMRR = 0;
 
   planCounts.forEach((p) => {
-    if (p.plan === "LITE") currentMRR += p._count.id * 19000;
-    else if (p.plan === "PRO") {
+    if (p.plan === "LITE") {
+      currentMRR += p._count.id * 19000;
+      proUsers += p._count.id;
+    } else if (p.plan === "PRO") {
       currentMRR += p._count.id * 49000;
       proUsers += p._count.id;
+    } else if (p.plan === "BUSINESS") {
+      currentMRR += p._count.id * 99000;
+      proUsers += p._count.id;
     }
-    else if (p.plan === "BUSINESS") currentMRR += p._count.id * 99000;
   });
 
   const totalEstimatedIncome = currentMRR;

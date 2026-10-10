@@ -73,12 +73,13 @@ export default async function AdminFinancePage() {
   let estimatedMRR = 0;
   let totalProUsers = 0;
   planCounts.forEach((p) => {
-    if (p.plan === "LITE") estimatedMRR += p._count.id * 19000;
-    else if (p.plan === "PRO") {
+    if (p.plan === "LITE") {
+      estimatedMRR += p._count.id * 19000;
+      totalProUsers += p._count.id;
+    } else if (p.plan === "PRO") {
       estimatedMRR += p._count.id * 49000;
       totalProUsers += p._count.id;
-    }
-    else if (p.plan === "BUSINESS") {
+    } else if (p.plan === "BUSINESS") {
       estimatedMRR += p._count.id * 99000;
       totalProUsers += p._count.id; // Count as paid
     }

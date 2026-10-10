@@ -1062,6 +1062,7 @@
     "tableSettled": "Paid Amount",
     "tableAction": "Action",
     "downloadCsvPeriod": "Download Period CSV",
+    "downloadCsvYear": "Download Annual Tax Summary",
     "annualTotal": "Annual Total"
   },
   "wallet": {
@@ -1350,10 +1351,10 @@
       "targetAudience": "Recipient Audience Target:",
       "allUsers": "All Users",
       "allUsersDesc": "All active registered users",
-      "proUsers": "PRO Only",
-      "proUsersDesc": "Active paying subscribers",
+      "proUsers": "Paid Members",
+      "proUsersDesc": "All active paid subscribers (LITE, PRO, BUSINESS)",
       "freeUsers": "Free Only",
-      "freeUsersDesc": "Potential PRO upgrades",
+      "freeUsersDesc": "Potential paid upgrades",
       "userCount": "{count} users",
       "respectOptIn": "Only send to users who have enabled announcement emails",
       "badgeCategory": "Badge Category:",
@@ -1601,7 +1602,15 @@
     "durationPermanent": "Permanent (Lifetime Access)",
     "noExpiration": "No Expiration",
     "savePlanChanges": "Save Plan Changes",
-    "activeUntil": "Active until {date}"
+    "activeUntil": "Active until {date}",
+    "planCurrentLabel": "Current Plan:",
+    "planNewLabel": "New Plan:",
+    "planValidityLabel": "Validity:",
+    "planProcessing": "Processing...",
+    "planDescFree": "Basic access (limited monthly quota, watermark included)",
+    "planDescLite": "Unlimited invoices & customers, no watermark",
+    "planDescPro": "Full customization: PDF templates, signature, stamp, recurring",
+    "planDescBusiness": "Complete features: custom domain, REST API, webhooks & bot alerts"
   },
   "upgradeModal": {
     "titlePrefix": "Upgrade to",

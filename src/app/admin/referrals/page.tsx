@@ -28,11 +28,11 @@ export default async function AdminReferralsPage() {
       prisma.user.count({
         where: { referredById: { not: null } },
       }),
-      // 3. Total referral yang berhasil convert ke PRO
+      // 3. Total referral yang berhasil convert ke paket berbayar (Rule #50)
       prisma.user.count({
         where: {
           referredById: { not: null },
-          plan: "PRO",
+          plan: { in: ["LITE", "PRO", "BUSINESS"] },
         },
       }),
       // 4. Top 10 Referrers

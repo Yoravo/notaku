@@ -1062,6 +1062,7 @@
     "tableSettled": "Realisasi Lunas",
     "tableAction": "Aksi",
     "downloadCsvPeriod": "Unduh CSV Masa Pajak Ini",
+    "downloadCsvYear": "Unduh Rekap Pajak Tahunan",
     "annualTotal": "Total Akumulasi Tahunan"
   },
   "wallet": {
@@ -1350,10 +1351,10 @@
       "targetAudience": "Target Audiens Penerima:",
       "allUsers": "Semua User",
       "allUsersDesc": "Seluruh pendaftar aktif",
-      "proUsers": "Khusus PRO",
-      "proUsersDesc": "Pelanggan berbayar aktif",
+      "proUsers": "Member Berbayar",
+      "proUsersDesc": "Semua pelanggan berbayar (LITE, PRO, BUSINESS)",
       "freeUsers": "Khusus Free",
-      "freeUsersDesc": "Potensial upgrade PRO",
+      "freeUsersDesc": "Potensial upgrade paket berbayar",
       "userCount": "{count} user",
       "respectOptIn": "Hanya kirim ke pengguna yang mengaktifkan opsi menerima email pengumuman",
       "badgeCategory": "Kategori Badge:",
@@ -1601,7 +1602,15 @@
     "durationPermanent": "Permanen (Akses Selamanya)",
     "noExpiration": "Tanpa Batas Waktu",
     "savePlanChanges": "Simpan Perubahan Paket",
-    "activeUntil": "Aktif hingga {date}"
+    "activeUntil": "Aktif hingga {date}",
+    "planCurrentLabel": "Paket Saat Ini:",
+    "planNewLabel": "Paket Baru:",
+    "planValidityLabel": "Masa Berlaku:",
+    "planProcessing": "Memproses...",
+    "planDescFree": "Akses dasar (kuota terbatas per bulan, ada watermark)",
+    "planDescLite": "Unlimited invoice & pelanggan, bebas watermark",
+    "planDescPro": "Kustomisasi penuh: template PDF, tanda tangan, stempel, recurring",
+    "planDescBusiness": "Fitur terlengkap: custom domain, REST API, webhooks & bot alert"
   },
   "upgradeModal": {
     "titlePrefix": "Upgrade ke",

@@ -238,13 +238,19 @@ export async function POST(request: Request) {
           ? existingSub.intervalDays
           : String(orderId).includes("ANNUALLY") ? 365 : 30;
 
-      const baseDate =
-        existingSub?.currentPeriodEnd && existingSub.currentPeriodEnd > new Date()
-          ? existingSub.currentPeriodEnd
-          : new Date();
+      // Jika user sudah memiliki paket berbayar PERMANEN, pembayaran ini tidak akan menghilangkan status permanennya.
+      const isPermanent = existingSub?.status === "ACTIVE" && existingSub?.currentPeriodEnd === null;
 
-      const newPeriodEnd = new Date(baseDate);
-      newPeriodEnd.setDate(newPeriodEnd.getDate() + daysToAdd);
+      let newPeriodEnd: Date | null = null;
+      if (!isPermanent) {
+        const baseDate =
+          existingSub?.currentPeriodEnd && existingSub.currentPeriodEnd > new Date()
+            ? existingSub.currentPeriodEnd
+            : new Date();
+
+        newPeriodEnd = new Date(baseDate);
+        newPeriodEnd.setDate(newPeriodEnd.getDate() + daysToAdd);
+      }
 
       const isFirstUpgrade = !existingSub?.upgradeEventAt;
       const now = new Date();
@@ -385,7 +391,7 @@ export async function POST(request: Request) {
         paymentId,
         amount,
         promoCode: usedPromoCode,
-        periodEnd: newPeriodEnd.toISOString(),
+        periodEnd: newPeriodEnd ? newPeriodEnd.toISOString() : null,
       });
 
       // Kirim alert langganan baru ke Discord Webhook admin (non-blocking)

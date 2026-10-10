@@ -30,27 +30,27 @@ interface PlanConfigModalProps {
 
 const PLAN_META: Record<
   AdminPlan,
-  { label: string; badgeClass: string; desc: string }
+  { label: string; badgeClass: string; descKey: string }
 > = {
   FREE: {
     label: "FREE",
     badgeClass: "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700",
-    desc: "Akses dasar (kuota terbatas per bulan, ada watermark)",
+    descKey: "planDescFree",
   },
   LITE: {
     label: "LITE",
     badgeClass: "bg-cyan-50 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 border-cyan-200/60 dark:border-cyan-800",
-    desc: "Unlimited invoice & pelanggan, bebas watermark",
+    descKey: "planDescLite",
   },
   PRO: {
     label: "PRO",
     badgeClass: "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200/60 dark:border-amber-800",
-    desc: "Kustomisasi penuh: template PDF, tanda tangan, stempel, recurring",
+    descKey: "planDescPro",
   },
   BUSINESS: {
     label: "BUSINESS",
     badgeClass: "bg-violet-50 dark:bg-violet-950/60 text-violet-800 dark:text-violet-300 border-violet-200/60 dark:border-violet-800",
-    desc: "Fitur terlengkap: custom domain, REST API, webhooks & bot alert",
+    descKey: "planDescBusiness",
   },
 };
 
@@ -178,7 +178,7 @@ export function PlanConfigModal({
                     )}
                   </div>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 leading-snug">
-                    {meta.desc}
+                    {tAdmin(meta.descKey as any)}
                   </p>
                 </button>
               );
@@ -203,7 +203,7 @@ export function PlanConfigModal({
                     onClick={() => setSelectedDuration(opt.id)}
                     className={`px-3 py-2 rounded-xl text-xs font-semibold border transition-all text-center cursor-pointer min-h-[44px] inline-flex items-center justify-center ${
                       isSelected
-                        ? "border-emerald-600 dark:border-emerald-500 bg-emerald-600 dark:bg-emerald-500 text-white font-bold shadow-xs"
+                        ? "border-[#0f6b4f] dark:border-emerald-500 bg-[#0f6b4f] dark:bg-emerald-700 text-white font-bold shadow-xs"
                         : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
                     }`}
                   >
@@ -222,20 +222,20 @@ export function PlanConfigModal({
         {/* Summary Info Box */}
         <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/50 p-3.5 space-y-2 text-xs">
           <div className="flex items-center justify-between">
-            <span className="text-slate-500 dark:text-slate-400">Paket Saat Ini:</span>
+            <span className="text-slate-500 dark:text-slate-400">{tAdmin("planCurrentLabel")}</span>
             <span className="font-bold text-slate-900 dark:text-white">
               {currentPlan}{" "}
               {currentExpiresAt ? `(s/d ${formatDateWIB(currentExpiresAt)})` : ""}
             </span>
           </div>
           <div className="flex items-center justify-between border-t border-slate-200/60 dark:border-slate-700/60 pt-2">
-            <span className="text-slate-500 dark:text-slate-400">Paket Baru:</span>
+            <span className="text-slate-500 dark:text-slate-400">{tAdmin("planNewLabel")}</span>
             <span className="font-extrabold text-emerald-700 dark:text-emerald-400">
               {selectedPlan}
             </span>
           </div>
           <div className="flex items-center justify-between border-t border-slate-200/60 dark:border-slate-700/60 pt-2">
-            <span className="text-slate-500 dark:text-slate-400">Masa Berlaku:</span>
+            <span className="text-slate-500 dark:text-slate-400">{tAdmin("planValidityLabel")}</span>
             <span className="font-semibold text-slate-900 dark:text-white">
               {isFree
                 ? tAdmin("noExpiration")
@@ -264,10 +264,10 @@ export function PlanConfigModal({
             type="button"
             onClick={() => onConfirm(selectedPlan, selectedDuration)}
             disabled={isLoading}
-            className="inline-flex items-center justify-center gap-1.5 px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-xs disabled:opacity-50 cursor-pointer min-h-[44px]"
+            className="inline-flex items-center justify-center gap-1.5 px-5 py-2 rounded-xl bg-[#0f6b4f] hover:bg-[#0c553e] text-white text-xs font-bold transition-all shadow-xs disabled:opacity-50 cursor-pointer min-h-[44px]"
           >
             {isLoading ? (
-              <span>Memproses...</span>
+              <span>{tAdmin("planProcessing")}</span>
             ) : (
               <span>{tAdmin("savePlanChanges")}</span>
             )}
