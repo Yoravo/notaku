@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRightIcon, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { EnvelopeIcon } from "@heroicons/react/24/outline";
+import { EnvelopeIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 import { APP_VERSION } from "@/lib/changelog";
 import { openChangelogModal } from "@/components/changelog-modal";
 

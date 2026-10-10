@@ -1,6 +1,6 @@
-import { ArrowRightIcon, getActiveAnnouncement } from "@/actions/admin";
+import { getActiveAnnouncement } from "@/actions/admin";
 import Link from "next/link";
-import { MegaphoneIcon, SparklesIcon } from "@heroicons/react/24/outline";
+import { MegaphoneIcon, SparklesIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 
 export async function LandingAnnouncementBanner() {
   const announcement = await getActiveAnnouncement("LANDING");
