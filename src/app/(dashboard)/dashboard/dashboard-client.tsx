@@ -9,9 +9,11 @@ import {
   ClockIcon,
   CheckBadgeIcon,
   DocumentTextIcon,
-  SparklesIcon,
   UserPlusIcon,
   ScaleIcon,
+  ArrowRightIcon,
+  MinusIcon,
+  EqualsIcon,
 } from "@heroicons/react/24/outline";
 import { RecentInvoices } from "@/components/recent-invoices";
 import { SerializedInvoice } from "@/types/invoice";
@@ -149,9 +151,6 @@ export function DashboardClient({
                   : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
               }`}
             >
-              {(userPlan === "BUSINESS" || userPlan === "PRO") && (
-                <SparklesIcon className="w-3.5 h-3.5" />
-              )}
               {userPlan === "BUSINESS"
                 ? tDash("planBadgeBiz")
                 : userPlan === "PRO"
@@ -210,7 +209,7 @@ export function DashboardClient({
         <div
           role="group"
           tabIndex={0}
-          className="min-w-0 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-2xs transition-colors hover:border-emerald-400 focus-visible:border-emerald-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 motion-reduce:transition-none dark:hover:border-emerald-500 dark:focus-visible:border-emerald-400 dark:focus-visible:outline-emerald-400"
+          className="min-w-0 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-5 shadow-sm ring-1 ring-slate-900/5 dark:ring-slate-100/5 transition-colors hover:border-emerald-400 focus-visible:border-emerald-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 motion-reduce:transition-none dark:hover:border-emerald-500 dark:focus-visible:border-emerald-400 dark:focus-visible:outline-emerald-400"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
@@ -225,7 +224,7 @@ export function DashboardClient({
               {formatMoney(totalVolume, "IDR", locale)}
             </p>
             <p className="mt-1 text-xs text-slate-400 dark:text-slate-500 font-medium">
-              {invoiceCount} invoice • {periodLabel}
+              {invoiceCount} invoice <span className="inline-block w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600 mx-1.5 align-middle" /> {periodLabel}
             </p>
           </div>
         </div>
@@ -234,7 +233,7 @@ export function DashboardClient({
         <div
           role="group"
           tabIndex={0}
-          className="min-w-0 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-2xs transition-colors hover:border-emerald-400 focus-visible:border-emerald-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 motion-reduce:transition-none dark:hover:border-emerald-500 dark:focus-visible:border-emerald-400 dark:focus-visible:outline-emerald-400"
+          className="min-w-0 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-5 shadow-sm ring-1 ring-slate-900/5 dark:ring-slate-100/5 transition-colors hover:border-emerald-400 focus-visible:border-emerald-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 motion-reduce:transition-none dark:hover:border-emerald-500 dark:focus-visible:border-emerald-400 dark:focus-visible:outline-emerald-400"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
@@ -258,7 +257,7 @@ export function DashboardClient({
         <div
           role="group"
           tabIndex={0}
-          className="min-w-0 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-2xs transition-colors hover:border-emerald-400 focus-visible:border-emerald-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 motion-reduce:transition-none dark:hover:border-emerald-500 dark:focus-visible:border-emerald-400 dark:focus-visible:outline-emerald-400"
+          className="min-w-0 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-5 shadow-sm ring-1 ring-slate-900/5 dark:ring-slate-100/5 transition-colors hover:border-emerald-400 focus-visible:border-emerald-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 motion-reduce:transition-none dark:hover:border-emerald-500 dark:focus-visible:border-emerald-400 dark:focus-visible:outline-emerald-400"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
@@ -282,7 +281,7 @@ export function DashboardClient({
         <div
           role="group"
           tabIndex={0}
-          className="min-w-0 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-2xs transition-colors hover:border-emerald-400 focus-visible:border-emerald-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 motion-reduce:transition-none dark:hover:border-emerald-500 dark:focus-visible:border-emerald-400 dark:focus-visible:outline-emerald-400"
+          className="min-w-0 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-5 shadow-sm ring-1 ring-slate-900/5 dark:ring-slate-100/5 transition-colors hover:border-emerald-400 focus-visible:border-emerald-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 motion-reduce:transition-none dark:hover:border-emerald-500 dark:focus-visible:border-emerald-400 dark:focus-visible:outline-emerald-400"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
@@ -309,7 +308,7 @@ export function DashboardClient({
       </div>
 
       {/* Profit & Loss Summary (Laba Bersih) */}
-      <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xs">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-5 sm:p-6 shadow-sm ring-1 ring-slate-900/5 dark:ring-slate-100/5">
         <div className="flex items-center justify-between mb-4 border-b border-slate-100 dark:border-slate-800 pb-3">
           <h2 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <ScaleIcon className="w-4 h-4 text-slate-500 dark:text-slate-400" />
@@ -318,51 +317,58 @@ export function DashboardClient({
           <Link
             href="/expenses"
             prefetch={true}
-            className="text-[11px] font-bold text-[#0f6b4f] dark:text-emerald-400 hover:underline"
+            className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 dark:text-emerald-400 hover:underline"
           >
             {tDash("manageExpenses")}
+            <ArrowRightIcon className="w-3 h-3" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-stretch">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-stretch relative">
           {/* Pendapatan Lunas */}
-          <div className="rounded-xl bg-emerald-50/50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900 p-4">
-            <p className="text-[11px] font-bold text-[#0f6b4f] dark:text-emerald-400 uppercase tracking-wider">
+          <div className="rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 relative">
+            <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               {tDash("plRevenue")}
             </p>
-            <p className="text-lg sm:text-xl font-extrabold text-[#0f6b4f] dark:text-emerald-400 mt-1 tabular-nums">
+            <p className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white mt-1 tabular-nums">
               {formatMoney(paidRevenue, "IDR", locale)}
             </p>
+            <div className="hidden sm:flex absolute -right-3.5 top-1/2 -translate-y-1/2 z-10 w-6 h-6 items-center justify-center rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-400">
+              <MinusIcon className="w-3 h-3" />
+            </div>
           </div>
 
           {/* Total Pengeluaran */}
-          <div className="rounded-xl bg-rose-50/50 dark:bg-rose-950/30 border border-rose-100 dark:border-rose-900 p-4">
-            <p className="text-[11px] font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider">
+          <div className="rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 relative">
+            <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               {tDash("plExpenses")}
             </p>
-            <p className="text-lg sm:text-xl font-extrabold text-rose-600 dark:text-rose-400 mt-1 tabular-nums">
-              &minus; {formatMoney(totalExpenses, "IDR", locale)}
+            <p className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white mt-1 tabular-nums">
+              {formatMoney(totalExpenses, "IDR", locale)}
             </p>
+            <div className="hidden sm:flex absolute -right-3.5 top-1/2 -translate-y-1/2 z-10 w-6 h-6 items-center justify-center rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-400">
+              <EqualsIcon className="w-3 h-3" />
+            </div>
           </div>
 
           {/* Laba Bersih */}
           <div
             className={`rounded-xl p-4 border ${
               netProfit >= 0
-                ? "bg-slate-900 dark:bg-slate-800/90 border-slate-900 dark:border-slate-700 shadow-2xs"
-                : "bg-rose-600 dark:bg-rose-950/60 border-rose-600 dark:border-rose-800"
+                ? "bg-emerald-500/10 border-emerald-500/20"
+                : "bg-rose-500/10 border-rose-500/20"
             }`}
           >
             <p
               className={`text-[11px] font-bold uppercase tracking-wider ${
-                netProfit >= 0 ? "text-slate-300 dark:text-slate-400" : "text-rose-100 dark:text-rose-300"
+                netProfit >= 0 ? "text-emerald-700 dark:text-emerald-400" : "text-rose-700 dark:text-rose-400"
               }`}
             >
               {tDash("plNetProfit")}
             </p>
             <p
               className={`text-lg sm:text-xl font-extrabold mt-1 tabular-nums ${
-                netProfit >= 0 ? "text-white dark:text-emerald-400" : "text-white dark:text-rose-300"
+                netProfit >= 0 ? "text-emerald-700 dark:text-emerald-400" : "text-rose-700 dark:text-rose-400"
               }`}
             >
               {formatMoney(netProfit, "IDR", locale)}

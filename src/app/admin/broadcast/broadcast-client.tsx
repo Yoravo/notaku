@@ -7,6 +7,8 @@ import {
   CheckCircleIcon,
   ExclamationCircleIcon,
   InboxStackIcon,
+  ArrowRightIcon,
+  CheckIcon,
 } from "@heroicons/react/24/outline";
 import {
   BroadcastAudience,
@@ -328,8 +330,8 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
                 </div>
                 {ctaUrl && (
                   <div className="text-center pt-3">
-                    <span className="inline-block px-6 py-2.5 rounded-xl bg-[#0f6b4f] text-white text-xs font-bold shadow-xs">
-                      {ctaText || t("defaultCta")} →
+                    <span className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-bold shadow-sm">
+                      {ctaText || t("defaultCta")} <ArrowRightIcon aria-hidden="true" className="w-3.5 h-3.5" />
                     </span>
                   </div>
                 )}
@@ -378,7 +380,7 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
                       {t("targetLabel")} <strong className="text-slate-700 dark:text-slate-300">{log.audience}</strong>
                     </span>
                     <span className="text-emerald-600 dark:text-emerald-400 font-medium">
-                      ✓ {log.recipientsCount}
+                      <CheckIcon aria-hidden="true" className="w-3 h-3 text-emerald-500" /> {log.recipientsCount}
                     </span>
                   </div>
                 </div>

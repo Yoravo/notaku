@@ -6,7 +6,7 @@ import {
   EyeIcon,
   ArrowTrendingUpIcon,
   GlobeAltIcon,
-  SparklesIcon,
+  ClipboardDocumentListIcon,
   ChartBarSquareIcon,
   ServerStackIcon,
 } from "@heroicons/react/24/outline";
@@ -83,8 +83,8 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
               {tAdmin("subtitle")}
             </p>
           </div>
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800 text-[#0f6b4f] dark:text-emerald-400 text-xs font-bold self-start sm:self-auto shadow-2xs">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 text-xs font-semibold self-start sm:self-auto">
+            <span aria-hidden="true" className="w-2 h-2 rounded-full bg-emerald-500" />
             <span>{tAdmin("liveTracking")}</span>
           </div>
         </div>
@@ -97,30 +97,30 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
           <span>{tAdmin("sectionRevenue")}</span>
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Total Income */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-2xs hover:border-emerald-300 dark:hover:border-emerald-500 transition-all">
-            <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-              {tAdmin("totalIncome")}
-            </p>
-            <p className="text-2xl sm:text-3xl font-extrabold text-[#0f6b4f] dark:text-emerald-400 mt-2 tabular-nums">
-              {formatCurrency(data.totalEstimatedIncome)}
-            </p>
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 font-medium mt-1">
-              {tAdmin("proTransactionsCount", { count: data.settlementLogsCount || data.proUsers })}
-            </p>
-          </div>
-
-          {/* Monthly Recurring Revenue */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-2xs hover:border-blue-300 dark:hover:border-blue-500 transition-all">
-            <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-              {tAdmin("mrr")}
-            </p>
-            <p className="text-2xl sm:text-3xl font-extrabold text-blue-600 dark:text-blue-400 mt-2 tabular-nums">
-              {formatCurrency(data.currentMRR)}
-            </p>
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 font-medium mt-1">
-              {tAdmin("activeProUsersPrice", { count: data.proUsers })}
-            </p>
+          {/* Focal: Total Income + MRR */}
+          <div className="sm:col-span-2 rounded-2xl bg-[#0f6b4f] dark:bg-emerald-950 border border-[#0f6b4f] dark:border-emerald-900 p-5 sm:p-6 text-white grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div className="min-w-0">
+              <p className="text-xs font-semibold text-emerald-100 dark:text-emerald-300">
+                {tAdmin("totalIncome")}
+              </p>
+              <p className="text-3xl sm:text-4xl font-extrabold mt-2 tabular-nums truncate">
+                {formatCurrency(data.totalEstimatedIncome)}
+              </p>
+              <p className="text-xs text-emerald-100/90 dark:text-emerald-300/90 mt-1">
+                {tAdmin("proTransactionsCount", { count: data.settlementLogsCount || data.proUsers })}
+              </p>
+            </div>
+            <div className="min-w-0 sm:border-l sm:border-white/20 sm:pl-5 border-t border-white/20 pt-4 sm:border-t-0 sm:pt-0">
+              <p className="text-xs font-semibold text-emerald-100 dark:text-emerald-300">
+                {tAdmin("mrr")}
+              </p>
+              <p className="text-2xl sm:text-3xl font-extrabold mt-2 tabular-nums truncate">
+                {formatCurrency(data.currentMRR)}
+              </p>
+              <p className="text-xs text-emerald-100/90 dark:text-emerald-300/90 mt-1">
+                {tAdmin("activeProUsersPrice", { count: data.proUsers })}
+              </p>
+            </div>
           </div>
 
           {/* Pro Conversion Rate */}
@@ -368,7 +368,7 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
         {/* Live Audit & System Logs */}
         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-2xs">
           <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-            <SparklesIcon className="w-4 h-4 text-[#0f6b4f] dark:text-emerald-400" />
+            <ClipboardDocumentListIcon aria-hidden="true" className="w-4 h-4 text-slate-500 dark:text-slate-400" />
             <span>{tAdmin("recentActivityTitle")}</span>
           </h3>
           <div className="space-y-2.5">
@@ -407,37 +407,28 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
 
       {/* SECTION 4: DATABASE & STORAGE HEALTH CHECK */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-2xs">
-        <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-          <ServerStackIcon className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+        <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+          <ServerStackIcon aria-hidden="true" className="w-4 h-4 text-slate-500 dark:text-slate-400" />
           <span>{tAdmin("dbHealthTitle")}</span>
         </h3>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-          <div className="bg-slate-50/80 dark:bg-slate-800/60 rounded-xl p-3.5 border border-slate-200/60 dark:border-slate-700 shadow-2xs">
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">{tAdmin("tableUsersLabel")}</p>
-            <p className="text-lg font-extrabold text-slate-900 dark:text-white mt-1 font-mono">{data.totalUsers.toLocaleString("id-ID")}</p>
-          </div>
-          <div className="bg-slate-50/80 dark:bg-slate-800/60 rounded-xl p-3.5 border border-slate-200/60 dark:border-slate-700 shadow-2xs">
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">{tAdmin("tableInvoicesLabel")}</p>
-            <p className="text-lg font-extrabold text-slate-900 dark:text-white mt-1 font-mono">{data.totalInvoices.toLocaleString("id-ID")}</p>
-          </div>
-          <div className="bg-slate-50/80 dark:bg-slate-800/60 rounded-xl p-3.5 border border-slate-200/60 dark:border-slate-700 shadow-2xs">
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">{tAdmin("tableInvoiceItemsLabel")}</p>
-            <p className="text-lg font-extrabold text-slate-900 dark:text-white mt-1 font-mono">{data.totalInvoiceItems.toLocaleString("id-ID")}</p>
-          </div>
-          <div className="bg-slate-50/80 dark:bg-slate-800/60 rounded-xl p-3.5 border border-slate-200/60 dark:border-slate-700 shadow-2xs">
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">{tAdmin("tableCustomersLabel")}</p>
-            <p className="text-lg font-extrabold text-slate-900 dark:text-white mt-1 font-mono">{data.totalCustomers.toLocaleString("id-ID")}</p>
-          </div>
-          <div className="bg-slate-50/80 dark:bg-slate-800/60 rounded-xl p-3.5 border border-slate-200/60 dark:border-slate-700 shadow-2xs">
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">{tAdmin("tableAuditLogsLabel")}</p>
-            <p className="text-lg font-extrabold text-slate-900 dark:text-white mt-1 font-mono">{data.totalAuditLogs.toLocaleString("id-ID")}</p>
-          </div>
-          <div className="bg-slate-50/80 dark:bg-slate-800/60 rounded-xl p-3.5 border border-slate-200/60 dark:border-slate-700 shadow-2xs">
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">{tAdmin("tableTrafficRecordsLabel")}</p>
-            <p className="text-lg font-extrabold text-slate-900 dark:text-white mt-1 font-mono">{data.totalViews.toLocaleString("id-ID")}</p>
-          </div>
-        </div>
+        <dl className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 divide-slate-100 dark:divide-slate-800 lg:divide-x">
+          {[
+            [tAdmin("tableUsersLabel"), data.totalUsers],
+            [tAdmin("tableInvoicesLabel"), data.totalInvoices],
+            [tAdmin("tableInvoiceItemsLabel"), data.totalInvoiceItems],
+            [tAdmin("tableCustomersLabel"), data.totalCustomers],
+            [tAdmin("tableAuditLogsLabel"), data.totalAuditLogs],
+            [tAdmin("tableTrafficRecordsLabel"), data.totalViews],
+          ].map(([label, value]) => (
+            <div key={label as string} className="py-2.5 lg:px-4 lg:first:pl-0">
+              <dt className="text-xs text-slate-500 dark:text-slate-400 font-medium">{label}</dt>
+              <dd className="text-lg font-bold text-slate-900 dark:text-white mt-0.5 tabular-nums">
+                {(value as number).toLocaleString("id-ID")}
+              </dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </div>
   );

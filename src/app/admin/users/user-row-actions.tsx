@@ -7,6 +7,7 @@ import {
   ShieldCheckIcon,
   ShieldExclamationIcon,
   ArrowPathIcon,
+  ArrowRightIcon,
 } from "@heroicons/react/24/outline";
 import { ConfirmDialog, ConfirmVariant } from "@/components/ui/confirm-dialog";
 import { useTranslations } from "next-intl";
@@ -29,7 +30,7 @@ type DialogState = {
   variant: ConfirmVariant;
   newPlan?: "FREE" | "LITE" | "PRO" | "BUSINESS";
   newRole?: "USER" | "ADMIN";
-  itemDetails: { label: string; value: string }[];
+  itemDetails: { label: string; value: React.ReactNode }[];
 };
 
 export function UserRowActions({
@@ -76,7 +77,16 @@ export function UserRowActions({
       itemDetails: [
         { label: "User", value: userName || "-" },
         { label: "Email", value: userEmail },
-        { label: "Plan", value: `${currentPlan} → ${nextPlan}` },
+        {
+          label: "Plan",
+          value: (
+            <span className="inline-flex items-center gap-1">
+              {currentPlan}
+              <ArrowRightIcon aria-label="ke" className="h-3 w-3 text-slate-400" />
+              {nextPlan}
+            </span>
+          ),
+        },
       ],
     });
   };
@@ -105,7 +115,16 @@ export function UserRowActions({
       itemDetails: [
         { label: "User", value: userName || "-" },
         { label: "Email", value: userEmail },
-        { label: "Role", value: `${currentRole} → ${nextRole}` },
+        {
+          label: "Role",
+          value: (
+            <span className="inline-flex items-center gap-1">
+              {currentRole}
+              <ArrowRightIcon aria-label="ke" className="h-3 w-3 text-slate-400" />
+              {nextRole}
+            </span>
+          ),
+        },
       ],
     });
   };

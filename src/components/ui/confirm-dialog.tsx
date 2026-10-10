@@ -30,7 +30,7 @@ interface ConfirmDialogProps {
   cancelLabel?: string;
   variant?: ConfirmVariant;
   isLoading?: boolean;
-  itemDetails?: { label: string; value: string }[];
+  itemDetails?: { label: string; value: React.ReactNode }[];
   children?: React.ReactNode;
 }
 

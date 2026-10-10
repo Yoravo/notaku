@@ -598,7 +598,16 @@ export function HomeClient({ session, announcementBanner }: HomeClientProps) {
                   title="Klik untuk simulasi kirim nota WhatsApp"
                 >
                   <ChatBubbleLeftRightIcon className="w-4 h-4 text-emerald group-hover/wa:rotate-12 transition-transform duration-200" />
-                  <span>{showCopied ? "Link Nota Terkirim! ✓" : tMockup("floatCard")}</span>
+                  <span className="flex items-center justify-center gap-1.5">
+                    {showCopied ? (
+                      <>
+                        <CheckIcon aria-hidden="true" className="w-4 h-4 text-emerald-500 dark:text-emerald-400" /> 
+                        Link Nota Terkirim!
+                      </>
+                    ) : (
+                      tMockup("floatCard")
+                    )}
+                  </span>
                 </button>
               </div>
             </div>

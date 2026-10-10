@@ -399,7 +399,7 @@ export function DeveloperSettingsForm({
                         year: "numeric",
                       })}
                     </span>
-                    <span>•</span>
+                    <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600 inline-block align-middle" />
                     <span>
                       {key.lastUsedAt
                         ? `${tDev("keyLastUsedCol")} ${new Date(key.lastUsedAt).toLocaleDateString(undefined, {
@@ -561,7 +561,7 @@ export function DeveloperSettingsForm({
                       </span>
                       {wh.description && (
                         <span className="text-xs text-slate-500 dark:text-slate-400 font-sans">
-                          • {wh.description}
+                          <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600 inline-block align-middle mr-1.5" /> {wh.description}
                         </span>
                       )}
                     </div>

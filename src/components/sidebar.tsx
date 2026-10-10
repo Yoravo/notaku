@@ -14,7 +14,8 @@ import {
   ShieldCheckIcon,
   XMarkIcon,
   BanknotesIcon,
-  SparklesIcon,
+  CreditCardIcon,
+  NewspaperIcon,
   ArrowRightStartOnRectangleIcon,
   ArrowPathIcon,
   DocumentChartBarIcon,
@@ -112,7 +113,7 @@ export function Sidebar({
     {
       href: "/billing",
       label: tDash("billing"),
-      icon: SparklesIcon,
+      icon: CreditCardIcon,
     },
     {
       href: "/settings",
@@ -148,7 +149,7 @@ export function Sidebar({
         {onClose && (
           <button
             onClick={onClose}
-            className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            className="md:hidden inline-flex items-center justify-center min-h-[44px] min-w-[44px] p-2 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
             aria-label="Tutup Menu"
           >
             <XMarkIcon className="w-6 h-6" />
@@ -226,7 +227,7 @@ export function Sidebar({
         {/* Admin Navigation (Role: ADMIN only) */}
         {user.role === "ADMIN" && (
           <div className="space-y-1 border-t border-slate-200/80 dark:border-slate-800 pt-4">
-            <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400 mb-2 whitespace-nowrap">
+            <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 whitespace-nowrap">
               Admin & Analytics
             </p>
             <Link
@@ -235,14 +236,14 @@ export function Sidebar({
               onClick={onClose}
               className={`flex items-center gap-3 rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
                 pathname.startsWith("/admin")
-                  ? "bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 font-bold shadow-2xs"
-                  : "text-slate-600 dark:text-slate-300 hover:bg-purple-50/50 dark:hover:bg-purple-950/30 hover:text-purple-700 dark:hover:text-purple-300"
+                  ? "bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold"
+                  : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
               }`}
             >
               <ShieldCheckIcon
                 className={`h-5 w-5 shrink-0 ${
                   pathname.startsWith("/admin")
-                    ? "text-purple-600 dark:text-purple-400"
+                    ? "text-white dark:text-slate-900"
                     : "text-slate-400 dark:text-slate-500"
                 }`}
               />
@@ -265,7 +266,7 @@ export function Sidebar({
             className="flex-1 flex items-center justify-center gap-1.5 rounded-lg py-1.5 text-[10px] font-semibold text-slate-400 dark:text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors whitespace-nowrap cursor-pointer"
             title="Lihat catatan rilis"
           >
-            <SparklesIcon className="w-3 h-3" />
+            <NewspaperIcon aria-hidden="true" className="w-3 h-3" />
             <span>v{APP_VERSION}</span>
           </button>
 
@@ -312,11 +313,11 @@ export function Sidebar({
 
           <button
             onClick={handleSignOut}
-            className="p-1.5 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg transition-colors cursor-pointer shrink-0"
+            className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[36px] p-2 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg transition-colors cursor-pointer shrink-0"
             title={tDash("logout")}
             aria-label={tDash("logout")}
           >
-            <ArrowRightStartOnRectangleIcon className="w-4 h-4" />
+            <ArrowRightStartOnRectangleIcon className="w-5 h-5" />
           </button>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MegaphoneIcon } from "@heroicons/react/24/outline";
+import { MegaphoneIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 
 export interface AnnouncementData {
   message: string;
@@ -19,9 +19,9 @@ export function AnnouncementBanner({
   }
 
   const colorStyles = {
-    info: "bg-blue-50 border-blue-200 text-blue-900",
-    warning: "bg-amber-50 border-amber-200 text-amber-900",
-    success: "bg-emerald-50 border-emerald-200 text-emerald-900",
+    info: "bg-sky-50 border-sky-200 text-sky-900 dark:bg-sky-950/50 dark:border-sky-900 dark:text-sky-200",
+    warning: "bg-amber-50 border-amber-200 text-amber-900 dark:bg-amber-950/50 dark:border-amber-900 dark:text-amber-200",
+    success: "bg-emerald-50 border-emerald-200 text-emerald-900 dark:bg-emerald-950/50 dark:border-emerald-900 dark:text-emerald-200",
   }[announcement.type];
 
   return (
@@ -42,16 +42,18 @@ export function AnnouncementBanner({
               href={announcement.linkUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs font-bold underline hover:opacity-80 transition-opacity"
+              className="inline-flex min-h-11 items-center gap-1 text-xs font-bold underline underline-offset-2 hover:opacity-80 transition-opacity"
             >
-              {announcement.linkText} →
+              {announcement.linkText}
+              <ArrowRightIcon aria-hidden="true" className="h-3.5 w-3.5" />
             </a>
           ) : (
             <Link
               href={announcement.linkUrl}
-              className="text-xs font-bold underline hover:opacity-80 transition-opacity"
+              className="inline-flex min-h-11 items-center gap-1 text-xs font-bold underline underline-offset-2 hover:opacity-80 transition-opacity"
             >
-              {announcement.linkText} →
+              {announcement.linkText}
+              <ArrowRightIcon aria-hidden="true" className="h-3.5 w-3.5" />
             </Link>
           )}
         </div>

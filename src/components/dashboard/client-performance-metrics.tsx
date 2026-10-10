@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
+import { ArrowRightIcon,
   ClockIcon,
   CheckCircleIcon,
   UsersIcon,
@@ -169,9 +169,10 @@ export function ClientPerformanceMetrics({
             <Link
               href="/customers"
               prefetch={true}
-              className="text-xs font-semibold text-[#0f6b4f] dark:text-emerald-400 hover:text-[#0c553e] dark:hover:text-emerald-300 transition-colors"
+              className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 transition-colors"
             >
               {tPerf("viewAllClients")}
+              <ArrowRightIcon className="w-3 h-3" />
             </Link>
           </div>
 

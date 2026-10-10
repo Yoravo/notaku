@@ -17,6 +17,7 @@ import {
   UsersIcon,
   ClockIcon,
   CheckBadgeIcon,
+  ArrowTopRightOnSquareIcon,
 } from "@heroicons/react/24/outline";
 import { UserRowActions } from "../user-row-actions";
 import { getTranslations } from "next-intl/server";
@@ -335,9 +336,10 @@ export default async function AdminUserDetailPage(props: {
                           href={`/i/${inv.publicId}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs text-[#0f6b4f] dark:text-emerald-400 hover:underline font-bold"
+                          className="inline-flex items-center gap-1 text-xs text-emerald-700 dark:text-emerald-400 hover:underline font-bold"
                         >
                           {tAdmin("viewPublic")}
+                          <ArrowTopRightOnSquareIcon className="w-3 h-3 text-slate-400" />
                         </a>
                       </td>
                     </tr>
