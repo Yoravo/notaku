@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { ArrowRightIcon, usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { EnvelopeIcon } from "@heroicons/react/24/outline";
 import { APP_VERSION } from "@/lib/changelog";
@@ -164,7 +164,7 @@ export function LandingFooter() {
                 prefetch={true}
                 className="inline-flex items-center min-h-[44px] py-2 text-xs sm:text-sm font-bold text-ink hover:text-emerald transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald rounded-lg"
               >
-                {tNav("login")} &rarr;
+                {tNav("login")} <ArrowRightIcon className="w-4 h-4" />
               </Link>
             </div>
           </div>

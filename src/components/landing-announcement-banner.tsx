@@ -1,4 +1,4 @@
-import { getActiveAnnouncement } from "@/actions/admin";
+import { ArrowRightIcon, getActiveAnnouncement } from "@/actions/admin";
 import Link from "next/link";
 import { MegaphoneIcon, SparklesIcon } from "@heroicons/react/24/outline";
 
@@ -39,7 +39,7 @@ export async function LandingAnnouncementBanner() {
                 className="inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-[11px] font-bold text-white hover:bg-white/30 transition-colors"
               >
                 <span>{announcement.linkText}</span>
-                <span>→</span>
+                <ArrowRightIcon className="w-3.5 h-3.5" />
               </a>
             ) : (
               <Link
@@ -47,7 +47,7 @@ export async function LandingAnnouncementBanner() {
                 className="inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-[11px] font-bold text-white hover:bg-white/30 transition-colors"
               >
                 <span>{announcement.linkText}</span>
-                <span>→</span>
+                <ArrowRightIcon className="w-3.5 h-3.5" />
               </Link>
             )}
           </div>
