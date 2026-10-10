@@ -10,6 +10,7 @@ import {
   GlobeAltIcon,
   ComputerDesktopIcon,
   SparklesIcon,
+  ArrowRightIcon,
 } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
 
@@ -105,7 +106,7 @@ export function AnnouncementForm({ initialData }: AnnouncementFormProps) {
             </div>
             {linkText && linkUrl && (
               <span className="text-xs font-bold underline shrink-0 cursor-pointer self-start sm:self-auto min-h-[44px] sm:min-h-[32px] inline-flex items-center">
-                {linkText} &rarr;
+                <span>{linkText}</span> <ArrowRightIcon className="w-3.5 h-3.5" />
               </span>
             )}
           </div>

@@ -121,7 +121,7 @@ export function EmailShareModal({
                     {tInv("emailModalTitle")}
                   </h3>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                    {invoiceNumber} • {customerName}
+                    {invoiceNumber} <span className="inline-block w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600 mx-1.5 align-middle" /> {customerName}
                   </p>
                 </div>
               </div>

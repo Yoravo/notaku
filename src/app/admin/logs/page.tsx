@@ -13,6 +13,8 @@ import {
   ExclamationTriangleIcon,
   BanknotesIcon,
   SparklesIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
 } from "@heroicons/react/24/outline";
 import { getTranslations } from "next-intl/server";
 
@@ -294,13 +296,14 @@ export default async function AdminLogsPage(props: {
                 searchQuery ? `&q=${encodeURIComponent(searchQuery)}` : ""
               }${eventFilter ? `&event=${encodeURIComponent(eventFilter)}` : ""}`}
               prefetch={true}
-              className={`px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold transition-colors shadow-2xs min-h-[44px] sm:min-h-[38px] flex items-center ${
+              className={`px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold transition-colors shadow-2xs min-h-[44px] sm:min-h-[38px] flex items-center gap-1.5 ${
                 currentPage <= 1
                   ? "pointer-events-none opacity-40 bg-slate-50 dark:bg-slate-800 text-slate-400"
                   : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"
               }`}
             >
-              &larr; {tLogs("prevPage")}
+              <ArrowLeftIcon className="w-3.5 h-3.5" />
+              <span>{tLogs("prevPage")}</span>
             </Link>
 
             <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
@@ -312,13 +315,14 @@ export default async function AdminLogsPage(props: {
                 searchQuery ? `&q=${encodeURIComponent(searchQuery)}` : ""
               }${eventFilter ? `&event=${encodeURIComponent(eventFilter)}` : ""}`}
               prefetch={true}
-              className={`px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold transition-colors shadow-2xs min-h-[44px] sm:min-h-[38px] flex items-center ${
+              className={`px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold transition-colors shadow-2xs min-h-[44px] sm:min-h-[38px] flex items-center gap-1.5 ${
                 currentPage >= totalPages
                   ? "pointer-events-none opacity-40 bg-slate-50 dark:bg-slate-800 text-slate-400"
                   : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"
               }`}
             >
-              {tLogs("nextPage")} &rarr;
+              <span>{tLogs("nextPage")}</span>
+              <ArrowRightIcon className="w-3.5 h-3.5" />
             </Link>
           </div>
         )}

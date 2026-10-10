@@ -79,7 +79,7 @@ export function ReferralsClient({
       </div>
 
       {/* Referral Link & Code Box (High-converting hero card) */}
-      <div className="bg-gradient-to-br from-emerald-900 via-[#0f6b4f] to-emerald-950 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-emerald-950/20 relative overflow-hidden">
+      <div className="bg-[#0f6b4f] dark:bg-emerald-950 rounded-3xl p-6 sm:p-8 text-white border border-[#0f6b4f] dark:border-emerald-900 relative overflow-hidden">
         {/* Subtle decorative elements */}
         <div className="absolute -right-12 -top-12 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute right-8 bottom-4 opacity-10 hidden sm:block">
