@@ -2,6 +2,7 @@ import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { sanitizeCsvCell } from "@/lib/csv";
+import { formatDateTimeWIB } from "@/lib/invoice-utils";
 
 export async function GET() {
   try {
@@ -12,10 +13,10 @@ export async function GET() {
       take: 2000,
     });
 
-    const headers = ["ID", "Waktu (ISO)", "Event", "User ID", "IP Address", "Detail Payload"];
+    const headers = ["ID", "Waktu (WIB)", "Event", "User ID", "IP Address", "Detail Payload"];
     const rows = logs.map((log) => [
       sanitizeCsvCell(log.id),
-      sanitizeCsvCell(log.createdAt.toISOString()),
+      sanitizeCsvCell(formatDateTimeWIB(log.createdAt)),
       sanitizeCsvCell(log.event),
       sanitizeCsvCell(log.userId || ""),
       sanitizeCsvCell(log.ipAddress || ""),

@@ -12,7 +12,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { TrafficBarChart } from "./traffic-chart";
 import { formatCurrency } from "@/lib/pdf/format";
-import { formatDateWIB } from "@/lib/invoice-utils";
+import { formatDateWIB, formatDateTimeWIB } from "@/lib/invoice-utils";
 import { useTranslations } from "next-intl";
 
 export interface AdminOverviewData {
@@ -393,12 +393,7 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
                     </p>
                   </div>
                   <span className="text-slate-400 dark:text-slate-500 shrink-0 text-[10px] font-mono">
-                    {formatDateWIB(log.createdAt, {
-                      day: "numeric",
-                      month: "short",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                    {formatDateTimeWIB(log.createdAt, { withSeconds: false })}
                   </span>
                 </div>
               ))

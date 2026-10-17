@@ -15,7 +15,6 @@ import {
   BuildingLibraryIcon,
   ShieldCheckIcon,
   DocumentTextIcon,
-  SparklesIcon,
   GlobeAltIcon,
   CodeBracketIcon,
   BellAlertIcon,
@@ -24,6 +23,8 @@ import { useTranslations } from "next-intl";
 import type { CustomDomainData } from "@/actions/domains";
 import type { ApiKeyData, WebhookEndpointData } from "@/actions/developer";
 import type { BotNotificationSettings } from "@/actions/notifications";
+
+export type SettingsTab = "profile" | "bank" | "template" | "domain" | "developer" | "notifications" | "security";
 
 type UserData = {
   id: string;
@@ -53,7 +54,7 @@ export function SettingsTabsClient({
   botNotificationData,
   initialTab = "profile",
 }: {
-  initialTab?: "profile" | "bank";
+  initialTab?: SettingsTab;
   user: UserData;
   domainData: CustomDomainData;
   developerData: {
@@ -65,21 +66,46 @@ export function SettingsTabsClient({
 }) {
   const tSet = useTranslations("settings");
   const tTmpl = useTranslations("templates");
-  const [activeTab, setActiveTab] = useState<
-    "profile" | "bank" | "template" | "domain" | "developer" | "notifications" | "security"
-  >(initialTab);
+  const [activeTab, setActiveTab] = useState<SettingsTab>(initialTab);
 
+  // Mirror hasProFeatures/hasBusinessFeatures (Rule #50). plan-limits.ts mengimpor prisma, jadi tidak boleh masuk client bundle.
   const isPro = user.plan === "PRO" || user.plan === "BUSINESS";
+  const isBusiness = user.plan === "BUSINESS";
 
-  const tabs = [
-    { id: "profile", label: tSet("tabProfile"), icon: UserIcon },
-    { id: "bank", label: tSet("tabBank"), icon: BuildingLibraryIcon },
-    { id: "template", label: tSet("tabTemplate"), icon: DocumentTextIcon },
-    { id: "domain", label: tSet("tabDomain"), icon: GlobeAltIcon },
-    { id: "developer", label: tSet("tabDeveloper"), icon: CodeBracketIcon },
-    { id: "notifications", label: tSet("tabNotifications"), icon: BellAlertIcon },
-    { id: "security", label: tSet("tabSecurity"), icon: ShieldCheckIcon },
-  ] as const;
+  // Tab dikelompokkan per tujuan agar semua menu terlihat sekaligus (tanpa scroll horizontal).
+  const groups: {
+    title: string;
+    tabs: { id: SettingsTab; label: string; icon: typeof UserIcon; badge?: string }[];
+  }[] = [
+    {
+      title: tSet("groupAccount"),
+      tabs: [
+        { id: "profile", label: tSet("tabProfile"), icon: UserIcon },
+        { id: "security", label: tSet("tabSecurity"), icon: ShieldCheckIcon },
+      ],
+    },
+    {
+      title: tSet("groupInvoice"),
+      tabs: [
+        { id: "bank", label: tSet("tabBank"), icon: BuildingLibraryIcon },
+        { id: "template", label: tSet("tabTemplate"), icon: DocumentTextIcon, badge: isPro ? undefined : "PRO" },
+      ],
+    },
+    {
+      title: tSet("groupIntegrations"),
+      tabs: [
+        { id: "domain", label: tSet("tabDomain"), icon: GlobeAltIcon, badge: isBusiness ? undefined : "BIZ" },
+        { id: "developer", label: tSet("tabDeveloper"), icon: CodeBracketIcon, badge: isBusiness ? undefined : "BIZ" },
+        { id: "notifications", label: tSet("tabNotifications"), icon: BellAlertIcon, badge: isBusiness ? undefined : "BIZ" },
+      ],
+    },
+  ];
+
+  const selectTab = (id: SettingsTab) => {
+    setActiveTab(id);
+    // Sinkron ke URL tanpa navigasi server agar tab bisa di-bookmark / di-refresh.
+    window.history.replaceState(null, "", `/settings?tab=${id}`);
+  };
 
   return (
     <div className="space-y-6">
@@ -93,31 +119,49 @@ export function SettingsTabsClient({
         </p>
       </div>
 
-      {/* Tab Navigation */}
-      <div className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-1.5 shadow-2xs">
-        <nav className="flex space-x-1 sm:space-x-2 overflow-x-auto no-scrollbar" aria-label="Tabs">
-          {tabs.map((tab) => {
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 whitespace-nowrap px-3.5 sm:px-4 py-2.5 text-xs sm:text-sm rounded-xl transition-all cursor-pointer min-h-[40px] ${
-                  isActive
-                    ? "bg-[#0f6b4f]/10 dark:bg-emerald-500/20 text-[#0f6b4f] dark:text-emerald-400 border border-[#0f6b4f]/20 dark:border-emerald-500/30 font-bold shadow-2xs"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 font-medium"
-                }`}
-              >
-                <tab.icon className={`w-4 h-4 shrink-0 ${isActive ? "text-[#0f6b4f] dark:text-emerald-400" : "text-slate-400 dark:text-slate-500"}`} />
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </nav>
-      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-[240px_minmax(0,1fr)] gap-6 items-start">
+      {/* Settings Navigation: grid 2 kolom di mobile, daftar vertikal sticky di desktop */}
+      <nav
+        aria-label={tSet("title")}
+        className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-3 shadow-2xs space-y-4 lg:sticky lg:top-20"
+      >
+        {groups.map((group) => (
+          <div key={group.title} className="space-y-1">
+            <p className="px-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+              {group.title}
+            </p>
+            <div className="grid grid-cols-2 lg:grid-cols-1 gap-1">
+              {group.tabs.map((tab) => {
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => selectTab(tab.id)}
+                    aria-current={isActive ? "page" : undefined}
+                    className={`flex items-center gap-2 px-3 py-2 text-left text-xs sm:text-sm rounded-xl transition-colors cursor-pointer min-h-[44px] ${
+                      isActive
+                        ? "bg-[#0f6b4f]/10 dark:bg-emerald-500/15 text-[#0f6b4f] dark:text-emerald-400 font-bold"
+                        : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 font-medium"
+                    }`}
+                  >
+                    <tab.icon aria-hidden="true" className={`w-4 h-4 shrink-0 ${isActive ? "text-[#0f6b4f] dark:text-emerald-400" : "text-slate-400 dark:text-slate-500"}`} />
+                    <span className="min-w-0 flex-1 leading-tight">{tab.label}</span>
+                    {tab.badge && (
+                      <span className="shrink-0 rounded-md border border-slate-200 dark:border-slate-700 px-1.5 py-0.5 text-[9px] font-extrabold text-slate-500 dark:text-slate-400">
+                        {tab.badge}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </nav>
 
       {/* Tab Content Container */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-2xs">
+      <div className="min-w-0 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-2xs">
         {/* Tab 1: Profile & Business */}
         {activeTab === "profile" && (
           <div className="space-y-4">
@@ -205,6 +249,7 @@ export function SettingsTabsClient({
             <SecurityForm />
           </div>
         )}
+      </div>
       </div>
     </div>
   );

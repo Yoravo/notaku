@@ -97,18 +97,32 @@ export function formatTimeWIB(
 
 export function formatDateTimeWIB(
   date: Date | string | number,
-  options?: Intl.DateTimeFormatOptions,
+  options?: Intl.DateTimeFormatOptions & { withSeconds?: boolean; withWIB?: boolean },
 ): string {
   const d = typeof date === "string" || typeof date === "number" ? new Date(date) : date;
-  return d.toLocaleString("id-ID", {
+  if (isNaN(d.getTime())) return "-";
+
+  const dateStr = d.toLocaleDateString("id-ID", {
     timeZone: JAKARTA_TZ,
     day: "2-digit",
-    month: "short",
+    month: "2-digit",
     year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    ...options,
   });
+
+  const withSeconds = options?.withSeconds ?? true;
+  const timeStr = d
+    .toLocaleTimeString("id-ID", {
+      timeZone: JAKARTA_TZ,
+      hour: "2-digit",
+      minute: "2-digit",
+      ...(withSeconds ? { second: "2-digit" } : {}),
+      hour12: false,
+      ...options,
+    })
+    .replace(/\./g, ":");
+
+  const suffix = options?.withWIB === false ? "" : " WIB";
+  return `${dateStr} ${timeStr}${suffix}`;
 }
 
 /**

@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { formatCurrency } from "@/lib/pdf/format";
-import { formatDateWIB, formatTimeWIB } from "@/lib/invoice-utils";
+import { formatDateWIB, formatTimeWIB, formatDateTimeWIB } from "@/lib/invoice-utils";
 import {
   ArrowLeftIcon,
   UserIcon,
@@ -383,15 +383,7 @@ export default async function AdminUserDetailPage(props: {
                   )}
                 </div>
                 <div className="text-slate-400 dark:text-slate-500 font-mono text-[11px] shrink-0">
-                  {formatDateWIB(log.createdAt, {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  })}{" "}
-                  {formatTimeWIB(log.createdAt, {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
+                  {formatDateTimeWIB(log.createdAt)}
                 </div>
               </div>
             ))

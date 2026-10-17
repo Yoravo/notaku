@@ -25,8 +25,6 @@ export default {
     engine: web(),
     app: {
       url: process.env.APP_URL ?? 'http://localhost:3000',
-      // Or let the runner start the dev server:
-      // command: { executable: 'npm', args: ['run', 'dev'] },
     },
   }],
 } satisfies E2EConfig;

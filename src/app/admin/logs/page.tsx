@@ -1,7 +1,7 @@
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { formatDateWIB, formatTimeWIB } from "@/lib/invoice-utils";
+import { formatDateTimeWIB } from "@/lib/invoice-utils";
 import {
   ClipboardDocumentListIcon,
   FunnelIcon,
@@ -64,6 +64,22 @@ function getEventBadge(event: string, tLogs: (key: any) => string) {
       <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800 shadow-2xs">
         <BanknotesIcon className="w-3 h-3 text-blue-600 dark:text-blue-400" />
         {tLogs("badgePayment")}
+      </span>
+    );
+  }
+  if (event.startsWith("subscription.")) {
+    return (
+      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800 shadow-2xs">
+        <ClockIcon className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+        {tLogs("badgeSubscription")}
+      </span>
+    );
+  }
+  if (event.startsWith("system.cron")) {
+    return (
+      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-2xs">
+        <ClockIcon className="w-3 h-3 text-slate-500 dark:text-slate-400" />
+        {tLogs("badgeCron")}
       </span>
     );
   }
@@ -238,18 +254,7 @@ export default async function AdminLogsPage(props: {
                       <td className="py-3.5 px-4 whitespace-nowrap text-slate-600 dark:text-slate-300 font-mono text-xs">
                         <div className="flex items-center gap-1.5">
                           <ClockIcon className="w-3.5 h-3.5 text-slate-400" />
-                          <span>
-                            {formatDateWIB(log.createdAt, {
-                              day: "2-digit",
-                              month: "short",
-                              year: "numeric",
-                            })}{" "}
-                            {formatTimeWIB(log.createdAt, {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                              second: "2-digit",
-                            })}
-                          </span>
+                          <span>{formatDateTimeWIB(log.createdAt)}</span>
                         </div>
                       </td>
 

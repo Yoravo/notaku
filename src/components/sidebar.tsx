@@ -60,65 +60,36 @@ export function Sidebar({
     });
   };
 
-  const mainNavItems = [
+  // Dikelompokkan per alur kerja: jual & tagih -> uang masuk/keluar -> akun.
+  const navGroups: {
+    title: string;
+    items: { href: string; label: string; icon: typeof RectangleGroupIcon; exact?: boolean }[];
+  }[] = [
     {
-      href: "/dashboard",
-      label: tDash("overview"),
-      icon: RectangleGroupIcon,
-      exact: true,
+      title: tDash("mainMenu"),
+      items: [
+        { href: "/dashboard", label: tDash("overview"), icon: RectangleGroupIcon, exact: true },
+        { href: "/invoices", label: tDash("invoices"), icon: DocumentTextIcon },
+        { href: "/recurring-invoices", label: tDash("recurringInvoices"), icon: ArrowPathIcon },
+        { href: "/customers", label: tDash("customers"), icon: UsersIcon },
+        { href: "/items", label: tDash("catalog"), icon: ArchiveBoxIcon },
+      ],
     },
     {
-      href: "/invoices",
-      label: tDash("invoices"),
-      icon: DocumentTextIcon,
+      title: tDash("menuFinance"),
+      items: [
+        { href: "/wallet", label: tDash("wallet"), icon: WalletIcon },
+        { href: "/expenses", label: tDash("expenses"), icon: BanknotesIcon },
+        { href: "/tax-reports", label: tDash("taxReports"), icon: DocumentChartBarIcon },
+      ],
     },
     {
-      href: "/recurring-invoices",
-      label: tDash("recurringInvoices"),
-      icon: ArrowPathIcon,
-    },
-    {
-      href: "/items",
-      label: tDash("catalog"),
-      icon: ArchiveBoxIcon,
-    },
-    {
-      href: "/expenses",
-      label: tDash("expenses"),
-      icon: BanknotesIcon,
-    },
-    {
-      href: "/tax-reports",
-      label: tDash("taxReports"),
-      icon: DocumentChartBarIcon,
-    },
-    {
-      href: "/customers",
-      label: tDash("customers"),
-      icon: UsersIcon,
-    },
-    {
-      href: "/wallet",
-      label: tDash("wallet"),
-      icon: WalletIcon,
-    },
-    {
-      href: "/referrals",
-      label: tDash("referrals"),
-      icon: GiftIcon,
-    },
-  ];
-
-  const secondaryNavItems = [
-    {
-      href: "/billing",
-      label: tDash("billing"),
-      icon: CreditCardIcon,
-    },
-    {
-      href: "/settings",
-      label: tDash("settings"),
-      icon: Cog6ToothIcon,
+      title: tDash("preferences"),
+      items: [
+        { href: "/billing", label: tDash("billing"), icon: CreditCardIcon },
+        { href: "/referrals", label: tDash("referrals"), icon: GiftIcon },
+        { href: "/settings", label: tDash("settings"), icon: Cog6ToothIcon },
+      ],
     },
   ];
 
@@ -159,70 +130,39 @@ export function Sidebar({
 
       {/* Navigation Sections */}
       <nav className="flex-1 space-y-6 px-3 py-4 overflow-y-auto">
-        {/* Main Business Menu */}
-        <div className="space-y-1">
-          <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 whitespace-nowrap">
-            {tDash("mainMenu")}
-          </p>
-          {mainNavItems.map((item) => {
-            const isActive = item.exact
-              ? pathname === item.href
-              : pathname === item.href || pathname.startsWith(item.href + "/");
+        {navGroups.map((group) => (
+          <div key={group.title} className="space-y-1">
+            <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 whitespace-nowrap">
+              {group.title}
+            </p>
+            {group.items.map((item) => {
+              const isActive = item.exact
+                ? pathname === item.href
+                : pathname === item.href || pathname.startsWith(item.href + "/");
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                prefetch={true}
-                onClick={onClose}
-                className={`flex items-center gap-3 rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
-                  isActive
-                    ? "bg-[#0f6b4f]/10 dark:bg-emerald-500/15 text-[#0f6b4f] dark:text-emerald-400 font-bold shadow-2xs"
-                    : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
-                }`}
-              >
-                <item.icon
-                  className={`h-5 w-5 shrink-0 ${
-                    isActive ? "text-[#0f6b4f] dark:text-emerald-400" : "text-slate-400 dark:text-slate-500"
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  prefetch={true}
+                  onClick={onClose}
+                  className={`flex items-center gap-3 rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
+                    isActive
+                      ? "bg-[#0f6b4f]/10 dark:bg-emerald-500/15 text-[#0f6b4f] dark:text-emerald-400 font-bold shadow-2xs"
+                      : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
                   }`}
-                />
-                <span className="truncate">{item.label}</span>
-              </Link>
-            );
-          })}
-        </div>
-
-        {/* Settings & Secondary Menu */}
-        <div className="space-y-1">
-          <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 whitespace-nowrap">
-            {tDash("preferences")}
-          </p>
-          {secondaryNavItems.map((item) => {
-            const isActive =
-              pathname === item.href || pathname.startsWith(item.href + "/");
-
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                prefetch={true}
-                onClick={onClose}
-                className={`flex items-center gap-3 rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
-                  isActive
-                    ? "bg-[#0f6b4f]/10 dark:bg-emerald-500/15 text-[#0f6b4f] dark:text-emerald-400 font-bold shadow-2xs"
-                    : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
-                }`}
-              >
-                <item.icon
-                  className={`h-5 w-5 shrink-0 ${
-                    isActive ? "text-[#0f6b4f] dark:text-emerald-400" : "text-slate-400 dark:text-slate-500"
-                  }`}
-                />
-                <span className="truncate">{item.label}</span>
-              </Link>
-            );
-          })}
-        </div>
+                >
+                  <item.icon
+                    className={`h-5 w-5 shrink-0 ${
+                      isActive ? "text-[#0f6b4f] dark:text-emerald-400" : "text-slate-400 dark:text-slate-500"
+                    }`}
+                  />
+                  <span className="truncate">{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        ))}
 
         {/* Admin Navigation (Role: ADMIN only) */}
         {user.role === "ADMIN" && (

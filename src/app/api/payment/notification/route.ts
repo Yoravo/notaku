@@ -392,7 +392,24 @@ export async function POST(request: Request) {
         amount,
         promoCode: usedPromoCode,
         periodEnd: newPeriodEnd ? newPeriodEnd.toISOString() : null,
+        isPermanent,
+        tier: targetPlan,
       });
+
+      if (isPermanent) {
+        auditLog(
+          "subscription.permanent_payment_received",
+          {
+            userId: user.id,
+            email: user.email,
+            paymentId,
+            amount,
+            plan: targetPlan,
+            note: "Masa aktif permanen dipertahankan (currentPeriodEnd tetap null)",
+          },
+          { userId: user.id },
+        );
+      }
 
       // Kirim alert langganan baru ke Discord Webhook admin (non-blocking)
       notifyAdminNewSubscription({

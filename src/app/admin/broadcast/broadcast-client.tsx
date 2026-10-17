@@ -15,7 +15,7 @@ import {
   BroadcastLogData,
   sendBroadcastEmail,
 } from "@/actions/broadcast";
-import { formatDateWIB } from "@/lib/invoice-utils";
+import { formatDateWIB, formatDateTimeWIB } from "@/lib/invoice-utils";
 import { useTranslations } from "next-intl";
 
 interface BroadcastClientProps {
@@ -369,7 +369,7 @@ export function BroadcastClient({ estimates, history }: BroadcastClientProps) {
                       {log.badge}
                     </span>
                     <span className="text-slate-400 dark:text-slate-500 font-mono">
-                      {formatDateWIB(log.createdAt)}
+                      {formatDateTimeWIB(log.createdAt, { withSeconds: false })}
                     </span>
                   </div>
                   <h4 className="text-xs font-bold text-slate-900 dark:text-white line-clamp-1">

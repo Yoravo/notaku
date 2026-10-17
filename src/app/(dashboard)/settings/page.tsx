@@ -19,7 +19,10 @@ export default async function SettingsPage({
   searchParams: Promise<{ tab?: string }>;
 }) {
   const { tab } = await searchParams;
-  const initialTab = tab === "bank" ? "bank" : "profile";
+
+  const VALID_TABS = ["profile", "bank", "template", "domain", "developer", "notifications", "security"] as const;
+  const initialTab = VALID_TABS.includes(tab as any) ? (tab as typeof VALID_TABS[number]) : "profile";
+
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) {
     redirect("/login");
