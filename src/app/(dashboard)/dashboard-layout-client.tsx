@@ -147,7 +147,7 @@ export function DashboardLayoutClient({
             </Link>
           </div>
 
-          <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             {/* Global Command Palette Trigger (Ctrl+K) */}
             <CommandTrigger />
 
@@ -159,8 +159,9 @@ export function DashboardLayoutClient({
 
             <button
               onClick={handleSignOut}
-              className="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white transition-colors cursor-pointer border border-transparent hover:border-gray-200 dark:hover:border-slate-700"
+              className="inline-flex items-center justify-center gap-1.5 rounded-xl p-2 sm:px-3 sm:py-1.5 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 text-xs font-semibold text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white transition-colors cursor-pointer border border-transparent hover:border-gray-200 dark:hover:border-slate-700"
               aria-label={tDash("logout")}
+              title={tDash("logout")}
             >
               <ArrowLeftOnRectangleIcon className="w-4 h-4 text-gray-400 dark:text-slate-400" />
               <span className="hidden sm:inline">{tDash("logout")}</span>

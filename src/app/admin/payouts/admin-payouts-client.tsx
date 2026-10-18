@@ -114,7 +114,7 @@ export function AdminPayoutsClient({
   return (
     <div className="space-y-6">
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2 overflow-x-auto">
+      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2 overflow-x-auto no-scrollbar">
         {(["ALL", "PENDING", "COMPLETED", "REJECTED"] as const).map((tab) => (
           <button
             key={tab}
@@ -149,7 +149,7 @@ export function AdminPayoutsClient({
             {tAdmin("emptyPayouts")}
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto no-scrollbar">
             <table className="w-full text-left text-xs min-w-[620px]">
               <thead className="bg-slate-50/80 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider text-[10px]">
                 <tr>

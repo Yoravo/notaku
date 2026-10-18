@@ -197,7 +197,7 @@ export default async function AdminReferralsPage() {
               {t("emptyAffiliates")}
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto no-scrollbar">
               <table className="w-full text-left text-xs min-w-[340px]">
                 <thead className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
                   <tr>
@@ -251,7 +251,7 @@ export default async function AdminReferralsPage() {
               {t("emptyRewards")}
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto no-scrollbar">
               <table className="w-full text-left text-xs min-w-[340px]">
                 <thead className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
                   <tr>

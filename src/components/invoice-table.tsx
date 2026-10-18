@@ -25,7 +25,7 @@ export function InvoiceTable({ invoices }: InvoiceTableProps) {
   };
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto no-scrollbar">
       <table className="w-full text-left text-sm min-w-[540px]">
         <thead className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/80">
           <tr>

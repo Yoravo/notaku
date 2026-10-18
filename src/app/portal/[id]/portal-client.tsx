@@ -244,7 +244,7 @@ export function PortalClient({
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             {/* Filter Tabs */}
-            <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl overflow-x-auto">
+            <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl overflow-x-auto no-scrollbar">
               <button
                 type="button"
                 onClick={() => setActiveTab("ALL")}
@@ -306,8 +306,8 @@ export function PortalClient({
             </div>
           ) : (
             <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs sm:text-sm">
+              <div className="overflow-x-auto no-scrollbar">
+                <table className="w-full text-left text-xs sm:text-sm min-w-[540px]">
                   <thead className="border-b border-slate-200 bg-slate-50/80 text-slate-500 uppercase text-[11px] font-bold tracking-wider">
                     <tr>
                       <th className="px-5 py-3.5">{tPortal("thNumber")}</th>

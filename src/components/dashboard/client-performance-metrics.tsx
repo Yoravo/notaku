@@ -183,8 +183,8 @@ export function ClientPerformanceMetrics({
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs sm:text-sm">
+            <div className="overflow-x-auto no-scrollbar">
+              <table className="w-full text-left border-collapse text-xs sm:text-sm min-w-[480px]">
                 <thead>
                   <tr className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800 font-semibold text-xs">
                     <th className="py-3 px-4">{tPerf("thClient")}</th>

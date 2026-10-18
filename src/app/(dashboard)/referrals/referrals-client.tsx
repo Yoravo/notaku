@@ -167,78 +167,78 @@ export function ReferralsClient({
       </div>
 
       {/* Stat Cards Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
         {/* Total Friends */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-2xs">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 shadow-2xs">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               {tRef("statsTotalFriends")}
             </span>
-            <span className="p-2 rounded-xl bg-blue-50 text-blue-600">
+            <span className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
               <UsersIcon className="w-4 h-4" />
             </span>
           </div>
-          <p className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+          <p className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
             {stats.totalFriends}
           </p>
-          <p className="text-[11px] text-slate-400 mt-1 font-medium">
+          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-medium">
             {tRef("totalRegisteredUsers")}
           </p>
         </div>
 
         {/* PRO Friends */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-2xs">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 shadow-2xs">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               {tRef("statsProFriends")}
             </span>
-            <span className="p-2 rounded-xl bg-purple-50 text-purple-600">
+            <span className="p-2 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400">
               <SparklesIcon className="w-4 h-4" />
             </span>
           </div>
-          <p className="text-xl sm:text-2xl font-black text-purple-700 tracking-tight">
+          <p className="text-xl sm:text-2xl font-black text-purple-700 dark:text-purple-400 tracking-tight">
             {stats.proFriends}
           </p>
-          <p className="text-[11px] text-slate-400 mt-1 font-medium">
+          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-medium">
             {tRef("successfulUpgrades")}
           </p>
         </div>
 
         {/* Total Earnings */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-2xs">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 shadow-2xs">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               {tRef("statsTotalEarnings")}
             </span>
-            <span className="p-2 rounded-xl bg-emerald-50 text-[#0f6b4f]">
+            <span className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400">
               <GiftIcon className="w-4 h-4" />
             </span>
           </div>
-          <p className="text-xl sm:text-2xl font-black text-[#0f6b4f] tracking-tight">
+          <p className="text-xl sm:text-2xl font-black text-[#0f6b4f] dark:text-emerald-400 tracking-tight">
             {formatMoney(stats.totalEarnings, "IDR", locale)}
           </p>
-          <p className="text-[11px] text-slate-400 mt-1 font-medium">
+          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-medium">
             {tRef("earnedCommissions")}
           </p>
         </div>
 
         {/* Wallet Balance */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-2xs">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 shadow-2xs">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               {tRef("statsAvailableBalance")}
             </span>
-            <span className="p-2 rounded-xl bg-amber-50 text-amber-600">
+            <span className="p-2 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400">
               <BanknotesIcon className="w-4 h-4" />
             </span>
           </div>
-          <p className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+          <p className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
             {formatMoney(stats.availableBalance, "IDR", locale)}
           </p>
           <Link
             href="/wallet"
             prefetch={true}
-            className="text-[11px] text-[#0f6b4f] hover:underline mt-1 font-bold inline-flex items-center gap-1"
+            className="text-[11px] text-[#0f6b4f] dark:text-emerald-400 hover:underline mt-1 font-bold inline-flex items-center gap-1"
           >
             <span>{tRef("openWallet")}</span>
             <ArrowRightIcon className="w-3 h-3" />
@@ -247,43 +247,43 @@ export function ReferralsClient({
       </div>
 
       {/* How it Works Section */}
-      <div className="bg-white rounded-3xl border border-slate-200/80 p-5 sm:p-6 shadow-2xs">
-        <h3 className="text-sm sm:text-base font-extrabold text-slate-900 tracking-tight mb-4">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 shadow-2xs">
+        <h3 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white tracking-tight mb-4">
           {tRef("howItWorksTitle")}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col gap-2">
-            <div className="w-8 h-8 rounded-xl bg-emerald-100 text-[#0f6b4f] flex items-center justify-center font-bold text-xs">
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex flex-col gap-2">
+            <div className="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-[#0f6b4f] dark:text-emerald-400 flex items-center justify-center font-bold text-xs">
               1
             </div>
-            <h4 className="text-xs sm:text-sm font-bold text-slate-900">
+            <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
               {tRef("step1Title")}
             </h4>
-            <p className="text-xs text-slate-500 leading-relaxed font-medium">
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
               {tRef("step1Desc")}
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col gap-2">
-            <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex flex-col gap-2">
+            <div className="w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-400 flex items-center justify-center font-bold text-xs">
               2
             </div>
-            <h4 className="text-xs sm:text-sm font-bold text-slate-900">
+            <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
               {tRef("step2Title")}
             </h4>
-            <p className="text-xs text-slate-500 leading-relaxed font-medium">
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
               {tRef("step2Desc")}
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col gap-2">
-            <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-xs">
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex flex-col gap-2">
+            <div className="w-8 h-8 rounded-xl bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-400 flex items-center justify-center font-bold text-xs">
               3
             </div>
-            <h4 className="text-xs sm:text-sm font-bold text-slate-900">
+            <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
               {tRef("step3Title")}
             </h4>
-            <p className="text-xs text-slate-500 leading-relaxed font-medium">
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
               {tRef("step3Desc")}
             </p>
           </div>
@@ -291,37 +291,37 @@ export function ReferralsClient({
       </div>
 
       {/* Friends & Rewards Table */}
-      <div className="bg-white rounded-3xl border border-slate-200/80 shadow-2xs overflow-hidden">
-        <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-2xs overflow-hidden">
+        <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
           <div>
-            <h3 className="text-sm sm:text-base font-extrabold text-slate-900 tracking-tight">
+            <h3 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white tracking-tight">
               {tRef("tableTitle")}
             </h3>
-            <p className="text-xs text-slate-500 mt-0.5 font-medium">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
               {tRef("tableSubtitle")}
             </p>
           </div>
-          <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 text-xs font-bold">
+          <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold">
             {tRef("friendsCount", { count: stats.friends.length })}
           </span>
         </div>
 
         {stats.friends.length === 0 ? (
           <div className="py-8 px-4 sm:py-12 text-center">
-            <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
+            <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 flex items-center justify-center mx-auto mb-3">
               <UsersIcon className="w-6 h-6" />
             </div>
-            <h4 className="text-sm font-bold text-slate-800">
+            <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">
               {tRef("tableEmptyTitle")}
             </h4>
-            <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1 font-medium">
+            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mt-1 font-medium">
               {tRef("tableEmptyDesc")}
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs sm:text-sm">
-              <thead className="bg-slate-50/80 border-b border-slate-100 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
+          <div className="overflow-x-auto no-scrollbar">
+            <table className="w-full text-left text-xs sm:text-sm min-w-[500px]">
+              <thead className="bg-slate-50/80 dark:bg-slate-800/80 border-b border-slate-100 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-[10px]">
                 <tr>
                   <th className="px-5 py-3">
                     {tRef("colName")}
@@ -340,24 +340,24 @@ export function ReferralsClient({
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-700 font-medium">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300 font-medium">
                 {stats.friends.map((friend) => (
                   <tr
                     key={friend.id}
-                    className="hover:bg-slate-50/60 transition-colors"
+                    className="hover:bg-slate-50/60 dark:hover:bg-slate-800/60 transition-colors"
                   >
-                    <td className="px-5 py-3.5 font-bold text-slate-900">
+                    <td className="px-5 py-3.5 font-bold text-slate-900 dark:text-white">
                       {friend.name}
                     </td>
-                    <td className="px-5 py-3.5 text-slate-500 font-mono text-xs">
+                    <td className="px-5 py-3.5 text-slate-500 dark:text-slate-400 font-mono text-xs">
                       {friend.email}
                     </td>
-                    <td className="px-5 py-3.5 text-slate-500 whitespace-nowrap text-xs">
+                    <td className="px-5 py-3.5 text-slate-500 dark:text-slate-400 whitespace-nowrap text-xs">
                       {formatDateWIB(friend.createdAt)}
                     </td>
                     <td className="px-5 py-3.5 whitespace-nowrap">
                       {friend.plan === "PRO" || friend.plan === "BUSINESS" ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-50 text-purple-700 border border-purple-200/60">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200/60 dark:border-purple-800">
                           <SparklesIcon className="w-3 h-3" />
                           <span>{tRef("statusPro")}</span>
                         </span>

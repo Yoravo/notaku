@@ -202,7 +202,7 @@ export default async function PublicInvoicePage({
         </div>
 
         {/* Items */}
-        <div className="mt-8 overflow-x-auto -mx-2 px-2 sm:mx-0 sm:px-0">
+        <div className="mt-8 overflow-x-auto no-scrollbar -mx-2 px-2 sm:mx-0 sm:px-0">
           <table className="w-full text-xs sm:text-sm min-w-[320px]">
             <thead>
               <tr className="border-b border-slate-200 text-slate-500 uppercase text-[11px] font-bold tracking-wider">

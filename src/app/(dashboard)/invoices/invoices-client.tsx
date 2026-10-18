@@ -144,7 +144,7 @@ export function InvoicesClient({
       </div>
 
       {/* Filter tabs */}
-      <div className="flex gap-1.5 overflow-x-auto border-b border-slate-200 dark:border-slate-800 pb-1 scrollbar-none">
+      <div className="flex gap-1.5 overflow-x-auto border-b border-slate-200 dark:border-slate-800 pb-1 no-scrollbar">
         {filterTabs.map((tab) => {
           const isActive = (activeStatus ?? "") === tab.value;
           return (

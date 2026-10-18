@@ -237,7 +237,7 @@ export function PromoManager({ initialPromos }: { initialPromos: PromoData[] }) 
           </span>
         </div>
 
-        <div className="flex-1 overflow-x-auto">
+        <div className="flex-1 overflow-x-auto no-scrollbar">
           {promos.length === 0 ? (
             <div className="p-6 sm:p-12 text-center">
               <TagIcon className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />

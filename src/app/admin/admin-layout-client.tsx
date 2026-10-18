@@ -180,8 +180,8 @@ export function AdminLayoutClient({
       {/* Main Content Area */}
       <div className="flex flex-1 flex-col overflow-hidden bg-slate-50 dark:bg-slate-900/50 text-slate-900 dark:text-slate-100">
         {/* Top Navbar Header with Sidebar Toggle (Both Desktop & Mobile) */}
-        <header className="flex h-14 items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 sm:px-6 shadow-xs shrink-0">
-          <div className="flex items-center gap-3">
+        <header className="flex h-14 items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 sm:px-6 shadow-xs shrink-0 gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             {/* Desktop Toggle Button (Icon 3 baris konsisten) */}
             <button
               onClick={() => setDesktopOpen(!desktopOpen)}
@@ -195,7 +195,7 @@ export function AdminLayoutClient({
             {/* Mobile Toggle Button */}
             <button
               onClick={() => setMobileOpen(true)}
-              className="md:hidden inline-flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              className="md:hidden inline-flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
               aria-label="Buka menu"
             >
               <Bars3Icon className="w-6 h-6" />
@@ -227,26 +227,26 @@ export function AdminLayoutClient({
             {/* Mobile Brand */}
             <Link
               href="/"
-              className="md:hidden font-sans text-lg font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5"
+              className="md:hidden font-sans text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-1 sm:gap-1.5 shrink-0"
             >
               <Image
                 src="/logo.png"
                 alt="NotaKu Logo"
-                width={24}
-                height={24}
-                className="w-6 h-6 object-contain shrink-0"
+                width={22}
+                height={22}
+                className="w-5 h-5 sm:w-6 sm:h-6 object-contain shrink-0"
               />
-              <span>
+              <span className="flex items-center">
                 <span>Nota</span>
                 <span className="text-[#0f6b4f] dark:text-emerald-400">Ku</span>
-                <span className="text-[10px] bg-rose-500/10 text-rose-600 border border-rose-500/20 px-1.5 py-0.2 rounded font-sans font-bold ml-1">
+                <span className="text-[9px] sm:text-[10px] bg-rose-500/10 text-rose-600 border border-rose-500/20 px-1.5 py-0.5 rounded font-sans font-bold ml-1 shrink-0">
                   ADMIN
                 </span>
               </span>
             </Link>
           </div>
 
-          <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             {/* Global Command Palette Trigger (Ctrl+K) */}
             <CommandTrigger />
 
@@ -265,7 +265,8 @@ export function AdminLayoutClient({
 
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white px-3 py-1.5 rounded-xl transition-colors shadow-xs"
+              className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white p-2 sm:px-3 sm:py-1.5 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 rounded-xl transition-colors shadow-xs"
+              title={tAdmin("backToUserApp")}
             >
               <ArrowLeftOnRectangleIcon className="w-4 h-4 text-slate-400" />
               <span className="hidden sm:inline">{tAdmin("backToUserApp")}</span>

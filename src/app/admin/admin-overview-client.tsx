@@ -157,62 +157,62 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
           <GlobeAltIcon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
           <span>{tAdmin("sectionTraffic")}</span>
         </h2>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-2xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-2xs min-w-0">
             <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               {tAdmin("traffic24h")}
             </p>
-            <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1 tabular-nums">
+            <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1 tabular-nums truncate">
               {data.views24h.toLocaleString("id-ID")}
             </p>
-            <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-2 border-t border-slate-100 dark:border-slate-800 pt-1.5">
-              <span className="font-medium">Views</span>
-              <span className="font-bold text-[#0f6b4f] dark:text-emerald-400">
+            <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-2 border-t border-slate-100 dark:border-slate-800 pt-1.5 gap-2">
+              <span className="font-medium shrink-0">Views</span>
+              <span className="font-bold text-[#0f6b4f] dark:text-emerald-400 truncate">
                 {data.uniqueVisitors24hCount} {tAdmin("views")}
               </span>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-2xs">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-2xs min-w-0">
             <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               {tAdmin("traffic7d")}
             </p>
-            <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1 tabular-nums">
+            <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1 tabular-nums truncate">
               {data.views7d.toLocaleString("id-ID")}
             </p>
-            <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-2 border-t border-slate-100 dark:border-slate-800 pt-1.5">
-              <span className="font-medium">Views</span>
-              <span className="font-bold text-[#0f6b4f] dark:text-emerald-400">
+            <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-2 border-t border-slate-100 dark:border-slate-800 pt-1.5 gap-2">
+              <span className="font-medium shrink-0">Views</span>
+              <span className="font-bold text-[#0f6b4f] dark:text-emerald-400 truncate">
                 {data.uniqueVisitors7dCount} {tAdmin("views")}
               </span>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-2xs">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-2xs min-w-0">
             <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               {tAdmin("traffic30d")}
             </p>
-            <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1 tabular-nums">
+            <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1 tabular-nums truncate">
               {data.views30d.toLocaleString("id-ID")}
             </p>
-            <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-2 border-t border-slate-100 dark:border-slate-800 pt-1.5">
-              <span className="font-medium">Views</span>
-              <span className="font-bold text-[#0f6b4f] dark:text-emerald-400">
+            <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-2 border-t border-slate-100 dark:border-slate-800 pt-1.5 gap-2">
+              <span className="font-medium shrink-0">Views</span>
+              <span className="font-bold text-[#0f6b4f] dark:text-emerald-400 truncate">
                 {data.uniqueVisitors30dCount} {tAdmin("views")}
               </span>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-2xs">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-2xs min-w-0">
             <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               {tAdmin("trafficAll")}
             </p>
-            <p className="text-2xl sm:text-3xl font-extrabold text-blue-600 dark:text-blue-400 mt-1 tabular-nums">
+            <p className="text-2xl sm:text-3xl font-extrabold text-blue-600 dark:text-blue-400 mt-1 tabular-nums truncate">
               {data.totalViews.toLocaleString("id-ID")}
             </p>
-            <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-2 border-t border-slate-100 dark:border-slate-800 pt-1.5">
-              <span className="font-medium">Total Views</span>
-              <span className="font-bold text-[#0f6b4f] dark:text-emerald-400">
+            <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-2 border-t border-slate-100 dark:border-slate-800 pt-1.5 gap-2">
+              <span className="font-medium shrink-0">Total Views</span>
+              <span className="font-bold text-[#0f6b4f] dark:text-emerald-400 truncate">
                 {data.uniqueVisitorsAllCount} {tAdmin("uniqueIps")}
               </span>
             </div>
@@ -220,7 +220,7 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
         </div>
 
         {/* Visual Trend Chart 14 Days */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-2xs mt-4">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-2xs mt-4">
           <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
             <ChartBarSquareIcon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             <span>{tAdmin("trafficTrendsTitle")}</span>
@@ -315,7 +315,7 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
             </span>
           </div>
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto no-scrollbar">
             <table className="w-full text-left text-xs min-w-[320px]">
               <thead className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 uppercase tracking-wider text-[11px] font-bold">
                 <tr>

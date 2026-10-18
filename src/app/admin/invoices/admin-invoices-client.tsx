@@ -143,7 +143,7 @@ export function AdminInvoicesClient({
       {/* Filter by Status Quick Tabs & Search Form */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-2xs space-y-3">
         {/* Status Quick Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 text-xs">
           <Link
             href={`/admin/invoices?q=${searchQuery}`}
             className={`px-3.5 py-2 rounded-xl font-bold transition-all shrink-0 cursor-pointer shadow-2xs min-h-[44px] sm:min-h-[36px] inline-flex items-center ${
@@ -196,7 +196,7 @@ export function AdminInvoicesClient({
 
       {/* Invoices Table */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xs overflow-hidden">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto no-scrollbar">
           <table className="w-full text-left text-xs sm:text-sm min-w-[700px]">
             <thead className="bg-slate-50/80 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               <tr>

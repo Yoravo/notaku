@@ -221,8 +221,8 @@ export default async function NicheTemplateDetailPage({
           </div>
 
           {/* Sample Line Items Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto no-scrollbar">
+            <table className="w-full text-left text-xs min-w-[420px]">
               <thead>
                 <tr className="border-b border-line text-ink-soft font-bold uppercase text-[10px] tracking-wider">
                   <th className="pb-2.5">Deskripsi Layanan / Barang</th>

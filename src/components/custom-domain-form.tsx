@@ -291,7 +291,7 @@ export function CustomDomainForm({ initialData }: { initialData: CustomDomainDat
             </button>
           </div>
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto no-scrollbar">
             <table className="w-full text-left text-xs min-w-[480px]">
               <thead className="text-[10px] uppercase tracking-wider text-slate-400 border-b border-slate-800">
                 <tr>

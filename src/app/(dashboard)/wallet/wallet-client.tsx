@@ -169,7 +169,7 @@ export function WalletClient({
                 {tWallet("emptyTransactions")}
               </div>
             ) : (
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto no-scrollbar">
                 <table className="w-full text-left text-xs sm:text-sm min-w-[540px]">
                   <thead className="bg-slate-50/80 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 uppercase text-[11px] font-bold tracking-wider">
                     <tr>
@@ -244,7 +244,7 @@ export function WalletClient({
                 {tWallet("emptyPayouts")}
               </div>
             ) : (
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto no-scrollbar">
                 <table className="w-full text-left text-xs sm:text-sm min-w-[500px]">
                   <thead className="bg-slate-50/80 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 uppercase text-[11px] font-bold tracking-wider">
                     <tr>

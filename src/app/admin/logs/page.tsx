@@ -236,7 +236,7 @@ export default async function AdminLogsPage(props: {
             <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{tLogs("emptyLogsDesc")}</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto no-scrollbar">
             <table className="w-full text-left text-xs border-collapse min-w-[700px]">
               <thead>
                 <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/80 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
@@ -267,7 +267,7 @@ export default async function AdminLogsPage(props: {
 
                       <td className="py-3.5 px-4">
                         {detail ? (
-                          <div className="text-xs font-mono bg-slate-50 dark:bg-slate-950 p-2.5 rounded-xl border border-slate-200/60 dark:border-slate-800 max-w-md overflow-x-auto text-slate-700 dark:text-slate-300 shadow-2xs">
+                          <div className="text-xs font-mono bg-slate-50 dark:bg-slate-950 p-2.5 rounded-xl border border-slate-200/60 dark:border-slate-800 max-w-md overflow-x-auto no-scrollbar text-slate-700 dark:text-slate-300 shadow-2xs">
                             {Object.entries(detail).map(([key, val]) => (
                               <div key={key} className="flex gap-1.5 leading-relaxed text-[11px]">
                                 <span className="text-slate-400 dark:text-slate-500 font-semibold">{key}:</span>

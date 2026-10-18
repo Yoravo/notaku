@@ -291,7 +291,7 @@ export default async function AdminUserDetailPage(props: {
             <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">{tAdmin("max10Recent")}</span>
           </div>
 
-          <div className="flex-1 overflow-x-auto">
+          <div className="flex-1 overflow-x-auto no-scrollbar">
             {targetUser.invoices.length === 0 ? (
               <p className="p-8 text-center text-xs text-slate-400 dark:text-slate-500 font-medium">
                 {tAdmin("emptyInvoices")}

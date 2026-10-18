@@ -561,7 +561,7 @@ export function FreeDeliveryOrderGeneratorClient({ session }: { session?: any })
               </div>
 
               {/* Table */}
-              <div className="border border-slate-200 rounded-lg overflow-x-auto mb-4">
+              <div className="border border-slate-200 rounded-lg overflow-x-auto no-scrollbar mb-4">
                 <table className="w-full text-left text-xs border-collapse min-w-[340px]">
                   <thead>
                     <tr className="bg-emerald-700 text-white font-bold text-[10px] uppercase">
