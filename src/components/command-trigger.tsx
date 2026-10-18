@@ -8,7 +8,7 @@ export function CommandTrigger({ className = "" }: { className?: string }) {
     <button
       type="button"
       onClick={openCommandPalette}
-      className={`inline-flex items-center justify-center sm:justify-start gap-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/60 p-2 sm:px-3 sm:py-1.5 text-xs text-slate-500 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:text-slate-900 dark:hover:text-slate-100 transition-colors cursor-pointer min-h-[44px] min-w-[44px] sm:min-h-[38px] sm:min-w-0 ${className}`}
+      className={`inline-flex items-center justify-center sm:justify-start gap-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/60 h-9 w-9 sm:w-auto p-2 sm:px-3 text-xs text-slate-500 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:text-slate-900 dark:hover:text-slate-100 transition-colors cursor-pointer shrink-0 ${className}`}
       aria-label="Buka command palette (Ctrl+K)"
       title="Cari atau aksi cepat (Ctrl+K)"
     >

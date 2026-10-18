@@ -17,6 +17,8 @@ import {
 import { formatMoney } from "@/lib/currencies";
 import { formatDateWIB } from "@/lib/invoice-utils";
 import { useTranslations } from "next-intl";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageDropdown } from "@/components/language-dropdown";
 
 interface InvoiceItem {
   id: string;
@@ -117,9 +119,9 @@ export function PortalClient({
   }, [invoices, activeTab, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-[#0f6b4f]/20">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans selection:bg-[#0f6b4f]/20">
       {/* Top Header */}
-      <header className="border-b border-slate-200/80 bg-white/80 backdrop-blur-md sticky top-0 z-30">
+      <header className="border-b border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-30">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             {seller.logoUrl ? (
@@ -129,27 +131,29 @@ export function PortalClient({
                 className="h-9 max-w-[120px] object-contain shrink-0"
               />
             ) : (
-              <div className="w-9 h-9 rounded-xl bg-emerald-50 text-[#0f6b4f] border border-emerald-100 flex items-center justify-center font-bold text-base shadow-2xs">
+              <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-[#0f6b4f] dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800 flex items-center justify-center font-bold text-base shadow-2xs">
                 <BuildingStorefrontIcon className="w-5 h-5" />
               </div>
             )}
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block leading-none">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block leading-none">
                 {tPortal("badge")}
               </span>
-              <h1 className="text-sm sm:text-base font-extrabold text-slate-900 tracking-tight mt-0.5">
+              <h1 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white tracking-tight mt-0.5">
                 {sellerDisplayName}
               </h1>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2.5 sm:gap-4">
             <div className="text-right hidden sm:block">
-              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 {tPortal("clientLabel")}
               </span>
-              <p className="text-xs font-bold text-[#0f6b4f]">{customer.name}</p>
+              <p className="text-xs font-bold text-[#0f6b4f] dark:text-emerald-400">{customer.name}</p>
             </div>
+            <ThemeToggle />
+            <LanguageDropdown variant="light" />
           </div>
         </div>
       </header>

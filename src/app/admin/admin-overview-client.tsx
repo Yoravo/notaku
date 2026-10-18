@@ -220,7 +220,7 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
         </div>
 
         {/* Visual Trend Chart 14 Days */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-2xs mt-4">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-2xs mt-4 overflow-hidden">
           <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
             <ChartBarSquareIcon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             <span>{tAdmin("trafficTrendsTitle")}</span>

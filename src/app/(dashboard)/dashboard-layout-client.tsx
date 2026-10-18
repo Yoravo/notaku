@@ -82,8 +82,8 @@ export function DashboardLayoutClient({
       {/* Main Content Area */}
       <main className="flex flex-1 flex-col overflow-hidden bg-slate-50 dark:bg-slate-900/50">
         {/* Top Header Bar (Desktop & Mobile) */}
-        <header className="flex h-14 items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 sm:px-6 shrink-0 shadow-2xs">
-          <div className="flex items-center gap-2.5">
+        <header className="flex h-14 items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 sm:px-6 shrink-0 shadow-2xs gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             {/* Desktop 3-Bar Toggle Button */}
             <button
               onClick={() => setDesktopOpen(!desktopOpen)}
@@ -97,14 +97,14 @@ export function DashboardLayoutClient({
             {/* Mobile Toggle Button */}
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="md:hidden inline-flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-900 dark:text-white cursor-pointer"
+              className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-900 dark:text-white cursor-pointer shrink-0"
               aria-label="Toggle sidebar"
               aria-expanded={sidebarOpen}
             >
               {sidebarOpen ? (
-                <XMarkIcon className="h-6 w-6" />
+                <XMarkIcon className="h-5 w-5" />
               ) : (
-                <Bars3Icon className="h-6 w-6" />
+                <Bars3Icon className="h-5 w-5" />
               )}
             </button>
 
@@ -131,14 +131,14 @@ export function DashboardLayoutClient({
             {/* Mobile Brand */}
             <Link
               href="/"
-              className="md:hidden flex items-center gap-1.5 text-lg font-bold font-sans tracking-tight text-slate-900 dark:text-white transition-opacity hover:opacity-80"
+              className="md:hidden flex items-center gap-1 text-sm sm:text-base font-bold font-sans tracking-tight text-slate-900 dark:text-white transition-opacity hover:opacity-80 shrink-0"
             >
               <Image
                 src="/logo.png"
                 alt="NotaKu Logo"
-                width={24}
-                height={24}
-                className="w-6 h-6 object-contain shrink-0"
+                width={20}
+                height={20}
+                className="w-5 h-5 object-contain shrink-0"
               />
               <span>
                 <span>Nota</span>
@@ -147,7 +147,7 @@ export function DashboardLayoutClient({
             </Link>
           </div>
 
-          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             {/* Global Command Palette Trigger (Ctrl+K) */}
             <CommandTrigger />
 
@@ -157,14 +157,15 @@ export function DashboardLayoutClient({
             {/* Unified Language Switcher Dropdown */}
             <LanguageDropdown variant="light" />
 
+            {/* Sign Out (Desktop / Tablet only; mobile is in mobile drawer) */}
             <button
               onClick={handleSignOut}
-              className="inline-flex items-center justify-center gap-1.5 rounded-xl p-2 sm:px-3 sm:py-1.5 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 text-xs font-semibold text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white transition-colors cursor-pointer border border-transparent hover:border-gray-200 dark:hover:border-slate-700"
+              className="hidden sm:inline-flex items-center justify-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white transition-colors cursor-pointer border border-transparent hover:border-gray-200 dark:hover:border-slate-700"
               aria-label={tDash("logout")}
               title={tDash("logout")}
             >
               <ArrowLeftOnRectangleIcon className="w-4 h-4 text-gray-400 dark:text-slate-400" />
-              <span className="hidden sm:inline">{tDash("logout")}</span>
+              <span>{tDash("logout")}</span>
             </button>
           </div>
         </header>

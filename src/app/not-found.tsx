@@ -2,6 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { ArrowLeftIcon, WrenchScrewdriverIcon } from "@heroicons/react/24/outline";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 export default async function GlobalNotFound() {
   const t = await getTranslations("notFound");
@@ -29,6 +31,10 @@ export default async function GlobalNotFound() {
               <span className="text-emerald">Ku</span>
             </span>
           </Link>
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            <ThemeToggle />
+            <LanguageSwitcher />
+          </div>
         </div>
       </header>
 

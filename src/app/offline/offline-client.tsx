@@ -21,6 +21,8 @@ import {
 } from "@/lib/offline-cache";
 import { formatMoney } from "@/lib/currencies";
 import { formatDateWIB } from "@/lib/invoice-utils";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageDropdown } from "@/components/language-dropdown";
 
 export function OfflineClient() {
   const t = useTranslations("offline");
@@ -108,7 +110,9 @@ export function OfflineClient() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 self-end sm:self-auto">
+          <div className="flex items-center gap-2 self-end sm:self-auto flex-wrap sm:flex-nowrap">
+            <ThemeToggle />
+            <LanguageDropdown variant="light" />
             <button
               type="button"
               onClick={handleReload}

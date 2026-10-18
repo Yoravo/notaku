@@ -4,6 +4,7 @@ import Link from "next/link";
 import { formatDateWIB } from "@/lib/invoice-utils";
 import { formatMoney } from "@/lib/currencies";
 import { PublicPaymentBox } from "@/components/invoices/public-payment-box";
+import { ThemeToggle } from "@/components/theme-toggle";
 import type { Metadata } from "next";
 
 export async function generateMetadata({
@@ -78,15 +79,30 @@ export default async function PublicInvoicePage({
   const currency = (invoice as any).currency || "IDR";
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6">
-      <div className="mx-auto max-w-3xl rounded-2xl border border-slate-200 bg-white p-6 sm:p-10 shadow-sm">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 py-6 sm:py-8 px-4 sm:px-6">
+      {/* Top Utility Bar */}
+      <div className="mx-auto max-w-3xl mb-4 flex items-center justify-between">
+        <Link
+          href="/"
+          className="flex items-center gap-1.5 text-sm font-bold tracking-tight text-slate-900 dark:text-white transition-opacity hover:opacity-85"
+        >
+          <img src="/logo.png" alt="NotaKu Logo" className="w-5 h-5 object-contain" />
+          <span>
+            <span>Nota</span>
+            <span className="text-[#0f6b4f] dark:text-emerald-400">Ku</span>
+          </span>
+        </Link>
+        <ThemeToggle />
+      </div>
+
+      <div className="mx-auto max-w-3xl rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-10 shadow-sm">
         {/* Header */}
         <div className="flex justify-between items-start gap-4">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">
               Tagihan Resmi
             </span>
-            <h1 className="text-xl sm:text-2xl font-mono font-bold text-slate-900 mt-0.5">
+            <h1 className="text-xl sm:text-2xl font-mono font-bold text-slate-900 dark:text-white mt-0.5">
               {invoice.number}
             </h1>
             <div className="mt-2.5">
