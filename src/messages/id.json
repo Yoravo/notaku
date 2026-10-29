@@ -388,7 +388,9 @@
       "iosStep3": "Ketuk 'Tambah' di sudut kanan atas untuk menyelesaikan.",
       "dismiss": "Nanti saja",
       "close": "Tutup banner"
-    }
+    },
+    "businessInsightsTitle": "Insight Arus Kas Business",
+    "businessInsightsLocked": "Analisis DSO, ketepatan pembayaran, dan peringkat pelanggan tersedia khusus paket Business."
   },
   "cashflow": {
     "title": "Arus Kas & Realisasi Pembayaran",
@@ -397,7 +399,10 @@
     "legendCollected": "Diterima (Collected)",
     "rateRealized": "{rate}% Tercairkan",
     "summaryTotalBilled": "Total Tagihan Diterbitkan (6 Bln)",
-    "summaryTotalCollected": "Total Kas Masuk Terkumpul (6 Bln)"
+    "summaryTotalCollected": "Total Kas Masuk Terkumpul (6 Bln)",
+    "currencyNote": "Khusus IDR · tanpa konversi kurs",
+    "tableCaption": "Data arus kas bulanan dalam IDR",
+    "tableMonth": "Bulan"
   },
   "clientPerformance": {
     "title": "Performa Pembayaran & Loyalitas Klien",

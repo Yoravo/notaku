@@ -1,3 +1,4 @@
+import { getJakartaMonthBounds } from "@/lib/admin-analytics";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import { AdminFinanceClient } from "./admin-finance-client";
@@ -12,55 +13,40 @@ export const dynamic = "force-dynamic";
 export default async function AdminFinancePage() {
   await requireAdmin();
 
-  const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const startOfPrevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-  const endOfPrevMonth = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999);
-
-  // Pro Subscription pricing baseline (Rp 49.000 / month)
-  const PRO_PRICE = 49000;
+  const { currentStart, previousStart, previousEnd } = getJakartaMonthBounds(new Date());
 
   const [
     totalUsers,
     planCounts,
-    paidInvoicesAgg,
-    allInvoicesAgg,
-    paidThisMonthAgg,
-    paidLastMonthAgg,
+    paidInvoicesByCurrency,
+    allInvoicesByCurrency,
+    paidThisMonthByCurrency,
+    paidLastMonthByCurrency,
     allInvoicesCount,
-    paidInvoicesCount,
     recentPaidInvoices,
   ] = await Promise.all([
     prisma.user.count(),
     prisma.user.groupBy({ by: ["plan"], _count: { id: true } }),
-    prisma.invoice.aggregate({
-      where: { status: "PAID" },
-      _sum: { total: true },
+    prisma.invoice.groupBy({
+      by: ["currency"], where: { status: "PAID" }, _sum: { total: true }, _count: { id: true },
     }),
-    prisma.invoice.aggregate({
-      _sum: { total: true },
+    prisma.invoice.groupBy({
+      by: ["currency"], _sum: { total: true }, _count: { id: true },
     }),
-    prisma.invoice.aggregate({
-      where: {
-        status: "PAID",
-        createdAt: { gte: startOfMonth },
-      },
-      _sum: { total: true },
-      _count: { id: true },
+    prisma.invoice.groupBy({
+      by: ["currency"],
+      where: { status: "PAID", paidAt: { gte: currentStart } },
+      _sum: { total: true }, _count: { id: true },
     }),
-    prisma.invoice.aggregate({
-      where: {
-        status: "PAID",
-        createdAt: { gte: startOfPrevMonth, lte: endOfPrevMonth },
-      },
-      _sum: { total: true },
-      _count: { id: true },
+    prisma.invoice.groupBy({
+      by: ["currency"],
+      where: { status: "PAID", paidAt: { gte: previousStart, lte: previousEnd } },
+      _sum: { total: true }, _count: { id: true },
     }),
     prisma.invoice.count(),
-    prisma.invoice.count({ where: { status: "PAID" } }),
     prisma.invoice.findMany({
       where: { status: "PAID" },
-      orderBy: { createdAt: "desc" },
+      orderBy: { paidAt: "desc" },
       take: 10,
       include: {
         user: { select: { name: true, email: true } },
@@ -69,31 +55,36 @@ export default async function AdminFinancePage() {
     }),
   ]);
 
-  // Financial Estimates
-  let estimatedMRR = 0;
-  let totalProUsers = 0;
+  let listPriceMonthlyRunRate = 0;
+  let totalPaidUsers = 0;
+  const planBreakdown = { lite: 0, pro: 0, business: 0 };
   planCounts.forEach((p) => {
     if (p.plan === "LITE") {
-      estimatedMRR += p._count.id * 19000;
-      totalProUsers += p._count.id;
+      listPriceMonthlyRunRate += p._count.id * 19000;
+      totalPaidUsers += p._count.id;
+      planBreakdown.lite = p._count.id;
     } else if (p.plan === "PRO") {
-      estimatedMRR += p._count.id * 49000;
-      totalProUsers += p._count.id;
+      listPriceMonthlyRunRate += p._count.id * 49000;
+      totalPaidUsers += p._count.id;
+      planBreakdown.pro = p._count.id;
     } else if (p.plan === "BUSINESS") {
-      estimatedMRR += p._count.id * 99000;
-      totalProUsers += p._count.id; // Count as paid
+      listPriceMonthlyRunRate += p._count.id * 99000;
+      totalPaidUsers += p._count.id;
+      planBreakdown.business = p._count.id;
     }
   });
 
-  const estimatedARR = estimatedMRR * 12;
-  const conversionRate = totalUsers > 0 ? ((totalProUsers / totalUsers) * 100).toFixed(1) : "0";
-  const platformGMV = Number(paidInvoicesAgg._sum.total || 0);
-  const totalInvoiceValue = Number(allInvoicesAgg._sum.total || 0);
-
+  const serializeGroups = (groups: typeof paidInvoicesByCurrency) => groups.map((group) => ({
+    currency: group.currency,
+    total: Number(group._sum.total || 0),
+    count: group._count.id,
+  }));
   const serializedRecentPaid = recentPaidInvoices.map((inv) => ({
     id: inv.id,
     number: inv.number,
     total: Number(inv.total),
+    currency: inv.currency,
+    paidAt: inv.paidAt?.toISOString() || null,
     userName: inv.user?.name || null,
     userEmail: inv.user?.email || "",
     customerName: inv.customer?.name || null,
@@ -101,18 +92,17 @@ export default async function AdminFinancePage() {
 
   return (
     <AdminFinanceClient
-      estimatedMRR={estimatedMRR}
-      estimatedARR={estimatedARR}
-      conversionRate={conversionRate}
-      platformGMV={platformGMV}
-      totalInvoiceValue={totalInvoiceValue}
+      listPriceMonthlyRunRate={listPriceMonthlyRunRate}
+      listPriceAnnualRunRate={listPriceMonthlyRunRate * 12}
+      conversionRate={totalUsers > 0 ? ((totalPaidUsers / totalUsers) * 100).toFixed(1) : "0"}
+      paidInvoiceTotals={serializeGroups(paidInvoicesByCurrency)}
+      allInvoiceTotals={serializeGroups(allInvoicesByCurrency)}
+      paidThisMonthTotals={serializeGroups(paidThisMonthByCurrency)}
+      paidLastMonthTotals={serializeGroups(paidLastMonthByCurrency)}
       totalUsers={totalUsers}
-      totalProUsers={totalProUsers}
+      totalPaidUsers={totalPaidUsers}
+      planBreakdown={planBreakdown}
       allInvoicesCount={allInvoicesCount}
-      paidThisMonthTotal={Number(paidThisMonthAgg._sum.total || 0)}
-      paidThisMonthCount={paidThisMonthAgg._count.id || 0}
-      paidLastMonthTotal={Number(paidLastMonthAgg._sum.total || 0)}
-      paidLastMonthCount={paidLastMonthAgg._count.id || 0}
       recentPaidInvoices={serializedRecentPaid}
     />
   );

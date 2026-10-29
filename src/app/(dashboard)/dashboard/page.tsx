@@ -2,11 +2,13 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { canCreateInvoice } from "@/lib/plan-limits";
+import { canCreateInvoice, hasBusinessFeatures, hasProFeatures } from "@/lib/plan-limits";
 import { DashboardClient } from "./dashboard-client";
 import { SerializedInvoice } from "@/types/invoice";
 import { getActiveAnnouncement } from "@/actions/admin";
-import { getAdvancedAnalytics } from "@/lib/analytics";
+import { getAdvancedAnalytics, getMonthlyCashflow } from "@/lib/analytics";
+import { resolveEffectivePlan } from "@/lib/effective-plan";
+import { getWibRange, groupInvoiceMetrics, normalizeDashboardRange } from "@/lib/dashboard-metrics";
 
 export default async function DashboardPage({
   searchParams,
@@ -18,71 +20,35 @@ export default async function DashboardPage({
 
   const userId = session.user.id;
   const { range } = await searchParams;
-  const selectedRange = range || "month"; // "all" | "month" | "year"
+  const selectedRange = normalizeDashboardRange(range);
+  const dateRange = getWibRange(selectedRange);
+  const createdAt = Object.keys(dateRange).length ? dateRange : undefined;
 
-  const now = new Date();
-  let dateFilter: { gte?: Date } | undefined = undefined;
-
-  if (selectedRange === "month") {
-    dateFilter = { gte: new Date(now.getFullYear(), now.getMonth(), 1) };
-  } else if (selectedRange === "year") {
-    dateFilter = { gte: new Date(now.getFullYear(), 0, 1) };
-  }
-
-  const [
-    invoiceCount,
-    totalCustomers,
-    paidAgg,
-    pendingAgg,
-    totalVolumeAgg,
-    expenseAgg,
-    user,
-    recentInvoices,
-    announcement,
-    analytics,
-  ] = await Promise.all([
-    prisma.invoice.count({
+  const [user, invoices, totalCustomers, recentInvoices, announcement] = await Promise.all([
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        plan: true,
+        businessName: true,
+        bankName: true,
+        bankAccountNumber: true,
+        subscription: {
+          select: { status: true, plan: true, currentPeriodEnd: true },
+        },
+      },
+    }),
+    prisma.invoice.findMany({
       where: {
         userId,
-        ...(dateFilter ? { createdAt: dateFilter } : {}),
+        ...(createdAt ? { createdAt } : {}),
+      },
+      select: {
+        currency: true,
+        total: true,
+        status: true,
       },
     }),
     prisma.customer.count({ where: { userId } }),
-    prisma.invoice.aggregate({
-      where: {
-        userId,
-        status: "PAID",
-        ...(dateFilter ? { createdAt: dateFilter } : {}),
-      },
-      _sum: { total: true },
-    }),
-    prisma.invoice.aggregate({
-      where: {
-        userId,
-        status: { in: ["SENT", "OVERDUE"] },
-        ...(dateFilter ? { createdAt: dateFilter } : {}),
-      },
-      _sum: { total: true },
-    }),
-    prisma.invoice.aggregate({
-      where: {
-        userId,
-        status: { not: "CANCELLED" },
-        ...(dateFilter ? { createdAt: dateFilter } : {}),
-      },
-      _sum: { total: true },
-    }),
-    prisma.expense.aggregate({
-      where: {
-        userId,
-        ...(dateFilter ? { date: dateFilter } : {}),
-      },
-      _sum: { amount: true },
-    }),
-    prisma.user.findUnique({
-      where: { id: userId },
-      select: { plan: true, businessName: true, bankName: true, bankAccountNumber: true },
-    }),
     prisma.invoice.findMany({
       where: { userId },
       include: { customer: true },
@@ -90,16 +56,37 @@ export default async function DashboardPage({
       take: 5,
     }),
     getActiveAnnouncement("DASHBOARD"),
-    getAdvancedAnalytics(userId),
   ]);
 
-  const paidRevenue = Number(paidAgg._sum.total || 0);
-  const pendingRevenue = Number(pendingAgg._sum.total || 0);
-  const totalVolume = Number(totalVolumeAgg._sum.total || 0);
-  const totalExpenses = Number(expenseAgg._sum.amount || 0);
-  const netProfit = paidRevenue - totalExpenses;
-  const isPro = user?.plan === "PRO" || user?.plan === "BUSINESS";
-  const { used, limit } = await canCreateInvoice(userId);
+  const effectivePlan = resolveEffectivePlan(user);
+  const isPro = hasProFeatures(effectivePlan);
+  const isBusiness = hasBusinessFeatures(effectivePlan);
+
+  const [quota, expenses, cashflow, analytics] = await Promise.all([
+    canCreateInvoice(userId),
+    isPro
+      ? prisma.expense.aggregate({
+          where: {
+            userId,
+            ...(createdAt ? { date: createdAt } : {}),
+          },
+          _sum: { amount: true },
+        })
+      : Promise.resolve(null),
+    getMonthlyCashflow(userId),
+    isBusiness ? getAdvancedAnalytics(userId) : Promise.resolve(null),
+  ]);
+
+  const currencyMetrics = groupInvoiceMetrics(
+    invoices.map((inv) => ({
+      currency: inv.currency,
+      total: Number(inv.total),
+      status: inv.status,
+    }))
+  );
+  const idrMetric = currencyMetrics.find((m) => m.currency === "IDR");
+  const totalExpenses = Number(expenses?._sum.amount || 0);
+  const netProfit = (idrMetric?.paidRevenue || 0) - totalExpenses;
 
   const serializedInvoices: SerializedInvoice[] = recentInvoices.map((inv) => ({
     id: inv.id,
@@ -128,19 +115,18 @@ export default async function DashboardPage({
     <DashboardClient
       userName={session.user.name}
       isPro={isPro}
-      userPlan={user?.plan || "FREE"}
+      isBusiness={isBusiness}
+      userPlan={effectivePlan}
       selectedRange={selectedRange}
-      paidRevenue={paidRevenue}
-      pendingRevenue={pendingRevenue}
-      totalVolume={totalVolume}
+      currencyMetrics={currencyMetrics}
       totalExpenses={totalExpenses}
       netProfit={netProfit}
-      invoiceCount={invoiceCount}
-      used={used}
-      limit={limit}
+      used={quota.used}
+      limit={quota.limit}
       totalCustomers={totalCustomers}
       recentInvoices={serializedInvoices}
       announcement={announcement}
+      cashflow={cashflow}
       analytics={analytics}
       userId={userId}
       hasBusinessName={Boolean(user?.businessName?.trim())}

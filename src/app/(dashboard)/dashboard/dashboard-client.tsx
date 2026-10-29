@@ -19,31 +19,35 @@ import { RecentInvoices } from "@/components/recent-invoices";
 import { SerializedInvoice } from "@/types/invoice";
 import { AnnouncementBanner, AnnouncementData } from "@/components/announcement-banner";
 import { useTranslations, useLocale } from "next-intl";
-import { AdvancedAnalyticsData } from "@/lib/analytics";
+import { AdvancedAnalyticsData, MonthlyCashflowPoint } from "@/lib/analytics";
 import { CashflowChart } from "@/components/dashboard/cashflow-chart";
 import { ClientPerformanceMetrics } from "@/components/dashboard/client-performance-metrics";
 import { formatMoney } from "@/lib/currencies";
 import { OnboardingChecklist } from "@/components/dashboard/onboarding-checklist";
 import { PWAInstallBanner } from "@/components/pwa-install-banner";
 import { saveOfflineInvoices, saveOfflineCustomers } from "@/lib/offline-cache";
+import {
+  type CurrencyMetric,
+  type DashboardRange,
+  getWibDateBounds,
+} from "@/lib/dashboard-metrics";
 
 interface DashboardClientProps {
   userName: string;
   isPro: boolean;
+  isBusiness: boolean;
   userPlan?: string;
-  selectedRange: string;
-  paidRevenue: number;
-  pendingRevenue: number;
-  totalVolume: number;
+  selectedRange: DashboardRange;
+  currencyMetrics: CurrencyMetric[];
   totalExpenses?: number;
   netProfit?: number;
-  invoiceCount: number;
   used: number;
   limit: number;
   totalCustomers: number;
   recentInvoices: SerializedInvoice[];
   announcement?: AnnouncementData | null;
-  analytics: AdvancedAnalyticsData;
+  cashflow: MonthlyCashflowPoint[];
+  analytics: AdvancedAnalyticsData | null;
   userId: string;
   hasBusinessName: boolean;
   hasBankAccount: boolean;
@@ -53,19 +57,18 @@ interface DashboardClientProps {
 export function DashboardClient({
   userName,
   isPro,
+  isBusiness,
   userPlan = "FREE",
   selectedRange,
-  paidRevenue,
-  pendingRevenue,
-  totalVolume,
+  currencyMetrics,
   totalExpenses = 0,
   netProfit = 0,
-  invoiceCount,
   used,
   limit,
   totalCustomers,
   recentInvoices,
   announcement = null,
+  cashflow,
   analytics,
   userId,
   hasBusinessName,
@@ -83,6 +86,20 @@ export function DashboardClient({
   };
 
   const periodLabel = rangeLabels[selectedRange] || tDash("rangeMonth");
+  const dateBounds = getWibDateBounds(selectedRange);
+  const exportHref =
+    dateBounds.from && dateBounds.to
+      ? `/api/invoices/export?from=${dateBounds.from}&to=${dateBounds.to}`
+      : `/api/invoices/export`;
+  const idrMetric = currencyMetrics.find((metric) => metric.currency === "IDR");
+  const primaryMetric = idrMetric ?? currencyMetrics[0] ?? {
+    currency: "IDR",
+    totalVolume: 0,
+    paidRevenue: 0,
+    pendingRevenue: 0,
+    invoiceCount: 0,
+  };
+  const { currency, totalVolume, paidRevenue, pendingRevenue, invoiceCount } = primaryMetric;
 
   // Keep offline read-only snapshot in sync with latest dashboard data
   useEffect(() => {
@@ -167,7 +184,7 @@ export function DashboardClient({
 
         <div className="flex flex-wrap items-center gap-2">
           <a
-            href={`/api/invoices/export`}
+            href={exportHref}
             download
             className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors shadow-2xs min-h-[44px]"
           >
@@ -192,6 +209,7 @@ export function DashboardClient({
             key={r}
             href={`/dashboard?range=${r}`}
             prefetch={true}
+            aria-current={selectedRange === r ? "page" : undefined}
             className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors min-h-[44px] sm:min-h-[32px] inline-flex items-center ${
               selectedRange === r
                 ? "bg-[#0f6b4f] text-white shadow-2xs"
@@ -219,7 +237,7 @@ export function DashboardClient({
           </div>
           <div className="mt-3">
             <p className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white tabular-nums">
-              {formatMoney(totalVolume, "IDR", locale)}
+              {formatMoney(totalVolume, currency, locale)}
             </p>
             <p className="mt-1 text-xs text-slate-400 dark:text-slate-500 font-medium">
               {invoiceCount} invoice <span className="inline-block w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600 mx-1.5 align-middle" /> {periodLabel}
@@ -241,7 +259,7 @@ export function DashboardClient({
           </div>
           <div className="mt-3">
             <p className="text-2xl font-bold tracking-tight text-[#0f6b4f] dark:text-emerald-400 tabular-nums">
-              {formatMoney(paidRevenue, "IDR", locale)}
+              {formatMoney(paidRevenue, currency, locale)}
             </p>
             <p className="mt-1 text-xs text-slate-400 dark:text-slate-500 font-medium">
               {tDash("paidRevenueSubtitle")}
@@ -263,7 +281,7 @@ export function DashboardClient({
           </div>
           <div className="mt-3">
             <p className="text-2xl font-bold tracking-tight text-amber-600 dark:text-amber-400 tabular-nums">
-              {formatMoney(pendingRevenue, "IDR", locale)}
+              {formatMoney(pendingRevenue, currency, locale)}
             </p>
             <p className="mt-1 text-xs text-slate-400 dark:text-slate-500 font-medium">
               {tDash("unpaidAmountSubtitle")}
@@ -299,7 +317,8 @@ export function DashboardClient({
         </div>
       </div>
 
-      {/* Profit & Loss Summary (Laba Bersih) */}
+      {/* Profit & Loss is a PRO+ capability and uses IDR expenses only. */}
+      {isPro && (
       <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-5 sm:p-6 shadow-sm ring-1 ring-slate-900/5 dark:ring-slate-100/5">
         <div className="flex items-center justify-between mb-4 border-b border-slate-100 dark:border-slate-800 pb-3">
           <h2 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
@@ -371,6 +390,7 @@ export function DashboardClient({
           {tDash("profitLossNote")}
         </p>
       </div>
+      )}
 
       <section aria-labelledby="quick-actions-title">
         <h2 id="quick-actions-title" className="mb-3 text-sm font-semibold text-slate-900 dark:text-white">
@@ -396,11 +416,25 @@ export function DashboardClient({
         </div>
       </section>
 
-      {/* Cashflow Bar Chart Component */}
-      <CashflowChart data={analytics.monthlyCashflow} />
+      {/* IDR-only cashflow; no implicit FX conversion. */}
+      <CashflowChart data={cashflow} />
 
-      {/* Advanced Client Performance & DSO Metrics (PRO) */}
-      <ClientPerformanceMetrics analytics={analytics} isPro={isPro} />
+      {/* Advanced DSO insights are exclusive to Business. */}
+      {analytics ? (
+        <ClientPerformanceMetrics analytics={analytics} />
+      ) : (
+        <section className="rounded-2xl border border-violet-200 bg-white p-6 shadow-2xs dark:border-violet-800 dark:bg-slate-900" aria-labelledby="business-insights-title">
+          <h2 id="business-insights-title" className="text-lg font-bold text-slate-900 dark:text-white">
+            {tDash("businessInsightsTitle")}
+          </h2>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+            {tDash("businessInsightsLocked")}
+          </p>
+          <Link href="/billing" prefetch={true} className="mt-4 inline-flex min-h-[44px] items-center rounded-xl bg-violet-700 px-4 py-2 text-sm font-bold text-white hover:bg-violet-800">
+            {tDash("upgradeToBusiness")}
+          </Link>
+        </section>
+      )}
 
       {/* Recent Invoices Table Component */}
       <RecentInvoices invoices={recentInvoices} />

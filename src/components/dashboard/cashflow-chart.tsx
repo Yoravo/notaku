@@ -2,7 +2,7 @@
 
 import { MonthlyCashflowPoint } from "@/lib/analytics";
 import { formatCurrency } from "@/lib/pdf/format";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 interface CashflowChartProps {
   data: MonthlyCashflowPoint[];
@@ -10,6 +10,21 @@ interface CashflowChartProps {
 
 export function CashflowChart({ data }: CashflowChartProps) {
   const tCash = useTranslations("cashflow");
+  const locale = useLocale();
+
+  const formatMonthLabel = (monthKey: string, fallback: string) => {
+    try {
+      const [y, m] = monthKey.split("-");
+      if (!y || !m) return fallback;
+      const d = new Date(Number(y), Number(m) - 1, 1);
+      return new Intl.DateTimeFormat(locale === "en" ? "en-US" : "id-ID", {
+        month: "short",
+        year: "2-digit",
+      }).format(d);
+    } catch {
+      return fallback;
+    }
+  };
 
   const maxVal = Math.max(
     ...data.map((d) => Math.max(d.billed, d.collected)),
@@ -25,9 +40,14 @@ export function CashflowChart({ data }: CashflowChartProps) {
       {/* Header & Legend */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
         <div>
-          <h2 className="text-base font-bold text-slate-900 dark:text-white">
-            {tCash("title")}
-          </h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-base font-bold text-slate-900 dark:text-white">
+              {tCash("title")}
+            </h2>
+            <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+              {tCash("currencyNote")}
+            </span>
+          </div>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             {tCash("subtitle")}
           </p>
@@ -69,7 +89,7 @@ export function CashflowChart({ data }: CashflowChartProps) {
               >
                 {/* Tooltip Hover Interactive */}
                 <div className="absolute -top-16 z-30 hidden group-hover:flex flex-col items-center bg-slate-900 dark:bg-slate-800 text-white text-[11px] py-1.5 px-3 rounded-xl shadow-2xl border border-slate-800 dark:border-slate-700 whitespace-nowrap pointer-events-none transition-all duration-200">
-                  <span className="font-bold text-slate-100 dark:text-white">{item.label}</span>
+                  <span className="font-bold text-slate-100 dark:text-white">{formatMonthLabel(item.monthKey, item.label)}</span>
                   <div className="flex items-center gap-2 mt-0.5 text-[10px]">
                     <span className="text-blue-300 dark:text-blue-300 font-semibold">
                       Billed: {formatCurrency(item.billed)}
@@ -97,15 +117,37 @@ export function CashflowChart({ data }: CashflowChartProps) {
 
                 {/* X-axis Label */}
                 <span className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 font-medium truncate text-center">
-                  {item.label}
+                  {formatMonthLabel(item.monthKey, item.label)}
                 </span>
               </div>
             );
           })}
         </div>
 
+        <div className="sr-only overflow-x-auto">
+          <table>
+            <caption>{tCash("tableCaption")}</caption>
+            <thead>
+              <tr>
+                <th>{tCash("tableMonth")}</th>
+                <th>{tCash("legendBilled")}</th>
+                <th>{tCash("legendCollected")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((item) => (
+                <tr key={`table-${item.monthKey}`}>
+                  <th>{formatMonthLabel(item.monthKey, item.label)}</th>
+                  <td>{formatCurrency(item.billed)}</td>
+                  <td>{formatCurrency(item.collected)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
         {/* Summary Footer */}
-        <div className="mt-4 grid grid-cols-2 gap-3 pt-2 text-xs sm:text-sm">
+        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-xs sm:text-sm">
           <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/80 shadow-2xs">
             <span className="text-slate-500 dark:text-slate-400 text-xs font-medium">
               {tCash("summaryTotalBilled")}

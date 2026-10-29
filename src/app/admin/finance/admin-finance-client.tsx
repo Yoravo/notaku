@@ -1,6 +1,6 @@
 "use client";
 
-import { formatCurrency } from "@/lib/pdf/format";
+import { formatMoney } from "@/lib/currencies";
 import {
   BanknotesIcon,
   ArrowDownTrayIcon,
@@ -16,43 +16,52 @@ export type RecentPaidInvoice = {
   id: string;
   number: string;
   total: number;
+  currency: string;
+  paidAt: string | null;
   userName: string | null;
   userEmail: string;
   customerName: string | null;
 };
 
+export type CurrencyTotalItem = {
+  currency: string;
+  total: number;
+  count?: number;
+};
+
 export type AdminFinanceClientProps = {
-  estimatedMRR: number;
-  estimatedARR: number;
+  listPriceMonthlyRunRate: number;
+  listPriceAnnualRunRate: number;
   conversionRate: string;
-  platformGMV: number;
-  totalInvoiceValue: number;
+  paidInvoiceTotals: CurrencyTotalItem[];
+  allInvoiceTotals: CurrencyTotalItem[];
+  paidThisMonthTotals: CurrencyTotalItem[];
+  paidLastMonthTotals: CurrencyTotalItem[];
   totalUsers: number;
-  totalProUsers: number;
+  totalPaidUsers: number;
+  planBreakdown: { lite: number; pro: number; business: number };
   allInvoicesCount: number;
-  paidThisMonthTotal: number;
-  paidThisMonthCount: number;
-  paidLastMonthTotal: number;
-  paidLastMonthCount: number;
   recentPaidInvoices: RecentPaidInvoice[];
 };
 
 export function AdminFinanceClient({
-  estimatedMRR,
-  estimatedARR,
+  listPriceMonthlyRunRate,
+  listPriceAnnualRunRate,
   conversionRate,
-  platformGMV,
-  totalInvoiceValue,
+  paidInvoiceTotals,
+  allInvoiceTotals,
+  paidThisMonthTotals,
+  paidLastMonthTotals,
   totalUsers,
-  totalProUsers,
+  totalPaidUsers,
+  planBreakdown,
   allInvoicesCount,
-  paidThisMonthTotal,
-  paidThisMonthCount,
-  paidLastMonthTotal,
-  paidLastMonthCount,
   recentPaidInvoices,
 }: AdminFinanceClientProps) {
   const tAdmin = useTranslations("admin");
+
+  const paidThisMonthCount = paidThisMonthTotals.reduce((acc, curr) => acc + (curr.count || 0), 0);
+  const paidLastMonthCount = paidLastMonthTotals.reduce((acc, curr) => acc + (curr.count || 0), 0);
 
   return (
     <div className="space-y-6">
@@ -99,10 +108,10 @@ export function AdminFinanceClient({
             </div>
           </div>
           <p className="text-2xl sm:text-3xl font-extrabold text-[#0f6b4f] dark:text-emerald-400 mt-2 tabular-nums">
-            {formatCurrency(estimatedMRR)}
+            {formatMoney(listPriceMonthlyRunRate, "IDR")}
           </p>
           <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-medium">
-            {tAdmin("activeProUsersCount", { count: totalProUsers })}
+            {tAdmin("paidPlanBreakdownSummary", { count: totalPaidUsers, lite: planBreakdown.lite, pro: planBreakdown.pro, biz: planBreakdown.business })}
           </p>
         </div>
 
@@ -117,7 +126,7 @@ export function AdminFinanceClient({
             </div>
           </div>
           <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-2 tabular-nums">
-            {formatCurrency(estimatedARR)}
+            {formatMoney(listPriceAnnualRunRate, "IDR")}
           </p>
           <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-medium">
             {tAdmin("annualProjectionRunRate")}
@@ -128,7 +137,7 @@ export function AdminFinanceClient({
         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-2xs hover:border-purple-300 dark:hover:border-purple-500 transition-all">
           <div className="flex items-center justify-between">
             <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-              {tAdmin("proRatio")}
+              {tAdmin("paidPlanConversion")}
             </p>
             <div className="p-2 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-200/60 dark:border-purple-800">
               <SparklesIcon className="w-5 h-5" />
@@ -138,7 +147,7 @@ export function AdminFinanceClient({
             {conversionRate}%
           </p>
           <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-medium">
-            {tAdmin("proUsersCount", { pro: totalProUsers, total: totalUsers, rate: `${conversionRate}%` })}
+            {tAdmin("paidPlanRatioCount", { paid: totalPaidUsers, total: totalUsers, rate: `${conversionRate}%` })}
           </p>
         </div>
 
@@ -152,9 +161,19 @@ export function AdminFinanceClient({
               <CheckBadgeIcon className="w-5 h-5" />
             </div>
           </div>
-          <p className="text-2xl sm:text-3xl font-extrabold text-amber-800 dark:text-amber-300 mt-2 tabular-nums">
-            {formatCurrency(platformGMV)}
-          </p>
+          <div className="mt-2 space-y-0.5">
+            {paidInvoiceTotals.length === 0 ? (
+              <p className="text-2xl sm:text-3xl font-extrabold text-amber-800 dark:text-amber-300 tabular-nums">
+                {formatMoney(0, "IDR")}
+              </p>
+            ) : (
+              paidInvoiceTotals.map((item) => (
+                <p key={item.currency} className="text-2xl sm:text-3xl font-extrabold text-amber-800 dark:text-amber-300 tabular-nums truncate">
+                  {formatMoney(item.total, item.currency)}
+                </p>
+              ))
+            )}
+          </div>
           <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-medium">
             {tAdmin("gmvSubtitle", { count: allInvoicesCount })}
           </p>
@@ -167,7 +186,7 @@ export function AdminFinanceClient({
         <div className="lg:col-span-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-2xs space-y-4">
           <h2 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
             <DocumentDuplicateIcon className="w-4 h-4 text-slate-600 dark:text-slate-400" />
-            <span>{tAdmin("paidInvoices")}</span>
+            <span>{tAdmin("paidInvoicesByPaidAtWib")}</span>
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -175,9 +194,19 @@ export function AdminFinanceClient({
               <p className="text-[11px] text-[#0f6b4f] dark:text-emerald-400 font-bold uppercase tracking-wider">
                 {tAdmin("thisMonth")}
               </p>
-              <p className="text-xl sm:text-2xl font-extrabold text-[#0f6b4f] dark:text-emerald-400 mt-1 tabular-nums">
-                {formatCurrency(paidThisMonthTotal)}
-              </p>
+              <div className="mt-1 space-y-0.5">
+                {paidThisMonthTotals.length === 0 ? (
+                  <p className="text-xl sm:text-2xl font-extrabold text-[#0f6b4f] dark:text-emerald-400 tabular-nums">
+                    {formatMoney(0, "IDR")}
+                  </p>
+                ) : (
+                  paidThisMonthTotals.map((item) => (
+                    <p key={item.currency} className="text-xl sm:text-2xl font-extrabold text-[#0f6b4f] dark:text-emerald-400 tabular-nums">
+                      {formatMoney(item.total, item.currency)}
+                    </p>
+                  ))
+                )}
+              </div>
               <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-medium">
                 {tAdmin("invoicesPaidCount", { count: paidThisMonthCount })}
               </p>
@@ -187,17 +216,36 @@ export function AdminFinanceClient({
               <p className="text-[11px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
                 {tAdmin("lastMonth")}
               </p>
-              <p className="text-xl sm:text-2xl font-extrabold text-slate-800 dark:text-slate-200 mt-1 tabular-nums">
-                {formatCurrency(paidLastMonthTotal)}
-              </p>
+              <div className="mt-1 space-y-0.5">
+                {paidLastMonthTotals.length === 0 ? (
+                  <p className="text-xl sm:text-2xl font-extrabold text-slate-800 dark:text-slate-200 tabular-nums">
+                    {formatMoney(0, "IDR")}
+                  </p>
+                ) : (
+                  paidLastMonthTotals.map((item) => (
+                    <p key={item.currency} className="text-xl sm:text-2xl font-extrabold text-slate-800 dark:text-slate-200 tabular-nums">
+                      {formatMoney(item.total, item.currency)}
+                    </p>
+                  ))
+                )}
+              </div>
               <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 font-medium">
                 {tAdmin("invoicesPaidCount", { count: paidLastMonthCount })}
               </p>
             </div>
           </div>
 
-          <div className="pt-2 text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
-            {tAdmin("totalInvoiceVolumeDesc", { total: formatCurrency(totalInvoiceValue), count: allInvoicesCount })}
+          <div className="pt-2 text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium space-y-1">
+            <p className="font-semibold text-slate-700 dark:text-slate-300">
+              {tAdmin("allInvoiceTotalsByCurrency", { count: allInvoicesCount })}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {allInvoiceTotals.map((item) => (
+                <span key={item.currency} className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 font-mono font-bold text-slate-700 dark:text-slate-300">
+                  {formatMoney(item.total, item.currency)}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -244,7 +292,7 @@ export function AdminFinanceClient({
                         </p>
                       </td>
                       <td className="py-3 px-4 text-right font-mono font-bold text-[#0f6b4f] dark:text-emerald-400 tabular-nums">
-                        {formatCurrency(inv.total)}
+                        {formatMoney(inv.total, inv.currency)}
                       </td>
                     </tr>
                   ))}

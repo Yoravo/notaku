@@ -24,7 +24,7 @@ export interface AdvancedAnalyticsData {
   dsoDays: number | null;
   dsoTrend: "improving" | "stable" | "worsening" | null;
   // On-time Settlement Rate (persentase tagihan lunas tepat waktu sebelum / pada dueDate)
-  onTimePaymentRate: number;
+  onTimePaymentRate: number | null;
   totalPaidCount: number;
   totalLateCount: number;
   // Klien Teratas berdasarkan volume pembayaran
@@ -33,21 +33,78 @@ export interface AdvancedAnalyticsData {
   avgInvoiceValue: number;
 }
 
+export async function getMonthlyCashflow(userId: string): Promise<MonthlyCashflowPoint[]> {
+  const now = new Date();
+  const oneYearAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+
+  const recentInvoices = await prisma.invoice.findMany({
+    where: {
+      userId,
+      createdAt: { gte: oneYearAgo },
+      status: { not: "CANCELLED" },
+      currency: "IDR",
+    },
+    select: {
+      id: true,
+      createdAt: true,
+      paidAt: true,
+      status: true,
+      total: true,
+    },
+    orderBy: { createdAt: "asc" },
+  });
+
+  const monthBuckets: Record<string, { label: string; billed: number; collected: number }> = {};
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const key = `${yyyy}-${mm}`;
+    const label = `${monthNames[d.getMonth()]} '${String(yyyy).slice(2)}`;
+    monthBuckets[key] = { label, billed: 0, collected: 0 };
+  }
+
+  for (const inv of recentInvoices) {
+    const invDate = new Date(inv.createdAt);
+    const key = `${invDate.getFullYear()}-${String(invDate.getMonth() + 1).padStart(2, "0")}`;
+    if (monthBuckets[key]) {
+      monthBuckets[key].billed += Number(inv.total);
+    }
+
+    if (inv.status === "PAID" && inv.paidAt) {
+      const paidDate = new Date(inv.paidAt);
+      const paidKey = `${paidDate.getFullYear()}-${String(paidDate.getMonth() + 1).padStart(2, "0")}`;
+      if (monthBuckets[paidKey]) {
+        monthBuckets[paidKey].collected += Number(inv.total);
+      }
+    }
+  }
+
+  return Object.entries(monthBuckets).map(([monthKey, val]) => ({
+    monthKey,
+    label: val.label,
+    billed: val.billed,
+    collected: val.collected,
+  }));
+}
+
 /**
  * Mengagregasi metrik performa tagihan & analitik kas untuk user
  */
 export async function getAdvancedAnalytics(userId: string): Promise<AdvancedAnalyticsData> {
   const now = new Date();
-
-  // 1. Ambil seluruh data invoice user dalam 12 bulan terakhir (untuk tren cashflow) dan historical paid invoices (untuk DSO)
   const oneYearAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1);
 
-  const [recentInvoices, allPaidInvoices] = await Promise.all([
+  const [monthlyCashflow, recentInvoices, allPaidInvoices] = await Promise.all([
+    getMonthlyCashflow(userId),
     prisma.invoice.findMany({
       where: {
         userId,
         createdAt: { gte: oneYearAgo },
         status: { not: "CANCELLED" },
+        currency: "IDR",
       },
       select: {
         id: true,
@@ -93,44 +150,6 @@ export async function getAdvancedAnalytics(userId: string): Promise<AdvancedAnal
     }),
   ]);
 
-  // 2. Susun Monthly Cashflow (6 bulan terakhir)
-  const monthBuckets: Record<string, { label: string; billed: number; collected: number }> = {};
-  const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
-
-  for (let i = 5; i >= 0; i--) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, "0");
-    const key = `${yyyy}-${mm}`;
-    const label = `${monthNames[d.getMonth()]} '${String(yyyy).slice(2)}`;
-    monthBuckets[key] = { label, billed: 0, collected: 0 };
-  }
-
-  for (const inv of recentInvoices) {
-    const invDate = new Date(inv.createdAt);
-    const key = `${invDate.getFullYear()}-${String(invDate.getMonth() + 1).padStart(2, "0")}`;
-    if (monthBuckets[key]) {
-      monthBuckets[key].billed += Number(inv.total);
-    }
-
-    if (inv.status === "PAID" && inv.paidAt) {
-      const paidDate = new Date(inv.paidAt);
-      const paidKey = `${paidDate.getFullYear()}-${String(paidDate.getMonth() + 1).padStart(2, "0")}`;
-      if (monthBuckets[paidKey]) {
-        monthBuckets[paidKey].collected += Number(inv.total);
-      }
-    }
-  }
-
-  const monthlyCashflow: MonthlyCashflowPoint[] = Object.entries(monthBuckets).map(
-    ([monthKey, val]) => ({
-      monthKey,
-      label: val.label,
-      billed: val.billed,
-      collected: val.collected,
-    })
-  );
-
   // 3. Kalkulasi DSO (Days Sales Outstanding) & Rata-rata Durasi Pembayaran
   let totalPaymentDays = 0;
   let paidCountWithDates = 0;
@@ -163,7 +182,7 @@ export async function getAdvancedAnalytics(userId: string): Promise<AdvancedAnal
 
   const dsoDays = paidCountWithDates > 0 ? Math.round(totalPaymentDays / paidCountWithDates) : null;
   const onTimePaymentRate =
-    paidCountWithDates > 0 ? Math.round((onTimeCount / paidCountWithDates) * 100) : 100;
+    paidCountWithDates > 0 ? Math.round((onTimeCount / paidCountWithDates) * 100) : null;
 
   // 4. Agregasi Top Clients Performance
   const clientMap = new Map<

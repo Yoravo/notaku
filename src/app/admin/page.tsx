@@ -1,5 +1,6 @@
-import { prisma } from "@/lib/prisma";
+import { aggregateAcquisitionReferrers, buildJakartaDailyTraffic } from "@/lib/admin-analytics";
 import { requireAdmin } from "@/lib/admin";
+import { prisma } from "@/lib/prisma";
 import { AdminOverviewClient, type AdminOverviewData } from "./admin-overview-client";
 import type { Metadata } from "next";
 
@@ -25,6 +26,8 @@ export default async function AdminDashboardPage() {
     totalInvoices,
     paidInvoicesAgg,
     allInvoicesAgg,
+    paidInvoicesByCurrency,
+    allInvoicesByCurrency,
     totalCustomers,
     totalInvoiceItems,
     totalAuditLogs,
@@ -56,6 +59,17 @@ export default async function AdminDashboardPage() {
     }),
     prisma.invoice.aggregate({
       _sum: { total: true },
+    }),
+    prisma.invoice.groupBy({
+      by: ["currency"],
+      where: { status: "PAID" },
+      _sum: { total: true },
+      _count: { id: true },
+    }),
+    prisma.invoice.groupBy({
+      by: ["currency"],
+      _sum: { total: true },
+      _count: { id: true },
     }),
     prisma.customer.count(),
     prisma.invoiceItem.count(),
@@ -102,8 +116,6 @@ export default async function AdminDashboardPage() {
       by: ["referrer"],
       where: { referrer: { not: null } },
       _count: { referrer: true },
-      orderBy: { _count: { referrer: "desc" } },
-      take: 6,
     }),
     // Recent Users
     prisma.user.findMany({
@@ -126,60 +138,65 @@ export default async function AdminDashboardPage() {
     }),
   ]);
 
-  // Income calculations
+  // Income calculations (Run-rate based on active paid plan tiers)
   let proUsers = 0;
   let currentMRR = 0;
+  const planBreakdown = { lite: 0, pro: 0, business: 0, free: 0 };
 
   planCounts.forEach((p) => {
     if (p.plan === "LITE") {
       currentMRR += p._count.id * 19000;
       proUsers += p._count.id;
+      planBreakdown.lite = p._count.id;
     } else if (p.plan === "PRO") {
       currentMRR += p._count.id * 49000;
       proUsers += p._count.id;
+      planBreakdown.pro = p._count.id;
     } else if (p.plan === "BUSINESS") {
       currentMRR += p._count.id * 99000;
       proUsers += p._count.id;
+      planBreakdown.business = p._count.id;
+    } else {
+      planBreakdown.free = p._count.id;
     }
   });
 
   const totalEstimatedIncome = currentMRR;
 
+  const paidInvoiceVolumes = paidInvoicesByCurrency.map((p) => ({
+    currency: p.currency,
+    total: Number(p._sum.total || 0),
+  }));
+  const totalInvoiceVolumes = allInvoicesByCurrency.map((a) => ({
+    currency: a.currency,
+    total: Number(a._sum.total || 0),
+  }));
+
   const totalInvoiceVolume = Number(allInvoicesAgg._sum.total || 0);
   const paidInvoiceVolume = Number(paidInvoicesAgg._sum.total || 0);
 
-  // Group 14-day traffic by date (Asia/Jakarta day)
-  const trafficChartData = Array.from({ length: 14 }).map((_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() - (13 - i));
-    const dateStr = d.toISOString().split("T")[0];
-    const label = d.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
+  // Group 14-day traffic by Asia/Jakarta calendar day (WIB)
+  const trafficChartData = buildJakartaDailyTraffic(views14dRaw, now, 14);
 
-    // Filter pageviews on this day
-    const dayViews = views14dRaw.filter((v) => {
-      const vDateStr = new Date(v.createdAt).toISOString().split("T")[0];
-      return vDateStr === dateStr;
-    });
-
-    const uniqueIps = new Set(dayViews.map((v) => v.ipAddress).filter(Boolean));
-
-    return {
-      dateKey: dateStr,
-      label,
-      views: dayViews.length,
-      uniques: uniqueIps.size,
-    };
-  });
+  // Filter and normalize referrers: exclude internal domain and auth provider
+  const canonicalUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.BETTER_AUTH_URL || "https://notaku.store";
+  const topReferrers = aggregateAcquisitionReferrers(
+    topReferrersRaw.map((r) => ({ referrer: r.referrer, count: r._count.referrer })),
+    { canonicalUrl },
+  );
 
   const data: AdminOverviewData = {
     totalEstimatedIncome,
     currentMRR,
     proUsers,
+    planBreakdown,
     totalUsers,
     newUsers30d,
     settlementLogsCount,
     paidInvoiceVolume,
     totalInvoiceVolume,
+    paidInvoiceVolumes,
+    totalInvoiceVolumes,
     totalInvoices,
     totalInvoiceItems,
     totalCustomers,
@@ -197,10 +214,7 @@ export default async function AdminDashboardPage() {
       path: p.path,
       count: p._count.path,
     })),
-    topReferrers: topReferrersRaw.map((r) => ({
-      referrer: r.referrer,
-      count: r._count.referrer,
-    })),
+    topReferrers,
     recentUsers: recentUsers.map((u) => ({
       id: u.id,
       name: u.name,

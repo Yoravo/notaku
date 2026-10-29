@@ -7,10 +7,16 @@ import { revalidatePath } from "next/cache";
 import { expenseSchema } from "@/lib/validations";
 import { auditLog } from "@/lib/audit-log";
 import { checkServerActionRateLimit } from "@/lib/rate-limit";
+import { getEffectivePlan } from "@/lib/effective-plan";
+import { hasProFeatures } from "@/lib/plan-limits";
 
 async function getUser() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) throw new Error("Unauthorized");
+  const plan = await getEffectivePlan(session.user.id);
+  if (!hasProFeatures(plan)) {
+    throw new Error("Fitur pengeluaran hanya tersedia untuk paket PRO dan Business");
+  }
   return session.user;
 }
 

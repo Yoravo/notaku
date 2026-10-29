@@ -11,6 +11,7 @@ import {
   ServerStackIcon,
 } from "@heroicons/react/24/outline";
 import { TrafficBarChart } from "./traffic-chart";
+import { formatMoney } from "@/lib/currencies";
 import { formatCurrency } from "@/lib/pdf/format";
 import { formatDateWIB, formatDateTimeWIB } from "@/lib/invoice-utils";
 import { useTranslations } from "next-intl";
@@ -19,11 +20,14 @@ export interface AdminOverviewData {
   totalEstimatedIncome: number;
   currentMRR: number;
   proUsers: number;
+  planBreakdown: { lite: number; pro: number; business: number; free: number };
   totalUsers: number;
   newUsers30d: number;
   settlementLogsCount: number;
   paidInvoiceVolume: number;
   totalInvoiceVolume: number;
+  paidInvoiceVolumes: { currency: string; total: number }[];
+  totalInvoiceVolumes: { currency: string; total: number }[];
   totalInvoices: number;
   totalInvoiceItems: number;
   totalCustomers: number;
@@ -107,18 +111,23 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
                 {formatCurrency(data.totalEstimatedIncome)}
               </p>
               <p className="text-xs text-emerald-100/90 dark:text-emerald-300/90 mt-1">
-                {tAdmin("proTransactionsCount", { count: data.settlementLogsCount || data.proUsers })}
+                {tAdmin("listPriceRunRateTransactions", { count: data.settlementLogsCount })}
               </p>
             </div>
             <div className="min-w-0 sm:border-l sm:border-white/20 sm:pl-5 border-t border-white/20 pt-4 sm:border-t-0 sm:pt-0">
               <p className="text-xs font-semibold text-emerald-100 dark:text-emerald-300">
-                {tAdmin("mrr")}
+                {tAdmin("listPriceMonthlyRunRate")}
               </p>
               <p className="text-2xl sm:text-3xl font-extrabold mt-2 tabular-nums truncate">
                 {formatCurrency(data.currentMRR)}
               </p>
               <p className="text-xs text-emerald-100/90 dark:text-emerald-300/90 mt-1">
-                {tAdmin("activeProUsersPrice", { count: data.proUsers })}
+                {tAdmin("paidPlanBreakdownSummary", {
+                  count: data.proUsers,
+                  lite: data.planBreakdown.lite,
+                  pro: data.planBreakdown.pro,
+                  biz: data.planBreakdown.business,
+                })}
               </p>
             </div>
           </div>
@@ -126,13 +135,13 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
           {/* Pro Conversion Rate */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-2xs">
             <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-              {tAdmin("proConversion")}
+            {tAdmin("paidPlanConversion")}
             </p>
             <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-2 tabular-nums">
               {data.totalUsers > 0 ? ((data.proUsers / data.totalUsers) * 100).toFixed(1) : 0}%
             </p>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1">
-              {data.proUsers} Pro / {data.totalUsers} users
+              {tAdmin("paidPlanRatioCount", { paid: data.proUsers, total: data.totalUsers })}
             </p>
           </div>
 
@@ -141,11 +150,15 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
             <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               {tAdmin("paidVolume")}
             </p>
-            <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-2 truncate tabular-nums">
-              {formatCurrency(data.paidInvoiceVolume)}
-            </p>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">
-              Total GMV: {formatCurrency(data.totalInvoiceVolume)}
+            <div className="mt-2 space-y-0.5">
+              {data.paidInvoiceVolumes.map((item) => (
+                <p key={item.currency} className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white truncate tabular-nums">
+                  {formatMoney(item.total, item.currency)}
+                </p>
+              ))}
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1">
+              {tAdmin("noFxGrouping")}
             </p>
           </div>
         </div>
@@ -168,7 +181,7 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
             <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-2 border-t border-slate-100 dark:border-slate-800 pt-1.5 gap-2">
               <span className="font-medium shrink-0">Views</span>
               <span className="font-bold text-[#0f6b4f] dark:text-emerald-400 truncate">
-                {data.uniqueVisitors24hCount} {tAdmin("views")}
+                {data.uniqueVisitors24hCount} {tAdmin("uniqueIps")}
               </span>
             </div>
           </div>
@@ -183,7 +196,7 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
             <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-2 border-t border-slate-100 dark:border-slate-800 pt-1.5 gap-2">
               <span className="font-medium shrink-0">Views</span>
               <span className="font-bold text-[#0f6b4f] dark:text-emerald-400 truncate">
-                {data.uniqueVisitors7dCount} {tAdmin("views")}
+                {data.uniqueVisitors7dCount} {tAdmin("uniqueIps")}
               </span>
             </div>
           </div>
@@ -198,7 +211,7 @@ export function AdminOverviewClient({ data }: { data: AdminOverviewData }) {
             <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-2 border-t border-slate-100 dark:border-slate-800 pt-1.5 gap-2">
               <span className="font-medium shrink-0">Views</span>
               <span className="font-bold text-[#0f6b4f] dark:text-emerald-400 truncate">
-                {data.uniqueVisitors30dCount} {tAdmin("views")}
+                {data.uniqueVisitors30dCount} {tAdmin("uniqueIps")}
               </span>
             </div>
           </div>

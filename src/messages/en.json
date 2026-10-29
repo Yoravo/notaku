@@ -388,7 +388,9 @@
       "iosStep3": "Tap 'Add' in the top right corner to complete installation.",
       "dismiss": "Not now",
       "close": "Close banner"
-    }
+    },
+    "businessInsightsTitle": "Business Cashflow Insights",
+    "businessInsightsLocked": "DSO, on-time payment analysis, and client rankings are exclusive to the Business plan."
   },
   "cashflow": {
     "title": "Cashflow & Payment Collection",
@@ -397,7 +399,10 @@
     "legendCollected": "Collected",
     "rateRealized": "{rate}% Realized",
     "summaryTotalBilled": "Total Invoiced (6 Mo)",
-    "summaryTotalCollected": "Total Cash Collected (6 Mo)"
+    "summaryTotalCollected": "Total Cash Collected (6 Mo)",
+    "currencyNote": "IDR only · no FX conversion",
+    "tableCaption": "Monthly cashflow data in IDR",
+    "tableMonth": "Month"
   },
   "clientPerformance": {
     "title": "Client Payment & Cash Performance",

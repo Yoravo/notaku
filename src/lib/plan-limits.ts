@@ -1,5 +1,6 @@
 import { prisma } from "./prisma";
 import type { PrismaClientOrTx } from "./prisma";
+import { resolveEffectivePlan } from "./effective-plan";
 
 const FREE_INVOICE_LIMIT = 5;
 const FREE_CUSTOMER_LIMIT = 20;
@@ -41,10 +42,13 @@ export async function canCreateInvoice(
 
   const user = await client.user.findUnique({
     where: { id: userId },
-    select: { plan: true },
+    select: {
+      plan: true,
+      subscription: { select: { status: true, plan: true, currentPeriodEnd: true } },
+    },
   });
 
-  if (isPaidPlan(user?.plan)) {
+  if (isPaidPlan(resolveEffectivePlan(user))) {
     return { allowed: true, used: 0, limit: Infinity };
   }
 
@@ -70,10 +74,13 @@ export async function canCreateCustomer(
 
   const user = await client.user.findUnique({
     where: { id: userId },
-    select: { plan: true },
+    select: {
+      plan: true,
+      subscription: { select: { status: true, plan: true, currentPeriodEnd: true } },
+    },
   });
 
-  if (isPaidPlan(user?.plan)) {
+  if (isPaidPlan(resolveEffectivePlan(user))) {
     return { allowed: true, used: 0, limit: Infinity };
   }
 

@@ -1,8 +1,9 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 
-interface DailyTrafficPoint {
+export interface DailyTrafficPoint {
   dateKey: string;
   label: string;
   views: number;
@@ -12,18 +13,19 @@ interface DailyTrafficPoint {
 export function TrafficBarChart({ data }: { data: DailyTrafficPoint[] }) {
   const t = useTranslations("admin");
   const maxVal = Math.max(...data.map((d) => Math.max(d.views, d.uniques)), 1);
+  const [activeDateKey, setActiveDateKey] = useState<string | null>(null);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" role="region" aria-label={t("trafficTrendsTitle")}>
       {/* Legend & Stats */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           <div className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded bg-blue-500 dark:bg-blue-400 inline-block shadow-2xs shrink-0" />
+            <span aria-hidden="true" className="w-3 h-3 rounded bg-blue-500 dark:bg-blue-400 inline-block shadow-2xs shrink-0" />
             <span className="text-slate-600 dark:text-slate-300 font-medium">Pageviews</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded bg-emerald-500 dark:bg-emerald-400 inline-block shadow-2xs shrink-0" />
+            <span aria-hidden="true" className="w-3 h-3 rounded bg-emerald-500 dark:bg-emerald-400 inline-block shadow-2xs shrink-0" />
             <span className="text-slate-600 dark:text-slate-300 font-medium">{t("uniqueVisitors")}</span>
           </div>
         </div>
@@ -32,18 +34,35 @@ export function TrafficBarChart({ data }: { data: DailyTrafficPoint[] }) {
 
       {/* Chart Canvas: Scrollable on mobile to prevent squashing and container overflow */}
       <div className="overflow-x-auto no-scrollbar pt-2">
-        <div className="h-44 min-w-[520px] sm:min-w-0 flex items-end gap-1 sm:gap-2 pb-2 px-1 border-b border-slate-200 dark:border-slate-700">
+        <div
+          role="list"
+          aria-label={t("trafficTrendsTitle")}
+          className="h-44 min-w-[520px] sm:min-w-0 flex items-end gap-1 sm:gap-2 pb-2 px-1 border-b border-slate-200 dark:border-slate-700"
+        >
           {data.map((item) => {
             const viewsHeightPercent = Math.max((item.views / maxVal) * 100, item.views > 0 ? 6 : 0);
             const uniquesHeightPercent = Math.max((item.uniques / maxVal) * 100, item.uniques > 0 ? 6 : 0);
+            const isSelected = activeDateKey === item.dateKey;
+            const ariaDescription = `${item.label}: ${item.views} pageviews, ${item.uniques} ${t("uniques")}`;
 
             return (
               <div
                 key={item.dateKey}
-                className="flex-1 flex flex-col items-center justify-end h-full group relative"
+                role="listitem"
+                tabIndex={0}
+                aria-label={ariaDescription}
+                onFocus={() => setActiveDateKey(item.dateKey)}
+                onBlur={() => setActiveDateKey(null)}
+                className="flex-1 flex flex-col items-center justify-end h-full group relative focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500/70 rounded-lg p-0.5 transition-all cursor-pointer"
               >
-                {/* Tooltip Hover */}
-                <div className="absolute -top-12 z-20 hidden group-hover:flex flex-col items-center bg-slate-900 dark:bg-slate-800 text-white text-[10px] py-1 px-2.5 rounded-lg shadow-2xl border border-slate-700 dark:border-slate-600 whitespace-nowrap pointer-events-none">
+                {/* Tooltip on Hover or Keyboard Focus */}
+                <div
+                  role="tooltip"
+                  aria-hidden={!isSelected}
+                  className={`absolute -top-12 z-20 flex-col items-center bg-slate-900 dark:bg-slate-800 text-white text-[10px] py-1 px-2.5 rounded-lg shadow-2xl border border-slate-700 dark:border-slate-600 whitespace-nowrap pointer-events-none transition-opacity ${
+                    isSelected ? "flex" : "hidden group-hover:flex"
+                  }`}
+                >
                   <span className="font-bold text-slate-100 dark:text-white">{item.label}</span>
                   <span className="text-slate-300 dark:text-slate-300">
                     {item.views} {t("views")} · {item.uniques} {t("uniques")}
@@ -56,12 +75,12 @@ export function TrafficBarChart({ data }: { data: DailyTrafficPoint[] }) {
                   {/* Views Bar */}
                   <div
                     style={{ height: `${viewsHeightPercent}%` }}
-                    className="w-full max-w-[12px] bg-blue-500/85 dark:bg-blue-400 hover:bg-blue-600 dark:hover:bg-blue-300 rounded-t transition-all shadow-2xs"
+                    className="w-full max-w-[12px] bg-blue-500/85 dark:bg-blue-400 group-hover:bg-blue-600 group-focus-visible:bg-blue-600 dark:group-hover:bg-blue-300 rounded-t transition-all shadow-2xs"
                   />
                   {/* Uniques Bar */}
                   <div
                     style={{ height: `${uniquesHeightPercent}%` }}
-                    className="w-full max-w-[12px] bg-emerald-500/85 dark:bg-emerald-400 hover:bg-emerald-600 dark:hover:bg-emerald-300 rounded-t transition-all shadow-2xs"
+                    className="w-full max-w-[12px] bg-emerald-500/85 dark:bg-emerald-400 group-hover:bg-emerald-600 group-focus-visible:bg-emerald-600 dark:group-hover:bg-emerald-300 rounded-t transition-all shadow-2xs"
                   />
                 </div>
 

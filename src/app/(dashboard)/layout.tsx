@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { DashboardLayoutClient } from "./dashboard-layout-client";
 import type { Metadata } from "next";
+import { resolveEffectivePlan } from "@/lib/effective-plan";
 
 export const metadata: Metadata = {
   robots: {
@@ -28,7 +29,11 @@ export default async function DashboardLayout({
 
   const dbUser = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { role: true, plan: true },
+    select: {
+      role: true,
+      plan: true,
+      subscription: { select: { status: true, plan: true, currentPeriodEnd: true } },
+    },
   });
 
   const isEmailAdmin = (process.env.ADMIN_EMAILS || "")
@@ -37,13 +42,14 @@ export default async function DashboardLayout({
     .includes(session.user.email.toLowerCase());
 
   const effectiveRole = dbUser?.role === "ADMIN" || isEmailAdmin ? "ADMIN" : "USER";
+  const effectivePlan = resolveEffectivePlan(dbUser);
 
   return (
     <DashboardLayoutClient
       user={{
         ...session.user,
         role: effectiveRole,
-        plan: dbUser?.plan || "FREE",
+        plan: effectivePlan,
       }}
     >
       {children}

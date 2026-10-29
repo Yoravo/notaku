@@ -3,6 +3,8 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { ExpensesClient } from "./expenses-client";
+import { getEffectivePlan } from "@/lib/effective-plan";
+import { hasProFeatures } from "@/lib/plan-limits";
 
 export const metadata = {
   title: "Pencatatan Pengeluaran - NotaKu",
@@ -17,6 +19,11 @@ export default async function ExpensesPage({
 }) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/login");
+
+  const effectivePlan = await getEffectivePlan(session.user.id);
+  if (!hasProFeatures(effectivePlan)) {
+    redirect("/billing");
+  }
 
   const { page, q, category, month, new: newParam } = await searchParams;
   const currentPage = Math.max(1, parseInt(page || "1", 10));

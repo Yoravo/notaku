@@ -63,14 +63,25 @@ export function Sidebar({
   // Dikelompokkan per alur kerja: jual & tagih -> uang masuk/keluar -> akun.
   const navGroups: {
     title: string;
-    items: { href: string; label: string; icon: typeof RectangleGroupIcon; exact?: boolean }[];
+    items: {
+      href: string;
+      label: string;
+      icon: typeof RectangleGroupIcon;
+      exact?: boolean;
+      requiredTier?: "PRO" | "BUSINESS";
+    }[];
   }[] = [
     {
       title: tDash("mainMenu"),
       items: [
         { href: "/dashboard", label: tDash("overview"), icon: RectangleGroupIcon, exact: true },
         { href: "/invoices", label: tDash("invoices"), icon: DocumentTextIcon },
-        { href: "/recurring-invoices", label: tDash("recurringInvoices"), icon: ArrowPathIcon },
+        {
+          href: "/recurring-invoices",
+          label: tDash("recurringInvoices"),
+          icon: ArrowPathIcon,
+          requiredTier: "PRO",
+        },
         { href: "/customers", label: tDash("customers"), icon: UsersIcon },
         { href: "/items", label: tDash("catalog"), icon: ArchiveBoxIcon },
       ],
@@ -79,8 +90,18 @@ export function Sidebar({
       title: tDash("menuFinance"),
       items: [
         { href: "/wallet", label: tDash("wallet"), icon: WalletIcon },
-        { href: "/expenses", label: tDash("expenses"), icon: BanknotesIcon },
-        { href: "/tax-reports", label: tDash("taxReports"), icon: DocumentChartBarIcon },
+        {
+          href: "/expenses",
+          label: tDash("expenses"),
+          icon: BanknotesIcon,
+          requiredTier: "PRO",
+        },
+        {
+          href: "/tax-reports",
+          label: tDash("taxReports"),
+          icon: DocumentChartBarIcon,
+          requiredTier: "PRO",
+        },
       ],
     },
     {
@@ -159,6 +180,11 @@ export function Sidebar({
                     }`}
                   />
                   <span className="truncate">{item.label}</span>
+                  {item.requiredTier && (
+                    <span className="ml-auto rounded-md border border-slate-200 px-1.5 py-0.5 text-[9px] font-extrabold text-slate-500 dark:border-slate-700 dark:text-slate-400">
+                      {item.requiredTier}+
+                    </span>
+                  )}
                 </Link>
               );
             })}
