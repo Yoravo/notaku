@@ -49,6 +49,7 @@ export async function GET(
   const receiptData = {
     receiptNumber,
     invoiceNumber: invoice.number,
+    currency: invoice.currency,
     paidAt: formattedPaidDate,
     paymentMethod: paymentMethodLabel,
     customer: {
@@ -69,7 +70,7 @@ export async function GET(
     },
     itemsSummary,
     total: totalAmount,
-    totalWords: terbilangRupiah(totalAmount),
+    totalWords: invoice.currency === "IDR" ? terbilangRupiah(totalAmount) : "",
     notes: invoice.notes || undefined,
     isFree: invoice.user.plan === "FREE",
   };

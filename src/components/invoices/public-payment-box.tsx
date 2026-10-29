@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   BuildingLibraryIcon,
   QrCodeIcon,
@@ -47,9 +47,15 @@ export function PublicPaymentBox({
   const [copied, setCopied] = useState(false);
   const [loadingPayment, setLoadingPayment] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
+  const paymentPendingRef = useRef(false);
 
+  const currencyCode = (currency || "IDR").toUpperCase();
   const isPaid = status === "PAID";
   const hasDirectBank = enableDirectTransfer && bankName && bankAccountNumber;
+  const canPayDigital =
+    enableDigitalPayment &&
+    currencyCode === "IDR" &&
+    (status === "SENT" || status === "OVERDUE");
 
   const handleCopyAccount = () => {
     if (!bankAccountNumber) return;
@@ -59,6 +65,8 @@ export function PublicPaymentBox({
   };
 
   const handlePayDigital = async () => {
+    if (paymentPendingRef.current) return;
+    paymentPendingRef.current = true;
     setLoadingPayment(true);
     setPaymentError(null);
 
@@ -72,6 +80,7 @@ export function PublicPaymentBox({
       const data = await res.json();
       if (!res.ok || !data.paymentUrl) {
         setPaymentError(data.error || tInv("digitalPaymentPrepareFailed"));
+        paymentPendingRef.current = false;
         setLoadingPayment(false);
         return;
       }
@@ -79,6 +88,7 @@ export function PublicPaymentBox({
       window.location.href = data.paymentUrl;
     } catch {
       setPaymentError(tInv("networkError"));
+      paymentPendingRef.current = false;
       setLoadingPayment(false);
     }
   };
@@ -113,7 +123,7 @@ export function PublicPaymentBox({
     );
   }
 
-  if (!hasDirectBank && !enableDigitalPayment) {
+  if (!hasDirectBank && !canPayDigital) {
     return null;
   }
 
@@ -189,7 +199,7 @@ export function PublicPaymentBox({
         )}
 
         {/* Method 2: Digital Payment via NotaKu (Mayar QRIS/VA) */}
-        {enableDigitalPayment && (
+        {canPayDigital && (
           <div className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-4 sm:p-5 space-y-3 shadow-2xs flex flex-col justify-between">
             <div className="space-y-2.5">
               <div className="flex items-center justify-between">
@@ -216,7 +226,7 @@ export function PublicPaymentBox({
               </p>
 
               {paymentError && (
-                <div className="rounded-xl bg-rose-50 border border-rose-200 p-2.5 text-xs text-rose-700 font-semibold animate-in fade-in">
+                <div role="alert" className="rounded-xl bg-rose-50 border border-rose-200 p-2.5 text-xs text-rose-700 font-semibold animate-in fade-in">
                   {paymentError}
                 </div>
               )}
@@ -226,6 +236,8 @@ export function PublicPaymentBox({
               type="button"
               onClick={handlePayDigital}
               disabled={loadingPayment}
+              aria-busy={loadingPayment}
+              aria-live="polite"
               className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#0f6b4f] px-4 py-3 text-xs sm:text-sm font-bold text-white shadow-xs hover:bg-[#0c553e] active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50 min-h-[44px]"
             >
               {loadingPayment ? (

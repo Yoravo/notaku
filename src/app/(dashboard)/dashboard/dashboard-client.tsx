@@ -207,9 +207,7 @@ export function DashboardClient({
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {/* Card 1: Total Volume Transaksi */}
         <div
-          role="group"
-          tabIndex={0}
-          className="min-w-0 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-5 shadow-sm ring-1 ring-slate-900/5 dark:ring-slate-100/5 transition-colors hover:border-emerald-400 focus-visible:border-emerald-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 motion-reduce:transition-none dark:hover:border-emerald-500 dark:focus-visible:border-emerald-400 dark:focus-visible:outline-emerald-400"
+          className="min-w-0 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-5 shadow-sm ring-1 ring-slate-900/5 dark:ring-slate-100/5 transition-colors hover:border-emerald-400 motion-reduce:transition-none dark:hover:border-emerald-500"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
@@ -231,9 +229,7 @@ export function DashboardClient({
 
         {/* Card 2: Pendapatan Lunas */}
         <div
-          role="group"
-          tabIndex={0}
-          className="min-w-0 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-5 shadow-sm ring-1 ring-slate-900/5 dark:ring-slate-100/5 transition-colors hover:border-emerald-400 focus-visible:border-emerald-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 motion-reduce:transition-none dark:hover:border-emerald-500 dark:focus-visible:border-emerald-400 dark:focus-visible:outline-emerald-400"
+          className="min-w-0 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-5 shadow-sm ring-1 ring-slate-900/5 dark:ring-slate-100/5 transition-colors hover:border-emerald-400 motion-reduce:transition-none dark:hover:border-emerald-500"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
@@ -255,9 +251,7 @@ export function DashboardClient({
 
         {/* Card 3: Tagihan Tertunda (Pending / Overdue) */}
         <div
-          role="group"
-          tabIndex={0}
-          className="min-w-0 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-5 shadow-sm ring-1 ring-slate-900/5 dark:ring-slate-100/5 transition-colors hover:border-emerald-400 focus-visible:border-emerald-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 motion-reduce:transition-none dark:hover:border-emerald-500 dark:focus-visible:border-emerald-400 dark:focus-visible:outline-emerald-400"
+          className="min-w-0 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-5 shadow-sm ring-1 ring-slate-900/5 dark:ring-slate-100/5 transition-colors hover:border-emerald-400 motion-reduce:transition-none dark:hover:border-emerald-500"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
@@ -279,9 +273,7 @@ export function DashboardClient({
 
         {/* Card 4: Kuota Invoice Bulanan */}
         <div
-          role="group"
-          tabIndex={0}
-          className="min-w-0 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-5 shadow-sm ring-1 ring-slate-900/5 dark:ring-slate-100/5 transition-colors hover:border-emerald-400 focus-visible:border-emerald-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 motion-reduce:transition-none dark:hover:border-emerald-500 dark:focus-visible:border-emerald-400 dark:focus-visible:outline-emerald-400"
+          className="min-w-0 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-5 shadow-sm ring-1 ring-slate-900/5 dark:ring-slate-100/5 transition-colors hover:border-emerald-400 motion-reduce:transition-none dark:hover:border-emerald-500"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">

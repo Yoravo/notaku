@@ -2,6 +2,7 @@ import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { sanitizeCsvCell } from "@/lib/csv";
+import { formatDateWIB } from "@/lib/invoice-utils";
 
 export async function GET() {
   try {
@@ -24,13 +25,14 @@ export async function GET() {
       "ID",
       "Nomor Invoice",
       "Status",
-      "Subtotal (IDR)",
+      "Currency",
+      "Subtotal",
       "Tipe Diskon",
       "Nilai Diskon",
-      "Potongan Diskon (IDR)",
+      "Potongan Diskon",
       "Tarif PPN (%)",
-      "Pajak PPN (IDR)",
-      "Total (IDR)",
+      "Pajak PPN",
+      "Total",
       "User Pembuat",
       "Email Pembuat",
       "Bisnis",
@@ -43,8 +45,9 @@ export async function GET() {
       sanitizeCsvCell(inv.id),
       sanitizeCsvCell(inv.number),
       sanitizeCsvCell(inv.status),
+      sanitizeCsvCell(inv.currency),
       sanitizeCsvCell((inv.subtotal || inv.total).toString()),
-      sanitizeCsvCell(inv.discountType === "PERCENTAGE" ? "Persentase (%)" : "Nominal (Rp)"),
+      sanitizeCsvCell(inv.discountType === "PERCENTAGE" ? "Persentase (%)" : "Nominal"),
       sanitizeCsvCell((inv.discountValue || 0).toString()),
       sanitizeCsvCell((inv.discountAmount || 0).toString()),
       sanitizeCsvCell((inv.taxRate || 0).toString()),
@@ -54,8 +57,16 @@ export async function GET() {
       sanitizeCsvCell(inv.user?.email || ""),
       sanitizeCsvCell(inv.user?.businessName || ""),
       sanitizeCsvCell(inv.customer?.name || ""),
-      sanitizeCsvCell(inv.createdAt.toISOString()),
-      sanitizeCsvCell(inv.dueDate ? inv.dueDate.toISOString() : ""),
+      sanitizeCsvCell(formatDateWIB(inv.createdAt, {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      })),
+      sanitizeCsvCell(inv.dueDate ? formatDateWIB(inv.dueDate, {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }) : ""),
     ]);
 
     const csvContent = [headers.join(","), ...rows.map((r) => r.join(","))].join("\r\n");

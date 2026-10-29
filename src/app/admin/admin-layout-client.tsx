@@ -115,7 +115,7 @@ export function AdminLayoutClient({
           {/* Close button on Mobile only */}
           <button
             onClick={() => setMobileOpen(false)}
-            className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+            className="md:hidden inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
             aria-label={tAdmin("closeMenu")}
           >
             <XMarkIcon className="w-6 h-6" />
@@ -138,6 +138,7 @@ export function AdminLayoutClient({
                 href={item.href}
                 prefetch={true}
                 onClick={() => setMobileOpen(false)}
+                aria-current={isActive ? "page" : undefined}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors whitespace-nowrap ${
                   isActive
                     ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold"
@@ -195,8 +196,9 @@ export function AdminLayoutClient({
             {/* Mobile Toggle Button */}
             <button
               onClick={() => setMobileOpen(true)}
-              className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
-              aria-label="Buka menu"
+              className="md:hidden inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
+              aria-label={tAdmin("toggleSidebar")}
+              aria-expanded={mobileOpen}
             >
               <Bars3Icon className="w-5 h-5" />
             </button>

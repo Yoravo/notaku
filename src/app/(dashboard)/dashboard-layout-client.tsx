@@ -24,6 +24,7 @@ type User = {
   email: string;
   image?: string | null;
   role?: string | null;
+  plan?: string | null;
 };
 
 export function DashboardLayoutClient({
@@ -97,7 +98,7 @@ export function DashboardLayoutClient({
             {/* Mobile Toggle Button */}
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-900 dark:text-white cursor-pointer shrink-0"
+              className="md:hidden inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-900 dark:text-white cursor-pointer shrink-0"
               aria-label="Toggle sidebar"
               aria-expanded={sidebarOpen}
             >

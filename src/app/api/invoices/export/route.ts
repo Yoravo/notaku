@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { InvoiceStatus } from "@/generated/prisma/client";
 import { sanitizeCsvCell } from "@/lib/csv";
+import { formatDateWIB } from "@/lib/invoice-utils";
 
 export async function GET(request: Request) {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -71,13 +72,14 @@ export async function GET(request: Request) {
     "Alamat Pelanggan",
     "Status",
     "Jumlah Item",
-    "Subtotal (IDR)",
+    "Currency",
+    "Subtotal",
     "Tipe Diskon",
     "Nilai Diskon",
-    "Potongan Diskon (IDR)",
+    "Potongan Diskon",
     "Tarif PPN (%)",
-    "Pajak PPN (IDR)",
-    "Total (IDR)",
+    "Pajak PPN",
+    "Total",
     "Catatan",
   ];
 
@@ -85,8 +87,18 @@ export async function GET(request: Request) {
   const escapeCsv = (str: string | number | null | undefined) => sanitizeCsvCell(str);
 
   const rows = invoices.map((inv) => {
-    const createdDate = inv.createdAt.toISOString().split("T")[0];
-    const dueDate = inv.dueDate ? inv.dueDate.toISOString().split("T")[0] : "-";
+    const createdDate = formatDateWIB(inv.createdAt, {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+    const dueDate = inv.dueDate
+      ? formatDateWIB(inv.dueDate, {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        })
+      : "-";
     const statusText = statusLabel[inv.status] || inv.status;
     const totalItems = inv.items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -100,8 +112,9 @@ export async function GET(request: Request) {
       escapeCsv(inv.customer.address || "-"),
       escapeCsv(statusText),
       escapeCsv(totalItems),
+      escapeCsv(inv.currency),
       escapeCsv(Number(inv.subtotal || inv.total)),
-      escapeCsv(inv.discountType === "PERCENTAGE" ? "Persentase (%)" : "Nominal (Rp)"),
+      escapeCsv(inv.discountType === "PERCENTAGE" ? "Persentase (%)" : "Nominal"),
       escapeCsv(Number(inv.discountValue || 0)),
       escapeCsv(Number(inv.discountAmount || 0)),
       escapeCsv(Number(inv.taxRate || 0)),

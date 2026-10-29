@@ -128,6 +128,7 @@ export async function notifySellerInvoicePaid(
     paymentMethod?: string;
     paidAt?: Date | string;
   },
+  options: { throwOnFailure?: boolean } = {},
 ) {
   try {
     const user = await prisma.user.findUnique({
@@ -164,16 +165,17 @@ export async function notifySellerInvoicePaid(
         `🔗 <a href="${invoiceUrl}">Buka Invoice Publik</a>`,
       ].join("\n");
 
-      sendTelegramMessage({
+      const result = await sendTelegramMessage({
         botToken: user.telegramBotToken,
         chatId: user.telegramChatId,
         text: tgMessage,
-      }).catch((e) => console.error("[TG_NOTIF_ERROR]", e));
+      });
+      if (!result.success && options.throwOnFailure) throw new Error(result.error || "Telegram notification failed");
     }
 
     // 2. Dispatch to Discord
     if (user.discordEnabled && user.discordWebhookUrl) {
-      sendDiscordWebhook({
+      const result = await sendDiscordWebhook({
         webhookUrl: user.discordWebhookUrl,
         title: "💰 Pembayaran Tagihan Diterima!",
         description: `Invoice **${invoice.number}** telah berhasil dilunasi oleh pelanggan.`,
@@ -185,10 +187,12 @@ export async function notifySellerInvoicePaid(
           { name: "Metode", value: method, inline: true },
           { name: "Nomor Invoice", value: invoice.number, inline: true },
         ],
-      }).catch((e) => console.error("[DISCORD_NOTIF_ERROR]", e));
+      });
+      if (!result.success && options.throwOnFailure) throw new Error(result.error || "Discord notification failed");
     }
   } catch (err) {
     console.error("[BOT_NOTIF_PAID_ERROR]", err);
+    if (options.throwOnFailure) throw err;
   }
 }
 

@@ -1,96 +1,102 @@
-/**
- * Mayar.id API Client
- * Official Documentation: https://docs.mayar.id
- */
+export type MayarEnvironment = "SANDBOX" | "PRODUCTION";
 
-const MAYAR_API_URL = process.env.MAYAR_API_URL || "https://api.mayar.id/hl/v1";
-
-function getMayarApiKey() {
-  const key = process.env.MAYAR_API_KEY;
-  if (!key) {
-    throw new Error("MAYAR_API_KEY is not configured");
-  }
-  return key;
-}
+export type MayarConfig = {
+  apiKey: string;
+  environment: MayarEnvironment;
+  merchantId: string;
+  baseUrl: string;
+};
 
 export type CreateMayarPaymentParams = {
   name: string;
   amount: number;
-  customerName: string;
-  customerEmail: string;
-  customerMobile?: string;
-  description?: string;
+  email: string;
+  mobile: string;
+  description: string;
   redirectUrl?: string;
-  orderId?: string;
+  expiredAt: string;
+  extraData?: Record<string, unknown>;
 };
 
-export type MayarPaymentResponse = {
-  statusCode?: number;
-  status?: string;
-  messages?: string;
-  data?: {
-    id: string;
-    link: string;
-    url?: string;
-    paymentUrl?: string;
-    amount: number;
-    status?: string;
-    transactionId?: string;
-  };
+export type MayarPayment = { id: string; transactionId: string; link: string };
+export type MayarTransaction = {
+  id: string;
+  extraData: Record<string, unknown> | null;
+  amount: number;
+  status: string;
+  expirationDate: number;
+  paymentMethod: string | null;
+  paymentLink: { id: string; amount: number; status: string; expiredAt: number | null; link: string; type: string };
+  user: { id: string; name?: string; email?: string };
 };
+type MayarEnvelope<T> = { statusCode?: number; messages?: string; message?: string; data?: T };
 
-/**
- * Buat Payment Link / Invoicing via Mayar.id Headless API
- */
-export async function createMayarPayment(
-  params: CreateMayarPaymentParams
-): Promise<{ paymentUrl: string; paymentId: string }> {
-  const apiKey = getMayarApiKey();
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
-  const redirectUrl = params.redirectUrl || `${appUrl}/settings?payment=success`;
+export class MayarApiError extends Error {
+  readonly code: string;
+  readonly statusCode: number;
+  readonly ambiguous: boolean;
 
-  const payload = {
-    name: params.name,
-    amount: params.amount,
-    description:
-      params.description || "Pembelian Paket Langganan NotaKu PRO (30 Hari)",
-    customerName: params.customerName,
-    customerEmail: params.customerEmail,
-    customerMobile: params.customerMobile || "081234567890",
-    redirectUrl,
-    expiredAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 jam
-  };
-
-  const response = await fetch(`${MAYAR_API_URL}/payment/create`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify(payload),
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error("Mayar API error:", response.status, errorText);
-    throw new Error(`Mayar API Error: ${response.statusText} - ${errorText}`);
+  constructor(
+    message: string,
+    statusCode: number,
+    ambiguous: boolean,
+    code = String(statusCode || "NETWORK"),
+  ) {
+    super(message);
+    this.name = "MayarApiError";
+    this.statusCode = statusCode;
+    this.ambiguous = ambiguous;
+    this.code = code;
   }
 
-  const result = (await response.json()) as MayarPaymentResponse;
-
-  const paymentUrl =
-    result.data?.link ||
-    result.data?.url ||
-    result.data?.paymentUrl ||
-    (result as any).url ||
-    (result as any).link;
-
-  const paymentId = result.data?.id || (result as any).id || params.orderId || "";
-
-  if (!paymentUrl) {
-    console.error("Mayar response without URL:", result);
-    throw new Error("Gagal mendapatkan tautan pembayaran dari Mayar");
+  get retryable(): boolean {
+    return this.ambiguous;
   }
+}
 
-  return { paymentUrl, paymentId };
+export function getMayarConfig(): MayarConfig {
+  const apiKey = process.env.MAYAR_API_KEY;
+  const merchantId = process.env.MAYAR_MERCHANT_ID;
+  const rawEnvironment = process.env.MAYAR_ENVIRONMENT;
+  if (!apiKey) throw new Error("MAYAR_API_KEY is not configured");
+  if (!merchantId) throw new Error("MAYAR_MERCHANT_ID is not configured");
+  if (rawEnvironment !== "sandbox" && rawEnvironment !== "production") throw new Error("MAYAR_ENVIRONMENT must be sandbox or production");
+  const environment: MayarEnvironment = rawEnvironment === "production" ? "PRODUCTION" : "SANDBOX";
+  return { apiKey, merchantId, environment, baseUrl: environment === "PRODUCTION" ? "https://api.mayar.id/hl/v2" : "https://api.mayar.io/hl/v2" };
+}
+
+async function mayarFetch<T>(config: MayarConfig, path: string, init: RequestInit): Promise<T> {
+  let response: Response;
+  try {
+    response = await fetch(`${config.baseUrl}${path}`, {
+      ...init,
+      headers: { Accept: "application/json", Authorization: `Bearer ${config.apiKey}`, ...(init.body ? { "Content-Type": "application/json" } : {}), ...init.headers },
+      signal: init.signal ?? AbortSignal.timeout(15_000),
+      cache: "no-store",
+    });
+  } catch (error) {
+    throw new MayarApiError(error instanceof Error ? error.message : "Mayar network error", 0, true);
+  }
+  let body: MayarEnvelope<T>;
+  try { body = await response.json() as MayarEnvelope<T>; }
+  catch {
+    // A successful/non-definitive HTTP response may already represent a created payment.
+    // Without a parseable body we must reconcile, never permit an immediate retry.
+    throw new MayarApiError(`Mayar returned invalid JSON (HTTP ${response.status})`, response.status, true, "INVALID_RESPONSE");
+  }
+  const statusCode = body.statusCode ?? response.status;
+  if (!response.ok || statusCode >= 400 || !body.data) {
+    throw new MayarApiError(body.messages ?? body.message ?? `Mayar HTTP ${response.status}`, statusCode, statusCode === 0 || statusCode === 429 || statusCode >= 500);
+  }
+  return body.data;
+}
+
+export async function createMayarPayment(config: MayarConfig, params: CreateMayarPaymentParams): Promise<MayarPayment> {
+  const data = await mayarFetch<MayarPayment>(config, "/payments/create", { method: "POST", body: JSON.stringify(params) });
+  if (!data.id || !data.transactionId || !data.link) throw new MayarApiError("Mayar create response is missing required references", 502, true);
+  return data;
+}
+
+export async function getMayarTransaction(config: MayarConfig, transactionId: string): Promise<MayarTransaction> {
+  return mayarFetch<MayarTransaction>(config, `/transactions/${encodeURIComponent(transactionId)}`, { method: "GET" });
 }

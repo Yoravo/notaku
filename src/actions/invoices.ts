@@ -141,26 +141,6 @@ export async function updateInvoice(
     throw new Error(parsed.error.issues[0].message);
   }
 
-  // Free user can only edit DRAFT invoices
-  const invoice = await prisma.invoice.findUnique({
-    where: { id, userId: user.id },
-    select: { status: true, user: { select: { plan: true } } },
-  });
-  if (!invoice) throw new Error("Invoice tidak ditemukan");
-  if (invoice.user.plan === "FREE" && invoice.status !== "DRAFT") {
-    throw new Error(
-      "Akun gratis hanya bisa mengedit invoice draft. Invoice yang sudah dikirim/lunas tidak bisa diubah.",
-    );
-  }
-
-  const customer = await prisma.customer.findUnique({
-    where: { id: parsed.data.customerId, userId: user.id },
-    select: { id: true },
-  });
-  if (!customer) {
-    throw new Error("Pelanggan tidak ditemukan");
-  }
-
   const totals = calculateInvoiceTotals({
     items: parsed.data.items,
     discountType: parsed.data.discountType,
@@ -168,34 +148,90 @@ export async function updateInvoice(
     taxRate: parsed.data.taxRate,
   });
 
-  await prisma.invoiceItem.deleteMany({ where: { invoiceId: id } });
+  await prisma.$transaction(async (tx) => {
+    const locked = await tx.$queryRaw<Array<{ id: string }>>`
+      SELECT id FROM "Invoice" WHERE id = ${id} AND "userId" = ${user.id} FOR UPDATE
+    `;
+    if (!locked[0]) throw new Error("Invoice tidak ditemukan");
 
-  await prisma.invoice.update({
-    where: { id, userId: user.id },
-    data: {
-      customerId: parsed.data.customerId,
-      dueDate: parsed.data.dueDate ? new Date(parsed.data.dueDate) : null,
-      notes: parsed.data.notes || null,
-      subtotal: totals.subtotal,
-      discountType: totals.discountType,
-      discountValue: totals.discountValue,
-      discountAmount: totals.discountAmount,
-      taxRate: totals.taxRate,
-      taxAmount: totals.taxAmount,
-      total: totals.total,
-      currency: parsed.data.currency || "IDR",
-      enableDirectTransfer: parsed.data.enableDirectTransfer ?? true,
-      enableDigitalPayment: parsed.data.enableDigitalPayment ?? false,
-      enableReminder: parsed.data.enableReminder ?? true,
-      items: {
-        create: parsed.data.items.map((item) => ({
-          description: item.description,
-          quantity: item.quantity,
-          price: item.price,
-          amount: Math.round(item.quantity * item.price),
-        })),
+    const invoice = await tx.invoice.findUnique({
+      where: { id, userId: user.id },
+      select: {
+        status: true,
+        paymentMethod: true,
+        user: { select: { plan: true } },
       },
-    },
+    });
+    if (!invoice) throw new Error("Invoice tidak ditemukan");
+
+    const activeCheckout = await tx.paymentAttempt.count({
+      where: { invoiceId: id, activeCheckoutKey: { not: null } },
+    });
+    if (activeCheckout > 0) {
+      throw new Error(
+        "Invoice tidak dapat diubah selama checkout pembayaran aktif. Tunggu pembayaran selesai atau kedaluwarsa.",
+      );
+    }
+    if (
+      invoice.status === "PAID" &&
+      invoice.paymentMethod === "NOTAKU_DIGITAL"
+    ) {
+      throw new Error(
+        "Invoice yang telah lunas melalui NotaKu Digital Payment (QRIS/VA) tidak dapat diubah.",
+      );
+    }
+    if (invoice.user.plan === "FREE" && invoice.status !== "DRAFT") {
+      throw new Error(
+        "Akun gratis hanya bisa mengedit invoice draft. Invoice yang sudah dikirim/lunas tidak bisa diubah.",
+      );
+    }
+
+    const customer = await tx.customer.findUnique({
+      where: { id: parsed.data.customerId, userId: user.id },
+      select: { id: true },
+    });
+    if (!customer) {
+      throw new Error("Pelanggan tidak ditemukan");
+    }
+
+    await tx.invoiceItem.deleteMany({ where: { invoiceId: id } });
+
+    await tx.invoice.update({
+      where: {
+        id,
+        userId: user.id,
+        OR: [
+          { status: { not: "PAID" } },
+          { paymentMethod: { not: "NOTAKU_DIGITAL" } },
+          { paymentMethod: null },
+        ],
+        ...(invoice.user.plan === "FREE" ? { status: "DRAFT" as const } : {}),
+      },
+      data: {
+        customerId: parsed.data.customerId,
+        dueDate: parsed.data.dueDate ? new Date(parsed.data.dueDate) : null,
+        notes: parsed.data.notes || null,
+        subtotal: totals.subtotal,
+        discountType: totals.discountType,
+        discountValue: totals.discountValue,
+        discountAmount: totals.discountAmount,
+        taxRate: totals.taxRate,
+        taxAmount: totals.taxAmount,
+        total: totals.total,
+        currency: parsed.data.currency || "IDR",
+        enableDirectTransfer: parsed.data.enableDirectTransfer ?? true,
+        enableDigitalPayment: parsed.data.enableDigitalPayment ?? false,
+        enableReminder: parsed.data.enableReminder ?? true,
+        items: {
+          create: parsed.data.items.map((item) => ({
+            description: item.description,
+            quantity: item.quantity,
+            price: item.price,
+            amount: Math.round(item.quantity * item.price),
+          })),
+        },
+      },
+    });
   });
 
   revalidatePath("/invoices");
@@ -225,49 +261,65 @@ export async function updateInvoiceStatus(id: string, status: string) {
     CANCELLED: new Set(),
   };
 
-  const invoice = await prisma.invoice.findUnique({
-    where: { id, userId: user.id },
-    select: { status: true, paidAt: true, paymentMethod: true },
-  });
-  if (!invoice) throw new Error("Invoice tidak ditemukan");
+  const updatedInvoice = await prisma.$transaction(async (tx) => {
+    const locked = await tx.$queryRaw<Array<{ id: string }>>`
+      SELECT id FROM "Invoice" WHERE id = ${id} AND "userId" = ${user.id} FOR UPDATE
+    `;
+    if (!locked[0]) throw new Error("Invoice tidak ditemukan");
 
-  // Kunci invoice yang sudah lunas via NotaKu Digital Payment (QRIS/VA): saldo penjual
-  // sudah dikreditkan otomatis oleh webhook Mayar. Ubah status manual dapat memicu
-  // kredit ganda saat webhook retry (idempotency guard `status === "PAID"` terlewati).
-  if (invoice.status === "PAID" && invoice.paymentMethod === "NOTAKU_DIGITAL") {
-    throw new Error(
-      "Invoice yang telah lunas melalui NotaKu Digital Payment (QRIS/VA) tidak dapat diubah statusnya.",
-    );
-  }
+    const invoice = await tx.invoice.findUnique({
+      where: { id, userId: user.id },
+      select: { status: true, paidAt: true, paymentMethod: true },
+    });
+    if (!invoice) throw new Error("Invoice tidak ditemukan");
 
-  if (!VALID_TRANSITIONS[invoice.status]?.has(status)) {
-    throw new Error(
-      `Status tidak bisa diubah dari ${invoice.status} ke ${status}`,
-    );
-  }
-
-  const updateData: {
-    status: InvoiceStatus;
-    paidAt?: Date;
-    paymentMethod?: string;
-  } = {
-    status: status as InvoiceStatus,
-  };
-
-  // Jika ditandai PAID secara manual oleh user dan belum memiliki paidAt, set tanggal saat ini & direct transfer
-  if (status === "PAID") {
-    if (!invoice.paidAt) {
-      updateData.paidAt = new Date();
+    const activeCheckout = await tx.paymentAttempt.count({
+      where: { invoiceId: id, activeCheckoutKey: { not: null } },
+    });
+    if (activeCheckout > 0) {
+      throw new Error(
+        "Status invoice tidak dapat diubah selama checkout pembayaran aktif. Tunggu pembayaran selesai atau kedaluwarsa.",
+      );
     }
-    if (!invoice.paymentMethod) {
-      updateData.paymentMethod = "DIRECT_TRANSFER";
-    }
-  }
 
-  const updatedInvoice = await prisma.invoice.update({
-    where: { id, userId: user.id },
-    data: updateData,
-    include: { customer: true },
+    // Kunci invoice yang sudah lunas via NotaKu Digital Payment (QRIS/VA): saldo penjual
+    // sudah dikreditkan otomatis oleh webhook Mayar. Ubah status manual dapat memicu
+    // kredit ganda saat webhook retry (idempotency guard `status === "PAID"` terlewati).
+    if (invoice.status === "PAID" && invoice.paymentMethod === "NOTAKU_DIGITAL") {
+      throw new Error(
+        "Invoice yang telah lunas melalui NotaKu Digital Payment (QRIS/VA) tidak dapat diubah statusnya.",
+      );
+    }
+
+    if (!VALID_TRANSITIONS[invoice.status]?.has(status)) {
+      throw new Error(
+        `Status tidak bisa diubah dari ${invoice.status} ke ${status}`,
+      );
+    }
+
+    const updateData: {
+      status: InvoiceStatus;
+      paidAt?: Date;
+      paymentMethod?: string;
+    } = {
+      status: status as InvoiceStatus,
+    };
+
+    // Jika ditandai PAID secara manual oleh user dan belum memiliki paidAt, set tanggal saat ini & direct transfer
+    if (status === "PAID") {
+      if (!invoice.paidAt) {
+        updateData.paidAt = new Date();
+      }
+      if (!invoice.paymentMethod) {
+        updateData.paymentMethod = "DIRECT_TRANSFER";
+      }
+    }
+
+    return tx.invoice.update({
+      where: { id, userId: user.id },
+      data: updateData,
+      include: { customer: true },
+    });
   });
 
   if (status === "PAID") {

@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 import { checkServerActionRateLimit } from "@/lib/rate-limit";
 import { auditLog } from "@/lib/audit-log";
 import { generateApiKey, generateWebhookSecret } from "@/lib/api-keys";
+import { assertSafeWebhookUrl } from "@/lib/safe-webhook";
 import { z } from "zod";
 
 async function getUser() {
@@ -155,8 +156,8 @@ export async function createApiKeyAction(data: { name: string }): Promise<{
     revalidatePath("/settings");
 
     return { success: true, rawKey };
-  } catch (err: any) {
-    return { success: false, error: err?.message || "Gagal membuat API Key" };
+  } catch (err: unknown) {
+    return { success: false, error: err instanceof Error ? err.message : "Gagal membuat API Key" };
   }
 }
 
@@ -177,8 +178,8 @@ export async function deleteApiKeyAction(id: string): Promise<{ success: boolean
     revalidatePath("/settings");
 
     return { success: true };
-  } catch (err: any) {
-    return { success: false, error: err?.message || "Gagal menghapus API Key" };
+  } catch (err: unknown) {
+    return { success: false, error: err instanceof Error ? err.message : "Gagal menghapus API Key" };
   }
 }
 
@@ -210,6 +211,7 @@ export async function createWebhookAction(data: {
     if (!parsed.success) {
       throw new Error(parsed.error.issues[0].message);
     }
+    const { url: safeUrl } = await assertSafeWebhookUrl(parsed.data.url);
 
     const count = await prisma.webhookEndpoint.count({ where: { userId: user.id } });
     if (count >= 5) {
@@ -221,7 +223,7 @@ export async function createWebhookAction(data: {
     await prisma.webhookEndpoint.create({
       data: {
         userId: user.id,
-        url: parsed.data.url,
+        url: safeUrl.toString(),
         description: parsed.data.description || null,
         events: parsed.data.events,
         secret,
@@ -232,8 +234,8 @@ export async function createWebhookAction(data: {
     revalidatePath("/settings");
 
     return { success: true };
-  } catch (err: any) {
-    return { success: false, error: err?.message || "Gagal mendaftarkan webhook" };
+  } catch (err: unknown) {
+    return { success: false, error: err instanceof Error ? err.message : "Gagal mendaftarkan webhook" };
   }
 }
 
@@ -254,7 +256,7 @@ export async function deleteWebhookAction(id: string): Promise<{ success: boolea
     revalidatePath("/settings");
 
     return { success: true };
-  } catch (err: any) {
-    return { success: false, error: err?.message || "Gagal menghapus webhook" };
+  } catch (err: unknown) {
+    return { success: false, error: err instanceof Error ? err.message : "Gagal menghapus webhook" };
   }
 }

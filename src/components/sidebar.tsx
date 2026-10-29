@@ -146,6 +146,7 @@ export function Sidebar({
                   href={item.href}
                   prefetch={true}
                   onClick={onClose}
+                  aria-current={isActive ? "page" : undefined}
                   className={`flex items-center gap-3 rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
                     isActive
                       ? "bg-[#0f6b4f]/10 dark:bg-emerald-500/15 text-[#0f6b4f] dark:text-emerald-400 font-bold shadow-2xs"
@@ -174,6 +175,7 @@ export function Sidebar({
               href="/admin"
               prefetch={true}
               onClick={onClose}
+              aria-current={pathname.startsWith("/admin") ? "page" : undefined}
               className={`flex items-center gap-3 rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
                 pathname.startsWith("/admin")
                   ? "bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold"
@@ -203,23 +205,23 @@ export function Sidebar({
               onClose?.();
               openChangelogModal();
             }}
-            className="flex-1 flex items-center justify-center gap-1.5 rounded-lg py-1.5 text-[10px] font-semibold text-slate-400 dark:text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors whitespace-nowrap cursor-pointer"
+            className="flex-1 flex items-center justify-center gap-1.5 rounded-lg min-h-[44px] py-1.5 text-[10px] font-semibold text-slate-400 dark:text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors whitespace-nowrap cursor-pointer"
             title="Lihat catatan rilis"
           >
-            <NewspaperIcon aria-hidden="true" className="w-3 h-3" />
+            <NewspaperIcon aria-hidden="true" className="w-3.5 h-3.5" />
             <span>v{APP_VERSION}</span>
           </button>
 
-          <div className="w-px h-3 bg-slate-200 dark:bg-slate-700" />
+          <div className="w-px h-4 bg-slate-200 dark:bg-slate-700" />
 
           {/* Feedback Mailto */}
           <a
             href="mailto:founder@notaku.store?subject=Kritik%20%26%20Saran%20NotaKu"
             onClick={() => onClose?.()}
-            className="flex-1 flex items-center justify-center gap-1.5 rounded-lg py-1.5 text-[10px] font-semibold text-slate-400 dark:text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors whitespace-nowrap cursor-pointer"
+            className="flex-1 flex items-center justify-center gap-1.5 rounded-lg min-h-[44px] py-1.5 text-[10px] font-semibold text-slate-400 dark:text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors whitespace-nowrap cursor-pointer"
             title={tFooter("feedback")}
           >
-            <EnvelopeIcon className="w-3 h-3" />
+            <EnvelopeIcon aria-hidden="true" className="w-3.5 h-3.5" />
             <span>{tFooter("feedback")}</span>
           </a>
         </div>
@@ -253,7 +255,7 @@ export function Sidebar({
 
           <button
             onClick={handleSignOut}
-            className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[36px] p-2 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg transition-colors cursor-pointer shrink-0"
+            className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] p-2 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg transition-colors cursor-pointer shrink-0"
             title={tDash("logout")}
             aria-label={tDash("logout")}
           >

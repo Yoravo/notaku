@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -9,71 +8,73 @@ datasource db {
 }
 
 model User {
-  id            String        @id @default(cuid())
-  email         String        @unique
-  name          String
-  businessName  String?
-  phone         String?
-  address       String?
-  logoUrl       String?
-  signatureUrl  String?
-  stampUrl      String?
-  plan          Plan          @default(FREE)
-  role          Role          @default(USER)
-  createdAt     DateTime      @default(now())
-  customers     Customer[]
-  items         Item[]
-  invoices      Invoice[]
-  expenses      Expense[]
-  subscription  Subscription?
-  transactions  Transaction[]
-  payouts       Payout[]
-  emailVerified Boolean       @default(false)
-  image         String?
-  updatedAt     DateTime      @updatedAt
-  sessions      Session[]
-  accounts      Account[]
+  id              String          @id @default(cuid())
+  email           String          @unique
+  name            String
+  businessName    String?
+  phone           String?
+  address         String?
+  logoUrl         String?
+  signatureUrl    String?
+  stampUrl        String?
+  plan            Plan            @default(FREE)
+  role            Role            @default(USER)
+  createdAt       DateTime        @default(now())
+  customers       Customer[]
+  items           Item[]
+  invoices        Invoice[]
+  expenses        Expense[]
+  subscription    Subscription?
+  transactions    Transaction[]
+  payouts         Payout[]
+  emailVerified   Boolean         @default(false)
+  image           String?
+  updatedAt       DateTime        @updatedAt
+  sessions        Session[]
+  accounts        Account[]
   invoiceTemplate InvoiceTemplate @default(CLASSIC)
-  invoiceColor    String?       @default("#0f6b4f")
-  invoiceFont     String?       @default("Helvetica")
+  invoiceColor    String?         @default("#0f6b4f")
+  invoiceFont     String?         @default("Helvetica")
 
   // Rekening Bank & E-Wallet Penjual (Direct Transfer & Payout)
   bankName          String?
   bankAccountNumber String?
   bankAccountName   String?
-  bankAccountLocked Boolean   @default(false)
-  balance           Decimal   @default(0)
+  bankAccountLocked Boolean @default(false)
+  balance           Decimal @default(0)
 
   // Program Referral & Afiliasi
-  referralCode      String?   @unique
-  referredById      String?
-  referredBy        User?     @relation("UserReferrals", fields: [referredById], references: [id])
-  referrals         User[]    @relation("UserReferrals")
-  referralRewards   ReferralReward[] @relation("UserReferralRewards")
+  referralCode    String?          @unique
+  referredById    String?
+  referredBy      User?            @relation("UserReferrals", fields: [referredById], references: [id])
+  referrals       User[]           @relation("UserReferrals")
+  referralRewards ReferralReward[] @relation("UserReferralRewards")
+  paymentAttempts PaymentAttempt[]
+  paymentOutbox   PaymentOutbox[]
 
   // Custom Domain & Subdomain White-Label (PRO)
-  customDomain         String?   @unique
-  customDomainVerified Boolean   @default(false)
+  customDomain         String? @unique
+  customDomainVerified Boolean @default(false)
   customDomainTxt      String?
-  subdomainSlug        String?   @unique
+  subdomainSlug        String? @unique
 
   // Developer API Keys & Webhooks (PRO)
-  apiKeys              ApiKey[]
-  webhooks             WebhookEndpoint[]
+  apiKeys  ApiKey[]
+  webhooks WebhookEndpoint[]
 
   // Bot Notifikasi Penjual (Telegram & Discord - PRO)
-  telegramChatId       String?
-  telegramBotToken     String?
-  telegramEnabled      Boolean   @default(false)
-  discordWebhookUrl    String?
-  discordEnabled       Boolean   @default(false)
-  notifyOnPayment      Boolean   @default(true)
-  notifyOnDueDate      Boolean   @default(true)
-  notifyOnRecurring    Boolean   @default(true)
+  telegramChatId    String?
+  telegramBotToken  String?
+  telegramEnabled   Boolean @default(false)
+  discordWebhookUrl String?
+  discordEnabled    Boolean @default(false)
+  notifyOnPayment   Boolean @default(true)
+  notifyOnDueDate   Boolean @default(true)
+  notifyOnRecurring Boolean @default(true)
 
   // Preferensi Email & Komunikasi Resmi
-  receiveNewsletter    Boolean   @default(true)
-  lastDigestAt         DateTime?
+  receiveNewsletter Boolean   @default(true)
+  lastDigestAt      DateTime?
 
   @@map("user")
 }
@@ -97,7 +98,7 @@ model Item {
   name        String
   description String?
   price       Decimal  @default(0)
-  unit        String?  // e.g. "Pcs", "Jam", "Hari", "Bulan", "Paket"
+  unit        String? // e.g. "Pcs", "Jam", "Hari", "Bulan", "Paket"
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   user        User     @relation(fields: [userId], references: [id])
@@ -150,34 +151,35 @@ model Invoice {
   enableDirectTransfer Boolean   @default(true)
   enableDigitalPayment Boolean   @default(false)
   enableReminder       Boolean   @default(true)
-  lastReminderType     String?   // "reminder_h3" | "reminder_today" | "reminder_overdue"
+  lastReminderType     String? // "reminder_h3" | "reminder_today" | "reminder_overdue"
   lastReminderAt       DateTime?
   mayarPaymentUrl      String?
   mayarPaymentId       String?
   paidAt               DateTime?
-  paymentMethod        String?   // "DIRECT_TRANSFER" | "NOTAKU_DIGITAL"
+  paymentMethod        String? // "DIRECT_TRANSFER" | "NOTAKU_DIGITAL"
 
-  transactions         Transaction[]
+  transactions    Transaction[]
+  paymentAttempts PaymentAttempt[]
 
   @@unique([userId, number])
 }
 
 model Transaction {
-  id          String            @id @default(cuid())
+  id          String          @id @default(cuid())
   userId      String
   invoiceId   String?
   payoutId    String?
-  type        TransactionType   // "INVOICE_PAYMENT" | "PAYOUT_WITHDRAWAL" | "FEE_DEDUCTION" | "REFUND"
-  amount      Decimal           // Nominal bersih yang menambah/mengurangi saldo
-  grossAmount Decimal           @default(0) // Nominal kotor invoice
-  feeAmount   Decimal           @default(0) // Biaya MDR 0.7% atau biaya admin
+  type        TransactionType // "INVOICE_PAYMENT" | "PAYOUT_WITHDRAWAL" | "FEE_DEDUCTION" | "REFUND"
+  amount      Decimal // Nominal bersih yang menambah/mengurangi saldo
+  grossAmount Decimal         @default(0) // Nominal kotor invoice
+  feeAmount   Decimal         @default(0) // Biaya MDR 0.7% atau biaya admin
   description String
-  referenceId String?           // ID pembayaran Mayar / ID penarikan
-  createdAt   DateTime          @default(now())
+  referenceId String? // ID pembayaran Mayar / ID penarikan
+  createdAt   DateTime        @default(now())
 
-  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  invoice     Invoice?          @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
-  payout      Payout?           @relation(fields: [payoutId], references: [id], onDelete: SetNull)
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invoice Invoice? @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  payout  Payout?  @relation(fields: [payoutId], references: [id], onDelete: SetNull)
 
   @@index([userId])
   @@index([invoiceId])
@@ -185,24 +187,112 @@ model Transaction {
   @@map("transaction")
 }
 
+model PaymentAttempt {
+  id                    String               @id @default(cuid())
+  environment           PaymentEnvironment
+  purpose               PaymentPurpose
+  userId                String
+  invoiceId             String?
+  amount                Decimal
+  currency              String               @default("IDR")
+  plan                  Plan?
+  intervalDays          Int?
+  promoCode             String?
+  promoReservedAt       DateTime?
+  promoConsumedAt       DateTime?
+  merchantIdSnapshot    String
+  gaMeasurementId       String?
+  gaClientId            String?
+  gaSessionId           String?
+  status                PaymentAttemptStatus @default(CREATING)
+  providerPaymentId     String?
+  providerTransactionId String?              @unique
+  paymentUrl            String?
+  returnUrl             String
+  expiresAt             DateTime
+  errorCode             String?
+  errorMessage          String?
+  activeCheckoutKey     String?              @unique
+  reconcileAttempts     Int                  @default(0)
+  lastReconciledAt      DateTime?
+  completedAt           DateTime?
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+
+  user    User            @relation(fields: [userId], references: [id], onDelete: Restrict)
+  invoice Invoice?        @relation(fields: [invoiceId], references: [id], onDelete: Restrict)
+  outbox  PaymentOutbox[]
+
+  @@index([providerPaymentId])
+  @@index([userId, purpose, status])
+  @@index([invoiceId, status])
+  @@index([createdAt])
+  @@map("payment_attempt")
+}
+
+model PaymentOutbox {
+  id             String    @id @default(cuid())
+  attemptId      String
+  userId         String
+  kind           String
+  payload        Json
+  idempotencyKey String    @unique
+  attempts       Int       @default(0)
+  availableAt    DateTime  @default(now())
+  processingAt   DateTime?
+  deliveredAt    DateTime?
+  lastError      String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  attempt PaymentAttempt @relation(fields: [attemptId], references: [id], onDelete: Restrict)
+  user    User           @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([deliveredAt, availableAt])
+  @@index([attemptId])
+  @@map("payment_outbox")
+}
+
+enum PaymentEnvironment {
+  SANDBOX
+  PRODUCTION
+}
+
+enum PaymentPurpose {
+  SUBSCRIPTION
+  INVOICE
+}
+
+enum PaymentAttemptStatus {
+  CREATING
+  PENDING
+  CREATE_UNKNOWN
+  MANUAL_REVIEW
+  RECONCILING
+  PAID
+  COMPLETED
+  FAILED
+  EXPIRED
+}
+
 model Payout {
-  id            String        @id @default(cuid())
+  id            String       @id @default(cuid())
   userId        String
-  amount        Decimal       // Nominal yang ditarik user
-  feeAmount     Decimal       @default(0) // Biaya transfer / admin jika ada
-  netAmount     Decimal       // Nominal bersih yang ditransfer ke rekening user
+  amount        Decimal // Nominal yang ditarik user
+  feeAmount     Decimal      @default(0) // Biaya transfer / admin jika ada
+  netAmount     Decimal // Nominal bersih yang ditransfer ke rekening user
   bankName      String
   accountNumber String
   accountName   String
-  status        PayoutStatus  @default(PENDING)
+  status        PayoutStatus @default(PENDING)
   notes         String?
   adminNotes    String?
   processedAt   DateTime?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 
-  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  transactions  Transaction[]
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
 
   @@index([userId])
   @@index([status])
@@ -211,15 +301,15 @@ model Payout {
 }
 
 model ReferralReward {
-  id             String    @id @default(cuid())
+  id             String   @id @default(cuid())
   referrerId     String
   referredUserId String
-  amount         Decimal   @default(10000)
-  status         String    @default("COMPLETED") // "COMPLETED" | "REJECTED" | "PENDING"
+  amount         Decimal  @default(10000)
+  status         String   @default("COMPLETED") // "COMPLETED" | "REJECTED" | "PENDING"
   notes          String?
-  createdAt      DateTime  @default(now())
+  createdAt      DateTime @default(now())
 
-  referrer       User      @relation("UserReferralRewards", fields: [referrerId], references: [id], onDelete: Cascade)
+  referrer User @relation("UserReferralRewards", fields: [referrerId], references: [id], onDelete: Cascade)
 
   @@index([referrerId])
   @@index([referredUserId])
@@ -268,10 +358,10 @@ model Subscription {
 }
 
 enum InvoiceTemplate {
-    CLASSIC
-    MODERN
-    MINIMAL
-  }
+  CLASSIC
+  MODERN
+  MINIMAL
+}
 
 enum Plan {
   FREE
@@ -362,15 +452,15 @@ enum Role {
 }
 
 model PageView {
-  id        String   @id @default(cuid())
-  path      String
-  referrer  String?
-  userAgent String?
-  ipAddress String?
-  utmSource String?
-  utmMedium String?
+  id          String   @id @default(cuid())
+  path        String
+  referrer    String?
+  userAgent   String?
+  ipAddress   String?
+  utmSource   String?
+  utmMedium   String?
   utmCampaign String?
-  createdAt DateTime @default(now())
+  createdAt   DateTime @default(now())
 
   @@index([path])
   @@index([createdAt])
@@ -378,17 +468,17 @@ model PageView {
 }
 
 model ApiKey {
-  id          String    @id @default(cuid())
-  userId      String
-  name        String
-  keyPrefix   String    // e.g. "ntk_live_abcd..." (first 12 chars visible for display)
-  keyHash     String    @unique // SHA-256 hash of full API key
-  lastUsedAt  DateTime?
-  expiresAt   DateTime?
-  isActive    Boolean   @default(true)
-  createdAt   DateTime  @default(now())
+  id         String    @id @default(cuid())
+  userId     String
+  name       String
+  keyPrefix  String // e.g. "ntk_live_abcd..." (first 12 chars visible for display)
+  keyHash    String    @unique // SHA-256 hash of full API key
+  lastUsedAt DateTime?
+  expiresAt  DateTime?
+  isActive   Boolean   @default(true)
+  createdAt  DateTime  @default(now())
 
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([keyHash])
@@ -396,36 +486,38 @@ model ApiKey {
 }
 
 model WebhookEndpoint {
-  id          String        @id @default(cuid())
+  id          String       @id @default(cuid())
   userId      String
   url         String
-  secret      String        // Signing secret: whsec_...
-  events      String[]      // ["invoice.created", "invoice.paid", "invoice.overdue"]
-  isActive    Boolean       @default(true)
+  secret      String // Signing secret: whsec_...
+  events      String[] // ["invoice.created", "invoice.paid", "invoice.overdue"]
+  isActive    Boolean      @default(true)
   description String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   logs        WebhookLog[]
 
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("webhook_endpoint")
 }
 
 model WebhookLog {
-  id          String          @id @default(cuid())
-  endpointId  String
-  event       String          // e.g. "invoice.paid"
-  payload     Json
-  statusCode  Int?
-  response    String?
-  durationMs  Int?
-  success     Boolean         @default(false)
-  createdAt   DateTime        @default(now())
+  id         String   @id @default(cuid())
+  endpointId String
+  eventId    String?
+  event      String // e.g. "invoice.paid"
+  payload    Json
+  statusCode Int?
+  response   String?
+  durationMs Int?
+  success    Boolean  @default(false)
+  createdAt  DateTime @default(now())
 
-  endpoint    WebhookEndpoint @relation(fields: [endpointId], references: [id], onDelete: Cascade)
+  endpoint WebhookEndpoint @relation(fields: [endpointId], references: [id], onDelete: Cascade)
 
+  @@unique([endpointId, eventId])
   @@index([endpointId])
   @@index([createdAt])
   @@map("webhook_log")

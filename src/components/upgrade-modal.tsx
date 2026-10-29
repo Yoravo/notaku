@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import {
   CheckIcon,
   SparklesIcon,
@@ -32,6 +32,7 @@ export function UpgradeModal({
   initialPlan?: PlanType;
 }) {
   const t = useTranslations("upgradeModal");
+  const tCommon = useTranslations("common");
   const [selectedPlan, setSelectedPlan] = useState<PlanType>(initialPlan);
   const [selectedInterval, setSelectedInterval] = useState<PlanInterval>("MONTHLY");
   const [loading, setLoading] = useState(false);
@@ -42,11 +43,68 @@ export function UpgradeModal({
   const [validatingPromo, setValidatingPromo] = useState(false);
   const [promoError, setPromoError] = useState<string | null>(null);
   const [appliedPromo, setAppliedPromo] = useState<PromoState>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const onCloseRef = useRef(onClose);
+  const checkoutPendingRef = useRef(false);
+  const promoRequestRef = useRef(0);
+  const titleId = useId();
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  useEffect(() => {
+    const previouslyFocused = document.activeElement;
+    const dialog = dialogRef.current;
+    const focusableSelector =
+      'button:not([disabled]), input:not([disabled]), [href], [tabindex]:not([tabindex="-1"])';
+
+    dialog?.querySelector<HTMLElement>(focusableSelector)?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onCloseRef.current();
+        return;
+      }
+      if (event.key !== "Tab" || !dialog) return;
+
+      const focusable = Array.from(
+        dialog.querySelectorAll<HTMLElement>(focusableSelector),
+      );
+      if (focusable.length === 0) {
+        event.preventDefault();
+        dialog.focus();
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const activeIndex = focusable.indexOf(document.activeElement as HTMLElement);
+      if (activeIndex === -1) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus();
+      } else if (event.shiftKey && activeIndex === 0) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && activeIndex === focusable.length - 1) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      if (previouslyFocused instanceof HTMLElement) previouslyFocused.focus();
+    };
+  }, []);
 
   const basePrice = PLAN_PRICES[selectedPlan][selectedInterval];
 
   const handleApplyPromo = async () => {
-    if (!inputCode.trim()) return;
+    if (!inputCode.trim() || validatingPromo || loading) return;
+    const requestId = ++promoRequestRef.current;
     setValidatingPromo(true);
     setPromoError(null);
 
@@ -62,6 +120,7 @@ export function UpgradeModal({
       });
 
       const data = await res.json();
+      if (requestId !== promoRequestRef.current) return;
       if (!res.ok) {
         setPromoError(data.error || t("invalidVoucher"));
         setAppliedPromo(null);
@@ -70,31 +129,49 @@ export function UpgradeModal({
         setPromoError(null);
       }
     } catch {
-      setPromoError(t("failedCheckVoucher"));
+      if (requestId === promoRequestRef.current) {
+        setPromoError(t("failedCheckVoucher"));
+      }
     } finally {
-      setValidatingPromo(false);
+      if (requestId === promoRequestRef.current) {
+        setValidatingPromo(false);
+      }
     }
   };
 
+  const invalidatePromoRequest = () => {
+    promoRequestRef.current += 1;
+    setValidatingPromo(false);
+  };
+
   const handleRemovePromo = () => {
+    if (loading) return;
+    invalidatePromoRequest();
     setAppliedPromo(null);
     setInputCode("");
     setPromoError(null);
   };
 
   const handlePlanChange = (plan: PlanType) => {
+    if (loading) return;
+    invalidatePromoRequest();
     setSelectedPlan(plan);
     setAppliedPromo(null);
     setPromoError(null);
   };
 
   const handleIntervalChange = (interval: PlanInterval) => {
+    if (loading) return;
+    invalidatePromoRequest();
     setSelectedInterval(interval);
     setAppliedPromo(null);
     setPromoError(null);
   };
 
   const handleUpgrade = async () => {
+    if (checkoutPendingRef.current) return;
+    checkoutPendingRef.current = true;
+    invalidatePromoRequest();
     setLoading(true);
     setError(null);
 
@@ -133,14 +210,15 @@ export function UpgradeModal({
 
       if (!res.ok || !data.paymentUrl) {
         setError(data.error || t("failedPaymentLink"));
+        checkoutPendingRef.current = false;
         setLoading(false);
         return;
       }
 
-      // Redirect ke checkout Mayar
-      window.location.href = data.paymentUrl;
+      window.location.assign(data.paymentUrl);
     } catch {
       setError(t("connectionError"));
+      checkoutPendingRef.current = false;
       setLoading(false);
     }
   };
@@ -153,7 +231,14 @@ export function UpgradeModal({
         className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity animate-in fade-in"
         onClick={onClose}
       />
-      <div className="relative w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xl space-y-4 animate-in zoom-in-95 border border-gray-100 dark:border-slate-800 max-h-[90vh] overflow-y-auto">
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
+        className="relative w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-2xl space-y-4 animate-in zoom-in-95 border border-gray-100 dark:border-slate-800 max-h-[90vh] overflow-y-auto"
+      >
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
             <div
@@ -174,7 +259,10 @@ export function UpgradeModal({
               )}
             </div>
             <div>
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+              <h2
+                id={titleId}
+                className="text-lg font-bold text-gray-900 dark:text-white"
+              >
                 {t("titlePrefix")} Nota<span className="text-[#0f6b4f] dark:text-emerald-400">Ku</span>{" "}
                 {selectedPlan === "BUSINESS" ? "Business" : selectedPlan === "LITE" ? "LITE" : "PRO"}
               </h2>
@@ -184,7 +272,9 @@ export function UpgradeModal({
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
+            aria-label={tCommon("close")}
             className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-700 dark:hover:text-slate-200 transition-colors cursor-pointer min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[36px] flex items-center justify-center"
           >
             <XMarkIcon className="w-5 h-5" />
@@ -196,6 +286,7 @@ export function UpgradeModal({
           <button
             type="button"
             onClick={() => handlePlanChange("LITE")}
+            disabled={loading}
             className={`py-2 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer min-h-[40px] flex items-center justify-center gap-1.5 ${
               selectedPlan === "LITE"
                 ? "bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 shadow-xs"
@@ -207,6 +298,7 @@ export function UpgradeModal({
           <button
             type="button"
             onClick={() => handlePlanChange("PRO")}
+            disabled={loading}
             className={`py-2 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer min-h-[40px] flex items-center justify-center gap-1.5 ${
               selectedPlan === "PRO"
                 ? "bg-white dark:bg-slate-900 text-[#0f6b4f] dark:text-emerald-400 shadow-xs"
@@ -219,6 +311,7 @@ export function UpgradeModal({
           <button
             type="button"
             onClick={() => handlePlanChange("BUSINESS")}
+            disabled={loading}
             className={`py-2 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer min-h-[40px] flex items-center justify-center gap-1.5 ${
               selectedPlan === "BUSINESS"
                 ? "bg-white dark:bg-slate-900 text-violet-700 dark:text-violet-400 shadow-xs"
@@ -239,6 +332,7 @@ export function UpgradeModal({
             <button
               type="button"
               onClick={() => handleIntervalChange("MONTHLY")}
+              disabled={loading}
               className={`px-3 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer min-h-[32px] ${
                 selectedInterval === "MONTHLY"
                   ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs"
@@ -250,6 +344,7 @@ export function UpgradeModal({
             <button
               type="button"
               onClick={() => handleIntervalChange("ANNUALLY")}
+              disabled={loading}
               className={`px-3 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer min-h-[32px] flex items-center gap-1 ${
                 selectedInterval === "ANNUALLY"
                   ? "bg-emerald-600 text-white shadow-2xs"
@@ -330,6 +425,7 @@ export function UpgradeModal({
               <button
                 type="button"
                 onClick={handleRemovePromo}
+                disabled={loading}
                 className="text-[11px] text-rose-600 dark:text-rose-400 hover:underline font-semibold cursor-pointer"
               >
                 {t("removePromo")}
@@ -343,13 +439,14 @@ export function UpgradeModal({
                 type="text"
                 value={inputCode}
                 onChange={(e) => setInputCode(e.target.value.toUpperCase())}
+                disabled={loading || validatingPromo}
                 placeholder={t("voucherPlaceholder")}
                 className="flex-1 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-1.5 text-xs font-mono font-bold tracking-wider uppercase placeholder:text-gray-400 dark:placeholder:text-slate-500 text-slate-900 dark:text-white focus:border-[#0f6b4f] focus:ring-1 focus:ring-[#0f6b4f] min-h-[44px] sm:min-h-[38px]"
               />
               <button
                 type="button"
                 onClick={handleApplyPromo}
-                disabled={validatingPromo || !inputCode.trim()}
+                disabled={loading || validatingPromo || !inputCode.trim()}
                 className="rounded-lg bg-slate-900 dark:bg-slate-800 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-slate-800 dark:hover:bg-slate-700 disabled:opacity-50 transition-colors cursor-pointer flex items-center gap-1 min-h-[44px] sm:min-h-[38px]"
               >
                 {validatingPromo ? (
@@ -376,14 +473,14 @@ export function UpgradeModal({
           )}
 
           {promoError && (
-            <p className="text-[11px] text-rose-600 dark:text-rose-400 font-medium">
+            <p role="alert" className="text-[11px] text-rose-600 dark:text-rose-400 font-medium">
               {promoError}
             </p>
           )}
         </div>
 
         {error && (
-          <div className="rounded-lg bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900 p-3 text-xs text-rose-700 dark:text-rose-300 font-medium">
+          <div role="alert" className="rounded-lg bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900 p-3 text-xs text-rose-700 dark:text-rose-300 font-medium">
             {error}
           </div>
         )}
@@ -450,6 +547,8 @@ export function UpgradeModal({
             type="button"
             onClick={handleUpgrade}
             disabled={loading}
+            aria-busy={loading}
+            aria-live="polite"
             className={`flex-1 rounded-xl px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50 transition-colors cursor-pointer shadow-xs min-h-[44px] ${
               selectedPlan === "BUSINESS"
                 ? "bg-violet-700 hover:bg-violet-800"

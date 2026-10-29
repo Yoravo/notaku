@@ -28,7 +28,7 @@ export default async function DashboardLayout({
 
   const dbUser = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { role: true },
+    select: { role: true, plan: true },
   });
 
   const isEmailAdmin = (process.env.ADMIN_EMAILS || "")
@@ -43,6 +43,7 @@ export default async function DashboardLayout({
       user={{
         ...session.user,
         role: effectiveRole,
+        plan: dbUser?.plan || "FREE",
       }}
     >
       {children}
