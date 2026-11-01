@@ -7,7 +7,7 @@ import { headers } from "next/headers";
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
 
 export const metadata: Metadata = {
-  title: "Buat Surat Jalan Pengiriman Barang Online Gratis - Format PDF Standar",
+  title: "Buat Surat Jalan Online Gratis - Download PDF",
   description:
     "Generator surat jalan pengiriman barang (delivery order) online gratis tanpa registrasi. Dilengkapi tabel kuantiti, kolom ekspedisi/kurir, 3 tanda tangan, dan langsung download PDF.",
   keywords: [

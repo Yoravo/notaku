@@ -10,67 +10,56 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticEntries: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
-      lastModified: new Date(),
       changeFrequency: "daily" as const,
       priority: 1.0,
     },
     {
       url: `${baseUrl}/buat-invoice`,
-      lastModified: new Date(),
       changeFrequency: "daily" as const,
       priority: 0.9,
     },
     {
       url: `${baseUrl}/buat-kuitansi`,
-      lastModified: new Date(),
       changeFrequency: "daily" as const,
       priority: 0.9,
     },
     {
       url: `${baseUrl}/buat-surat-jalan`,
-      lastModified: new Date(),
       changeFrequency: "daily" as const,
       priority: 0.9,
     },
     {
       url: `${baseUrl}/tools`,
-      lastModified: new Date(),
       changeFrequency: "daily" as const,
       priority: 0.9,
     },
     {
       url: `${baseUrl}/templates`,
-      lastModified: new Date(),
       changeFrequency: "daily" as const,
       priority: 0.9,
     },
     {
       url: `${baseUrl}/kalkulator-ppn`,
-      lastModified: new Date(),
       changeFrequency: "weekly" as const,
       priority: 0.85,
     },
     {
       url: `${baseUrl}/kalkulator-pph23`,
-      lastModified: new Date(),
       changeFrequency: "weekly" as const,
       priority: 0.85,
     },
     {
       url: `${baseUrl}/terbilang-rupiah`,
-      lastModified: new Date(),
       changeFrequency: "weekly" as const,
       priority: 0.85,
     },
     {
       url: `${baseUrl}/login`,
-      lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.7,
     },
     {
       url: `${baseUrl}/register`,
-      lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.8,
     },
@@ -81,7 +70,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .filter((tpl) => Boolean(tpl?.slug && typeof tpl.slug === "string" && tpl.slug.trim().length > 0))
     .map((tpl) => ({
       url: `${baseUrl}/templates/${tpl.slug.trim()}`,
-      lastModified: new Date(),
       changeFrequency: "weekly" as const,
       priority: 0.8,
     }));

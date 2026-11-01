@@ -1,7 +1,9 @@
-import type { FC } from "react";
+import { getTranslations } from "next-intl/server";
 
-export const LandingJsonLd: FC = () => {
+export async function LandingJsonLd() {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
+  const tFaq = await getTranslations("faq");
+  const faqItems = (tFaq.raw("items") as { q: string; a: string }[]) || [];
 
   const organizationSchema = {
     "@context": "https://schema.org",
@@ -10,7 +12,6 @@ export const LandingJsonLd: FC = () => {
     url: baseUrl,
     logo: `${baseUrl}/logo.png`,
     image: `${baseUrl}/opengraph-image`,
-    sameAs: [],
     description:
       "Aplikasi invoice generator online, manajemen tagihan, kuitansi digital, dan billing SaaS terpercaya untuk UMKM dan bisnis Indonesia.",
   };
@@ -23,11 +24,6 @@ export const LandingJsonLd: FC = () => {
     description:
       "Aplikasi invoice generator online dan billing SaaS untuk UMKM dan bisnis Indonesia.",
     inLanguage: ["id", "en"],
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${baseUrl}/templates?q={search_term_string}`,
-      "query-input": "required name=search_term_string",
-    },
   };
 
   const softwareApplicationSchema = {
@@ -87,48 +83,14 @@ export const LandingJsonLd: FC = () => {
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "Apakah NotaKu benar-benar gratis digunakan?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Ya! Anda dapat menggunakan paket Free selamanya tanpa perlu kartu kredit. Sudah termasuk 5 invoice per bulan, manajemen pelanggan dasar, ekspor PDF, dan berbagi via WhatsApp.",
-        },
+    mainEntity: faqItems.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a,
       },
-      {
-        "@type": "Question",
-        name: "Apa keuntungan upgrade ke NotaKu PRO?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Dengan NotaKu PRO (hanya Rp49.000 / 30 hari), Anda mendapatkan pembuatan invoice tanpa batas, ekspor PDF bebas watermark, logo kustom, tanda tangan digital, stempel resmi, recurring invoice, custom domain white-label, dan laporan keuangan CSV.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Metode pembayaran apa saja yang didukung untuk upgrade PRO?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Kami menggunakan payment gateway resmi Mayar.id yang mendukung QRIS (GoPay, OVO, DANA, ShopeePay, LinkAja), Virtual Account bank nasional (BCA, Mandiri, BRI, BNI, Permata), dan Kartu Kredit.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Bagaimana cara mengirimkan invoice ke pelanggan via WhatsApp?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Setelah membuat invoice, cukup klik tombol 'Bagi ke WhatsApp'. NotaKu akan otomatis menyiapkan draf pesan rapi berisi rincian tagihan beserta tautan invoice publik interaktif untuk pelanggan Anda.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Apakah NotaKu mendukung perhitungan pajak PPN?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Ya, NotaKu mendukung perhitungan pajak PPN (11% atau 12%) secara otomatis pada setiap baris item invoice, lengkap dengan rekapitulasi laporan masa pajak bulanan dan ekspor CSV siap SPT.",
-        },
-      },
-    ],
+    })),
   };
 
   return (

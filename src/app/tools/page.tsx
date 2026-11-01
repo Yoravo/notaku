@@ -19,9 +19,9 @@ import { headers } from "next/headers";
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
 
 export const metadata: Metadata = {
-  title: "Pusat Alat & Kalkulator Bisnis Online Gratis Indonesia",
+  title: "Alat Bisnis Gratis - Invoice & Kalkulator Pajak",
   description:
-    "Kumpulan alat bantu keuangan, generator faktur invoice, kuitansi ejaan terbilang, surat jalan, dan kalkulator pajak PPN & PPh 23 gratis untuk UMKM, freelancer, dan pengusaha Indonesia.",
+    "Buat invoice, kuitansi, dan surat jalan online. Gunakan kalkulator PPN, PPh 23, serta terbilang rupiah gratis tanpa registrasi untuk kebutuhan usaha Anda.",
   keywords: [
     "alat bisnis online gratis",
     "kalkulator keuangan umkm",

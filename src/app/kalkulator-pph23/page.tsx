@@ -6,7 +6,7 @@ import { headers } from "next/headers";
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
 
 export const metadata: Metadata = {
-  title: "Kalkulator PPh 23 Jasa & Potongan Pajak Invoice Online Indonesia",
+  title: "Kalkulator PPh 23 Jasa Online - Tarif 2% & 4%",
   description:
     "Hitung otomatis potongan pajak PPh Pasal 23 (tarif 2% ber-NPWP / 4% tanpa NPWP) dan PPN 11%/12% untuk invoice jasa, sewa, konsultan, dan freelance di Indonesia.",
   keywords: [

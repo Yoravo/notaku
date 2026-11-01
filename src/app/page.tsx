@@ -1,8 +1,13 @@
+import type { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { LandingAnnouncementBanner } from "@/components/landing-announcement-banner";
 import { HomeClient } from "@/components/home-client";
 import { LandingJsonLd } from "@/components/landing-json-ld";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default async function Home() {
   const session = await auth.api.getSession({ headers: await headers() });

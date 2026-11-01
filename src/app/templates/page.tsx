@@ -6,13 +6,13 @@ import { headers } from "next/headers";
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
 
 export const metadata: Metadata = {
-  title: "Katalog Template Invoice Gratis Indonesia - Word, Excel, PDF Siap Pakai",
+  title: "Template Invoice Gratis untuk UMKM | Download PDF",
   description:
     "Koleksi lengkap contoh dan template invoice gratis untuk freelance, desainer, programmer, konsultan, bengkel, dan sewa properti. Download PDF instan tanpa login.",
   keywords: [
     "template invoice gratis",
     "contoh invoice indonesia",
-    "download template invoice word excel pdf",
+    "download template invoice pdf",
     "format invoice tagihan bisnis",
     "contoh nota tagihan profesional",
     "template invoice freelance ukm",

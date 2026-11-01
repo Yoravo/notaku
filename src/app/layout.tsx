@@ -36,11 +36,11 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "NotaKu - Aplikasi Invoice Generator Online & Kuitansi Digital UMKM",
+    default: "NotaKu - Aplikasi Invoice Online & Kuitansi UMKM",
     template: "%s · NotaKu",
   },
   description:
-    "Buat invoice dan kuitansi profesional dalam 30 detik. Gratis untuk UMKM, freelancer, & bisnis Indonesia. Kirim otomatis via WhatsApp, terima QRIS, dan unduh PDF resmi.",
+    "Buat invoice dan kuitansi online untuk UMKM dan freelancer. Unduh PDF, bagikan tagihan via WhatsApp, dan kelola pembayaran bisnis dengan NotaKu.",
   keywords: [
     "aplikasi invoice",
     "invoice generator online",
@@ -70,16 +70,13 @@ export const metadata: Metadata = {
     shortcut: [{ url: "/logo.png" }],
     apple: [{ url: "/logo.png" }],
   },
-  alternates: {
-    canonical: baseUrl,
-  },
   openGraph: {
     type: "website",
     locale: "id_ID",
     url: baseUrl,
-    title: "NotaKu - Aplikasi Invoice Generator Online & Kuitansi Digital UMKM",
+    title: "NotaKu - Aplikasi Invoice Online & Kuitansi UMKM",
     description:
-      "Buat invoice dan kuitansi profesional dalam 30 detik. Gratis untuk UMKM, freelancer, & bisnis Indonesia. Kirim otomatis via WhatsApp, terima QRIS, dan unduh PDF resmi.",
+      "Buat invoice dan kuitansi online untuk UMKM dan freelancer. Unduh PDF, bagikan tagihan via WhatsApp, dan kelola pembayaran bisnis dengan NotaKu.",
     siteName: "NotaKu",
     images: [
       {
@@ -92,7 +89,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "NotaKu - Aplikasi Invoice Generator Online & Kuitansi Digital UMKM",
+    title: "NotaKu - Aplikasi Invoice Online & Kuitansi UMKM",
     description:
       "Buat invoice dan kuitansi profesional dalam 30 detik. Gratis untuk UMKM, freelancer, & bisnis Indonesia.",
     images: ["/opengraph-image"],

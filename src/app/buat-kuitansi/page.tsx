@@ -7,7 +7,7 @@ import { headers } from "next/headers";
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
 
 export const metadata: Metadata = {
-  title: "Buat Kuitansi Pembayaran Online Gratis - Ejaan Terbilang & Download PDF",
+  title: "Buat Kuitansi Online Gratis - PDF & Terbilang",
   description:
     "Generator kuitansi tanda terima pembayaran online gratis tanpa registrasi. Dilengkapi konversi terbilang rupiah otomatis, stempel lunas, dan langsung unduh PDF resmi.",
   keywords: [

@@ -6,9 +6,9 @@ import { headers } from "next/headers";
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
 
 export const metadata: Metadata = {
-  title: "Kalkulator PPN 11% & 12% dan DPP Online Indonesia - Hitung Pajak Cepat",
+  title: "Kalkulator PPN 11%, 12% & DPP Online",
   description:
-    "Kalkulator PPN online akurat untuk menghitung DPP (Dasar Pengenaan Pajak), PPN 11%, dan PPN 12% secara instan. Mendukung perhitungan harga sebelum (exclude) dan sesudah pajak (include).",
+    "Hitung DPP dan PPN 11% atau 12% secara online. Pilih harga termasuk atau belum termasuk pajak, lalu lihat rincian perhitungan. Gratis tanpa registrasi.",
   keywords: [
     "kalkulator ppn online",
     "hitung dpp dan ppn",

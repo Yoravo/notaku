@@ -69,16 +69,15 @@ export function LandingFAQ() {
                     <ChevronDownIcon className="h-4 w-4 stroke-[2.5]" aria-hidden="true" />
                   </div>
                 </button>
-                {isOpen && (
-                  <div
-                    id={answerId}
-                    role="region"
-                    aria-labelledby={questionId}
-                    className="border-t border-line/60 dark:border-slate-800 px-6 pb-5 pt-3 text-sm leading-relaxed text-ink-soft sm:text-base animate-in fade-in duration-150"
-                  >
-                    {faq.a}
-                  </div>
-                )}
+                <div
+                  id={answerId}
+                  role="region"
+                  hidden={!isOpen}
+                  aria-labelledby={questionId}
+                  className="border-t border-line/60 dark:border-slate-800 px-6 pb-5 pt-3 text-sm leading-relaxed text-ink-soft sm:text-base animate-in fade-in duration-150"
+                >
+                  {faq.a}
+                </div>
               </div>
             );
           })}

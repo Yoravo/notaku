@@ -6,7 +6,7 @@ import { headers } from "next/headers";
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
 
 export const metadata: Metadata = {
-  title: "Konverter Angka ke Huruf Terbilang Rupiah Online - Kuitansi & Faktur",
+  title: "Terbilang Rupiah Online - Ubah Angka ke Huruf",
   description:
     "Ubah nominal angka ke huruf kalimat terbilang rupiah resmi bahasa Indonesia otomatis dan instan. Cocok untuk kuitansi, faktur, kwitansi, cek, dan surat perjanjian bisnis.",
   keywords: [

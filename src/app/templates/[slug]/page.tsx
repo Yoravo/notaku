@@ -39,7 +39,7 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${template.title} Gratis - Download Format PDF & Excel`;
+  const title = `${template.title} Gratis - PDF`;
   const description = `${template.shortDesc} Dilengkapi contoh isian item, ketentuan pembayaran, dan generator PDF instan tanpa login.`;
 
   return {

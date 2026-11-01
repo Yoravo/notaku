@@ -7,7 +7,7 @@ import { headers } from "next/headers";
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
 
 export const metadata: Metadata = {
-  title: "Free Invoice Generator Online Indonesia - Buat & Download PDF Gratis",
+  title: "Buat Invoice Online Gratis - Download PDF",
   description:
     "Buat invoice tagihan bisnis online gratis dalam 30 detik tanpa registrasi. Hitung otomatis diskon, DPP, dan pajak PPN 11%/12%. Langsung download file PDF resmi.",
   keywords: [
