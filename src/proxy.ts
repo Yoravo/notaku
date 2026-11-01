@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
 import { sanitizeDomain } from "@/lib/domain-verification";
+import { NICHE_TEMPLATES } from "@/lib/templates-data";
+
+const TEMPLATE_PATHS = new Set(NICHE_TEMPLATES.map(({ slug }) => `/templates/${slug}`));
+
 
 // Domain internal yang tidak di-rewrite sebagai custom domain
 const ROOT_DOMAINS = [
@@ -29,6 +33,14 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const host = request.headers.get("host") || "";
   const cleanHost = sanitizeDomain(host);
+
+  // Reject unknown catalog URLs before a streamed response commits HTTP 200.
+  if (pathname.startsWith("/templates/") && !TEMPLATE_PATHS.has(pathname.replace(/\/$/, ""))) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/_not-found";
+    url.search = "";
+    return NextResponse.rewrite(url, { status: 404 });
+  }
 
   // 1. Abaikan static files, api routes, next.js internals, dan favicon
   if (

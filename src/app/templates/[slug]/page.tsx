@@ -2,15 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import {
-  DocumentTextIcon,
-  SparklesIcon,
   CheckCircleIcon,
   ArrowRightIcon,
   DocumentArrowDownIcon,
   InformationCircleIcon,
-  BuildingStorefrontIcon,
 } from "@heroicons/react/24/outline";
-import { NICHE_TEMPLATES, NicheTemplate } from "@/lib/templates-data";
+import { NICHE_TEMPLATES } from "@/lib/templates-data";
 import { formatMoney } from "@/lib/currencies";
 import { LandingNavbar } from "@/components/landing-navbar";
 import { LandingFooter } from "@/components/layout/landing-footer";
@@ -18,6 +15,8 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notaku.store";
+
+export const dynamicParams = false;
 
 export async function generateStaticParams() {
   return NICHE_TEMPLATES.map((tpl) => ({
@@ -80,26 +79,25 @@ export default async function NicheTemplateDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const session = await auth.api.getSession({ headers: await headers() });
   const template = NICHE_TEMPLATES.find((t) => t.slug === slug);
 
   if (!template) {
     notFound();
   }
 
+  const session = await auth.api.getSession({ headers: await headers() });
+
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "WebApplication",
+    "@type": "WebPage",
     name: template.title,
     url: `${baseUrl}/templates/${template.slug}`,
-    applicationCategory: "BusinessApplication",
-    operatingSystem: "All",
-    offers: {
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "IDR",
-    },
     description: template.shortDesc,
+    isPartOf: {
+      "@type": "CollectionPage",
+      name: "Katalog Template Invoice",
+      url: `${baseUrl}/templates`,
+    },
   };
 
   const breadcrumbJsonLd = {

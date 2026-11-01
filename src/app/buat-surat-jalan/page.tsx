@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     "delivery order online generator",
     "surat jalan ekspedisi logistik",
     "tanda terima pengiriman barang",
-    "surat jalan excel word pdf",
+    "surat jalan pdf online",
   ],
   alternates: {
     canonical: `${baseUrl}/buat-surat-jalan`,

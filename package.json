@@ -1,6 +1,6 @@
 {
   "name": "notaku",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,6 +9,7 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "verify:i18n": "node scripts/verify-i18n-keys.cjs",
+    "verify:seo": "node scripts/verify-seo.cjs",
     "audit:jsx": "node scripts/audit-jsx-literals.cjs",
     "postinstall": "prisma generate",
     "test:e2e": "e2e run"

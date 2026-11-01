@@ -4,10 +4,10 @@
  * berdasarkan riwayat commit git riil dan mendukung dwibahasa (ID & EN).
  */
 
-export const APP_VERSION = "0.8.0";
+export const APP_VERSION = "0.8.1";
 export const APP_RELEASE_DATE = {
-  id: "4 Oktober 2026",
-  en: "October 4, 2026",
+  id: "2 November 2026",
+  en: "November 2, 2026",
 };
 
 export type ChangelogCategory = "feat" | "perf" | "fix" | "security";
@@ -42,6 +42,26 @@ export interface ChangelogRelease {
 
 export const CHANGELOG_RELEASES: ChangelogRelease[] = [
   {
+    version: "0.8.1",
+    type: "patch",
+    date: { id: "2 November 2026", en: "November 2, 2026" },
+    title: { id: "Perbaikan Halaman Template", en: "Template Page Fixes" },
+    summary: {
+      id: "Tautan template yang tidak tersedia kini mengembalikan status 404 dengan navigasi pemulihan. Metadata halaman disesuaikan dengan format PDF yang tersedia.",
+      en: "Unavailable template links now return HTTP 404 with recovery navigation. Page metadata matches the supported PDF format.",
+    },
+    isLatest: true,
+    highlights: [
+      {
+        category: "fix",
+        text: {
+          id: "Perbaikan status halaman template yang tidak ditemukan dan klasifikasi data terstruktur katalog.",
+          en: "Corrected missing-template response status and catalog structured-data classification.",
+        },
+      },
+    ],
+  },
+  {
     version: "0.8.0",
     type: "minor",
     date: {
@@ -56,7 +76,6 @@ export const CHANGELOG_RELEASES: ChangelogRelease[] = [
       id: "Kini hadir Paket LITE (Rp 19.000/bulan) bagi UMKM yang membutuhkan pembuatan invoice dan kontak pelanggan tanpa batas, serta ekspor PDF bebas watermark, dengan harga yang sangat terjangkau.",
       en: "Introducing the LITE Plan (Rp 19,000/month) for small businesses needing unlimited invoice and customer creation, plus watermark-free PDF exports at an extremely affordable price.",
     },
-    isLatest: true,
     highlights: [
       {
         category: "feat",
